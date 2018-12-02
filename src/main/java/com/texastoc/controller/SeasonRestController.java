@@ -1,8 +1,8 @@
 package com.texastoc.controller;
 
-import com.texastoc.model.season.Payout;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
+import com.texastoc.model.season.SeasonPayout;
 import com.texastoc.model.season.SeasonPlayer;
 import com.texastoc.service.SeasonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +57,12 @@ public class SeasonRestController {
         player.setName("Harry");
         season.addPlayer(player);
 
-        Payout payout = new Payout();
+        SeasonPayout payout = new SeasonPayout();
         payout.setAmount(100);
         payout.setPlace(1);
         season.addPayout(payout);
 
-        payout = new Payout();
+        payout = new SeasonPayout();
         payout.setAmount(85);
         payout.setPlace(2);
         season.addPayout(payout);

@@ -187,12 +187,12 @@ public class GameRestController {
         player.setName("John Hiatt");
         game.addPlayer(player);
 
-        Payout payout = new Payout();
+        GamePayout payout = new GamePayout();
         payout.setAmount(100);
         payout.setPlace(1);
         game.addPayout(payout);
 
-        payout = new Payout();
+        payout = new GamePayout();
         payout.setAmount(85);
         payout.setPlace(2);
         game.addPayout(payout);

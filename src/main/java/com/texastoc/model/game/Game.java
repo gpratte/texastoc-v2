@@ -29,7 +29,7 @@ public class Game {
     private int annualTocAmount;
     private int quarterlyTocAmount;
     private List<GamePlayer> players;
-    private List<Payout> payouts;
+    private List<GamePayout> payouts;
 
     public void addPlayer(GamePlayer player) {
         if (players == null) {
@@ -38,7 +38,7 @@ public class Game {
         players.add(player);
     }
 
-    public void addPayout(Payout payout) {
+    public void addPayout(GamePayout payout) {
         if (payouts == null) {
             payouts = new ArrayList<>();
         }

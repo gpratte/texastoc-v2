@@ -2,22 +2,34 @@ package com.texastoc.service;
 
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
+import com.texastoc.repository.SeasonRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+import static org.mockito.ArgumentMatchers.notNull;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class SeasonServiceTest {
 
-    SeasonService service;
+    private SeasonService service;
+
+    @MockBean
+    private SeasonRepository seasonRepository;
 
     @Before
     public void before() {
-        service = new SeasonService();
+        service = new SeasonService(seasonRepository);
     }
 
     @Test
@@ -34,6 +46,8 @@ public class SeasonServiceTest {
 
         // End date should the day before the start date next year
         LocalDate expectedEnd = LocalDate.now().plusYears(1).minusDays(1);
+
+        Mockito.when(seasonRepository.save( (Season)notNull() )).thenReturn(1);
 
         // Act
         Season actual = service.createSeason(expected);

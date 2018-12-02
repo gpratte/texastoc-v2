@@ -7,15 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SeasonPlayer {
+public class SeasonPayout {
 
     private int id;
-    private int playerId;
     private int seasonId;
     private int quarterlySeasonId;
-    private String name;
-    private Integer place;
-    private Integer points;
-    private Integer entries;
-
+    private int place;
+    private int amount;
 }

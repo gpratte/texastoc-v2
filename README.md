@@ -17,3 +17,7 @@ New SeasonService.
 
 Junit test (followed TDD) for the controller that passes through to the service. No persistence yet.
 
+## branch 03-create-season-repository
+
+JdbcTemplate based SeasonRepository. Use the @MockBean for the SeasonServiceTest unit test.
+ 

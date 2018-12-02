@@ -1,9 +1,9 @@
 package com.texastoc.service;
 
-import com.texastoc.model.season.Payout;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
-import com.texastoc.model.season.SeasonPlayer;
+import com.texastoc.repository.SeasonRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,6 +12,13 @@ import java.util.List;
 
 @Service
 public class SeasonService {
+
+    private final SeasonRepository seasonRepository;
+
+    @Autowired
+    public SeasonService(SeasonRepository seasonRepository) {
+        this.seasonRepository = seasonRepository;
+    }
 
     public Season createSeason(Season season) {
 
@@ -57,8 +64,7 @@ public class SeasonService {
 
         }
 
-        return Season.builder()
-            .id(1)
+        Season newSeason = Season.builder()
             .start(start)
             .end(end)
             .kittyPerGame(season.getKittyPerGame())
@@ -69,5 +75,8 @@ public class SeasonService {
             .quarterlySeasons(qSeasons)
             .build();
 
+        int seasonId = seasonRepository.save(newSeason);
+        newSeason.setId(seasonId);
+        return newSeason;
     }
 }

@@ -2,17 +2,16 @@ package com.texastoc.model.season;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Builder
 public class Season {
 
@@ -29,7 +28,7 @@ public class Season {
     private int quarterlyTocPerGame;
     private int quarterlyNumPayouts;
     private List<SeasonPlayer> players;
-    private List<Payout> payouts;
+    private List<SeasonPayout> payouts;
     private List<QuarterlySeason> quarterlySeasons;
 
     public void addPlayer(SeasonPlayer player) {
@@ -39,7 +38,7 @@ public class Season {
         players.add(player);
     }
 
-    public void addPayout(Payout payout) {
+    public void addPayout(SeasonPayout payout) {
         if (payouts == null) {
             payouts = new ArrayList<>();
         }
