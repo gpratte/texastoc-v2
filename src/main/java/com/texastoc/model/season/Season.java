@@ -2,6 +2,7 @@ package com.texastoc.model.season;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.texastoc.model.game.Game;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -46,26 +48,34 @@ public class Season {
     private List<SeasonPlayer> players;
     private List<SeasonPayout> payouts;
     private List<QuarterlySeason> quarterlySeasons;
+    private List<Game> games;
 
     public void addPlayer(SeasonPlayer player) {
         if (players == null) {
-            players = new ArrayList<>();
+            players = new LinkedList<>();
         }
         players.add(player);
     }
 
     public void addPayout(SeasonPayout payout) {
         if (payouts == null) {
-            payouts = new ArrayList<>();
+            payouts = new LinkedList<>();
         }
         payouts.add(payout);
     }
 
     public void addQuarterlySeason(QuarterlySeason quarterlySeason) {
         if (quarterlySeasons == null) {
-            quarterlySeasons = new ArrayList<>();
+            quarterlySeasons = new ArrayList<>(4);
         }
         quarterlySeasons.add(quarterlySeason);
+    }
+
+    public void addGame(Game game) {
+        if (games == null) {
+            games = new LinkedList<>();
+        }
+        games.add(game);
     }
 
 }

@@ -4,14 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -44,14 +42,14 @@ public class QuarterlySeason {
 
     public void addPlayer(SeasonPlayer player) {
         if (players == null) {
-            players = new ArrayList<>();
+            players = new LinkedList<>();
         }
         players.add(player);
     }
 
     public void addPayout(SeasonPayout payout) {
         if (payouts == null) {
-            payouts = new ArrayList<>();
+            payouts = new LinkedList<>();
         }
         payouts.add(payout);
     }

@@ -52,4 +52,8 @@ public class SeasonRepository {
 
         return keyHolder.getKey().intValue();
     }
+
+    public Season get(int id) {
+        return null;
+    }
 }

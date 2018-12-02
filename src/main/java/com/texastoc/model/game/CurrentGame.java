@@ -13,7 +13,7 @@ import java.util.List;
 public class CurrentGame extends Game {
 
     private int clockId;
-    private boolean transportRequired;
+    private Boolean transportRequired;
     private List<Table> tables;
 
     public void addTable(Table table) {

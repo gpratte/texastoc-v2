@@ -9,6 +9,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class QuarterlySeasonRepository {
 
@@ -43,5 +45,9 @@ public class QuarterlySeasonRepository {
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
 
         return keyHolder.getKey().intValue();
+    }
+
+    public List<QuarterlySeason> getBySeasonId(int seasonId) {
+        return null;
     }
 }

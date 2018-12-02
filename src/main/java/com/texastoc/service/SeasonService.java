@@ -3,6 +3,7 @@ package com.texastoc.service;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
+import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,13 @@ public class SeasonService {
 
     private final SeasonRepository seasonRepository;
     private final QuarterlySeasonRepository qSeasonRepository;
+    private final GameRepository gameRepository;
 
     @Autowired
-    public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository) {
+    public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository) {
         this.seasonRepository = seasonRepository;
         this.qSeasonRepository = qSeasonRepository;
+        this.gameRepository = gameRepository;
     }
 
     @Transactional
@@ -46,8 +49,8 @@ public class SeasonService {
         }
 
         List<QuarterlySeason> qSeasons = new ArrayList<>();
-        for (int i = 1; i <=4; ++i) {
-            LocalDate qStart = season.getStart().plusWeeks(13 * (i-1));
+        for (int i = 1; i <= 4; ++i) {
+            LocalDate qStart = season.getStart().plusWeeks(13 * (i - 1));
 
             LocalDate qEnd = season.getStart().plusWeeks(13 * i).minusDays(1);
 
@@ -99,5 +102,13 @@ public class SeasonService {
         }
 
         return newSeason;
+    }
+
+    @Transactional(readOnly = true)
+    public Season getSeason(int id) {
+        Season season = seasonRepository.get(id);
+        season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(id));
+        season.setGames(gameRepository.getBySeasonId(id));
+        return season;
     }
 }
