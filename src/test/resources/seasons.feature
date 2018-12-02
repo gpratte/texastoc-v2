@@ -55,3 +55,10 @@ Feature: CRUD seasons
     Given season quarterly num payouts is zero
     When the season is created
     Then response is "400 BAD_REQUEST"
+
+  Scenario: get a season with no games
+    Given season starts now
+    When the season is created
+    And the season is retrieved
+    Then the season should have four quaters
+

@@ -1,5 +1,6 @@
 package com.texastoc.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+@Slf4j
 @ControllerAdvice
 public class RestControllerAdvise extends ResponseEntityExceptionHandler {
 
@@ -27,7 +29,7 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { RuntimeException.class })
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
-        System.out.println("!!! " + ex.getClass().getName());
+        log.error(ex.getMessage(), ex);
         String bodyOfResponse = "This should be application specific";
         return handleExceptionInternal(ex, bodyOfResponse,
             new HttpHeaders(), HttpStatus.CONFLICT, request);

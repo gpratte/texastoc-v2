@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class Season {
     private LocalDate start;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate end;
+    private Boolean finalized;
     private Integer numGames;
     private Integer numGamesPlayed;
     private Integer buyInCollected;
@@ -45,6 +47,7 @@ public class Season {
     @NotNull(message = "quarterly number of payouts is required")
     @Min(1)
     private Integer quarterlyNumPayouts;
+    private LocalDateTime lastCalculated;
     private List<SeasonPlayer> players;
     private List<SeasonPayout> payouts;
     private List<QuarterlySeason> quarterlySeasons;

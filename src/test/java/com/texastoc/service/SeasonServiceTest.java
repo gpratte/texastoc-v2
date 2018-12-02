@@ -1,6 +1,7 @@
 package com.texastoc.service;
 
 import com.texastoc.model.game.Game;
+import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.repository.GameRepository;
@@ -64,9 +65,6 @@ public class SeasonServiceTest {
         // Act
         Season actual = service.createSeason(expected);
 
-        // Arrange a bit more. End date should the day before the start date next year
-        expected.setEnd(LocalDate.now().plusYears(1).minusDays(1));
-
         // Assert
         SeasonTestUtil.assertCreated(expected, actual);
     }
@@ -86,7 +84,7 @@ public class SeasonServiceTest {
             // @formatter:off
             QuarterlySeason qSeason = QuarterlySeason.builder()
             .id(i)
-            .quarter(i)
+            .quarter(Quarter.fromInt(i))
             .build();
             // @formatter:on
             qSeasons.add(qSeason);

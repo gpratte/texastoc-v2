@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.texastoc.model.season.Season;
 import com.texastoc.testutil.SeasonTestUtil;
+import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -21,6 +23,7 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 
     private Season seasonToCreate;
     private Season seasonCreated;
+    private Season seasonRetrieved;
     private HttpClientErrorException exception;
 
     @Given("^season starts now$")
@@ -177,6 +180,19 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
     @Then("^response is \"([^\"]*)\"$")
     public void response_is(String expected) throws Exception {
         Assert.assertEquals(expected, exception.getStatusCode().toString());
+    }
+
+    @And("^the season is retrieved$")
+    public void the_season_is_retrieved() throws Exception {
+        System.out.println("!!! before calling endpoint " + seasonCreated.getId());
+        seasonRetrieved = restTemplate.getForObject(endpoint() + "/seasons/" + seasonCreated.getId(), Season.class);
+    }
+
+    @Then("^the season should have four quaters$")
+    public void the_season_should_have_four_quaters() throws Exception {
+        Assert.assertNotNull("season retrieved should not be null", seasonRetrieved);
+        Assert.assertNotNull("season retrieved quarterly seasons should not be null", seasonRetrieved.getQuarterlySeasons());
+        Assert.assertEquals(4, seasonRetrieved.getQuarterlySeasons().size());
     }
 
 }

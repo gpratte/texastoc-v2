@@ -27,3 +27,5 @@ Added cucumber BDD test. These tests bring up the server and use Spring's RestTe
 ## branch 05-tdd-get-season
 Implement the GET method on the season service using TDD.
 
+## branch 06-bdd-get-season
+BDD test to get a season after creating the season. Checks if there are four quarters.
