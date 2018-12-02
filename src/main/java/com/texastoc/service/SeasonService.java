@@ -1,11 +1,16 @@
 package com.texastoc.service;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
+import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +19,15 @@ import java.util.List;
 public class SeasonService {
 
     private final SeasonRepository seasonRepository;
+    private final QuarterlySeasonRepository qSeasonRepository;
 
     @Autowired
-    public SeasonService(SeasonRepository seasonRepository) {
+    public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository) {
         this.seasonRepository = seasonRepository;
+        this.qSeasonRepository = qSeasonRepository;
     }
 
+    @Transactional
     public Season createSeason(Season season) {
 
         // TODO make sure not overlapping with another season
@@ -52,11 +60,12 @@ public class SeasonService {
             }
 
             QuarterlySeason qSeason = QuarterlySeason.builder()
-                .id(1)
                 .quarter(i)
                 .start(qStart)
                 .end(qEnd)
                 .numGames(qNumThursdays)
+                .numGamesPlayed(0)
+                .tocCollected(0)
                 .tocPerGame(season.getQuarterlyTocPerGame())
                 .numPayouts(season.getQuarterlyNumPayouts())
                 .build();
@@ -67,8 +76,13 @@ public class SeasonService {
         Season newSeason = Season.builder()
             .start(start)
             .end(end)
-            .kittyPerGame(season.getKittyPerGame())
+            .numGames(0)
+            .numGamesPlayed(0)
+            .buyInCollected(0)
+            .rebuyAddOnCollected(0)
+            .tocCollected(0)
             .tocPerGame(season.getTocPerGame())
+            .kittyPerGame(season.getKittyPerGame())
             .quarterlyTocPerGame(season.getQuarterlyTocPerGame())
             .quarterlyNumPayouts(season.getQuarterlyNumPayouts())
             .numGames(numThursdays)
@@ -77,6 +91,13 @@ public class SeasonService {
 
         int seasonId = seasonRepository.save(newSeason);
         newSeason.setId(seasonId);
+
+        for (QuarterlySeason qSeason : qSeasons) {
+            qSeason.setSeasonId(seasonId);
+            int qSeasonId = qSeasonRepository.save(qSeason);
+            qSeason.setId(qSeasonId);
+        }
+
         return newSeason;
     }
 }

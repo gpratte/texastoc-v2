@@ -20,4 +20,8 @@ Junit test (followed TDD) for the controller that passes through to the service.
 ## branch 03-create-season-repository
 
 JdbcTemplate based SeasonRepository. Use the @MockBean for the SeasonServiceTest unit test.
+
+## branch 04-bdd-cucumber
+Added cucumber BDD test. These tests bring up the server and use Spring's RestTempate to call the endpoint to create a season. Also uses an embedded H2 database. Uses a command line runner to create the season table.
+
  
