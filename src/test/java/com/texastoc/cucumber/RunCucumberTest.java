@@ -6,6 +6,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(format = "pretty",
-    features="src/test/resources/seasons.feature")
+    features="src/test/resources")
 public class RunCucumberTest {
 }
