@@ -1,5 +1,6 @@
 package com.texastoc.model.season;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,15 +11,18 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 public class QuarterlySeason {
 
     private int id;
     private LocalDate start;
     private LocalDate end;
-    private int numGames;
     private int quarter;
-    private int quarterlyTocAmount;
+    private int numGames;
+    private int numGamesPlayed;
+    private int tocCollected;
+    private int tocPerGame;
+    private int numPayouts;
     private List<SeasonPlayer> players;
     private List<Payout> payouts;
 

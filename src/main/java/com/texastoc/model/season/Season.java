@@ -1,7 +1,10 @@
 package com.texastoc.model.season;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -10,16 +13,21 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 public class Season {
 
     private int id;
     private LocalDate start;
     private LocalDate end;
     private int numGames;
-    private int buyIn;
-    private int rebuyAddOn;
-    private int annualTocAmount;
+    private int numGamesPlayed;
+    private int buyInCollected;
+    private int rebuyAddOnCollected;
+    private int tocCollected;
+    private int tocPerGame;
+    private int kittyPerGame;
+    private int quarterlyTocPerGame;
+    private int quarterlyNumPayouts;
     private List<SeasonPlayer> players;
     private List<Payout> payouts;
     private List<QuarterlySeason> quarterlySeasons;
