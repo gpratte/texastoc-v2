@@ -4,13 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,7 +20,7 @@ public class Game {
 
     private Integer id;
     private LocalDate date;
-    private LocalTime start;
+    private LocalDateTime start;
     private Integer hostId;
     private String hostName;
     private Integer seasonOrdinal;

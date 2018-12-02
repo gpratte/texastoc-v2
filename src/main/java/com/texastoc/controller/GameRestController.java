@@ -11,6 +11,7 @@ import lombok.ToString;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +169,7 @@ public class GameRestController {
         game.setQuarterlyTocAmount(120);
         game.setRebuyAddOn(200);
         game.setSeasonOrdinal(1);
-        game.setStart(LocalTime.now());
+        game.setStart(LocalDateTime.now());
 
         GamePlayer player = new GamePlayer();
         player.setAnnualToc(10);

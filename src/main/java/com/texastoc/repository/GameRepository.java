@@ -11,4 +11,8 @@ public class GameRepository {
     public List<Game> getBySeasonId(int seasonId) {
         return null;
     }
+
+    public int save(Game game) {
+        return 0;
+    }
 }
