@@ -3,6 +3,7 @@ package com.texastoc.controller;
 import com.texastoc.model.game.*;
 import com.texastoc.model.game.clock.Clock;
 import com.texastoc.model.game.clock.Round;
+import com.texastoc.model.season.Quarter;
 import com.texastoc.model.user.Player;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -165,11 +166,11 @@ public class GameRestController {
         game.setKitty(10);
         game.setHostName("Brian Baker");
         game.setNumPlayers(2);
-        game.setQuarterlyOrdinal(1);
+        game.setQuarter(Quarter.FIRST);
         game.setQuarterlyTocAmount(120);
         game.setRebuyAddOn(200);
-        game.setSeasonOrdinal(1);
-        game.setStart(LocalDateTime.now());
+        game.setSeasonId(1);
+        game.setStarted(LocalDateTime.now());
 
         GamePlayer player = new GamePlayer();
         player.setAnnualToc(10);

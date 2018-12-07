@@ -34,7 +34,7 @@ public class SeasonService {
     @Transactional
     public Season createSeason(Season season) {
 
-        // TODO make sure not overlapping with another season
+        // TODO make sure this season starts after the last game of the previous season
         LocalDate start = season.getStart();
 
         // TODO make sure not overlapping with another season

@@ -1,6 +1,7 @@
 package com.texastoc.model.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.texastoc.model.season.Quarter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,12 +20,13 @@ import java.util.List;
 public class Game {
 
     private Integer id;
+    private Integer seasonId;
+    private Integer qSeasonId;
     private LocalDate date;
-    private LocalDateTime start;
+    private LocalDateTime started;
     private Integer hostId;
     private String hostName;
-    private Integer seasonOrdinal;
-    private Integer quarterlyOrdinal;
+    private Quarter quarter;
     private Integer numPlayers;
     private Boolean doubleBuyIn;
     private Integer kitty;
@@ -32,6 +34,7 @@ public class Game {
     private Integer rebuyAddOn;
     private Integer annualTocAmount;
     private Integer quarterlyTocAmount;
+    private Boolean transportSupplies;
     private List<GamePlayer> players;
     private List<GamePayout> payouts;
 

@@ -28,7 +28,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.notNull;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class SeasonServiceTest {
 
     private SeasonService service;

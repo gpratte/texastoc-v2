@@ -64,6 +64,10 @@ public class QuarterlySeasonRepository {
                 new QuarterlySeasonMapper());
     }
 
+    public QuarterlySeason getCurrent() {
+        return null;
+    }
+
     private static final class QuarterlySeasonMapper implements RowMapper<QuarterlySeason> {
         public QuarterlySeason mapRow(ResultSet rs, int rowNum) {
             QuarterlySeason quarterly = new QuarterlySeason();

@@ -69,6 +69,10 @@ public class SeasonRepository {
         }
     }
 
+    public Season getCurrent() {
+        return null;
+    }
+
     private static final class SeasonMapper implements RowMapper<Season> {
         public Season mapRow(ResultSet rs, int rowNum) {
             Season season = new Season();
