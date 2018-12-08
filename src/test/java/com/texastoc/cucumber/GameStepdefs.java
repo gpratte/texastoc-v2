@@ -56,8 +56,18 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     @Then("^the game belongs to the first quarter$")
     public void the_game_belongs_to_the_first_quarter() throws Exception {
         Assert.assertNotNull("game create should not be null", gameCreated);
-//        Assert.assertNotNull("season retrieved quarterly seasons should not be null", seasonRetrieved.getQuarterlySeasons());
-//        Assert.assertEquals(4, seasonRetrieved.getQuarterlySeasons().size());
+        Assert.assertTrue("game season id should be greater than 0", gameCreated.getSeasonId() > 0);
+        Assert.assertTrue("game quarterly season id should be greater than 0", gameCreated.getQSeasonId() > 0);
+        Assert.assertEquals("game quarter should be 1", 1, gameCreated.getQuarter().getValue());
+
+        Assert.assertEquals("game host id should be " + BRIAN_BAKER_PLAYER_ID, BRIAN_BAKER_PLAYER_ID, (int)gameCreated.getHostId());
+        Assert.assertEquals("game host name should be " + BRIAN_BAKER_NAME, BRIAN_BAKER_NAME, gameCreated.getHostName());
+
+        Assert.assertEquals("game number players should be zero", 0, (int)gameCreated.getNumPlayers());
+        Assert.assertEquals("game buy in should be zero", 0, (int)gameCreated.getBuyIn());
+        Assert.assertEquals("game rebuy should be zero", 0, (int)gameCreated.getRebuyAddOn());
+        Assert.assertEquals("game annual toc collected should be zero", 0, (int)gameCreated.getAnnualTocAmount());
+        Assert.assertEquals("game quarterly toc collected should be zero", 0, (int)gameCreated.getQuarterlyTocAmount());
     }
 
 }

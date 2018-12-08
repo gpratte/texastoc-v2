@@ -62,14 +62,15 @@ public class SeasonRepository {
 
         try {
             return jdbcTemplate
-                .queryForObject("select * from season where id = 1", params, new SeasonMapper());
+                .queryForObject("select * from season where id = :id", params, new SeasonMapper());
         } catch(Exception e) {
             return null;
         }
     }
 
     public Season getCurrent() {
-        return null;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        return jdbcTemplate.queryForObject("select * from season where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate", params, new SeasonMapper());
     }
 
     private static final class SeasonMapper implements RowMapper<Season> {

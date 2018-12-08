@@ -67,13 +67,8 @@ public class QuarterlySeasonRepository {
     }
 
     public QuarterlySeason getCurrent() {
-        // Now in UTC
-        long nowMillis = ZonedDateTime.now(Clock.systemDefaultZone()).toInstant().toEpochMilli();
-
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("now", nowMillis);
-
-        return jdbcTemplate.queryForObject("select * from quarterlyseason where :now >= startDate and :now <= endDate", params, new QuarterlySeasonMapper());
+        return jdbcTemplate.queryForObject("select * from quarterlyseason where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate", params, new QuarterlySeasonMapper());
     }
 
     private static final class QuarterlySeasonMapper implements RowMapper<QuarterlySeason> {

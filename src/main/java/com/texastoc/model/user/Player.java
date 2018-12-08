@@ -27,7 +27,7 @@ public class Player {
         if (firstName != null) {
             name = firstName;
             if (lastName != null) {
-                firstName += " " + lastName;
+                name += " " + lastName;
             }
         } else if (lastName != null) {
             name = lastName;

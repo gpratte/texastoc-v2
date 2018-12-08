@@ -33,16 +33,24 @@ public class Game {
     private Integer hostId;
     private String hostName;
     private Quarter quarter;
-    private Integer numPlayers;
-    @NotNull(message = "double buy in is required")
+
+    // Game setup variables
     private Boolean doubleBuyIn;
-    private Integer kitty;
-    private Integer buyIn;
-    private Integer rebuyAddOn;
-    private Integer annualTocAmount;
-    private Integer quarterlyTocAmount;
-    @NotNull(message = "transport supplies is required")
     private Boolean transportSupplies;
+    private Integer kittyCost;
+    private Integer buyInCost;
+    private Integer rebuyAddOnCost;
+    private Integer annualTocCost;
+    private Integer quarterlyTocCost;
+
+    // Game time variables
+    private Integer numPlayers;
+    private Integer kittyCollected;
+    private Integer buyInCollected;
+    private Integer rebuyAddOnCollected;
+    private Integer annualTocCollected;
+    private Integer quarterlyTocCollected;
+
     private List<GamePlayer> players;
     private List<GamePayout> payouts;
 

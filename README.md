@@ -1,6 +1,8 @@
 # texastoc-v2
 Refactor version 1. Version 2 will be spring boot and Angular.
 
+# Branches
+
 ## branch 01-security-basic-auth
 Enable basic authentication and CORS 
 
@@ -36,11 +38,11 @@ Use TDD to code creating a new game.
 ## branch 08-cucumber-create-game
 Cucumber test to create a game after creating a season. 
 
-## Run tests
+# Run tests
 For all test set the following environment variable:
 * spring.profiles.active=test
 
-## Run Server with H2 database
+# Run Server with H2 database
 Set the following environment variable:
 * spring.profiles.active=test
 

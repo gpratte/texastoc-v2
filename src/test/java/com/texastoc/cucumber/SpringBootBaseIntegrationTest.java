@@ -27,6 +27,8 @@ public abstract class SpringBootBaseIntegrationTest {
     static final int TOC_PER_GAME = 8;
     static final int QUARTERLY_TOC_PER_GAME = 7;
     static final int QUARTERLY_NUM_PAYOUTS = 3;
+    static final int BRIAN_BAKER_PLAYER_ID = 1;
+    static final String BRIAN_BAKER_NAME = "Brian Baker";
 
     @LocalServerPort
     private int port;
