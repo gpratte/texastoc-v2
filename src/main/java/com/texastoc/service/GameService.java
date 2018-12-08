@@ -53,6 +53,9 @@ public class GameService {
         gameToCreate.setAnnualTocAmount(currentSeason.getTocPerGame());
         gameToCreate.setQuarterlyTocAmount(currentSeason.getQuarterlyTocPerGame());
 
+        int id = gameRepository.save(gameToCreate);
+        gameToCreate.setId(id);
+
         return gameToCreate;
     }
 }

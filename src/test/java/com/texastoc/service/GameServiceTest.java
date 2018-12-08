@@ -84,6 +84,7 @@ public class GameServiceTest {
 
         // Assert
         Assert.assertNotNull("new game should not be null", actual);
+        Assert.assertEquals("new game id should be 1", 1, (int)actual.getId());
         Assert.assertEquals("date should be now", expected.getDate(), actual.getDate());
         Assert.assertEquals("date should be now", expected.getDate(), actual.getDate());
         Assert.assertEquals("Host id should be 1", expected.getHostId(), actual.getHostId());
