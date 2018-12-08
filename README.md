@@ -35,3 +35,22 @@ Use TDD to code creating a new game.
 
 ## branch 08-cucumber-create-game
 Cucumber test to create a game after creating a season. 
+
+## Run tests
+For all test set the following environment variable:
+* spring.profiles.active=test
+
+## Run Server with H2 database
+Set the following environment variable:
+* spring.profiles.active=test
+
+Also comment out 
+`<scope>test</scope>`
+for the H2 dependency in the pom.xml
+
+To connect to the H2 server 
+* open `http://localhost:8080/h2-console` url. 
+* set the JDBC URL to `jdbc:h2:mem:testdb`
+* User Name `sa`
+* Leave the password empty
+* Click Connect

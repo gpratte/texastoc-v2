@@ -50,11 +50,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         HttpEntity<String> entity = new HttpEntity<>(seasonToCreateAsJson ,headers);
         System.out.println(seasonToCreateAsJson);
 
-        try {
-            gameCreated = restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
-        } catch (HttpClientErrorException e) {
-            exception = e;
-        }
+        gameCreated = restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
     }
 
     @Then("^the game belongs to the first quarter$")

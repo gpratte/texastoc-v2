@@ -17,7 +17,9 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Slf4j
@@ -65,7 +67,13 @@ public class QuarterlySeasonRepository {
     }
 
     public QuarterlySeason getCurrent() {
-        return null;
+        // Now in UTC
+        long nowMillis = ZonedDateTime.now(Clock.systemDefaultZone()).toInstant().toEpochMilli();
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("now", nowMillis);
+
+        return jdbcTemplate.queryForObject("select * from quarterlyseason where :now >= startDate and :now <= endDate", params, new QuarterlySeasonMapper());
     }
 
     private static final class QuarterlySeasonMapper implements RowMapper<QuarterlySeason> {

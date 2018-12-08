@@ -64,7 +64,6 @@ public class SeasonRepository {
             return jdbcTemplate
                 .queryForObject("select * from season where id = 1", params, new SeasonMapper());
         } catch(Exception e) {
-            System.out.println("### " + e);
             return null;
         }
     }

@@ -61,7 +61,8 @@ public class GameServiceTest {
         Mockito.when(playerRepository.get( ArgumentMatchers.eq(1) ))
             .thenReturn(Player.builder()
                 .id(1)
-                .name("Brian Baker")
+                .firstName("Brian")
+                .lastName("Baker")
                 .build());
 
         Mockito.when(qSeasonRepository.getCurrent())
