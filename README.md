@@ -31,5 +31,7 @@ Implement the GET method on the season service using TDD.
 Cucumber test to get a season after creating the season. Checks if there are four quarters.
 
 ## branch 07-tdd-create-game
-
 Use TDD to code creating a new game.
+
+## branch 08-cucumber-create-game
+Cucumber test to create a game after creating a season. 
