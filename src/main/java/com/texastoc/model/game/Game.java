@@ -25,31 +25,39 @@ public class Game {
     private Integer id;
     private Integer seasonId;
     private Integer qSeasonId;
+
+    @NotNull(message = "host id is required")
+    private Integer hostId;
+
     @NotNull(message = "date is required")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-    private LocalDateTime started;
-    @NotNull(message = "host id is required")
-    private Integer hostId;
+
+    // Denormalized fields
     private String hostName;
     private Quarter quarter;
 
+    private LocalDateTime lastCalculated;
+
     // Game setup variables
     private Boolean doubleBuyIn;
-    private Boolean transportSupplies;
+    private Boolean transportRequired;
     private Integer kittyCost;
     private Integer buyInCost;
     private Integer rebuyAddOnCost;
+    private Integer rebuyAddOnTocDebit;
     private Integer annualTocCost;
     private Integer quarterlyTocCost;
 
     // Game time variables
+    private LocalDateTime started;
     private Integer numPlayers;
     private Integer kittyCollected;
     private Integer buyInCollected;
     private Integer rebuyAddOnCollected;
     private Integer annualTocCollected;
     private Integer quarterlyTocCollected;
+    private Boolean finalized;
 
     private List<GamePlayer> players;
     private List<GamePayout> payouts;

@@ -34,7 +34,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
             .date(LocalDate.now())
             .hostId(1)
             .doubleBuyIn(false)
-            .transportSupplies(false)
+            .transportRequired(false)
             .build();
 
     }
@@ -64,10 +64,10 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("game host name should be " + BRIAN_BAKER_NAME, BRIAN_BAKER_NAME, gameCreated.getHostName());
 
         Assert.assertEquals("game number players should be zero", 0, (int)gameCreated.getNumPlayers());
-        Assert.assertEquals("game buy in should be zero", 0, (int)gameCreated.getBuyIn());
-        Assert.assertEquals("game rebuy should be zero", 0, (int)gameCreated.getRebuyAddOn());
-        Assert.assertEquals("game annual toc collected should be zero", 0, (int)gameCreated.getAnnualTocAmount());
-        Assert.assertEquals("game quarterly toc collected should be zero", 0, (int)gameCreated.getQuarterlyTocAmount());
+        Assert.assertEquals("game buy in should be zero", 0, (int)gameCreated.getBuyInCollected());
+        Assert.assertEquals("game rebuy should be zero", 0, (int)gameCreated.getRebuyAddOnCollected());
+        Assert.assertEquals("game annual toc collected should be zero", 0, (int)gameCreated.getAnnualTocCollected());
+        Assert.assertEquals("game quarterly toc collected should be zero", 0, (int)gameCreated.getQuarterlyTocCollected());
     }
 
 }

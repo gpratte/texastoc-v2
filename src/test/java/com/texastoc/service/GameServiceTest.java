@@ -52,7 +52,7 @@ public class GameServiceTest {
         Game expected = Game.builder()
             .date(LocalDate.now())
             .hostId(1)
-            .transportSupplies(true)
+            .transportRequired(true)
             .doubleBuyIn(true)
             .build();
 
@@ -89,7 +89,7 @@ public class GameServiceTest {
         Assert.assertEquals("date should be now", expected.getDate(), actual.getDate());
         Assert.assertEquals("date should be now", expected.getDate(), actual.getDate());
         Assert.assertEquals("Host id should be 1", expected.getHostId(), actual.getHostId());
-        Assert.assertEquals("Supplies need transporting", expected.getTransportSupplies(), actual.getTransportSupplies());
+        Assert.assertEquals("Supplies need transporting", expected.getTransportRequired(), actual.getTransportRequired());
         Assert.assertEquals("Double buy in", expected.getDoubleBuyIn(), actual.getDoubleBuyIn());
 
         Assert.assertTrue("Host name should be Brian Baker", "Brian Baker".equals(actual.getHostName()));
@@ -100,12 +100,12 @@ public class GameServiceTest {
         Assert.assertEquals("Quarter should be first", Quarter.FIRST, actual.getQuarter());
 
         Assert.assertEquals("No players", 0, (int)actual.getNumPlayers());
-        Assert.assertEquals("No buy in", 0, (int)actual.getBuyIn());
-        Assert.assertEquals("No re buy in", 0, (int)actual.getRebuyAddOn());
+        Assert.assertEquals("No buy in", 0, (int)actual.getBuyInCollected());
+        Assert.assertEquals("No re buy in", 0, (int)actual.getRebuyAddOnCollected());
 
-        Assert.assertEquals("Kitty should be amount set for season which is 10", 10, (int)actual.getKitty());
-        Assert.assertEquals("Annual TOC be amount set for season which is 9", 9, (int)actual.getAnnualTocAmount());
-        Assert.assertEquals("Quarterly TOC be amount set for season which is 8", 8, (int)actual.getQuarterlyTocAmount());
+        Assert.assertEquals("Kitty should be amount set for season which is 10", 10, (int)actual.getKittyCost());
+        Assert.assertEquals("Annual TOC be amount set for season which is 9", 9, (int)actual.getAnnualTocCost());
+        Assert.assertEquals("Quarterly TOC be amount set for season which is 8", 8, (int)actual.getQuarterlyTocCost());
     }
 
 }

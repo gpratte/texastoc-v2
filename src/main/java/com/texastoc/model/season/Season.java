@@ -53,6 +53,14 @@ public class Season {
     private List<QuarterlySeason> quarterlySeasons;
     private List<Game> games;
 
+    // TODO add tests
+    private Integer buyInCost;
+    private Integer rebuyAddOnCost;
+    private Integer rebuyAddOnTocDebit;
+    private Integer doubleBuyInCost;
+    private Integer doubleRebuyAddOnCost;
+    private Integer doubleRebuyAddOnTocDebit;
+
     public void addPlayer(SeasonPlayer player) {
         if (players == null) {
             players = new LinkedList<>();
