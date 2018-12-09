@@ -1,26 +1,27 @@
 package com.texastoc.testutil;
 
+import com.texastoc.TestConstants;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import org.junit.Assert;
 
 import java.time.LocalDate;
 
-public class SeasonTestUtil {
+public class SeasonTestUtil implements TestConstants {
 
-    public static void assertCreated(Season expected, Season actual) {
+    public static void assertCreated(LocalDate start, Season actual) {
         Assert.assertTrue(actual.getId() > 0);
-        Assert.assertEquals(expected.getKittyPerGame(), actual.getKittyPerGame());
-        Assert.assertEquals(expected.getTocPerGame(), actual.getTocPerGame());
-        Assert.assertEquals(expected.getQuarterlyTocPerGame(), actual.getQuarterlyTocPerGame());
-        Assert.assertEquals(expected.getQuarterlyNumPayouts(), actual.getQuarterlyNumPayouts());
+        Assert.assertEquals(KITTY_PER_GAME, (int)actual.getKittyPerGame());
+        Assert.assertEquals(TOC_PER_GAME, (int)actual.getTocPerGame());
+        Assert.assertEquals(QUARTERLY_TOC_PER_GAME, (int)actual.getQuarterlyTocPerGame());
+        Assert.assertEquals(QUARTERLY_NUM_PAYOUTS, (int)actual.getQuarterlyNumPayouts());
 
         Assert.assertTrue(actual.getBuyInCollected() == 0);
         Assert.assertTrue(actual.getRebuyAddOnCollected() == 0);
         Assert.assertTrue(actual.getTocCollected() == 0);
         Assert.assertTrue(actual.getNumGamesPlayed() == 0);
 
-        Assert.assertEquals(expected.getStart(), actual.getStart());
+        Assert.assertEquals(start, actual.getStart());
 
         Assert.assertEquals(actual.getStart().plusYears(1).minusDays(1), actual.getEnd());
 
@@ -36,14 +37,14 @@ public class SeasonTestUtil {
             Assert.assertTrue(qSeason.getId() > 0);
             Assert.assertEquals((int) i + 1, (int) qSeason.getQuarter().getValue());
 
-            Assert.assertEquals((int) expected.getQuarterlyTocPerGame(), (int) qSeason.getTocPerGame());
-            Assert.assertEquals((int) expected.getQuarterlyNumPayouts(), (int) qSeason.getNumPayouts());
+            Assert.assertEquals((int) QUARTERLY_TOC_PER_GAME, (int) qSeason.getTocPerGame());
+            Assert.assertEquals((int) QUARTERLY_NUM_PAYOUTS, (int) qSeason.getNumPayouts());
 
             Assert.assertTrue(qSeason.getTocCollected() == 0);
 
             LocalDate qSeasonExpectedEnd = LocalDate.now().plusWeeks(13 * (i + 1)).minusDays(1);
 
-            Assert.assertEquals(expected.getStart().plusWeeks(13 * (i)), qSeason.getStart());
+            Assert.assertEquals(start.plusWeeks(13 * (i)), qSeason.getStart());
             Assert.assertEquals(qSeasonExpectedEnd, qSeason.getEnd());
 
             Assert.assertTrue(qSeason.getNumGamesPlayed() == 0);

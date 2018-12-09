@@ -21,33 +21,16 @@ import java.time.LocalDate;
 @Ignore
 public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 
-    private Season seasonToCreate;
+    private LocalDate start;
     private Season seasonCreated;
     private Season seasonRetrieved;
     private HttpClientErrorException exception;
 
+
     @Given("^season starts now$")
     public void season_starts_now() throws Exception {
         // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(10)
-            .tocPerGame(10)
-            .quarterlyTocPerGame(10)
-            .quarterlyNumPayouts(3)
-            .build();
-    }
-
-    @Given("^season starts now all else minimal$")
-    public void season_starts_now_all_else_minimal() throws Exception {
-        // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(0)
-            .tocPerGame(0)
-            .quarterlyTocPerGame(0)
-            .quarterlyNumPayouts(1)
-            .build();
+        start = LocalDate.now();
     }
 
     @When("^the season is created$")
@@ -57,7 +40,7 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        String seasonToCreateAsJson = mapper.writeValueAsString(seasonToCreate);
+        String seasonToCreateAsJson = mapper.writeValueAsString(start);
         HttpEntity<String> entity = new HttpEntity<>(seasonToCreateAsJson ,headers);
         System.out.println(seasonToCreateAsJson);
 
@@ -71,110 +54,13 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 
     @Then("^the start date should be now$")
     public void the_start_date_should_be_now() throws Exception {
-        SeasonTestUtil.assertCreated(seasonToCreate, seasonCreated);
+        SeasonTestUtil.assertCreated(start, seasonCreated);
     }
 
     @Given("^season start date is missing$")
     public void season_start_date_is_missing() throws Exception {
         // Arrange
-        seasonToCreate = Season.builder()
-            .kittyPerGame(10)
-            .tocPerGame(10)
-            .quarterlyTocPerGame(10)
-            .quarterlyNumPayouts(3)
-            .build();
-    }
-
-    @Given("^season kitty per game is missing$")
-    public void season_kitty_per_game_is_missing() throws Exception {
-        // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .tocPerGame(10)
-            .quarterlyTocPerGame(10)
-            .quarterlyNumPayouts(3)
-            .build();
-    }
-
-    @Given("^season kitty per game is negative$")
-    public void season_kitty_per_game_is_negative() throws Exception {
-        // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(-1)
-            .tocPerGame(10)
-            .quarterlyTocPerGame(10)
-            .quarterlyNumPayouts(3)
-            .build();
-    }
-
-    @Given("^season toc per game is missing$")
-    public void season_toc_per_game_is_missing() throws Exception {
-        // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(1)
-            .quarterlyTocPerGame(10)
-            .quarterlyNumPayouts(3)
-            .build();
-    }
-
-    @Given("^season toc per game is negative$")
-    public void season_toc_per_game_is_negative() throws Exception {
-        // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(1)
-            .tocPerGame(-10)
-            .quarterlyTocPerGame(10)
-            .quarterlyNumPayouts(3)
-            .build();
-    }
-
-    @Given("^season quarterly toc per game is missing$")
-    public void season_quarterly_toc_per_game_is_missing() throws Exception {
-        // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(1)
-            .tocPerGame(2)
-            .quarterlyNumPayouts(3)
-            .build();
-    }
-
-    @Given("^season quarterly toc per game is negative$")
-    public void season_quarterly_toc_per_game_is_negative() throws Exception {
-        // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(1)
-            .tocPerGame(2)
-            .quarterlyTocPerGame(-1)
-            .quarterlyNumPayouts(3)
-            .build();
-    }
-
-    @Given("^season quarterly num payouts is missing$")
-    public void season_quarterly_num_payouts_is_missing() throws Exception {
-        // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(1)
-            .tocPerGame(2)
-            .quarterlyTocPerGame(3)
-            .build();
-    }
-
-    @Given("^season quarterly num payouts is zero$")
-    public void season_quarterly_num_payouts_is_zero() throws Exception {
-        // Arrange
-        seasonToCreate = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(1)
-            .tocPerGame(2)
-            .quarterlyTocPerGame(3)
-            .quarterlyNumPayouts(0)
-            .build();
+        start = null;
     }
 
     @Then("^response is \"([^\"]*)\"$")

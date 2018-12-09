@@ -29,37 +29,33 @@ public class Season {
     private LocalDate start;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate end;
-    private Boolean finalized;
-    private Integer numGames;
-    private Integer numGamesPlayed;
-    private Integer buyInCollected;
-    private Integer rebuyAddOnCollected;
-    private Integer tocCollected;
-    @NotNull(message = "toc per game is required")
-    @Min(0)
-    private Integer tocPerGame;
-    @NotNull(message = "kitty per game is required")
-    @Min(0)
-    private Integer kittyPerGame;
-    @NotNull(message = "quarterly toc per game is required")
-    @Min(0)
-    private Integer quarterlyTocPerGame;
-    @NotNull(message = "quarterly number of payouts is required")
-    @Min(1)
-    private Integer quarterlyNumPayouts;
-    private LocalDateTime lastCalculated;
-    private List<SeasonPlayer> players;
-    private List<SeasonPayout> payouts;
-    private List<QuarterlySeason> quarterlySeasons;
-    private List<Game> games;
 
-    // TODO add tests
+    // From TocConfig
+    private Integer kittyPerGame;
+    private Integer tocPerGame;
+    private Integer quarterlyTocPerGame;
+    private Integer quarterlyNumPayouts;
     private Integer buyInCost;
     private Integer rebuyAddOnCost;
     private Integer rebuyAddOnTocDebit;
     private Integer doubleBuyInCost;
     private Integer doubleRebuyAddOnCost;
     private Integer doubleRebuyAddOnTocDebit;
+
+    // Runtime
+    private Integer numGames;
+    private Integer numGamesPlayed;
+    private Integer buyInCollected;
+    private Integer rebuyAddOnCollected;
+    private Integer tocCollected;
+    private LocalDateTime lastCalculated;
+    private Boolean finalized;
+
+    private List<SeasonPlayer> players;
+    private List<SeasonPayout> payouts;
+    private List<QuarterlySeason> quarterlySeasons;
+    private List<Game> games;
+
 
     public void addPlayer(SeasonPlayer player) {
         if (players == null) {

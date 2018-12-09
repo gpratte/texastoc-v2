@@ -2,6 +2,7 @@ package com.texastoc.cucumber;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.texastoc.TestConstants;
 import com.texastoc.model.season.Season;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,25 +11,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class SpringBootBaseIntegrationTest {
+public abstract class SpringBootBaseIntegrationTest implements TestConstants {
 
     private final String SERVER_URL = "http://localhost";
     private String V2_ENDPOINT;
-
-    static final int KITTY_PER_GAME = 9;
-    static final int TOC_PER_GAME = 8;
-    static final int QUARTERLY_TOC_PER_GAME = 7;
-    static final int QUARTERLY_NUM_PAYOUTS = 3;
-    static final int BRIAN_BAKER_PLAYER_ID = 1;
-    static final String BRIAN_BAKER_NAME = "Brian Baker";
 
     @LocalServerPort
     private int port;

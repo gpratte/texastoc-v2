@@ -27,8 +27,8 @@ public class SeasonRestController {
     }
 
     @PostMapping("/api/v2/seasons")
-    public Season createSeason(@RequestBody @Valid Season season) {
-        return seasonService.createSeason(season);
+    public Season createSeason(@RequestBody LocalDate start) {
+        return seasonService.createSeason(start);
     }
 
     @GetMapping("/api/v2/seasons/{id}")

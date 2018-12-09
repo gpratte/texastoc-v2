@@ -4,10 +4,12 @@ import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
+import com.texastoc.repository.ConfigRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
 import com.texastoc.testutil.SeasonTestUtil;
+import org.apache.tomcat.jni.Local;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,31 +43,28 @@ public class SeasonServiceTest {
     @MockBean
     private GameRepository gameRepository;
 
+    @MockBean
+    private ConfigRepository configRepository;
+
     @Before
     public void before() {
-        service = new SeasonService(seasonRepository, qSeasonRepository, gameRepository);
+        service = new SeasonService(seasonRepository, qSeasonRepository, gameRepository, configRepository);
     }
 
     @Test
     public void testCreateSeason() {
 
         // Arrange
-        Season expected = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(10)
-            .tocPerGame(10)
-            .quarterlyTocPerGame(10)
-            .quarterlyNumPayouts(3)
-            .build();
+        LocalDate start = LocalDate.now();
 
         Mockito.when(seasonRepository.save((Season) notNull())).thenReturn(1);
         Mockito.when(qSeasonRepository.save((QuarterlySeason) notNull())).thenReturn(1);
 
         // Act
-        Season actual = service.createSeason(expected);
+        Season actual = service.createSeason(start);
 
         // Assert
-        SeasonTestUtil.assertCreated(expected, actual);
+        SeasonTestUtil.assertCreated(start, actual);
     }
 
     @Test

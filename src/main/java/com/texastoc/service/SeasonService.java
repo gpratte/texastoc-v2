@@ -1,9 +1,11 @@
 package com.texastoc.service;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
+import com.texastoc.repository.ConfigRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
@@ -23,23 +25,26 @@ public class SeasonService {
     private final SeasonRepository seasonRepository;
     private final QuarterlySeasonRepository qSeasonRepository;
     private final GameRepository gameRepository;
+    private final ConfigRepository configRepository;
 
     @Autowired
-    public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository) {
+    public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository) {
         this.seasonRepository = seasonRepository;
         this.qSeasonRepository = qSeasonRepository;
         this.gameRepository = gameRepository;
+        this.configRepository = configRepository;
     }
 
     @Transactional
-    public Season createSeason(Season season) {
+    public Season createSeason(LocalDate start) {
 
         // TODO make sure this season starts after the last game of the previous season
-        LocalDate start = season.getStart();
 
         // TODO make sure not overlapping with another season
         // The end will be the day before the start date next year
-        LocalDate end = season.getStart().plusYears(1).minusDays(1);
+        LocalDate end = start.plusYears(1).minusDays(1);
+
+        TocConfig tocConfig = configRepository.get();
 
         // Count the number of Thursdays between the start and end
         int numThursdays = 0;
@@ -51,9 +56,9 @@ public class SeasonService {
 
         List<QuarterlySeason> qSeasons = new ArrayList<>();
         for (int i = 1; i <= 4; ++i) {
-            LocalDate qStart = season.getStart().plusWeeks(13 * (i - 1));
+            LocalDate qStart = start.plusWeeks(13 * (i - 1));
 
-            LocalDate qEnd = season.getStart().plusWeeks(13 * i).minusDays(1);
+            LocalDate qEnd = start.plusWeeks(13 * i).minusDays(1);
 
             // Count the number of Thursdays between the start and end
             int qNumThursdays = 0;
@@ -71,26 +76,31 @@ public class SeasonService {
                 .numGames(qNumThursdays)
                 .numGamesPlayed(0)
                 .tocCollected(0)
-                .tocPerGame(season.getQuarterlyTocPerGame())
-                .numPayouts(season.getQuarterlyNumPayouts())
+                .tocPerGame(tocConfig.getQuarterlyTocCost())
+                .numPayouts(tocConfig.getQuarterlyNumPayouts())
                 .build();
             qSeasons.add(qSeason);
-
         }
 
         Season newSeason = Season.builder()
             .start(start)
             .end(end)
-            .finalized(false)
+            .kittyPerGame(tocConfig.getKittyDebit())
+            .tocPerGame(tocConfig.getAnnualTocCost())
+            .quarterlyTocPerGame(tocConfig.getQuarterlyTocCost())
+            .quarterlyNumPayouts(tocConfig.getQuarterlyNumPayouts())
+            .buyInCost(tocConfig.getRegularBuyInCost())
+            .rebuyAddOnCost(tocConfig.getRegularRebuyCost())
+            .rebuyAddOnTocDebit(tocConfig.getRegularRebuyTocDebit())
+            .doubleBuyInCost(tocConfig.getDoubleBuyInCost())
+            .doubleRebuyAddOnCost(tocConfig.getDoubleRebuyCost())
+            .doubleRebuyAddOnTocDebit(tocConfig.getDoubleRebuyTocDebit())
             .numGames(numThursdays)
             .numGamesPlayed(0)
             .buyInCollected(0)
             .rebuyAddOnCollected(0)
             .tocCollected(0)
-            .tocPerGame(season.getTocPerGame())
-            .kittyPerGame(season.getKittyPerGame())
-            .quarterlyTocPerGame(season.getQuarterlyTocPerGame())
-            .quarterlyNumPayouts(season.getQuarterlyNumPayouts())
+            .finalized(false)
             .quarterlySeasons(qSeasons)
             .build();
 

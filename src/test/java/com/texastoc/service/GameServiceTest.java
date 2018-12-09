@@ -86,26 +86,35 @@ public class GameServiceTest {
         // Assert
         Assert.assertNotNull("new game should not be null", actual);
         Assert.assertEquals("new game id should be 1", 1, (int)actual.getId());
-        Assert.assertEquals("date should be now", expected.getDate(), actual.getDate());
-        Assert.assertEquals("date should be now", expected.getDate(), actual.getDate());
-        Assert.assertEquals("Host id should be 1", expected.getHostId(), actual.getHostId());
-        Assert.assertEquals("Supplies need transporting", expected.getTransportRequired(), actual.getTransportRequired());
-        Assert.assertEquals("Double buy in", expected.getDoubleBuyIn(), actual.getDoubleBuyIn());
-
-        Assert.assertTrue("Host name should be Brian Baker", "Brian Baker".equals(actual.getHostName()));
-        Assert.assertNull("not started", actual.getStarted());
 
         Assert.assertEquals("SeasonId should be 1", 1, (int)actual.getSeasonId());
         Assert.assertEquals("QuarterlySeasonId should be 1", 1, (int)actual.getQSeasonId());
+        Assert.assertEquals("Host id should be 1", expected.getHostId(), actual.getHostId());
+        Assert.assertEquals("date should be now", expected.getDate(), actual.getDate());
+
+        Assert.assertTrue("Host name should be Brian Baker", "Brian Baker".equals(actual.getHostName()));
         Assert.assertEquals("Quarter should be first", Quarter.FIRST, actual.getQuarter());
+        Assert.assertNull("last calculated should be null", actual.getLastCalculated());
+
+
+        // Game setup variables
+        Assert.assertEquals("Double buy in", expected.getDoubleBuyIn(), actual.getDoubleBuyIn());
+        Assert.assertEquals("Supplies need transporting", expected.getTransportRequired(), actual.getTransportRequired());
+        Assert.assertEquals("Buy in cost should be amount set for season which is 10", 10, (int)actual.getBuyInCost());
+        Assert.assertEquals("Kitty cost should be amount set for season which is 10", 10, (int)actual.getKittyCost());
+
+
+        Assert.assertEquals("Annual TOC be amount set for season which is 9", 9, (int)actual.getAnnualTocCost());
+        Assert.assertEquals("Quarterly TOC be amount set for season which is 8", 8, (int)actual.getQuarterlyTocCost());
+
+
+        Assert.assertNull("not started", actual.getStarted());
+
 
         Assert.assertEquals("No players", 0, (int)actual.getNumPlayers());
         Assert.assertEquals("No buy in", 0, (int)actual.getBuyInCollected());
         Assert.assertEquals("No re buy in", 0, (int)actual.getRebuyAddOnCollected());
 
-        Assert.assertEquals("Kitty should be amount set for season which is 10", 10, (int)actual.getKittyCost());
-        Assert.assertEquals("Annual TOC be amount set for season which is 9", 9, (int)actual.getAnnualTocCost());
-        Assert.assertEquals("Quarterly TOC be amount set for season which is 8", 8, (int)actual.getQuarterlyTocCost());
     }
 
 }
