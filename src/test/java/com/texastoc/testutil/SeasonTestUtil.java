@@ -9,23 +9,31 @@ import java.time.LocalDate;
 
 public class SeasonTestUtil implements TestConstants {
 
-    public static void assertCreated(LocalDate start, Season actual) {
+    public static void assertCreatedSeason(LocalDate start, Season actual) {
         Assert.assertTrue(actual.getId() > 0);
+
+        Assert.assertEquals(start, actual.getStart());
+        Assert.assertEquals(start.plusYears(1).minusDays(1), actual.getEnd());
+
         Assert.assertEquals(KITTY_PER_GAME, (int)actual.getKittyPerGame());
         Assert.assertEquals(TOC_PER_GAME, (int)actual.getTocPerGame());
         Assert.assertEquals(QUARTERLY_TOC_PER_GAME, (int)actual.getQuarterlyTocPerGame());
         Assert.assertEquals(QUARTERLY_NUM_PAYOUTS, (int)actual.getQuarterlyNumPayouts());
+        Assert.assertEquals(GAME_BUY_IN, (int)actual.getBuyInCost());
+        Assert.assertEquals(GAME_REBUY, (int)actual.getRebuyAddOnCost());
+        Assert.assertEquals(GAME_REBUY_TOC_DEBIT, (int)actual.getRebuyAddOnTocDebit());
+        Assert.assertEquals(GAME_DOUBLE_BUY_IN, (int)actual.getDoubleBuyInCost());
+        Assert.assertEquals(GAME_DOUBLE_REBUY, (int)actual.getDoubleRebuyAddOnCost());
+        Assert.assertEquals(GAME_DOUBLE_REBUY_TOC_DEBIT, (int)actual.getDoubleRebuyAddOnTocDebit());
 
+        Assert.assertTrue(actual.getNumGames() == 52 || actual.getNumGames() == 53);
+        Assert.assertTrue(actual.getNumGamesPlayed() == 0);
         Assert.assertTrue(actual.getBuyInCollected() == 0);
         Assert.assertTrue(actual.getRebuyAddOnCollected() == 0);
         Assert.assertTrue(actual.getTocCollected() == 0);
-        Assert.assertTrue(actual.getNumGamesPlayed() == 0);
 
-        Assert.assertEquals(start, actual.getStart());
-
-        Assert.assertEquals(actual.getStart().plusYears(1).minusDays(1), actual.getEnd());
-
-        Assert.assertTrue(actual.getNumGames() == 52 || actual.getNumGames() == 53);
+        Assert.assertEquals(false, actual.getFinalized());
+        Assert.assertNull(actual.getLastCalculated());
 
         Assert.assertTrue(actual.getPlayers() == null || actual.getPlayers().size() == 0);
         Assert.assertTrue(actual.getPayouts() == null || actual.getPayouts().size() == 0);

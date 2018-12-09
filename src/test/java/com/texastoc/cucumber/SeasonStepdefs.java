@@ -54,7 +54,7 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 
     @Then("^the start date should be now$")
     public void the_start_date_should_be_now() throws Exception {
-        SeasonTestUtil.assertCreated(start, seasonCreated);
+        SeasonTestUtil.assertCreatedSeason(start, seasonCreated);
     }
 
     @Given("^season start date is missing$")

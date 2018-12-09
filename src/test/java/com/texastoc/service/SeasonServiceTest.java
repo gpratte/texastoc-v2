@@ -1,5 +1,6 @@
 package com.texastoc.service;
 
+import com.texastoc.TestConstants;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
@@ -30,7 +31,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.notNull;
 
 @RunWith(SpringRunner.class)
-public class SeasonServiceTest {
+public class SeasonServiceTest implements TestConstants {
 
     private SeasonService service;
 
@@ -59,12 +60,13 @@ public class SeasonServiceTest {
 
         Mockito.when(seasonRepository.save((Season) notNull())).thenReturn(1);
         Mockito.when(qSeasonRepository.save((QuarterlySeason) notNull())).thenReturn(1);
+        Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
         // Act
         Season actual = service.createSeason(start);
 
         // Assert
-        SeasonTestUtil.assertCreated(start, actual);
+        SeasonTestUtil.assertCreatedSeason(start, actual);
     }
 
     @Test
