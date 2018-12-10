@@ -1,5 +1,6 @@
 package com.texastoc.service;
 
+import com.texastoc.TestConstants;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
@@ -27,7 +28,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.notNull;
 
 @RunWith(SpringRunner.class)
-public class GameServiceTest {
+public class GameServiceTest implements TestConstants {
 
     private GameService service;
 
@@ -75,9 +76,16 @@ public class GameServiceTest {
         Mockito.when(seasonRepository.getCurrent())
             .thenReturn(Season.builder()
                 .id(1)
-                .kittyPerGame(10)
-                .tocPerGame(9)
-                .quarterlyTocPerGame(8)
+                .kittyPerGame(KITTY_PER_GAME)
+                .tocPerGame(TOC_PER_GAME)
+                .quarterlyTocPerGame(QUARTERLY_TOC_PER_GAME)
+                .quarterlyNumPayouts(QUARTERLY_NUM_PAYOUTS)
+                .buyInCost(GAME_BUY_IN)
+                .rebuyAddOnCost(GAME_REBUY)
+                .rebuyAddOnTocDebit(GAME_REBUY_TOC_DEBIT)
+                .doubleBuyInCost(GAME_DOUBLE_BUY_IN)
+                .doubleRebuyAddOnCost(GAME_DOUBLE_BUY_IN)
+                .doubleRebuyAddOnTocDebit(GAME_DOUBLE_REBUY_TOC_DEBIT)
                 .build());
 
         // Act
@@ -94,27 +102,30 @@ public class GameServiceTest {
 
         Assert.assertTrue("Host name should be Brian Baker", "Brian Baker".equals(actual.getHostName()));
         Assert.assertEquals("Quarter should be first", Quarter.FIRST, actual.getQuarter());
+
         Assert.assertNull("last calculated should be null", actual.getLastCalculated());
 
 
         // Game setup variables
         Assert.assertEquals("Double buy in", expected.getDoubleBuyIn(), actual.getDoubleBuyIn());
-        Assert.assertEquals("Supplies need transporting", expected.getTransportRequired(), actual.getTransportRequired());
-        Assert.assertEquals("Buy in cost should be amount set for season which is 10", 10, (int)actual.getBuyInCost());
-        Assert.assertEquals("Kitty cost should be amount set for season which is 10", 10, (int)actual.getKittyCost());
-
-
-        Assert.assertEquals("Annual TOC be amount set for season which is 9", 9, (int)actual.getAnnualTocCost());
-        Assert.assertEquals("Quarterly TOC be amount set for season which is 8", 8, (int)actual.getQuarterlyTocCost());
-
+        Assert.assertEquals("transport required", expected.getTransportRequired(), actual.getTransportRequired());
+        Assert.assertEquals("Kitty cost should be amount set for season", KITTY_PER_GAME, (int)actual.getKittyCost());
+        Assert.assertEquals("Buy in cost should be amount set for season", GAME_BUY_IN, (int)actual.getBuyInCost());
+        Assert.assertEquals("Rebuy cost should be amount set for season", GAME_REBUY, (int)actual.getRebuyAddOnCost());
+        Assert.assertEquals("Rebuy Toc debit cost should be amount set for season", GAME_REBUY_TOC_DEBIT, (int)actual.getRebuyAddOnTocDebit());
+        Assert.assertEquals("Annual TOC be amount set for season", TOC_PER_GAME, (int)actual.getAnnualTocCost());
+        Assert.assertEquals("Quarterly TOC be amount set for season", QUARTERLY_TOC_PER_GAME, (int)actual.getQuarterlyTocCost());
 
         Assert.assertNull("not started", actual.getStarted());
 
-
         Assert.assertEquals("No players", 0, (int)actual.getNumPlayers());
-        Assert.assertEquals("No buy in", 0, (int)actual.getBuyInCollected());
-        Assert.assertEquals("No re buy in", 0, (int)actual.getRebuyAddOnCollected());
+        Assert.assertEquals("No kitty collected", 0, (int)actual.getKittyCollected());
+        Assert.assertEquals("No buy in collected", 0, (int)actual.getBuyInCollected());
+        Assert.assertEquals("No rebuy collected", 0, (int)actual.getRebuyAddOnCollected());
+        Assert.assertEquals("No annual toc collected", 0, (int)actual.getAnnualTocCollected());
+        Assert.assertEquals("No quarterly toc collected", 0, (int)actual.getQuarterlyTocCollected());
 
+        Assert.assertFalse("not finalized", actual.getFinalized());
     }
 
 }

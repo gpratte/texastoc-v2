@@ -37,8 +37,6 @@ public class Game {
     private String hostName;
     private Quarter quarter;
 
-    private LocalDateTime lastCalculated;
-
     // Game setup variables
     private Boolean doubleBuyIn;
     private Boolean transportRequired;
@@ -58,6 +56,8 @@ public class Game {
     private Integer annualTocCollected;
     private Integer quarterlyTocCollected;
     private Boolean finalized;
+
+    private LocalDateTime lastCalculated;
 
     private List<GamePlayer> players;
     private List<GamePayout> payouts;

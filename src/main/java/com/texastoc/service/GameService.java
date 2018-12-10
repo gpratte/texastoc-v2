@@ -48,7 +48,6 @@ public class GameService {
 
         Season currentSeason = seasonRepository.getCurrent();
         gameToCreate.setKittyCost(currentSeason.getKittyPerGame());
-
         gameToCreate.setAnnualTocCost(currentSeason.getTocPerGame());
         gameToCreate.setQuarterlyTocCost(currentSeason.getQuarterlyTocPerGame());
 
