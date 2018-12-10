@@ -74,8 +74,8 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
         seasonRetrieved = restTemplate.getForObject(endpoint() + "/seasons/" + seasonCreated.getId(), Season.class);
     }
 
-    @Then("^the season should have four quaters$")
-    public void the_season_should_have_four_quaters() throws Exception {
+    @Then("^the season should have four quarters$")
+    public void the_season_should_have_four_quarters() throws Exception {
         Assert.assertNotNull("season retrieved should not be null", seasonRetrieved);
         Assert.assertNotNull("season retrieved quarterly seasons should not be null", seasonRetrieved.getQuarterlySeasons());
         Assert.assertEquals(4, seasonRetrieved.getQuarterlySeasons().size());

@@ -1,7 +1,7 @@
 
-create table if not exists tocconfig (kittyDebit INT NOT NULL, annualTocCost INT NOT NULL, quarterlyTocCost INT NOT NULL, quarterlyNumPayouts INT NOT NULL, gameRegularBuyInCost INT NOT NULL, gameRegularRebuyCost INT NOT NULL, gameRegularRebuyTocDebit INT NOT NULL, gameDoubleBuyInCost INT NOT NULL, gameDoubleRebuyCost INT NOT NULL, gameDoubleRebuyTocDebit INT NOT NULL)
+create table if not exists tocconfig (kittyDebit INT NOT NULL, annualTocCost INT NOT NULL, quarterlyTocCost INT NOT NULL, quarterlyNumPayouts INT NOT NULL, regularBuyInCost INT NOT NULL, regularRebuyCost INT NOT NULL, regularRebuyTocDebit INT NOT NULL, doubleBuyInCost INT NOT NULL, doubleRebuyCost INT NOT NULL, doubleRebuyTocDebit INT NOT NULL)
 
-insert into tocconfig (kittyDebit, annualTocCost, quarterlyTocCost, quarterlyNumPayouts, gameRegularBuyInCost, gameRegularRebuyCost, gameRegularRebuyTocDebit, gameDoubleBuyInCost, gameDoubleRebuyCost, gameDoubleRebuyTocDebit) values (9, 8, 7, 3, 6, 5, 4, 12, 10, 8)
+insert into tocconfig (kittyDebit, annualTocCost, quarterlyTocCost, quarterlyNumPayouts, regularBuyInCost, regularRebuyCost, regularRebuyTocDebit, doubleBuyInCost, doubleRebuyCost, doubleRebuyTocDebit) values (9, 8, 7, 3, 6, 5, 4, 12, 10, 8)
 
 create table if not exists season (id INT auto_increment, startDate DATE, endDate DATE, finalized BOOLEAN, numGames INT, numGamesPlayed INT, totalBuyIn INT, totalReBuy INT, totalAnnualToc INT, annualTocAmount INT, kittyPerGame INT, quarterlyTocAmount INT, quarterlyTocPayouts INT, lastCalculated DATE, primary key(id))
 

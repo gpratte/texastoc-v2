@@ -15,5 +15,5 @@ Feature: CRUD seasons
     Given season starts now
     When the season is created
     And the season is retrieved
-    Then the season should have four quaters
+    Then the season should have four quarters
 
