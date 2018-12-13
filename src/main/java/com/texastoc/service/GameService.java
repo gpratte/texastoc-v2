@@ -77,7 +77,9 @@ public class GameService {
     }
 
     private boolean isGameFirstOfMonth(LocalDate date) {
-        // TODO
-        return true;
+        if (date.getDayOfMonth() <= 7) {
+            return true;
+        }
+        return false;
     }
 }
