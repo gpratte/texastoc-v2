@@ -44,7 +44,7 @@ A lot of other refactoring, for example:
 * create season only requires the start date (the other values are read from config database)
 
 # Run tests
-For all test set the following environment variable:
+For cucumber tests set the following environment variable:
 * spring.profiles.active=test
 
 # Run Server with H2 database
