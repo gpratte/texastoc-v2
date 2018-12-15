@@ -38,6 +38,11 @@ Use TDD to code creating a new game.
 ## branch 08-cucumber-create-game
 Cucumber test to create a game after creating a season. 
 
+
+A lot of other refactoring, for example:
+* use config database for season/game setttings
+* create season only requires the start date (the other values are read from config database)
+
 # Run tests
 For all test set the following environment variable:
 * spring.profiles.active=test
