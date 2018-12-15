@@ -1,9 +1,17 @@
 Feature: CRUD Games
   Create, Retrieve, Update (start, end) and Delete games
 
-  Scenario: create a game
-    Given season starts now
-    And the game starts now
+  Scenario: create a simple game
+    Given the game starts now
     When the game is created
-    Then the game belongs to the first quarter
+    Then the game is normal
 
+  Scenario: create a double buy in game
+    Given the double buy in game starts now
+    When the game is created
+    Then the game is double buy in
+
+  Scenario: game requires transport supplies
+    Given the game supplies need to be moved
+    When the game is created
+    Then the game transport supplies flag is set

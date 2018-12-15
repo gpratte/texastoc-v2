@@ -84,7 +84,7 @@ public class GameServiceTest implements TestConstants {
                 .rebuyAddOnCost(GAME_REBUY)
                 .rebuyAddOnTocDebit(GAME_REBUY_TOC_DEBIT)
                 .doubleBuyInCost(GAME_DOUBLE_BUY_IN)
-                .doubleRebuyAddOnCost(GAME_DOUBLE_BUY_IN)
+                .doubleRebuyAddOnCost(GAME_DOUBLE_REBUY)
                 .doubleRebuyAddOnTocDebit(GAME_DOUBLE_REBUY_TOC_DEBIT)
                 .build());
 
@@ -124,10 +124,10 @@ public class GameServiceTest implements TestConstants {
 
         Assert.assertFalse("not finalized", actual.getFinalized());
 
-        if (expected.getDate().getDayOfMonth() <= 7) {
-            Assert.assertEquals("Buy in cost should be double the amount set for season", GAME_BUY_IN, actual.getBuyInCost() * 2);
-            Assert.assertEquals("Rebuy cost should be double the amount set for season", GAME_REBUY, actual.getRebuyAddOnCost() * 2);
-            Assert.assertEquals("Rebuy Toc debit cost should be double the amount set for season", GAME_REBUY_TOC_DEBIT, actual.getRebuyAddOnTocDebit() * 2);
+        if (expected.getDoubleBuyIn()) {
+            Assert.assertEquals("Buy in cost should be double the amount set for season", GAME_DOUBLE_BUY_IN, (int)actual.getBuyInCost());
+            Assert.assertEquals("Rebuy cost should be double the amount set for season", GAME_DOUBLE_REBUY, (int)actual.getRebuyAddOnCost());
+            Assert.assertEquals("Rebuy Toc debit cost should be double the amount set for season", GAME_DOUBLE_REBUY_TOC_DEBIT, (int)actual.getRebuyAddOnTocDebit());
         } else {
             Assert.assertEquals("Buy in cost should be amount set for season", GAME_BUY_IN, (int)actual.getBuyInCost());
             Assert.assertEquals("Rebuy cost should be amount set for season", GAME_REBUY, (int)actual.getRebuyAddOnCost());

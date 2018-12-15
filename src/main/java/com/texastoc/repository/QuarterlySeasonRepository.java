@@ -6,6 +6,7 @@ import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -68,7 +69,13 @@ public class QuarterlySeasonRepository {
 
     public QuarterlySeason getCurrent() {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        return jdbcTemplate.queryForObject("select * from quarterlyseason where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate", params, new QuarterlySeasonMapper());
+        List<QuarterlySeason> qSeasons = jdbcTemplate.query("select * from quarterlyseason where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate order by startDate desc", params, new QuarterlySeasonMapper());
+
+        if (qSeasons.size() > 0) {
+            return qSeasons.get(0);
+        }
+
+        throw new IncorrectResultSizeDataAccessException(0);
     }
 
     private static final class QuarterlySeasonMapper implements RowMapper<QuarterlySeason> {

@@ -1,6 +1,7 @@
 package com.texastoc.service;
 
 import com.texastoc.model.game.Game;
+import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.user.Player;
@@ -11,6 +12,7 @@ import com.texastoc.repository.SeasonRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class GameService {
@@ -43,14 +45,19 @@ public class GameService {
         gameToCreate.setHostId(game.getHostId());
         gameToCreate.setHostName(player.getName());
 
+        // Game setup variables
         gameToCreate.setDoubleBuyIn(game.getDoubleBuyIn());
         gameToCreate.setTransportRequired(game.getTransportRequired());
 
         Season currentSeason = seasonRepository.getCurrent();
         gameToCreate.setKittyCost(currentSeason.getKittyPerGame());
+        gameToCreate.setBuyInCost(currentSeason.getBuyInCost());
+        gameToCreate.setRebuyAddOnCost(currentSeason.getRebuyAddOnCost());
+        gameToCreate.setRebuyAddOnTocDebit(currentSeason.getRebuyAddOnTocDebit());
         gameToCreate.setAnnualTocCost(currentSeason.getTocPerGame());
         gameToCreate.setQuarterlyTocCost(currentSeason.getQuarterlyTocPerGame());
 
+        // Game time variables
         gameToCreate.setNumPlayers(0);
         gameToCreate.setKittyCollected(0);
         gameToCreate.setBuyInCollected(0);
@@ -58,7 +65,7 @@ public class GameService {
         gameToCreate.setAnnualTocCollected(0);
         gameToCreate.setQuarterlyTocCollected(0);
 
-        if (isGameFirstOfMonth(gameToCreate.getDate())) {
+        if (game.getDoubleBuyIn()) {
             gameToCreate.setBuyInCost(currentSeason.getDoubleBuyInCost());
             gameToCreate.setRebuyAddOnCost(currentSeason.getDoubleRebuyAddOnCost());
             gameToCreate.setRebuyAddOnTocDebit(currentSeason.getDoubleRebuyAddOnTocDebit());
@@ -76,10 +83,4 @@ public class GameService {
         return gameToCreate;
     }
 
-    private boolean isGameFirstOfMonth(LocalDate date) {
-        if (date.getDayOfMonth() <= 7) {
-            return true;
-        }
-        return false;
-    }
 }

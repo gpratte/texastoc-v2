@@ -39,26 +39,18 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     }
 
     protected Season createSeason() throws Exception {
-        return createSeason(LocalDate.now(), KITTY_PER_GAME, TOC_PER_GAME, QUARTERLY_TOC_PER_GAME, QUARTERLY_NUM_PAYOUTS);
+        return createSeason(LocalDate.now());
 
     }
 
-    protected Season createSeason(LocalDate start, int kittyPerGame, int tocPerGame, int quarterlyTocPerGame, int quarterlyNumPayouts) throws Exception {
-
-        Season season = Season.builder()
-            .start(LocalDate.now())
-            .kittyPerGame(10)
-            .tocPerGame(10)
-            .quarterlyTocPerGame(10)
-            .quarterlyNumPayouts(3)
-            .build();
+    protected Season createSeason(LocalDate start) throws Exception {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        String seasonAsJson = mapper.writeValueAsString(season);
+        String seasonAsJson = mapper.writeValueAsString(start);
         HttpEntity<String> entity = new HttpEntity<>(seasonAsJson, headers);
         System.out.println(seasonAsJson);
 
