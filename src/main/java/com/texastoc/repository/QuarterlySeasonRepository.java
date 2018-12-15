@@ -69,6 +69,8 @@ public class QuarterlySeasonRepository {
 
     public QuarterlySeason getCurrent() {
         MapSqlParameterSource params = new MapSqlParameterSource();
+        // This is a bit of a hack. Ideally there would only be one current season. But the tests create multiple quarterly seasons in the same date range. Hence get all the quarterly seasons that encompass the date and take the lastest one.
+
         List<QuarterlySeason> qSeasons = jdbcTemplate.query("select * from quarterlyseason where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate order by startDate desc", params, new QuarterlySeasonMapper());
 
         if (qSeasons.size() > 0) {
