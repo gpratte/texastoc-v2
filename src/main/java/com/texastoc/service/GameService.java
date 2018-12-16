@@ -91,7 +91,7 @@ public class GameService {
 
     public Game getGame(int id) {
         Game game = gameRepository.getById(id);
-        game.setPlayers(gamePlayerRepository.getByGameId(id));
+        game.setPlayers(gamePlayerRepository.selectByGameId(id));
         game.setPayouts(gamePayoutRepository.getByGameId(id));
         return game;
     }

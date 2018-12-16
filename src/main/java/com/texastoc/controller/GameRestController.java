@@ -34,4 +34,9 @@ public class GameRestController {
         return gameService.createGame(game);
     }
 
+    @GetMapping("/api/v2/games/{id}")
+    public Game getGame(@PathVariable("id") int id) {
+        return gameService.getGame(id);
+    }
+
 }

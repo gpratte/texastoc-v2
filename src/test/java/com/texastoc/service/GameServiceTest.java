@@ -170,7 +170,7 @@ public class GameServiceTest implements TestConstants {
                 .id(1)
                 .build());
 
-        Mockito.when(gamePlayerRepository.getByGameId(1))
+        Mockito.when(gamePlayerRepository.selectByGameId(1))
             .thenReturn(Collections.emptyList());
 
         Mockito.when(gamePayoutRepository.getByGameId(1))
@@ -184,7 +184,7 @@ public class GameServiceTest implements TestConstants {
         Assert.assertEquals("Game id should be 1", 1, (int)game.getId());
 
         // GamePlayer repository called once
-        Mockito.verify(gamePlayerRepository, Mockito.times(1)).getByGameId(1);
+        Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
         Assert.assertNotNull("GamePlayers returned should not be null", game.getPlayers());
         Assert.assertEquals("number of players should be 0", 0, game.getPlayers().size());
 
