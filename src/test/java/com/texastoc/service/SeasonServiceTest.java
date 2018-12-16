@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,21 @@ public class SeasonServiceTest implements TestConstants {
 
         // Assert
         SeasonTestUtil.assertCreatedSeason(start, actual);
+
+        // Season repository called once
+        Mockito.verify(seasonRepository, Mockito.times(1)).save(Mockito.any(Season.class));
+
+        // Season argument has same start time
+        ArgumentCaptor<Season> seasonArg = ArgumentCaptor.forClass(Season.class);
+        Mockito.verify(seasonRepository).save(seasonArg.capture());
+        Assert.assertEquals(start, seasonArg.getValue().getStart());
+
+        // Config repository called one times
+        Mockito.verify(configRepository, Mockito.times(1)).get();
+
+        // Quarterly season repository called four times
+        Mockito.verify(qSeasonRepository, Mockito.times(4)).save(Mockito.any(QuarterlySeason.class));
+
     }
 
     @Test
@@ -93,23 +109,33 @@ public class SeasonServiceTest implements TestConstants {
         List<Game> games = new LinkedList<>();
         // @formatter:off
         Game game = Game.builder()
-        .id(1)
-        .build();
+            .id(1)
+            .build();
         // @formatter:on
         games.add(game);
         expectedSeason.setGames(games);
 
-        Mockito.when(seasonRepository.get( ArgumentMatchers.eq(1) ))
+        Mockito.when(seasonRepository.get(1))
             .thenReturn(Season.builder()
                 .id(1)
                 .build());
 
-        Mockito.when(qSeasonRepository.getBySeasonId( ArgumentMatchers.eq(1) )).thenReturn(qSeasons);
+        Mockito.when(qSeasonRepository.getBySeasonId(1)).thenReturn(qSeasons);
 
-        Mockito.when(gameRepository.getBySeasonId( ArgumentMatchers.eq(1) )).thenReturn(games);
+        Mockito.when(gameRepository.getBySeasonId(1)).thenReturn(games);
 
         // Act
         Season actualSeason = service.getSeason(1);
+
+        // Season repository called once
+        Mockito.verify(seasonRepository, Mockito.times(1)).get(1);
+
+        // QuarterlySeason repository called once
+        Mockito.verify(qSeasonRepository, Mockito.times(1)).getBySeasonId(1);
+
+        // Game repository called once
+        Mockito.verify(gameRepository, Mockito.times(1)).getBySeasonId(1);
+
 
         // Assert
         Assert.assertNotNull("season return from get should not be null ", actualSeason);

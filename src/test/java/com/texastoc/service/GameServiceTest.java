@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,8 +51,9 @@ public class GameServiceTest implements TestConstants {
     public void testCreateGame() {
 
         // Arrange
+        LocalDate start = LocalDate.now();
         Game expected = Game.builder()
-            .date(LocalDate.now())
+            .date(start)
             .hostId(1)
             .transportRequired(true)
             .doubleBuyIn(true)
@@ -90,6 +92,18 @@ public class GameServiceTest implements TestConstants {
 
         // Act
         Game actual = service.createGame(expected);
+
+        // Game repository called once
+        Mockito.verify(gameRepository, Mockito.times(1)).save(Mockito.any(Game.class));
+
+        // Game argument match
+        ArgumentCaptor<Game> gameArg = ArgumentCaptor.forClass(Game.class);
+        Mockito.verify(gameRepository).save(gameArg.capture());
+        Assert.assertEquals(start, gameArg.getValue().getDate());
+        Assert.assertEquals(1, (int)gameArg.getValue().getHostId());
+        Assert.assertTrue(gameArg.getValue().getTransportRequired());
+        Assert.assertTrue(gameArg.getValue().getDoubleBuyIn());
+
 
         // Assert
         Assert.assertNotNull("new game should not be null", actual);

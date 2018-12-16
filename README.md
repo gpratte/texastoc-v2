@@ -1,48 +1,6 @@
 # texastoc-v2
 Refactor version 1. Version 2 will be spring boot and Angular.
 
-# Branches
-
-## branch 01-security-basic-auth
-Enable basic authentication and CORS 
-
-Module | Function
------------- | -------------
-TexastocApplication.java | Added the security configuration to require basic authentication and allow cors
-UserController.java | /user endpoint to return the principal
-
-## branch 02-create-season
-
-SeasonRestController POST endpoint to create a season. 
-
-New SeasonService.
-
-Junit test (followed TDD) for the controller that passes through to the service. No persistence yet.
-
-## branch 03-create-season-repository
-
-JdbcTemplate based SeasonRepository. Use the @MockBean for the SeasonServiceTest unit test.
-
-## branch 04-cucumber-create-season
-Added cucumber test. These tests bring up the server and use Spring's RestTempate to call the endpoint to create a season. Also uses an embedded H2 database. Uses a command line runner to create the season table.
-
-## branch 05-tdd-get-season
-Implement the GET method on the season service using TDD.
-
-## branch 06-cucumber-get-season
-Cucumber test to get a season after creating the season. Checks if there are four quarters.
-
-## branch 07-tdd-create-game
-Use TDD to code creating a new game.
-
-## branch 08-cucumber-create-game
-Cucumber test to create a game after creating a season. 
-
-
-A lot of other refactoring, for example:
-* use config database for season/game setttings
-* create season only requires the start date (the other values are read from config database)
-
 # Run tests
 For cucumber tests set the following environment variable:
 * spring.profiles.active=test
@@ -61,3 +19,13 @@ To connect to the H2 server
 * User Name `sa`
 * Leave the password empty
 * Click Connect
+
+# Branches
+
+The branch labels are prefixed in the order they were developer (e.g. 01-, 02, ...).
+
+See the readme for the branch for more information about it.
+
+## branch 09-better-mock-testing
+
+After reading up on mocking (mockito) I realized that my testing could be improved. Mostly by making sure the mock objects were called and the arguments to the mocks.
