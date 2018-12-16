@@ -26,6 +26,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 See the readme for the branch for more information about it.
 
-## branch 09-better-mock-testing
+## branch 10-get-game
 
-After reading up on mocking (mockito) I realized that my testing could be improved. Mostly by making sure the mock objects were called and the arguments to the mocks.
+Code the get game service using TDD and then test the GET game endpoint using cucumber.

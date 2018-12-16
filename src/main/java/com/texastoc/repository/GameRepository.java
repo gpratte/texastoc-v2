@@ -15,4 +15,8 @@ public class GameRepository {
     public int save(Game game) {
         return 0;
     }
+
+    public Game getById(int id) {
+        return null;
+    }
 }
