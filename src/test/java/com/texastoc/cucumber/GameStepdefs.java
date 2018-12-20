@@ -121,14 +121,21 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertTrue("transport required should be true", gameCreated.getTransportRequired());
     }
 
+    @Then("^the retrieved game is normal$")
+    public void the_retrieved_game_is_normal() throws Exception {
+        assertNewGame(gameRetrieved);
+    }
+
     @Then("^the retrieved game has no players$")
     public void the_retrieved_game_has_no_players() throws Exception {
-        assertNewGame(gameRetrieved);
+        Assert.assertEquals("num of game players should be zero", 0, (int)gameRetrieved.getNumPlayers());
+        Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
     }
 
 
     private void assertNewGame(Game game) throws Exception {
-        Assert.assertNotNull("game create should not be null", game);
+        Assert.assertNotNull("game created should not be null", game);
+        Assert.assertTrue("game id should be greater than 0", game.getId() > 0);
         Assert.assertTrue("game season id should be greater than 0", game.getSeasonId() > 0);
         Assert.assertTrue("game quarterly season id should be greater than 0", game.getQSeasonId() > 0);
         Assert.assertEquals("game quarter should be 1", 1, game.getQuarter().getValue());
