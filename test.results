@@ -1,0 +1,22 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building texastoc v2 integration 1.0
+[INFO] ------------------------------------------------------------------------
+Downloading: https://repo.maven.apache.org/maven2/com/texastoc/texastoc-application/1.0/texastoc-application-1.0.pom
+[WARNING] The POM for com.texastoc:texastoc-application:jar:1.0 is missing, no dependency information available
+Downloading: https://repo.maven.apache.org/maven2/com/texastoc/texastoc-application/1.0/texastoc-application-1.0.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.446 s
+[INFO] Finished at: 2018-12-20T12:52:23-06:00
+[INFO] Final Memory: 22M/224M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal on project texastoc-integration: Could not resolve dependencies for project com.texastoc:texastoc-integration:jar:1.0: Could not find artifact com.texastoc:texastoc-application:jar:1.0 in central (https://repo.maven.apache.org/maven2) -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/DependencyResolutionException
