@@ -15,3 +15,7 @@ create table game (id INT AUTO_INCREMENT, seasonId INT NOT NULL, qSeasonId INT N
 
 create table if not exists gameplayer (id INT auto_increment, playerId INT NOT NULL, gameId INT NOT NULL, name varchar(64) NOT NULL, place INT DEFAULT NULL, points INT DEFAULT NULL, finish INT DEFAULT NULL, knockedOut BOOLEAN DEFAULT FALSE, roundUpdates BOOLEAN DEFAULT FALSE, buyInCollected INT DEFAULT NULL, rebuyAddOnCollected INT DEFAULT NULL, annualTocCollected INT DEFAULT NULL, quarterlyTocCollected INT DEFAULT NULL, chop INT DEFAULT NULL, primary key (id))
 
+create table if not exists gamepayout (gameId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, chopAmount INT DEFAULT NULL, chopPercent DOUBLE DEFAULT NULL, PRIMARY KEY (gameId, place))
+
+
+

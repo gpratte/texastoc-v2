@@ -130,6 +130,9 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     public void the_retrieved_game_has_no_players() throws Exception {
         Assert.assertEquals("num of game players should be zero", 0, (int)gameRetrieved.getNumPlayers());
         Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
+        Assert.assertEquals("num of game players should be zero", 0, (int)gameRetrieved.getPlayers().size());
+        Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
+        Assert.assertEquals("num of game payouts should be zero", 0, (int)gameRetrieved.getPayouts().size());
     }
 
 

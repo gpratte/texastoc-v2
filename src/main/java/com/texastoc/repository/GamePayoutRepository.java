@@ -5,6 +5,7 @@ import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.user.Player;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -24,22 +25,41 @@ public class GamePayoutRepository {
 
 
     public List<GamePayout> getByGameId(int id) {
-        return null;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", id);
+
+        return jdbcTemplate
+            .query("select * from gamepayout where gameId = :id order by amount desc",
+                params,
+                new GamePayoutMapper());
     }
 
-    private static final class PlayerMapper implements RowMapper<Player> {
-        public Player mapRow(ResultSet rs, int rowNum) {
-            Player player = new Player();
+    private static final class GamePayoutMapper implements RowMapper<GamePayout> {
+        public GamePayout mapRow(ResultSet rs, int rowNum) {
+            GamePayout gamePayout = new GamePayout();
             try {
-                player.setId(rs.getInt("id"));
-                player.setFirstName(rs.getString("firstName"));
-                player.setLastName(rs.getString("lastName"));
-                player.setPhone(rs.getString("phone"));
-                player.setEmail(rs.getString("email"));
+                gamePayout.setGameId(rs.getInt("gameId"));
+                gamePayout.setPlace(rs.getInt("place"));
+
+                String temp = rs.getString("amount");
+                if (temp != null) {
+                    gamePayout.setAmount(Integer.valueOf(temp));
+                }
+
+                temp = rs.getString("chopAmount");
+                if (temp != null) {
+                    gamePayout.setChopAmount(Integer.valueOf(temp));
+                }
+
+                temp = rs.getString("chopPercent");
+                if (temp != null) {
+                    gamePayout.setChopPercent(Double.valueOf(temp));
+                }
             } catch (SQLException e) {
-                log.error("Problem mapping player", e);
+                log.error("Problem mapping GamePayout", e);
             }
-            return player;
+
+            return gamePayout;
         }
     }
 
