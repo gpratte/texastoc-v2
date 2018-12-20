@@ -9,19 +9,13 @@ import com.texastoc.repository.ConfigRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
-import com.texastoc.testutil.SeasonTestUtil;
-import org.apache.tomcat.jni.Local;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -67,7 +61,7 @@ public class SeasonServiceTest implements TestConstants {
         Season actual = service.createSeason(start);
 
         // Assert
-        SeasonTestUtil.assertCreatedSeason(start, actual);
+        assertCreatedSeason(start, actual);
 
         // Season repository called once
         Mockito.verify(seasonRepository, Mockito.times(1)).save(Mockito.any(Season.class));
@@ -154,4 +148,61 @@ public class SeasonServiceTest implements TestConstants {
         Assert.assertTrue(actualSeason.getGames().get(0).getId() > 0);
 
     }
+
+    // TODO also have this in cucumber test, need to make DRY
+    private void assertCreatedSeason(LocalDate start, Season actual) {
+        Assert.assertTrue(actual.getId() > 0);
+
+        Assert.assertEquals(start, actual.getStart());
+        Assert.assertEquals(start.plusYears(1).minusDays(1), actual.getEnd());
+
+        Assert.assertEquals(KITTY_PER_GAME, (int)actual.getKittyPerGame());
+        Assert.assertEquals(TOC_PER_GAME, (int)actual.getTocPerGame());
+        Assert.assertEquals(QUARTERLY_TOC_PER_GAME, (int)actual.getQuarterlyTocPerGame());
+        Assert.assertEquals(QUARTERLY_NUM_PAYOUTS, (int)actual.getQuarterlyNumPayouts());
+        Assert.assertEquals(GAME_BUY_IN, (int)actual.getBuyInCost());
+        Assert.assertEquals(GAME_REBUY, (int)actual.getRebuyAddOnCost());
+        Assert.assertEquals(GAME_REBUY_TOC_DEBIT, (int)actual.getRebuyAddOnTocDebit());
+        Assert.assertEquals(GAME_DOUBLE_BUY_IN, (int)actual.getDoubleBuyInCost());
+        Assert.assertEquals(GAME_DOUBLE_REBUY, (int)actual.getDoubleRebuyAddOnCost());
+        Assert.assertEquals(GAME_DOUBLE_REBUY_TOC_DEBIT, (int)actual.getDoubleRebuyAddOnTocDebit());
+
+        Assert.assertTrue(actual.getNumGames() == 52 || actual.getNumGames() == 53);
+        Assert.assertTrue(actual.getNumGamesPlayed() == 0);
+        Assert.assertTrue(actual.getBuyInCollected() == 0);
+        Assert.assertTrue(actual.getRebuyAddOnCollected() == 0);
+        Assert.assertTrue(actual.getTocCollected() == 0);
+
+        Assert.assertEquals(false, actual.getFinalized());
+        Assert.assertNull(actual.getLastCalculated());
+
+        Assert.assertTrue(actual.getPlayers() == null || actual.getPlayers().size() == 0);
+        Assert.assertTrue(actual.getPayouts() == null || actual.getPayouts().size() == 0);
+
+        Assert.assertEquals(4, actual.getQuarterlySeasons().size());
+
+        for (int i = 0; i < 4; ++i) {
+            QuarterlySeason qSeason = actual.getQuarterlySeasons().get(i);
+            Assert.assertTrue(qSeason.getId() > 0);
+            Assert.assertEquals((int) i + 1, (int) qSeason.getQuarter().getValue());
+
+            Assert.assertEquals((int) QUARTERLY_TOC_PER_GAME, (int) qSeason.getTocPerGame());
+            Assert.assertEquals((int) QUARTERLY_NUM_PAYOUTS, (int) qSeason.getNumPayouts());
+
+            Assert.assertTrue(qSeason.getTocCollected() == 0);
+
+            LocalDate qSeasonExpectedEnd = LocalDate.now().plusWeeks(13 * (i + 1)).minusDays(1);
+
+            Assert.assertEquals(start.plusWeeks(13 * (i)), qSeason.getStart());
+            Assert.assertEquals(qSeasonExpectedEnd, qSeason.getEnd());
+
+            Assert.assertTrue(qSeason.getNumGamesPlayed() == 0);
+            Assert.assertTrue(qSeason.getNumGames() == 13 || qSeason.getNumGames() == 14);
+
+            Assert.assertTrue(qSeason.getPlayers() == null || qSeason.getPlayers().size() == 0);
+            Assert.assertTrue(qSeason.getPayouts() == null || qSeason.getPayouts().size() == 0);
+
+        }
+    }
+
 }

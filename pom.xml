@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.cucumber</groupId>
@@ -93,6 +93,8 @@
 			</plugin>
 		</plugins>
 	</build>
+
+
 
 
 </project>

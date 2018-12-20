@@ -9,10 +9,6 @@ For cucumber tests set the following environment variable:
 Set the following environment variable:
 * spring.profiles.active=test
 
-Also comment out 
-`<scope>test</scope>`
-for the H2 dependency in the pom.xml
-
 To connect to the H2 server 
 * open `http://localhost:8080/h2-console` url. 
 * set the JDBC URL to `jdbc:h2:mem:testdb`
@@ -24,8 +20,10 @@ To connect to the H2 server
 
 The branch labels are prefixed in the order they were developer (e.g. 01-, 02, ...).
 
-See the readme for the branch for more information about it.
+Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 09-better-mock-testing
+## branch 11-application-integration-modules
 
-After reading up on mocking (mockito) I realized that my testing could be improved. Mostly by making sure the mock objects were called and the arguments to the mocks.
+Moved the application (and the JUnit tests) into an *application* module/folder.
+
+Moved the cucumber tests into an *integration* module/folder.
