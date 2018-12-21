@@ -1,7 +1,8 @@
 
-.mvn/
+# All target directories
+target/
 
-### IntelliJ IDEA ###
+# IntelliJ IDEA
 .idea
 *.iws
 *.iml

@@ -27,3 +27,7 @@ Choose the branch from the github list of branches to see the readme for that br
 Moved the application (and the JUnit tests) into an *application* module/folder.
 
 Moved the cucumber tests into an *integration* module/folder.
+
+Exposed the test classes from the application module to the integration module. See http://maven.apache.org/guides/mini/guide-attached-tests.html
+
+Created a *this-and-that* folder for non-code related files. Move the *architecture* folder and the *tools* folder into the *this-and-that* folder.

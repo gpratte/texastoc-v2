@@ -6,7 +6,7 @@
 	<groupId>com.texastoc</groupId>
 	<artifactId>texastoc-integration</artifactId>
 	<version>1.0</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>texastoc v2 integration</name>
 	<description>Texas Tournament Of Champions</description>
@@ -24,6 +24,16 @@
 			<version>1.0</version>
 			<type>jar</type>
 			<scope>provided</scope>
+		</dependency>
+        <!--Consume the test classes-->
+        <!--http://maven.apache.org/guides/mini/guide-attached-tests.html-->
+        <dependency>
+			<groupId>com.texastoc</groupId>
+			<artifactId>texastoc-application</artifactId>
+			<version>1.0</version>
+			<classifier>tests</classifier>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

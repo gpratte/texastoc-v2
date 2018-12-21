@@ -2,7 +2,7 @@ package com.texastoc.cucumber;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.texastoc.cucumber.TestConstants;
+import com.texastoc.TestConstants;
 import com.texastoc.model.season.Season;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
