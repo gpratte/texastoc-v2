@@ -23,6 +23,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
     private Game gameToCreate;
     private Game gameCreated;
+    private Game gameRetrieved;
     private HttpClientErrorException exception;
 
     @Given("^the game starts now$")
@@ -78,36 +79,25 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         gameCreated = restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
     }
 
+    @When("^the game is created and retrieved$")
+    public void the_game_is_created_and_retrieved() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        String gameToCreateAsJson = mapper.writeValueAsString(gameToCreate);
+        HttpEntity<String> entity = new HttpEntity<>(gameToCreateAsJson ,headers);
+        System.out.println(gameToCreateAsJson);
+        gameCreated = restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
+
+        gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameCreated.getId(),Game.class);
+    }
+
     @Then("^the game is normal$")
     public void the_game_is_normal() throws Exception {
-        Assert.assertNotNull("game create should not be null", gameCreated);
-        Assert.assertTrue("game season id should be greater than 0", gameCreated.getSeasonId() > 0);
-        Assert.assertTrue("game quarterly season id should be greater than 0", gameCreated.getQSeasonId() > 0);
-        Assert.assertEquals("game quarter should be 1", 1, gameCreated.getQuarter().getValue());
-
-        Assert.assertEquals("game host id should be " + BRIAN_BAKER_PLAYER_ID, BRIAN_BAKER_PLAYER_ID, (int)gameCreated.getHostId());
-        Assert.assertEquals("game host name should be " + BRIAN_BAKER_NAME, BRIAN_BAKER_NAME, gameCreated.getHostName());
-
-        // Game setup variables
-        Assert.assertFalse("double buy in should be false", gameCreated.getDoubleBuyIn());
-        Assert.assertFalse("transport required should be false", gameCreated.getTransportRequired());
-        Assert.assertEquals("kitty cost should come from season", KITTY_PER_GAME, (int)gameCreated.getKittyCost());
-        Assert.assertEquals("buy in cost should come from season", GAME_BUY_IN, (int)gameCreated.getBuyInCost());
-        Assert.assertEquals("re buy cost should come from season", GAME_REBUY, (int)gameCreated.getRebuyAddOnCost());
-        Assert.assertEquals("re buy toc debit cost should come from season", GAME_REBUY_TOC_DEBIT, (int)gameCreated.getRebuyAddOnTocDebit());
-        Assert.assertEquals("toc cost should come from season", TOC_PER_GAME, (int)gameCreated.getAnnualTocCost());
-        Assert.assertEquals("quarterly toc cost should come from season", QUARTERLY_TOC_PER_GAME, (int)gameCreated.getQuarterlyTocCost());
-
-        // Game time variables
-        Assert.assertEquals("game number players should be zero", 0, (int)gameCreated.getNumPlayers());
-        Assert.assertEquals("game kitty collected should be zero", 0, (int)gameCreated.getKittyCollected());
-        Assert.assertEquals("game buy in should be zero", 0, (int)gameCreated.getBuyInCollected());
-        Assert.assertEquals("game rebuy should be zero", 0, (int)gameCreated.getRebuyAddOnCollected());
-        Assert.assertEquals("game annual toc collected should be zero", 0, (int)gameCreated.getAnnualTocCollected());
-        Assert.assertEquals("game quarterly toc collected should be zero", 0, (int)gameCreated.getQuarterlyTocCollected());
-        Assert.assertFalse("not finalized", gameCreated.getFinalized());
-        Assert.assertNull("last calculated should be null", gameCreated.getLastCalculated());
-        Assert.assertNull("started should be null", gameCreated.getStarted());
+        assertNewGame(gameCreated);
     }
 
     @Then("^the game is double buy in$")
@@ -129,6 +119,53 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         // Game setup variables
         Assert.assertFalse("double buy in should be false", gameCreated.getDoubleBuyIn());
         Assert.assertTrue("transport required should be true", gameCreated.getTransportRequired());
+    }
+
+    @Then("^the retrieved game is normal$")
+    public void the_retrieved_game_is_normal() throws Exception {
+        assertNewGame(gameRetrieved);
+    }
+
+    @Then("^the retrieved game has no players$")
+    public void the_retrieved_game_has_no_players() throws Exception {
+        Assert.assertEquals("num of game players should be zero", 0, (int)gameRetrieved.getNumPlayers());
+        Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
+        Assert.assertEquals("num of game players should be zero", 0, (int)gameRetrieved.getPlayers().size());
+        Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
+        Assert.assertEquals("num of game payouts should be zero", 0, (int)gameRetrieved.getPayouts().size());
+    }
+
+
+    private void assertNewGame(Game game) throws Exception {
+        Assert.assertNotNull("game created should not be null", game);
+        Assert.assertTrue("game id should be greater than 0", game.getId() > 0);
+        Assert.assertTrue("game season id should be greater than 0", game.getSeasonId() > 0);
+        Assert.assertTrue("game quarterly season id should be greater than 0", game.getQSeasonId() > 0);
+        Assert.assertEquals("game quarter should be 1", 1, game.getQuarter().getValue());
+
+        Assert.assertEquals("game host id should be " + BRIAN_BAKER_PLAYER_ID, BRIAN_BAKER_PLAYER_ID, (int)game.getHostId());
+        Assert.assertEquals("game host name should be " + BRIAN_BAKER_NAME, BRIAN_BAKER_NAME, game.getHostName());
+
+        // Game setup variables
+        Assert.assertFalse("double buy in should be false", game.getDoubleBuyIn());
+        Assert.assertFalse("transport required should be false", game.getTransportRequired());
+        Assert.assertEquals("kitty cost should come from season", KITTY_PER_GAME, (int)game.getKittyCost());
+        Assert.assertEquals("buy in cost should come from season", GAME_BUY_IN, (int)game.getBuyInCost());
+        Assert.assertEquals("re buy cost should come from season", GAME_REBUY, (int)game.getRebuyAddOnCost());
+        Assert.assertEquals("re buy toc debit cost should come from season", GAME_REBUY_TOC_DEBIT, (int)game.getRebuyAddOnTocDebit());
+        Assert.assertEquals("toc cost should come from season", TOC_PER_GAME, (int)game.getAnnualTocCost());
+        Assert.assertEquals("quarterly toc cost should come from season", QUARTERLY_TOC_PER_GAME, (int)game.getQuarterlyTocCost());
+
+        // Game time variables
+        Assert.assertEquals("game number players should be zero", 0, (int)game.getNumPlayers());
+        Assert.assertEquals("game kitty collected should be zero", 0, (int)game.getKittyCollected());
+        Assert.assertEquals("game buy in should be zero", 0, (int)game.getBuyInCollected());
+        Assert.assertEquals("game rebuy should be zero", 0, (int)game.getRebuyAddOnCollected());
+        Assert.assertEquals("game annual toc collected should be zero", 0, (int)game.getAnnualTocCollected());
+        Assert.assertEquals("game quarterly toc collected should be zero", 0, (int)game.getQuarterlyTocCollected());
+        Assert.assertFalse("not finalized", game.getFinalized());
+        Assert.assertNull("last calculated should be null", game.getLastCalculated());
+        Assert.assertNull("started should be null", game.getStarted());
     }
 
 }

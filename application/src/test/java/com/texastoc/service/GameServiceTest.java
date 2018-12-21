@@ -2,14 +2,18 @@ package com.texastoc.service;
 
 import com.texastoc.TestConstants;
 import com.texastoc.model.game.Game;
+import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.user.Player;
+import com.texastoc.repository.GamePayoutRepository;
+import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
+import com.texastoc.TestUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,22 +21,31 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.notNull;
 
 @RunWith(SpringRunner.class)
 public class GameServiceTest implements TestConstants {
 
-    private GameService service;
+    private GameService gameService;
 
     @MockBean
     private GameRepository gameRepository;
     @MockBean
     private PlayerRepository playerRepository;
+    @MockBean
+    private GamePlayerRepository gamePlayerRepository;
+    @MockBean
+    private GamePayoutRepository gamePayoutRepository;
     @MockBean
     private SeasonRepository seasonRepository;
     @MockBean
@@ -40,7 +53,7 @@ public class GameServiceTest implements TestConstants {
 
     @Before
     public void before() {
-        service = new GameService(gameRepository, playerRepository, seasonRepository, qSeasonRepository);
+        gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository);
     }
 
     @Test
@@ -87,7 +100,7 @@ public class GameServiceTest implements TestConstants {
                 .build());
 
         // Act
-        Game actual = service.createGame(expected);
+        Game actual = gameService.createGame(expected);
 
         // Game repository called once
         Mockito.verify(gameRepository, Mockito.times(1)).save(Mockito.any(Game.class));
@@ -143,6 +156,43 @@ public class GameServiceTest implements TestConstants {
             Assert.assertEquals("Rebuy cost should be amount set for season", GAME_REBUY, (int)actual.getRebuyAddOnCost());
             Assert.assertEquals("Rebuy Toc debit cost should be amount set for season", GAME_REBUY_TOC_DEBIT, (int)actual.getRebuyAddOnTocDebit());
         }
+    }
+
+    /**
+     * Somewhat of an anorexic test since there are no players but then again
+     * the game service code is just a pass through to the repositories.
+     */
+    @Test
+    public void getGameNoPlayers() {
+
+        Mockito.when(gameRepository.getById(1))
+            .thenReturn(Game.builder()
+                .id(1)
+                .build());
+
+        Mockito.when(gamePlayerRepository.selectByGameId(1))
+            .thenReturn(Collections.emptyList());
+
+        Mockito.when(gamePayoutRepository.getByGameId(1))
+            .thenReturn(Collections.emptyList());
+
+        Game game = gameService.getGame(1);
+
+        // Game repository called once
+        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+        Assert.assertNotNull("Game returned should not be null", game);
+        Assert.assertEquals("Game id should be 1", 1, (int)game.getId());
+
+        // GamePlayer repository called once
+        Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
+        Assert.assertNotNull("GamePlayers returned should not be null", game.getPlayers());
+        Assert.assertEquals("number of players should be 0", 0, game.getPlayers().size());
+
+        // GamePayout repository called once
+        Mockito.verify(gamePayoutRepository, Mockito.times(1)).getByGameId(1);
+        Assert.assertNotNull("GamePayouts returned should not be null", game.getPayouts());
+        Assert.assertEquals("number of payouts should be 0", 0, game.getPayouts().size());
+
     }
 
 }

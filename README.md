@@ -32,12 +32,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 11-application-integration-modules
+## branch 12-resurrect-get-game
 
-Moved the application (and the JUnit tests) into an *application* module/folder.
-
-Moved the cucumber tests into an *integration* module/folder.
-
-Exposed the test classes from the application module to the integration module. See http://maven.apache.org/guides/mini/guide-attached-tests.html
-
-Created a *this-and-that* folder for non-code related files. Move the *architecture* folder and the *tools* folder into the *this-and-that* folder.
+Looks like branch 10 never got merged to master. Since branch 11 was a restructuring to go from one module to two, I had to hand merge branch 10 into 11 to get this branch.

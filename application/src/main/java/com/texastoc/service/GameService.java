@@ -5,6 +5,8 @@ import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.user.Player;
+import com.texastoc.repository.GamePayoutRepository;
+import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
@@ -19,12 +21,16 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
+    private final GamePlayerRepository gamePlayerRepository;
+    private final GamePayoutRepository gamePayoutRepository;
     private final SeasonRepository seasonRepository;
     private final QuarterlySeasonRepository qSeasonRepository;
 
-    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository) {
+    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
+        this.gamePlayerRepository = gamePlayerRepository;
+        this.gamePayoutRepository = gamePayoutRepository;
         this.seasonRepository = seasonRepository;
         this.qSeasonRepository = qSeasonRepository;
     }
@@ -83,4 +89,10 @@ public class GameService {
         return gameToCreate;
     }
 
+    public Game getGame(int id) {
+        Game game = gameRepository.getById(id);
+        game.setPlayers(gamePlayerRepository.selectByGameId(id));
+        game.setPayouts(gamePayoutRepository.getByGameId(id));
+        return game;
+    }
 }

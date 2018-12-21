@@ -11,13 +11,16 @@ public class GamePlayer {
 
     private int id;
     private int playerId;
+    private int gameId;
     private String name;
-    private Integer place;
     private Integer points;
-    private Integer buyIn;
-    private Integer reBuy;
-    private Integer annualToc;
-    private Integer quarterlyToc;
+    private Integer finish;
+    private Boolean knockedOut;
+    private Boolean roundUpdates;
+    private Integer buyInCollected;
+    private Integer rebuyAddOnCollected;
+    private Integer annualTocCollected;
+    private Integer quarterlyTocCollected;
     private Integer chop;
 
 }

@@ -149,6 +149,4 @@ public class SeasonServiceTest implements TestConstants {
         Assert.assertTrue(actualSeason.getGames().get(0).getId() > 0);
 
     }
-
-
 }

@@ -3,7 +3,6 @@ package com.texastoc.cucumber;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.texastoc.TestUtils;
-import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -41,7 +40,6 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         String seasonToCreateAsJson = mapper.writeValueAsString(start);
-        System.out.println("!!!\n!!!\n!!!\n!!!\n!!!\n " + seasonToCreateAsJson);
         HttpEntity<String> entity = new HttpEntity<>(seasonToCreateAsJson ,headers);
         System.out.println(seasonToCreateAsJson);
 

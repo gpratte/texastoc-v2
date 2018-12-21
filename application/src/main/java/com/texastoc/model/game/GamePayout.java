@@ -9,6 +9,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class GamePayout {
 
+    private int gameId;
     private int place;
-    private int amount;
+    private Integer amount;
+    private Integer chopAmount;
+    private Double chopPercent;
 }
