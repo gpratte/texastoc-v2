@@ -3,7 +3,9 @@ package com.texastoc.cucumber;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.texastoc.TestUtils;
+import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Season;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -16,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Ignore
 public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
@@ -23,8 +27,17 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
     private LocalDate start;
     private Season seasonCreated;
     private Season seasonRetrieved;
+    private List<Game> games = new ArrayList<>();
     private HttpClientErrorException exception;
 
+    @Before
+    public void before() {
+        start = null;
+        seasonCreated = null;
+        seasonRetrieved = null;
+        exception = null;
+        games.clear();
+    }
 
     @Given("^season starts now$")
     public void season_starts_now() throws Exception {
@@ -43,12 +56,25 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
         HttpEntity<String> entity = new HttpEntity<>(seasonToCreateAsJson ,headers);
         System.out.println(seasonToCreateAsJson);
 
+        seasonCreated = restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
+    }
+
+    @When("^attempting to create the season$")
+    public void attempting_to_create_the_season() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String seasonToCreateAsJson = mapper.writeValueAsString(start);
+        HttpEntity<String> entity = new HttpEntity<>(seasonToCreateAsJson ,headers);
+        System.out.println(seasonToCreateAsJson);
+
         try {
             seasonCreated = restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
         } catch (HttpClientErrorException e) {
             exception = e;
         }
-
     }
 
     @Then("^the start date should be now$")
@@ -69,8 +95,28 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 
     @And("^the season is retrieved$")
     public void the_season_is_retrieved() throws Exception {
-        System.out.println("!!! before calling endpoint " + seasonCreated.getId());
         seasonRetrieved = restTemplate.getForObject(endpoint() + "/seasons/" + seasonCreated.getId(), Season.class);
+    }
+
+    @And("^a game is created$")
+    public void a_game_is_created() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Game gameToCreate = Game.builder()
+            .date(LocalDate.now())
+            .hostId(1)
+            .doubleBuyIn(false)
+            .transportRequired(false)
+            .build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String gameToCreateAsJson = mapper.writeValueAsString(gameToCreate);
+        HttpEntity<String> entity = new HttpEntity<>(gameToCreateAsJson ,headers);
+
+        Game gameCreated = restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
+        games.add(gameCreated);
     }
 
     @Then("^the season should have four quarters$")
@@ -78,6 +124,16 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertNotNull("season retrieved should not be null", seasonRetrieved);
         Assert.assertNotNull("season retrieved quarterly seasons should not be null", seasonRetrieved.getQuarterlySeasons());
         Assert.assertEquals(4, seasonRetrieved.getQuarterlySeasons().size());
+        Assert.assertNotNull("games should not be null", seasonRetrieved.getGames());
+        Assert.assertEquals("season should have 0 games", 0, seasonRetrieved.getGames().size());
+    }
+
+    @Then("^the season should have one game and no players$")
+    public void the_season_should_have_one_game_and_no_players() throws Exception {
+        Assert.assertNotNull("season retrieved should not be null", seasonRetrieved);
+        Assert.assertNotNull("season retrieved quarterly seasons should not be null", seasonRetrieved.getQuarterlySeasons());
+        Assert.assertNotNull("games should not be null", seasonRetrieved.getGames());
+        Assert.assertEquals("season should have 1 game", 1, seasonRetrieved.getGames().size());
     }
 
 }

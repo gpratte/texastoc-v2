@@ -8,7 +8,7 @@ Feature: CRUD seasons
 
   Scenario: validate season start required
     Given season start date is missing
-    When the season is created
+    When attempting to create the season
     Then response is "400 BAD_REQUEST"
 
   Scenario: get a season with no games
@@ -17,3 +17,9 @@ Feature: CRUD seasons
     And the season is retrieved
     Then the season should have four quarters
 
+  Scenario: get a season with one game and no players
+    Given season starts now
+    When the season is created
+    And a game is created
+    And the season is retrieved
+    Then the season should have one game and no players

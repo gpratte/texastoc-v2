@@ -32,6 +32,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 12-resurrect-get-game
+## branch 13-get-season-one-game-no-players
 
-Looks like branch 10 never got merged to master. Since branch 11 was a restructuring to go from one module to two, I had to hand merge branch 10 into 11 to get this branch.
+Already have JUnit test to get a season from the SeasonService. So for this branch test the GET a season endpoint when the season has one game and no players using cucumber.

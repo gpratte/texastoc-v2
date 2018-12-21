@@ -77,8 +77,8 @@ public class SeasonRepository {
 
     public Season getCurrent() {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        // This is a bit of a hack. Ideally there would only be one current season. But the tests create multiple seasons in the same date range. Hence get all the seasons that encompass the date and take the lastest one.
-        List<Season> seasons = jdbcTemplate.query("select * from season where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate order by startDate desc", params, new SeasonMapper());
+        // This is a bit of a hack. Ideally there would only be one current season. But the tests create multiple seasons in the same date range. Hence get all the seasons that encompass the date and take the lastest one (the one with the highest id).
+        List<Season> seasons = jdbcTemplate.query("select * from season where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate order by id desc", params, new SeasonMapper());
 
         if (seasons.size() > 0) {
             return seasons.get(0);

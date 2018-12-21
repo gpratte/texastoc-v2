@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -23,10 +24,6 @@ public class GameRepository {
 
     public GameRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public List<Game> getBySeasonId(int seasonId) {
-        return null;
     }
 
     private static final String INSERT_SQL =
@@ -84,6 +81,21 @@ public class GameRepository {
         }
 
         return game;
+    }
+
+    public List<Game> getBySeasonId(int seasonId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("seasonId", seasonId);
+
+        List<Game> games = Collections.EMPTY_LIST;
+        try {
+            games = jdbcTemplate
+                .query("select * from game where seasonId = :seasonId", params, new GameMapper());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return games;
     }
 
     private static final class GameMapper implements RowMapper<Game> {
