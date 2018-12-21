@@ -2,12 +2,22 @@
 Refactor version 1. Version 2 will be spring boot and Angular.
 
 # Run tests
-For cucumber tests set the following environment variable:
+In IntelliJ the JUnit tests in the application module run with no extra configuration.
+
+In IntelliJ the cucumber tests in the integration module require the following spring profile to be set:
 * spring.profiles.active=test
 
+To run all the tests from the command line type:
+* mvn -Dspring.profiles.active=true test
+
+Setting the **spring.profiles.active=true** results in creating an H2 database and runs the statements in the *create_toc_schema.sql* file.
+
+
 # Run Server with H2 database
-Set the following environment variable:
+Set the following to run the server with an H2 database with all tables created:
 * spring.profiles.active=test
+
+Setting the **spring.profiles.active=true** results in creating an H2 database and runs the statements in the *create_toc_schema.sql* file.
 
 To connect to the H2 server 
 * open `http://localhost:8080/h2-console` url. 
