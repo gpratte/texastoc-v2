@@ -195,4 +195,54 @@ public class GameServiceTest implements TestConstants {
 
     }
 
+    @Test
+    public void testCreateGamePlayer() {
+
+        Mockito.when(gamePlayerRepository.save((GamePlayer) notNull())).thenReturn(1);
+        Mockito.doNothing().when(gameRepository).update((Game) notNull());
+
+        Game game = Game.builder()
+            .numPlayers(0)
+            .build();
+        Mockito.when(gameRepository.getById(1)).thenReturn(game);
+
+        String playerName = Long.toString(System.currentTimeMillis());
+
+        GamePlayer gamePlayerToCreate = GamePlayer.builder()
+            .gameId(1)
+            .playerId(1)
+            .name(playerName)
+            .build();
+
+        GamePlayer gamePlayerCreated = gameService.createGamePlayer(gamePlayerToCreate);
+
+        Mockito.verify(gamePlayerRepository, Mockito.times(1)).save(Mockito.any(GamePlayer.class));
+        ArgumentCaptor<GamePlayer> gamePlayerArg = ArgumentCaptor.forClass(GamePlayer.class);
+        Mockito.verify(gamePlayerRepository).save(gamePlayerArg.capture());
+        Assert.assertEquals(1, gamePlayerArg.getValue().getGameId());
+        Assert.assertEquals(1, gamePlayerArg.getValue().getPlayerId());
+        Assert.assertEquals(playerName, gamePlayerArg.getValue().getName());
+
+        Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
+        ArgumentCaptor<Game> gameArg = ArgumentCaptor.forClass(Game.class);
+        Mockito.verify(gameRepository).update(gameArg.capture());
+        Assert.assertEquals("should update num players to 1", 1, (int)gameArg.getValue().getNumPlayers());
+
+        Assert.assertNotNull("game player created should not be null", gamePlayerCreated);
+        Assert.assertEquals("game player id should be 1", 1, gamePlayerCreated.getGameId());
+        Assert.assertEquals("game player id should be 1", 1, gamePlayerCreated.getPlayerId());
+        Assert.assertEquals("game player name should be " + playerName, playerName, gamePlayerCreated.getName());
+
+        Assert.assertNull("game player points should be null", gamePlayerCreated.getPoints());
+
+        Assert.assertNull("game player finish should be null", gamePlayerCreated.getFinish());
+        Assert.assertNull("game player knocked out should be null", gamePlayerCreated.getKnockedOut());
+        Assert.assertNull("game player round updates should be null", gamePlayerCreated.getRoundUpdates());
+        Assert.assertNull("game player buy-in collected should be null", gamePlayerCreated.getBuyInCollected());
+        Assert.assertNull("game player rebuy add on collected should be null", gamePlayerCreated.getRebuyAddOnCollected());
+        Assert.assertNull("game player annual toc collected should be null", gamePlayerCreated.getAnnualTocCollected());
+        Assert.assertNull("game player quarterly toc collected should be null", gamePlayerCreated.getQuarterlyTocCollected());
+        Assert.assertNull("game player chop should be null", gamePlayerCreated.getChop());
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.texastoc.repository;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +11,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,6 +68,50 @@ public class GameRepository {
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
 
         return keyHolder.getKey().intValue();
+    }
+
+    private static final String UPDATE_SQL = "UPDATE game set " +
+        "seasonId=:seasonId, qSeasonId=:qSeasonId, hostId=:hostId, " +
+        "hostName=:hostName, gameDate=:gameDate, quarter=:quarter, " +
+        "doubleBuyIn=:doubleBuyIn, transportRequired=:transportRequired, " +
+        "kittyCost=:kittyCost, buyInCost=:buyInCost, rebuyAddOnCost=:rebuyAddOnCost, " +
+        "rebuyAddOnTocDebit=:rebuyAddOnTocDebit, annualTocCost=:annualTocCost, " +
+        "quarterlyTocCost=:quarterlyTocCost, started=:started, numPlayers=:numPlayers, " +
+        "kittyCollected=:kittyCollected, buyInCollected=:buyInCollected, " +
+        "rebuyAddOnCollected=:rebuyAddOnCollected, annualTocCollected=:annualTocCollected, " +
+        "quarterlyTocCollected=:quarterlyTocCollected, finalized=:finalized, " +
+        "lastCalculated=:lastCalculated " +
+        " where id=:id";
+
+    public void update(final Game game) {
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("seasonId", game.getSeasonId());
+        params.addValue("qSeasonId", game.getQSeasonId());
+        params.addValue("hostId", game.getHostId());
+        params.addValue("hostName", game.getHostName());
+        params.addValue("gameDate", game.getDate());
+        params.addValue("quarter", game.getQuarter().getValue());
+        params.addValue("doubleBuyIn", game.getDoubleBuyIn());
+        params.addValue("transportRequired", game.getTransportRequired());
+        params.addValue("kittyCost", game.getKittyCost());
+        params.addValue("buyInCost", game.getBuyInCost());
+        params.addValue("rebuyAddOnCost", game.getRebuyAddOnCost());
+        params.addValue("rebuyAddOnTocDebit", game.getRebuyAddOnTocDebit());
+        params.addValue("annualTocCost", game.getAnnualTocCost());
+        params.addValue("quarterlyTocCost", game.getQuarterlyTocCost());
+        params.addValue("started", game.getStarted() == null ? null : Timestamp.valueOf(game.getStarted()));
+        params.addValue("numPlayers", game.getNumPlayers());
+        params.addValue("kittyCollected", game.getKittyCollected());
+        params.addValue("buyInCollected", game.getBuyInCollected());
+        params.addValue("rebuyAddOnCollected", game.getRebuyAddOnCollected());
+        params.addValue("annualTocCollected", game.getAnnualTocCollected());
+        params.addValue("quarterlyTocCollected", game.getQuarterlyTocCollected());
+        params.addValue("finalized", game.getFinalized());
+        params.addValue("lastCalculated", game.getLastCalculated());
+        params.addValue("id", game.getId());
+
+        jdbcTemplate.update(UPDATE_SQL, params);
     }
 
 

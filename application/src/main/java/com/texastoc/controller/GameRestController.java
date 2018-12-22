@@ -39,4 +39,9 @@ public class GameRestController {
         return gameService.getGame(id);
     }
 
+    @PostMapping("/api/v2/games/players")
+    public GamePlayer createGamePlayer(@RequestBody @Valid GamePlayer gamePlayer) {
+        return gameService.createGamePlayer(gamePlayer);
+    }
+
 }

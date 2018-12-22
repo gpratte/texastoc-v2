@@ -1,6 +1,7 @@
 package com.texastoc.service;
 
 import com.texastoc.model.game.Game;
+import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
@@ -94,5 +95,17 @@ public class GameService {
         game.setPlayers(gamePlayerRepository.selectByGameId(id));
         game.setPayouts(gamePayoutRepository.getByGameId(id));
         return game;
+    }
+
+    public GamePlayer createGamePlayer(GamePlayer gamePlayer) {
+        int id = gamePlayerRepository.save(gamePlayer);
+        gamePlayer.setId(id);
+
+        Game game = gameRepository.getById(gamePlayer.getGameId());
+        int numPlayers = game.getNumPlayers();
+        game.setNumPlayers(++numPlayers);
+        gameRepository.update(game);
+
+        return gamePlayer;
     }
 }

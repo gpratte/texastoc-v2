@@ -32,6 +32,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 13-get-season-one-game-no-players
+## branch 14-game-with-one-player-no-buy-in
 
-Already have JUnit test to get a season from the SeasonService. So for this branch test the GET a season endpoint when the season has one game and no players using cucumber.
+No buy-in means no payouts.

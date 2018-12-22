@@ -2,10 +2,14 @@ package com.texastoc.cucumber;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.texastoc.TestConstants;
 import com.texastoc.model.game.Game;
+import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import cucumber.api.PendingException;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -17,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Ignore
 public class GameStepdefs extends SpringBootBaseIntegrationTest {
@@ -24,7 +30,18 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     private Game gameToCreate;
     private Game gameCreated;
     private Game gameRetrieved;
+    private List<GamePlayer> gamePlayers = new ArrayList<>();
     private HttpClientErrorException exception;
+
+    @Before
+    public void before() {
+        gameToCreate = null;
+        gameCreated = null;
+        gameRetrieved = null;
+        exception = null;
+        gamePlayers.clear();
+    }
+
 
     @Given("^the game starts now$")
     public void the_game_starts_now() throws Exception {
@@ -95,6 +112,33 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameCreated.getId(),Game.class);
     }
 
+    @When("^the game is retrieved$")
+    public void the_game_is_retrieved() throws Exception {
+        gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameCreated.getId(),Game.class);
+    }
+
+    @And("^a player is added$")
+    public void a_player_is_added() throws Exception {
+
+        GamePlayer gamePlayerToCreate = GamePlayer.builder()
+            .playerId(BRIAN_BAKER_PLAYER_ID)
+            .gameId(gameCreated.getId())
+            .name(TestConstants.BRIAN_BAKER_NAME)
+            .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String gamePlayerToCreateAsJson = mapper.writeValueAsString(gamePlayerToCreate);
+        HttpEntity<String> entity = new HttpEntity<>(gamePlayerToCreateAsJson ,headers);
+        System.out.println(gamePlayerToCreateAsJson);
+
+        GamePlayer gamePlayerCreated = restTemplate.postForObject(endpoint() + "/games/players", entity, GamePlayer.class);
+        gamePlayers.add(gamePlayerCreated);
+    }
+
     @Then("^the game is normal$")
     public void the_game_is_normal() throws Exception {
         assertNewGame(gameCreated);
@@ -128,13 +172,26 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
     @Then("^the retrieved game has no players$")
     public void the_retrieved_game_has_no_players() throws Exception {
-        Assert.assertEquals("num of game players should be zero", 0, (int)gameRetrieved.getNumPlayers());
         Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
+        Assert.assertEquals("num of game players should be zero", 0, (int)gameRetrieved.getNumPlayers());
         Assert.assertEquals("num of game players should be zero", 0, (int)gameRetrieved.getPlayers().size());
         Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
         Assert.assertEquals("num of game payouts should be zero", 0, (int)gameRetrieved.getPayouts().size());
     }
 
+    @Then("^the retrieved game has one player no buy-in$")
+    public void the_retrieved_game_has_one_player_no_buy_in() throws Exception {
+        Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
+        Assert.assertEquals("num of game players should be 1", 1, (int)gameRetrieved.getNumPlayers());
+        Assert.assertEquals("num of game players should be 1", 1, (int)gameRetrieved.getPlayers().size());
+        Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
+        Assert.assertEquals("num of game payouts should be zero", 0, (int)gameRetrieved.getPayouts().size());
+
+        GamePlayer gamePlayer = gameRetrieved.getPlayers().get(0);
+        Assert.assertEquals("game player created game id should be " + gamePlayer.getGameId(), gamePlayer.getGameId(), this.gamePlayers.get(0).getGameId());
+        Assert.assertEquals("game player created player id should be " + gamePlayer.getPlayerId(), gamePlayer.getPlayerId(), this.gamePlayers.get(0).getPlayerId());
+        Assert.assertEquals("game player created name should be " + gamePlayer.getName(), gamePlayer.getName(), this.gamePlayers.get(0).getName());
+    }
 
     private void assertNewGame(Game game) throws Exception {
         Assert.assertNotNull("game created should not be null", game);
@@ -157,7 +214,6 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("quarterly toc cost should come from season", QUARTERLY_TOC_PER_GAME, (int)game.getQuarterlyTocCost());
 
         // Game time variables
-        Assert.assertEquals("game number players should be zero", 0, (int)game.getNumPlayers());
         Assert.assertEquals("game kitty collected should be zero", 0, (int)game.getKittyCollected());
         Assert.assertEquals("game buy in should be zero", 0, (int)game.getBuyInCollected());
         Assert.assertEquals("game rebuy should be zero", 0, (int)game.getRebuyAddOnCollected());
