@@ -34,4 +34,6 @@ Choose the branch from the github list of branches to see the readme for that br
 
 ## branch 14-game-with-one-player-no-buy-in
 
+Add a player to a game with no buy-in.
+
 No buy-in means no payouts.
