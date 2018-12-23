@@ -39,6 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 15-game-calculator
+## branch 16-payout-calculator
 
-GameCalculator component to calculate the game numbers (e.g. buy-in amount, toc amount, prize pot, ...). Completely done using TDD.
+PayoutCalculator component to calculate the payouts. Completely done using TDD.
