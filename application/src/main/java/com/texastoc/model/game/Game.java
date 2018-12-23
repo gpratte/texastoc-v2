@@ -55,6 +55,11 @@ public class Game {
     private Integer rebuyAddOnCollected;
     private Integer annualTocCollected;
     private Integer quarterlyTocCollected;
+    // Rebuy that goes to annual TOC
+    private Integer rebuyAddOnTocCollected;
+    private Integer totalCollected;
+    private Integer totalTocCollected;
+    private Integer prizePot;
     private Boolean finalized;
 
     private LocalDateTime lastCalculated;

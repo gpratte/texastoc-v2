@@ -69,7 +69,7 @@ public class GameCalculatorTest implements TestConstants {
 
         Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
-        Mockito.verify(configRepository, Mockito.times(1)).get();
+        Mockito.verify(configRepository, Mockito.times(0)).get();
         Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
 
         Assert.assertNotNull("game calculated should not be null", gameCalculated);
@@ -81,6 +81,11 @@ public class GameCalculatorTest implements TestConstants {
         Assert.assertEquals("annual toc collected should be 0", 0, (int) gameCalculated.getAnnualTocCollected());
         Assert.assertEquals("quarterly toc collected should be 0", 0, (int) gameCalculated.getQuarterlyTocCollected());
         Assert.assertFalse("not finalized", gameCalculated.getFinalized());
+
+        Assert.assertEquals("rebuy add on toc collected should be 0", 0, (int) gameCalculated.getRebuyAddOnTocCollected());
+        Assert.assertEquals("total collected should be 0", 0, (int) gameCalculated.getTotalCollected());
+        Assert.assertEquals("total toc collected should be 0", 0, (int) gameCalculated.getTotalTocCollected());
+        Assert.assertEquals("prize pot should be 0", 0, (int) gameCalculated.getPrizePot());
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime lastCalculated = gameCalculated.getLastCalculated();
@@ -118,7 +123,6 @@ public class GameCalculatorTest implements TestConstants {
         Mockito.when(gamePlayerRepository.selectByGameId(1))
             .thenReturn(gamePlayers);
 
-        System.out.println("!!! " + TestConstants.getTocConfig());
         Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
         Mockito.doNothing().when(gameRepository).update((Game) notNull());
@@ -139,14 +143,93 @@ public class GameCalculatorTest implements TestConstants {
         Assert.assertEquals("annual toc collected should be 0", 0, (int) gameCalculated.getAnnualTocCollected());
         Assert.assertEquals("quarterly toc collected should be 0", 0, (int) gameCalculated.getQuarterlyTocCollected());
 
+        Assert.assertEquals("rebuy add on toc collected should be 0", 0, (int) gameCalculated.getRebuyAddOnTocCollected());
+        Assert.assertEquals("total collected should be 0", 0, (int) gameCalculated.getTotalCollected());
+        Assert.assertEquals("total toc collected should be 0", 0, (int) gameCalculated.getTotalTocCollected());
+        Assert.assertEquals("prize pot should be 0", 0, (int) gameCalculated.getPrizePot());
+
     }
 
     /**
      * One of each means
+     * <table>
+     *     <tr>
+     *         <th>Player Id</th>
+     *         <th>Buy-in</th>
+     *         <th>Annual TOC</th>
+     *         <th>Quarterly TOC</th>
+     *         <th>Rebuy</th>
+     *     </tr>
+     *     <tr>
+     *         <td>1</td>
+     *         <td>YES</td>
+     *         <td>NO</td>
+     *         <td>NO</td>
+     *         <td>NO</td>
+     *     </tr>
+     *     <tr>
+     *         <td>2</td>
+     *         <td>YES</td>
+     *         <td>YES</td>
+     *         <td>NO</td>
+     *         <td>NO</td>
+     *     </tr>
+     *     <tr>
+     *         <td>3</td>
+     *         <td>YES</td>
+     *         <td>NO</td>
+     *         <td>YES</td>
+     *         <td>NO</td>
+     *     </tr>
+     *     <tr>
+     *         <td>4</td>
+     *         <td>YES</td>
+     *         <td>YES</td>
+     *         <td>YES</td>
+     *         <td>NO</td>
+     *     </tr>
+
+     *     <tr>
+     *         <td>5</td>
+     *         <td>YES</td>
+     *         <td>NO</td>
+     *         <td>NO</td>
+     *         <td>YES</td>
+     *     </tr>
+     *     <tr>
+     *         <td>6</td>
+     *         <td>YES</td>
+     *         <td>YES</td>
+     *         <td>NO</td>
+     *         <td>YES</td>
+     *     </tr>
+     *     <tr>
+     *         <td>7</td>
+     *         <td>YES</td>
+     *         <td>NO</td>
+     *         <td>YES</td>
+     *         <td>YES</td>
+     *     </tr>
+     *     <tr>
+     *         <td>8</td>
+     *         <td>YES</td>
+     *         <td>YES</td>
+     *         <td>YES</td>
+     *         <td>YES</td>
+     *     </tr>
+     * </table>
+     * The results for game should be (given the TestConstants)
      * <ul>
-     * <li>buy in, no annual toc, no quarterly toc</li>
-     * <li>buy in, annual toc, no quarterly toc</li>
-     * <li>buy in, annual toc, quarterly toc</li>
+     *     <li>Number of players = 8</li>
+     *     <li>Kitty collected = 9</li>
+     *     <li>Buy-in collected = 48</li>
+     *     <li>Rebuy Add On collected = 20</li>
+     *     <li>Annual TOC collected = 32</li>
+     *     <li>Quarterly TOC collected = 28</li>
+     *     <li>Rebuy Add On TOC collected = 8</li>
+     *     <li>Total collected = 48 (buy-in) + 20 (rebuy) + 32 (toc) + 28 (qtoc) = 128</li>
+     *     <li>Total TOC collected = 32 (toc) + 28 (qtoc) + 8 (rebuy toc) = 68</li>
+     *     <li>prizePot = total collected minus total toc minus kitty =  51</li>
      * </ul>
      */
     @Test
@@ -155,12 +238,16 @@ public class GameCalculatorTest implements TestConstants {
         Mockito.when(gameRepository.getById(1))
             .thenReturn(Game.builder()
                 .id(1)
-                .numPlayers(0)
-                .kittyCollected(0)
-                .buyInCollected(0)
-                .rebuyAddOnCollected(0)
-                .annualTocCollected(0)
-                .quarterlyTocCollected(0)
+                .numPlayers(Integer.MAX_VALUE)
+                .kittyCollected(Integer.MAX_VALUE)
+                .buyInCollected(Integer.MAX_VALUE)
+                .rebuyAddOnCollected(Integer.MAX_VALUE)
+                .annualTocCollected(Integer.MAX_VALUE)
+                .quarterlyTocCollected(Integer.MAX_VALUE)
+                .rebuyAddOnCollected(Integer.MAX_VALUE)
+                .totalCollected(Integer.MAX_VALUE)
+                .totalTocCollected(Integer.MAX_VALUE)
+                .prizePot(Integer.MAX_VALUE)
                 .finalized(false)
                 .lastCalculated(LocalDateTime.now())
                 .build());
@@ -179,13 +266,22 @@ public class GameCalculatorTest implements TestConstants {
             .playerId(2)
             .gameId(1)
             .buyInCollected(GAME_BUY_IN)
-            .annualTocCollected(TestConstants.TOC_PER_GAME)
+            .annualTocCollected(TOC_PER_GAME)
             .build();
         gamePlayers.add(gamePlayer);
 
         gamePlayer = GamePlayer.builder()
-            .id(2)
-            .playerId(2)
+            .id(3)
+            .playerId(3)
+            .gameId(1)
+            .buyInCollected(GAME_BUY_IN)
+            .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+            .build();
+        gamePlayers.add(gamePlayer);
+
+        gamePlayer = GamePlayer.builder()
+            .id(4)
+            .playerId(4)
             .gameId(1)
             .buyInCollected(GAME_BUY_IN)
             .annualTocCollected(TOC_PER_GAME)
@@ -193,25 +289,73 @@ public class GameCalculatorTest implements TestConstants {
             .build();
         gamePlayers.add(gamePlayer);
 
+        gamePlayer = GamePlayer.builder()
+            .id(5)
+            .playerId(5)
+            .gameId(1)
+            .buyInCollected(GAME_BUY_IN)
+            .rebuyAddOnCollected(TestConstants.GAME_REBUY)
+            .build();
+        gamePlayers.add(gamePlayer);
+
+        gamePlayer = GamePlayer.builder()
+            .id(6)
+            .playerId(6)
+            .gameId(1)
+            .buyInCollected(GAME_BUY_IN)
+            .annualTocCollected(TOC_PER_GAME)
+            .rebuyAddOnCollected(TestConstants.GAME_REBUY)
+            .build();
+        gamePlayers.add(gamePlayer);
+
+        gamePlayer = GamePlayer.builder()
+            .id(7)
+            .playerId(7)
+            .gameId(1)
+            .buyInCollected(GAME_BUY_IN)
+            .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+            .rebuyAddOnCollected(TestConstants.GAME_REBUY)
+            .build();
+        gamePlayers.add(gamePlayer);
+
+        gamePlayer = GamePlayer.builder()
+            .id(8)
+            .playerId(8)
+            .gameId(1)
+            .buyInCollected(GAME_BUY_IN)
+            .annualTocCollected(TOC_PER_GAME)
+            .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+            .rebuyAddOnCollected(TestConstants.GAME_REBUY)
+            .build();
+        gamePlayers.add(gamePlayer);
+
+
         Mockito.when(gamePlayerRepository.selectByGameId(1))
             .thenReturn(gamePlayers);
 
         Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
+
+        Mockito.doNothing().when(gameRepository).update((Game) notNull());
 
         Game gameCalculated = gameCalculator.calculate(1);
 
         Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
         Mockito.verify(configRepository, Mockito.times(1)).get();
+        Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
 
         Assert.assertNotNull("game calculated should not be null", gameCalculated);
 
-        Assert.assertEquals("number of game players should be 0", 0, (int) gameCalculated.getNumPlayers());
-        Assert.assertEquals("kitty collected should be 0", 0, (int) gameCalculated.getKittyCollected());
-        Assert.assertEquals("buy-in collected should be 0", 0, (int) gameCalculated.getBuyInCollected());
-        Assert.assertEquals("rebuy add on collected should be 0", 0, (int) gameCalculated.getRebuyAddOnCollected());
-        Assert.assertEquals("annual toc collected should be 0", 0, (int) gameCalculated.getAnnualTocCollected());
-        Assert.assertEquals("quarterly toc collected should be 0", 0, (int) gameCalculated.getQuarterlyTocCollected());
+        Assert.assertEquals("number of game players should be 8", 8, (int) gameCalculated.getNumPlayers());
+        Assert.assertEquals("kitty collected should be 9", 9, (int) gameCalculated.getKittyCollected());
+        Assert.assertEquals("buy-in collected should be 48", 48, (int) gameCalculated.getBuyInCollected());
+        Assert.assertEquals("rebuy add on collected should be 20", 20, (int) gameCalculated.getRebuyAddOnCollected());
+        Assert.assertEquals("annual toc collected should be 32", 32, (int) gameCalculated.getAnnualTocCollected());
+        Assert.assertEquals("quarterly toc collected should be 28", 28, (int) gameCalculated.getQuarterlyTocCollected());
+        Assert.assertEquals("rebuy add on toc collected should be 8", 8, (int) gameCalculated.getRebuyAddOnTocCollected());
+        Assert.assertEquals("total collected should be 128", 128, (int) gameCalculated.getTotalCollected());
+        Assert.assertEquals("total toc collected should be 68", 68, (int) gameCalculated.getTotalTocCollected());
+        Assert.assertEquals("prize pot should be 59", 51, (int) gameCalculated.getPrizePot());
 
     }
 

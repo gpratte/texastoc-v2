@@ -36,6 +36,7 @@ public class GameCalculator {
         int rebuyAddOnCollected = 0;
         int annualTocCollected = 0;
         int quarterlyTocCollected = 0;
+        int rebuyAddOnTocCollected = 0;
 
         for (GamePlayer gamePlayer : gamePlayers) {
             ++numPlayers;
@@ -43,6 +44,12 @@ public class GameCalculator {
             rebuyAddOnCollected += gamePlayer.getRebuyAddOnCollected() == null ? 0 : gamePlayer.getRebuyAddOnCollected();
             annualTocCollected += gamePlayer.getAnnualTocCollected() == null ? 0 : gamePlayer.getAnnualTocCollected();
             quarterlyTocCollected += gamePlayer.getQuarterlyTocCollected() == null ? 0 : gamePlayer.getQuarterlyTocCollected();
+
+            boolean isAnnualToc = gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0;
+            boolean isRebuyAddOn = gamePlayer.getRebuyAddOnCollected() != null && gamePlayer.getRebuyAddOnCollected() > 0;
+            if (isAnnualToc && isRebuyAddOn) {
+                rebuyAddOnTocCollected += getTocConfig().getRegularRebuyTocDebit();
+            }
         }
 
         if (buyInCollected > 0) {
@@ -56,6 +63,16 @@ public class GameCalculator {
         game.setAnnualTocCollected(annualTocCollected);
         game.setQuarterlyTocCollected(quarterlyTocCollected);
         game.setLastCalculated(LocalDateTime.now());
+        game.setRebuyAddOnTocCollected(rebuyAddOnTocCollected);
+
+        int totalCollected = buyInCollected + rebuyAddOnCollected + annualTocCollected + quarterlyTocCollected;
+        game.setTotalCollected(totalCollected);
+
+        int totalTocCollected = annualTocCollected + quarterlyTocCollected + rebuyAddOnTocCollected;
+        game.setTotalTocCollected(totalTocCollected);
+
+        // prizePot = total collected minus total toc minus kitty =  59</li>
+        game.setPrizePot(totalCollected - totalTocCollected - kittyCollected);
 
         gameRepository.update(game);
 
