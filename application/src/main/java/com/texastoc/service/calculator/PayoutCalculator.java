@@ -38,6 +38,10 @@ public class PayoutCalculator {
         if (numberPaid < 1) {
             numberPaid = 1;
         }
+        // Never go more than 10
+        if (numberPaid > 10) {
+            numberPaid = 10;
+        }
         return calculatePayout(numberPaid, game);
     }
 
@@ -68,30 +72,30 @@ public class PayoutCalculator {
             totalPayout += amount;
             gamePayouts.add(gp);
         }
-//
-//        if (totalPayout > prizePot) {
-//            int extra = totalPayout - prizePot;
-//            while (extra > 0) {
-//                for (int i = gamePayouts.size() - 1; i >= 0; --i) {
-//                    GamePayout gp = gamePayouts.get(i);
-//                    gp.setAmount(gp.getAmount() - 1);
-//                    if (--extra == 0) {
-//                        break;
-//                    }
-//                }
-//            }
-//        } else if (totalPayout < prizePot) {
-//            int extra = prizePot - totalPayout;
-//            while (extra > 0) {
-//                for (GamePayout gp : gamePayouts) {
-//                    gp.setAmount(gp.getAmount() + 1);
-//                    if (--extra == 0) {
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//
+
+        if (totalPayout > prizePot) {
+            int extra = totalPayout - prizePot;
+            while (extra > 0) {
+                for (int i = gamePayouts.size() - 1; i >= 0; --i) {
+                    GamePayout gp = gamePayouts.get(i);
+                    gp.setAmount(gp.getAmount() - 1);
+                    if (--extra == 0) {
+                        break;
+                    }
+                }
+            }
+        } else if (totalPayout < prizePot) {
+            int extra = prizePot - totalPayout;
+            while (extra > 0) {
+                for (GamePayout gp : gamePayouts) {
+                    gp.setAmount(gp.getAmount() + 1);
+                    if (--extra == 0) {
+                        break;
+                    }
+                }
+            }
+        }
+
 //        // See if there is a chop
 //        List<Integer> chips = null;
 //        List<Integer> amounts = null;

@@ -170,6 +170,123 @@ public interface TestConstants {
                 .percent(0.04)
                 .build());
             return payouts;
+        }else if (num == 8) {
+            List<Payout> payouts = new ArrayList<>(8);
+            payouts.add(Payout.builder()
+                .place(1)
+                .percent(0.335)
+                .build());
+            payouts.add(Payout.builder()
+                .place(2)
+                .percent(0.20)
+                .build());
+            payouts.add(Payout.builder()
+                .place(3)
+                .percent(0.145)
+                .build());
+            payouts.add(Payout.builder()
+                .place(4)
+                .percent(0.11)
+                .build());
+            payouts.add(Payout.builder()
+                .place(5)
+                .percent(0.08)
+                .build());
+            payouts.add(Payout.builder()
+                .place(6)
+                .percent(0.06)
+                .build());
+            payouts.add(Payout.builder()
+                .place(7)
+                .percent(0.04)
+                .build());
+            payouts.add(Payout.builder()
+                .place(8)
+                .percent(0.03)
+                .build());
+            return payouts;
+        }else if (num == 9) {
+            List<Payout> payouts = new ArrayList<>(9);
+            payouts.add(Payout.builder()
+                .place(1)
+                .percent(0.32)
+                .build());
+            payouts.add(Payout.builder()
+                .place(2)
+                .percent(0.195)
+                .build());
+            payouts.add(Payout.builder()
+                .place(3)
+                .percent(0.14)
+                .build());
+            payouts.add(Payout.builder()
+                .place(4)
+                .percent(0.11)
+                .build());
+            payouts.add(Payout.builder()
+                .place(5)
+                .percent(0.08)
+                .build());
+            payouts.add(Payout.builder()
+                .place(6)
+                .percent(0.06)
+                .build());
+            payouts.add(Payout.builder()
+                .place(7)
+                .percent(0.04)
+                .build());
+            payouts.add(Payout.builder()
+                .place(8)
+                .percent(0.03)
+                .build());
+            payouts.add(Payout.builder()
+                .place(9)
+                .percent(0.025)
+                .build());
+            return payouts;
+        } else if (num == 10) {
+            List<Payout> payouts = new ArrayList<>(10);
+            payouts.add(Payout.builder()
+                .place(1)
+                .percent(0.30)
+                .build());
+            payouts.add(Payout.builder()
+                .place(2)
+                .percent(0.19)
+                .build());
+            payouts.add(Payout.builder()
+                .place(3)
+                .percent(0.1325)
+                .build());
+            payouts.add(Payout.builder()
+                .place(4)
+                .percent(0.105)
+                .build());
+            payouts.add(Payout.builder()
+                .place(5)
+                .percent(0.075)
+                .build());
+            payouts.add(Payout.builder()
+                .place(6)
+                .percent(0.055)
+                .build());
+            payouts.add(Payout.builder()
+                .place(7)
+                .percent(0.0375)
+                .build());
+            payouts.add(Payout.builder()
+                .place(8)
+                .percent(0.03)
+                .build());
+            payouts.add(Payout.builder()
+                .place(9)
+                .percent(0.0225)
+                .build());
+            payouts.add(Payout.builder()
+                .place(10)
+                .percent(0.015)
+                .build());
+            return payouts;
         }
 
         throw new RuntimeException("no payouts found for " + num);

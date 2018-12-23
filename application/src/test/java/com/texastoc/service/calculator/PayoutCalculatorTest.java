@@ -141,6 +141,7 @@ public class PayoutCalculatorTest implements TestConstants {
         amounts.add(secondPlace);
 
         double leftover = prizePot - firstPlace - secondPlace;
+        leftover = Math.abs(leftover);
 
         int totalPaidOut = 0;
 
@@ -156,7 +157,467 @@ public class PayoutCalculatorTest implements TestConstants {
             totalPaidOut += gamePayout.getAmount();
         }
 
-        Assert.assertEquals("sum of payouts should be " + prizePot, prizePot, totalPaidOut);
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
     }
+
+    @Test
+    public void test13To17Players3Payouts() {
+
+        // Create between 13 and 17 players
+        int numPlayers = 0;
+        while (numPlayers == 0) {
+            numPlayers = random.nextInt(5);
+        }
+        numPlayers += 12;
+
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+
+        Mockito.when(payoutRepository.get(3)).thenReturn(TestConstants.getPayouts(3));
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 3", 3, gamePayouts.size());
+
+        List<Integer> amounts = new ArrayList<>(3);
+        int firstPlace = (int)Math.round(0.50 * prizePot);
+        amounts.add(firstPlace);
+        int secondPlace = (int)Math.round(0.30 * prizePot);
+        amounts.add(secondPlace);
+        int thirdPlace = (int)Math.round(0.20 * prizePot);
+        amounts.add(thirdPlace);
+
+        double leftover = prizePot - firstPlace - secondPlace - thirdPlace;
+        leftover = Math.abs(leftover);
+
+        int totalPaidOut = 0;
+
+        for (int i = 0; i < gamePayouts.size(); ++i) {
+            GamePayout gamePayout = gamePayouts.get(i);
+            int amount = amounts.get(i);
+            int place = i+1;
+
+            Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
+            Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
+            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
+            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            totalPaidOut += gamePayout.getAmount();
+        }
+
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
+    }
+
+    @Test
+    public void test18To22Players4Payouts() {
+
+        // Create between 18 and 22 players
+        int numPlayers = 0;
+        while (numPlayers == 0) {
+            numPlayers = random.nextInt(5);
+        }
+        numPlayers += 17;
+
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+
+        Mockito.when(payoutRepository.get(4)).thenReturn(TestConstants.getPayouts(4));
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 4", 4, gamePayouts.size());
+
+        List<Integer> amounts = new ArrayList<>(4);
+        int firstPlace = (int)Math.round(0.45 * prizePot);
+        amounts.add(firstPlace);
+        int secondPlace = (int)Math.round(0.25 * prizePot);
+        amounts.add(secondPlace);
+        int thirdPlace = (int)Math.round(0.18 * prizePot);
+        amounts.add(thirdPlace);
+        int fourthPlace = (int)Math.round(0.12 * prizePot);
+        amounts.add(fourthPlace);
+
+        double leftover = prizePot - firstPlace - secondPlace - thirdPlace - fourthPlace;
+        leftover = Math.abs(leftover);
+        int totalPaidOut = 0;
+
+        for (int i = 0; i < gamePayouts.size(); ++i) {
+            GamePayout gamePayout = gamePayouts.get(i);
+            int amount = amounts.get(i);
+            int place = i+1;
+
+            Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
+            Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
+            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
+            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            totalPaidOut += gamePayout.getAmount();
+        }
+
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
+    }
+
+    @Test
+    public void test23To27Players5Payouts() {
+
+        // Create between 23 and 27 players
+        int numPlayers = 0;
+        while (numPlayers == 0) {
+            numPlayers = random.nextInt(5);
+        }
+        numPlayers += 22;
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+        Mockito.when(payoutRepository.get(5)).thenReturn(TestConstants.getPayouts(5));
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 5", 5, gamePayouts.size());
+
+        List<Integer> amounts = new ArrayList<>(5);
+        int firstPlace = (int)Math.round(0.40 * prizePot);
+        amounts.add(firstPlace);
+        int secondPlace = (int)Math.round(0.23 * prizePot);
+        amounts.add(secondPlace);
+        int thirdPlace = (int)Math.round(0.16 * prizePot);
+        amounts.add(thirdPlace);
+        int fourthPlace = (int)Math.round(0.12 * prizePot);
+        amounts.add(fourthPlace);
+        int fifthPlace = (int)Math.round(0.09 * prizePot);
+        amounts.add(fifthPlace);
+
+        double leftover = prizePot - firstPlace - secondPlace - thirdPlace - fourthPlace - fifthPlace;
+        leftover = Math.abs(leftover);
+
+        int totalPaidOut = 0;
+
+        for (int i = 0; i < gamePayouts.size(); ++i) {
+            GamePayout gamePayout = gamePayouts.get(i);
+            int amount = amounts.get(i);
+            int place = i+1;
+
+            Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
+            Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
+            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
+            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            totalPaidOut += gamePayout.getAmount();
+        }
+
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
+    }
+
+    @Test
+    public void test28To32Players6Payouts() {
+
+        // Create between 28 and 32 players
+        int numPlayers = 0;
+        while (numPlayers == 0) {
+            numPlayers = random.nextInt(5);
+        }
+        numPlayers += 27;
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+        Mockito.when(payoutRepository.get(6)).thenReturn(TestConstants.getPayouts(6));
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 6", 6, gamePayouts.size());
+
+        List<Integer> amounts = new ArrayList<>(6);
+        int firstPlace = (int)Math.round(0.38 * prizePot);
+        amounts.add(firstPlace);
+        int secondPlace = (int)Math.round(0.22 * prizePot);
+        amounts.add(secondPlace);
+        int thirdPlace = (int)Math.round(0.15 * prizePot);
+        amounts.add(thirdPlace);
+        int fourthPlace = (int)Math.round(0.11 * prizePot);
+        amounts.add(fourthPlace);
+        int fifthPlace = (int)Math.round(0.08 * prizePot);
+        amounts.add(fifthPlace);
+        int sixthPlace = (int)Math.round(0.06 * prizePot);
+        amounts.add(sixthPlace);
+
+        double leftover = prizePot - firstPlace - secondPlace - thirdPlace - fourthPlace - fifthPlace - sixthPlace;
+        leftover = Math.abs(leftover);
+
+        int totalPaidOut = 0;
+
+        for (int i = 0; i < gamePayouts.size(); ++i) {
+            GamePayout gamePayout = gamePayouts.get(i);
+            int amount = amounts.get(i);
+            int place = i+1;
+
+            Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
+            Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
+            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
+            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            totalPaidOut += gamePayout.getAmount();
+        }
+
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
+    }
+
+    @Test
+    public void test33To37Players7Payouts() {
+
+        // Create between 33 and 37 players
+        int numPlayers = 0;
+        while (numPlayers == 0) {
+            numPlayers = random.nextInt(5);
+        }
+        numPlayers += 32;
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+        Mockito.when(payoutRepository.get(7)).thenReturn(TestConstants.getPayouts(7));
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 7", 7, gamePayouts.size());
+
+        List<Integer> amounts = new ArrayList<>(7);
+        int firstPlace = (int)Math.round(0.35 * prizePot);
+        amounts.add(firstPlace);
+        int secondPlace = (int)Math.round(0.21 * prizePot);
+        amounts.add(secondPlace);
+        int thirdPlace = (int)Math.round(0.15 * prizePot);
+        amounts.add(thirdPlace);
+        int fourthPlace = (int)Math.round(0.11 * prizePot);
+        amounts.add(fourthPlace);
+        int fifthPlace = (int)Math.round(0.08 * prizePot);
+        amounts.add(fifthPlace);
+        int sixthPlace = (int)Math.round(0.06 * prizePot);
+        amounts.add(sixthPlace);
+        int seventhPlace = (int)Math.round(0.04 * prizePot);
+        amounts.add(seventhPlace);
+
+        double leftover = prizePot - firstPlace - secondPlace - thirdPlace - fourthPlace - fifthPlace - sixthPlace - seventhPlace;
+        leftover = Math.abs(leftover);
+
+        int totalPaidOut = 0;
+
+        for (int i = 0; i < gamePayouts.size(); ++i) {
+            GamePayout gamePayout = gamePayouts.get(i);
+            int amount = amounts.get(i);
+            int place = i+1;
+
+            Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
+            Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
+            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
+            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            totalPaidOut += gamePayout.getAmount();
+        }
+
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
+    }
+
+    @Test
+    public void test38To42Players8Payouts() {
+
+        // Create between 38 and 42 players
+        int numPlayers = 0;
+        while (numPlayers == 0) {
+            numPlayers = random.nextInt(5);
+        }
+        numPlayers += 37;
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+        Mockito.when(payoutRepository.get(8)).thenReturn(TestConstants.getPayouts(8));
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 8", 8, gamePayouts.size());
+
+        List<Integer> amounts = new ArrayList<>(8);
+        int firstPlace = (int)Math.round(0.335 * prizePot);
+        amounts.add(firstPlace);
+        int secondPlace = (int)Math.round(0.20 * prizePot);
+        amounts.add(secondPlace);
+        int thirdPlace = (int)Math.round(0.145 * prizePot);
+        amounts.add(thirdPlace);
+        int fourthPlace = (int)Math.round(0.11 * prizePot);
+        amounts.add(fourthPlace);
+        int fifthPlace = (int)Math.round(0.08 * prizePot);
+        amounts.add(fifthPlace);
+        int sixthPlace = (int)Math.round(0.06 * prizePot);
+        amounts.add(sixthPlace);
+        int seventhPlace = (int)Math.round(0.04 * prizePot);
+        amounts.add(seventhPlace);
+        int eighthPlace = (int)Math.round(0.03 * prizePot);
+        amounts.add(eighthPlace);
+
+        double leftover = prizePot - firstPlace - secondPlace - thirdPlace - fourthPlace - fifthPlace - sixthPlace - seventhPlace - eighthPlace;
+        leftover = Math.abs(leftover);
+
+        int totalPaidOut = 0;
+
+        for (int i = 0; i < gamePayouts.size(); ++i) {
+            GamePayout gamePayout = gamePayouts.get(i);
+            int amount = amounts.get(i);
+            int place = i+1;
+
+            Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
+            Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
+            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
+            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            totalPaidOut += gamePayout.getAmount();
+        }
+
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
+    }
+
+    @Test
+    public void test43To47Players9Payouts() {
+
+        // Create between 43 and 47 players
+        int numPlayers = 0;
+        while (numPlayers == 0) {
+            numPlayers = random.nextInt(5);
+        }
+        numPlayers += 42;
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+        Mockito.when(payoutRepository.get(9)).thenReturn(TestConstants.getPayouts(9));
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 9", 9, gamePayouts.size());
+
+        List<Integer> amounts = new ArrayList<>(9);
+        int firstPlace = (int)Math.round(0.32 * prizePot);
+        amounts.add(firstPlace);
+        int secondPlace = (int)Math.round(0.195 * prizePot);
+        amounts.add(secondPlace);
+        int thirdPlace = (int)Math.round(0.14 * prizePot);
+        amounts.add(thirdPlace);
+        int fourthPlace = (int)Math.round(0.11 * prizePot);
+        amounts.add(fourthPlace);
+        int fifthPlace = (int)Math.round(0.08 * prizePot);
+        amounts.add(fifthPlace);
+        int sixthPlace = (int)Math.round(0.06 * prizePot);
+        amounts.add(sixthPlace);
+        int seventhPlace = (int)Math.round(0.04 * prizePot);
+        amounts.add(seventhPlace);
+        int eighthPlace = (int)Math.round(0.03 * prizePot);
+        amounts.add(eighthPlace);
+        int ninthPlace = (int)Math.round(0.025 * prizePot);
+        amounts.add(ninthPlace);
+
+        double leftover = prizePot - firstPlace - secondPlace - thirdPlace - fourthPlace - fifthPlace - sixthPlace - seventhPlace - eighthPlace - ninthPlace;
+        leftover = Math.abs(leftover);
+
+        int totalPaidOut = 0;
+
+        for (int i = 0; i < gamePayouts.size(); ++i) {
+            GamePayout gamePayout = gamePayouts.get(i);
+            int amount = amounts.get(i);
+            int place = i+1;
+
+            Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
+            Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
+            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
+            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            totalPaidOut += gamePayout.getAmount();
+        }
+
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
+    }
+
+    @Test
+    public void test48OrAbovePlayers10Payouts() {
+
+        // Create 48 or more
+        int numPlayers = 0;
+        while (numPlayers == 0) {
+            numPlayers = random.nextInt(50);
+        }
+        numPlayers += 47;
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+        Mockito.when(payoutRepository.get(10)).thenReturn(TestConstants.getPayouts(10));
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 10", 10, gamePayouts.size());
+
+        List<Integer> amounts = new ArrayList<>(10);
+        int firstPlace = (int)Math.round(0.30 * prizePot);
+        amounts.add(firstPlace);
+        int secondPlace = (int)Math.round(0.19 * prizePot);
+        amounts.add(secondPlace);
+        int thirdPlace = (int)Math.round(0.1325 * prizePot);
+        amounts.add(thirdPlace);
+        int fourthPlace = (int)Math.round(0.105 * prizePot);
+        amounts.add(fourthPlace);
+        int fifthPlace = (int)Math.round(0.075 * prizePot);
+        amounts.add(fifthPlace);
+        int sixthPlace = (int)Math.round(0.055 * prizePot);
+        amounts.add(sixthPlace);
+        int seventhPlace = (int)Math.round(0.0375 * prizePot);
+        amounts.add(seventhPlace);
+        int eighthPlace = (int)Math.round(0.03 * prizePot);
+        amounts.add(eighthPlace);
+        int ninthPlace = (int)Math.round(0.0225 * prizePot);
+        amounts.add(ninthPlace);
+        int tenthPlace = (int)Math.round(0.015 * prizePot);
+        amounts.add(tenthPlace);
+
+        double leftover = prizePot - firstPlace - secondPlace - thirdPlace - fourthPlace - fifthPlace - sixthPlace - seventhPlace - eighthPlace - ninthPlace - tenthPlace;
+        leftover = Math.abs(leftover);
+
+        int totalPaidOut = 0;
+
+        for (int i = 0; i < gamePayouts.size(); ++i) {
+            GamePayout gamePayout = gamePayouts.get(i);
+            int amount = amounts.get(i);
+            int place = i+1;
+
+            Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
+            Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
+            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
+            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            totalPaidOut += gamePayout.getAmount();
+        }
+
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
+    }
+
 
 }
