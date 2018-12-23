@@ -1,11 +1,12 @@
 # texastoc-v2
-Refactor version 1. Version 2 will be spring boot and Angular.
+Refactor version 1 to version 2. Version 2 will be Spring Boot.
 
-The application code written was to fix a test case. 
-
-TDD (JUnit) for class/method testing and mocking out external references.
+TDD (JUnit) for class/method testing employing mocking out external references.
 
 BDD (Cucumber) for integration testing the endpoints using an embedded H2 database.
+
+The only application code that was written was code to fix a failing test case (i.e. wrote the tests first).
+
 
 # Run tests
 In IntelliJ the JUnit tests in the application module run with no extra configuration.
