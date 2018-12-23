@@ -89,7 +89,7 @@ public class GameCalculatorTest implements TestConstants {
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime lastCalculated = gameCalculated.getLastCalculated();
-        boolean isBetweenStartAndNow = started.isBefore(lastCalculated) && now.isAfter(lastCalculated);
+        boolean isBetweenStartAndNow = (started.isBefore(lastCalculated) || started.isEqual(lastCalculated)) && (now.isAfter(lastCalculated) || now.isEqual(lastCalculated));
         Assert.assertTrue("last calculated should be between start and now", isBetweenStartAndNow);
     }
 
