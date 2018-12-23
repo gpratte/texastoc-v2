@@ -12,10 +12,13 @@ import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
+import com.texastoc.service.calculator.GameCalculator;
+import com.texastoc.service.calculator.PayoutCalculator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class GameService {
@@ -26,6 +29,8 @@ public class GameService {
     private final GamePayoutRepository gamePayoutRepository;
     private final SeasonRepository seasonRepository;
     private final QuarterlySeasonRepository qSeasonRepository;
+//    private final GameCalculator gameCalculator;
+//    private final PayoutCalculator payoutCalculator;
 
     public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository) {
         this.gameRepository = gameRepository;
@@ -34,6 +39,8 @@ public class GameService {
         this.gamePayoutRepository = gamePayoutRepository;
         this.seasonRepository = seasonRepository;
         this.qSeasonRepository = qSeasonRepository;
+//        this.gameCalculator = gameCalculator;
+//        this.payoutCalculator = payoutCalculator;
     }
 
     public Game createGame(Game game) {
@@ -101,10 +108,11 @@ public class GameService {
         int id = gamePlayerRepository.save(gamePlayer);
         gamePlayer.setId(id);
 
-        Game game = gameRepository.getById(gamePlayer.getGameId());
-        int numPlayers = game.getNumPlayers();
-        game.setNumPlayers(++numPlayers);
-        gameRepository.update(game);
+//        Game game = gameRepository.getById(gamePlayer.getGameId());
+//        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(id);
+//        game = gameCalculator.calculate(game, gamePlayers);
+//        payoutCalculator.calculate(game);
+//         pointCalculator.calculate(game, gamePlayers);
 
         return gamePlayer;
     }

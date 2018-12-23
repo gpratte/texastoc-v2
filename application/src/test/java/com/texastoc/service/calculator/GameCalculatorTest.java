@@ -44,31 +44,25 @@ public class GameCalculatorTest implements TestConstants {
     @Test
     public void testNoGamePlayers() {
 
-        Mockito.when(gameRepository.getById(1))
-            .thenReturn(Game.builder()
-                .id(1)
-                .numPlayers(0)
-                .kittyCollected(0)
-                .buyInCollected(0)
-                .rebuyAddOnCollected(0)
-                .annualTocCollected(0)
-                .quarterlyTocCollected(0)
-                .finalized(false)
-                .lastCalculated(LocalDateTime.now())
-                .build());
-
-        Mockito.when(gamePlayerRepository.selectByGameId(1))
-            .thenReturn(Collections.emptyList());
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(Integer.MAX_VALUE)
+            .kittyCollected(Integer.MAX_VALUE)
+            .buyInCollected(Integer.MAX_VALUE)
+            .rebuyAddOnCollected(Integer.MAX_VALUE)
+            .annualTocCollected(Integer.MAX_VALUE)
+            .quarterlyTocCollected(Integer.MAX_VALUE)
+            .finalized(false)
+            .lastCalculated(LocalDateTime.now().minusHours(1))
+            .build();
 
         Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
         Mockito.doNothing().when(gameRepository).update((Game) notNull());
 
         LocalDateTime started = LocalDateTime.now();
-        Game gameCalculated = gameCalculator.calculate(1);
+        Game gameCalculated = gameCalculator.calculate(game, Collections.emptyList());
 
-        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
-        Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
         Mockito.verify(configRepository, Mockito.times(0)).get();
         Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
 
@@ -96,18 +90,17 @@ public class GameCalculatorTest implements TestConstants {
     @Test
     public void testGamePlayersNoBuyIns() {
 
-        Mockito.when(gameRepository.getById(1))
-            .thenReturn(Game.builder()
-                .id(1)
-                .numPlayers(0)
-                .kittyCollected(0)
-                .buyInCollected(0)
-                .rebuyAddOnCollected(0)
-                .annualTocCollected(0)
-                .quarterlyTocCollected(0)
-                .finalized(false)
-                .lastCalculated(LocalDateTime.now())
-                .build());
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(Integer.MAX_VALUE)
+            .kittyCollected(Integer.MAX_VALUE)
+            .buyInCollected(Integer.MAX_VALUE)
+            .rebuyAddOnCollected(Integer.MAX_VALUE)
+            .annualTocCollected(Integer.MAX_VALUE)
+            .quarterlyTocCollected(Integer.MAX_VALUE)
+            .finalized(false)
+            .lastCalculated(LocalDateTime.now().minusHours(1))
+            .build();
 
         List<GamePlayer> gamePlayers = new ArrayList<>();
         int playersToCreate = random.nextInt(10);
@@ -120,17 +113,12 @@ public class GameCalculatorTest implements TestConstants {
             gamePlayers.add(gamePlayer);
         }
 
-        Mockito.when(gamePlayerRepository.selectByGameId(1))
-            .thenReturn(gamePlayers);
-
         Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
         Mockito.doNothing().when(gameRepository).update((Game) notNull());
 
-        Game gameCalculated = gameCalculator.calculate(1);
+        Game gameCalculated = gameCalculator.calculate(game, gamePlayers);
 
-        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
-        Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
         Mockito.verify(configRepository, Mockito.times(0)).get();
         Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
 
@@ -235,22 +223,21 @@ public class GameCalculatorTest implements TestConstants {
     @Test
     public void testGamePlayerOneOfEach() {
 
-        Mockito.when(gameRepository.getById(1))
-            .thenReturn(Game.builder()
-                .id(1)
-                .numPlayers(Integer.MAX_VALUE)
-                .kittyCollected(Integer.MAX_VALUE)
-                .buyInCollected(Integer.MAX_VALUE)
-                .rebuyAddOnCollected(Integer.MAX_VALUE)
-                .annualTocCollected(Integer.MAX_VALUE)
-                .quarterlyTocCollected(Integer.MAX_VALUE)
-                .rebuyAddOnCollected(Integer.MAX_VALUE)
-                .totalCollected(Integer.MAX_VALUE)
-                .totalTocCollected(Integer.MAX_VALUE)
-                .prizePot(Integer.MAX_VALUE)
-                .finalized(false)
-                .lastCalculated(LocalDateTime.now())
-                .build());
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(Integer.MAX_VALUE)
+            .kittyCollected(Integer.MAX_VALUE)
+            .buyInCollected(Integer.MAX_VALUE)
+            .rebuyAddOnCollected(Integer.MAX_VALUE)
+            .annualTocCollected(Integer.MAX_VALUE)
+            .quarterlyTocCollected(Integer.MAX_VALUE)
+            .rebuyAddOnCollected(Integer.MAX_VALUE)
+            .totalCollected(Integer.MAX_VALUE)
+            .totalTocCollected(Integer.MAX_VALUE)
+            .prizePot(Integer.MAX_VALUE)
+            .finalized(false)
+            .lastCalculated(LocalDateTime.now())
+            .build();
 
         List<GamePlayer> gamePlayers = new ArrayList<>();
         GamePlayer gamePlayer = GamePlayer.builder()
@@ -330,17 +317,12 @@ public class GameCalculatorTest implements TestConstants {
         gamePlayers.add(gamePlayer);
 
 
-        Mockito.when(gamePlayerRepository.selectByGameId(1))
-            .thenReturn(gamePlayers);
-
         Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
         Mockito.doNothing().when(gameRepository).update((Game) notNull());
 
-        Game gameCalculated = gameCalculator.calculate(1);
+        Game gameCalculated = gameCalculator.calculate(game, gamePlayers);
 
-        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
-        Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
         Mockito.verify(configRepository, Mockito.times(1)).get();
         Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
 

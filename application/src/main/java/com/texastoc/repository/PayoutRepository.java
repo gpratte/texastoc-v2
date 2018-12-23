@@ -1,5 +1,6 @@
 package com.texastoc.repository;
 
+import com.texastoc.model.common.Payout;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,11 +23,11 @@ public class PayoutRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private static HashMap<Integer, HashMap<Integer,Double>> PAYOUTS =
+    private static HashMap<Integer, List<Payout>> PAYOUTS =
         new HashMap<>();
 
 
-    public HashMap<Integer,Double> get(int num) {
+    public List<Payout> get(int num) {
 
         if (PAYOUTS.get(num) != null) {
             return PAYOUTS.get(num);
@@ -34,33 +36,29 @@ public class PayoutRepository {
         // Get all the payouts and cache them in PAYOUTS
         MapSqlParameterSource params = new MapSqlParameterSource();
 
-        List<Payout> payouts = jdbcTemplate.query("select * from payout", params, new PayoutMapper());
+        List<Payout> payouts = jdbcTemplate.query("select * from payout order by numPayouts, place", params, new PayoutMapper());
 
         for (Payout payout : payouts) {
-            HashMap<Integer, Double> percent = PAYOUTS.get(payout.numPayouts);
-            if (percent == null) {
-                percent = new HashMap<Integer, Double>();
-                PAYOUTS.put(payout.numPayouts, percent);
+            List<Payout> payoutsForPlaces = PAYOUTS.get(num);
+            if (payoutsForPlaces == null) {
+                payoutsForPlaces = new ArrayList<Payout>(num);
+                PAYOUTS.put(num, payoutsForPlaces);
             }
-            percent.put(payout.place, payout.percent);
+            payoutsForPlaces.add(payout);
         }
 
         return PAYOUTS.get(num);
     }
 
-    private static final class Payout {
-        int numPayouts;
-        int place;
-        double percent;
-    }
-
     private static final class PayoutMapper implements RowMapper<Payout> {
         public Payout mapRow(ResultSet rs, int rowNum) {
-            Payout payout = new Payout();
+            Payout payout = null;
             try {
-                payout.numPayouts = rs.getInt("numPayouts");
-                payout.place = rs.getInt("place");
-                payout.percent = rs.getDouble("percent");
+                payout = Payout.builder()
+                    .numPayouts(rs.getInt("numPayouts"))
+                    .place(rs.getInt("place"))
+                    .percent(rs.getDouble("percent"))
+                    .build();
             } catch (SQLException e) {
                 log.error("Problem mapping TocConfig", e);
             }

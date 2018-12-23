@@ -25,10 +25,7 @@ public class GameCalculator {
         this.configRepository = configRepository;
     }
 
-    public Game calculate(int id) {
-        Game game = gameRepository.getById(id);
-
-        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(id);
+    public Game calculate(Game game, List<GamePlayer> gamePlayers) {
 
         int kittyCollected = 0;
         int numPlayers = 0;

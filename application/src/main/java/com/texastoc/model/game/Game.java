@@ -60,6 +60,7 @@ public class Game {
     private Integer totalCollected;
     private Integer totalTocCollected;
     private Integer prizePot;
+    private Integer payoutDelta;
     private Boolean finalized;
 
     private LocalDateTime lastCalculated;
