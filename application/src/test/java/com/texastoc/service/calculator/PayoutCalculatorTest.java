@@ -1,9 +1,11 @@
 package com.texastoc.service.calculator;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import com.texastoc.TestConstants;
-import com.texastoc.model.common.Payout;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePayout;
+import com.texastoc.model.game.GamePlayer;
+import com.texastoc.repository.GamePayoutRepository;
 import com.texastoc.repository.PayoutRepository;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,8 +15,8 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -27,9 +29,12 @@ public class PayoutCalculatorTest implements TestConstants {
     @MockBean
     private PayoutRepository payoutRepository;
 
+    @MockBean
+    private GamePayoutRepository gamePayoutRepository;
+
     @Before
     public void before() {
-        payoutCalculator = new PayoutCalculator(payoutRepository);
+        payoutCalculator = new PayoutCalculator(payoutRepository, gamePayoutRepository);
     }
 
     @Test
@@ -41,7 +46,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .prizePot(0)
             .build();
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 0", 0, gamePayouts.size());
@@ -56,7 +61,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .prizePot(0)
             .build();
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 0", 0, gamePayouts.size());
@@ -71,7 +76,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .prizePot(GAME_BUY_IN)
             .build();
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 1", 1, gamePayouts.size());
@@ -79,8 +84,8 @@ public class PayoutCalculatorTest implements TestConstants {
         GamePayout gamePayout = gamePayouts.get(0);
         Assert.assertEquals("payout should be place 1", 1, gamePayout.getPlace());
         Assert.assertEquals("payout amount should be " + GAME_BUY_IN, GAME_BUY_IN, gamePayout.getAmount());
-        Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-        Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+        Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+        Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
     }
 
     @Test
@@ -98,7 +103,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .prizePot(GAME_BUY_IN * numPlayers)
             .build();
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 1", 1, gamePayouts.size());
@@ -106,8 +111,8 @@ public class PayoutCalculatorTest implements TestConstants {
         GamePayout gamePayout = gamePayouts.get(0);
         Assert.assertEquals("payout should be place 1", 1, gamePayout.getPlace());
         Assert.assertEquals("payout amount should be " + (GAME_BUY_IN * numPlayers), GAME_BUY_IN * numPlayers, gamePayout.getAmount());
-        Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-        Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+        Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+        Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
     }
 
     @Test
@@ -129,7 +134,7 @@ public class PayoutCalculatorTest implements TestConstants {
 
         Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 2", 2, gamePayouts.size());
@@ -152,8 +157,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -179,7 +184,7 @@ public class PayoutCalculatorTest implements TestConstants {
 
         Mockito.when(payoutRepository.get(3)).thenReturn(TestConstants.getPayouts(3));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 3", 3, gamePayouts.size());
@@ -204,8 +209,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -231,7 +236,7 @@ public class PayoutCalculatorTest implements TestConstants {
 
         Mockito.when(payoutRepository.get(4)).thenReturn(TestConstants.getPayouts(4));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 4", 4, gamePayouts.size());
@@ -257,8 +262,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -282,7 +287,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .build();
         Mockito.when(payoutRepository.get(5)).thenReturn(TestConstants.getPayouts(5));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 5", 5, gamePayouts.size());
@@ -311,8 +316,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -336,7 +341,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .build();
         Mockito.when(payoutRepository.get(6)).thenReturn(TestConstants.getPayouts(6));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 6", 6, gamePayouts.size());
@@ -367,8 +372,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -392,7 +397,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .build();
         Mockito.when(payoutRepository.get(7)).thenReturn(TestConstants.getPayouts(7));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 7", 7, gamePayouts.size());
@@ -425,8 +430,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -450,7 +455,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .build();
         Mockito.when(payoutRepository.get(8)).thenReturn(TestConstants.getPayouts(8));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 8", 8, gamePayouts.size());
@@ -485,8 +490,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -510,7 +515,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .build();
         Mockito.when(payoutRepository.get(9)).thenReturn(TestConstants.getPayouts(9));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 9", 9, gamePayouts.size());
@@ -547,8 +552,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -572,7 +577,7 @@ public class PayoutCalculatorTest implements TestConstants {
             .build();
         Mockito.when(payoutRepository.get(10)).thenReturn(TestConstants.getPayouts(10));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 10", 10, gamePayouts.size());
@@ -611,8 +616,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -642,7 +647,7 @@ public class PayoutCalculatorTest implements TestConstants {
 
         Mockito.when(payoutRepository.get(4)).thenReturn(TestConstants.getPayouts(4));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 4", 4, gamePayouts.size());
@@ -668,8 +673,8 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
@@ -698,7 +703,7 @@ public class PayoutCalculatorTest implements TestConstants {
 
         Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
 
-        List<GamePayout> gamePayouts = payoutCalculator.calculate(game);
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
         Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
         Assert.assertEquals("list of game payouts should be size 2", 2, gamePayouts.size());
@@ -721,12 +726,169 @@ public class PayoutCalculatorTest implements TestConstants {
 
             Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
             Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
-            Assert.assertEquals("payout chop should be 0", 0, gamePayout.getChopAmount());
-            Assert.assertEquals(0.0, gamePayout.getChopPercent(), 0.0);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
             totalPaidOut += gamePayout.getAmount();
         }
 
         Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
     }
+
+    @Test
+    public void test8Players2PayoutsChopped() {
+
+        int numPlayers = 8;
+
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+
+        Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
+
+        List<GamePlayer> gamePlayers = new ArrayList<>(8);
+        gamePlayers.add(GamePlayer.builder()
+            .chop(100000)
+            .finish(1)
+            .build());
+        gamePlayers.add(GamePlayer.builder()
+            .chop(50000)
+            .finish(2)
+            .build());
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, gamePlayers);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 2", 2, gamePayouts.size());
+
+        int totalPaidOut = 0;
+
+        GamePayout gamePayout = gamePayouts.get(0);
+        Assert.assertEquals("payout should be place 1", 1, gamePayout.getPlace());
+        Assert.assertTrue("amount should be original amount", gamePayout.getAmount() > 0);
+        Assert.assertTrue("payout chop should be greater than 0", (int)gamePayout.getChopAmount() > 0);
+        totalPaidOut += gamePayout.getChopAmount();
+
+        gamePayout = gamePayouts.get(1);
+        Assert.assertEquals("payout should be place 2", 2, gamePayout.getPlace());
+        Assert.assertTrue("amount should be original amount", gamePayout.getAmount() > 0);
+        Assert.assertTrue("payout chop should be greater than 0", gamePayout.getChopAmount() > 0);
+        totalPaidOut += gamePayout.getChopAmount();
+
+        Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
+    }
+
+    @Test
+    public void testNumPayoutsChanged() {
+
+        int numPlayers = 10;
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+
+        Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
+
+        // Currently no payouts
+        Mockito.when(gamePayoutRepository.getByGameId(1)).thenReturn(Collections.EMPTY_LIST);
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
+
+        Mockito.verify(gamePayoutRepository, Mockito.times(1)).getByGameId(1);
+        Mockito.verify(gamePayoutRepository, Mockito.times(1)).deleteByGameId(1);
+        // Two payouts persisted
+        Mockito.verify(gamePayoutRepository, Mockito.times(2)).save(Mockito.any(GamePayout.class));
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 2", 2, gamePayouts.size());
+
+    }
+
+    @Test
+    public void testPayoutsChanged() {
+
+        int numPlayers = 10;
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+
+        Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
+
+        // Set the current payouts such that at least one will be different from the new payouts
+        List<GamePayout> currentGamePayouts = new ArrayList<>(2);
+        currentGamePayouts.add(GamePayout.builder()
+            .gameId(1)
+            .place(1)
+            .amount(1000)
+            .build());
+        currentGamePayouts.add(GamePayout.builder()
+            .gameId(1)
+            .place(2)
+            .amount(999)
+            .build());
+
+        // Currently no payouts
+        Mockito.when(gamePayoutRepository.getByGameId(1)).thenReturn(currentGamePayouts);
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
+
+        Mockito.verify(gamePayoutRepository, Mockito.times(1)).getByGameId(1);
+        Mockito.verify(gamePayoutRepository, Mockito.times(1)).deleteByGameId(1);
+        // Two payouts persisted
+        Mockito.verify(gamePayoutRepository, Mockito.times(2)).save(Mockito.any(GamePayout.class));
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 2", 2, gamePayouts.size());
+
+    }
+
+    @Test
+    public void testPayoutsUnchanged() {
+
+        int numPlayers = 10;
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+
+        Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
+
+        // Set the current payouts to be the same as the new payouts
+        List<GamePayout> currentGamePayouts = new ArrayList<>(2);
+        currentGamePayouts.add(GamePayout.builder()
+            .gameId(1)
+            .place(1)
+            .amount(39)
+            .build());
+        currentGamePayouts.add(GamePayout.builder()
+            .gameId(1)
+            .place(2)
+            .amount(21)
+            .build());
+
+        // Currently no payouts
+        Mockito.when(gamePayoutRepository.getByGameId(1)).thenReturn(currentGamePayouts);
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
+
+        Mockito.verify(gamePayoutRepository, Mockito.times(1)).getByGameId(1);
+        Mockito.verify(gamePayoutRepository, Mockito.times(0)).deleteByGameId(1);
+        // Two payouts persisted
+        Mockito.verify(gamePayoutRepository, Mockito.times(0)).save(Mockito.any(GamePayout.class));
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 2", 2, gamePayouts.size());
+
+    }
+
 
 }

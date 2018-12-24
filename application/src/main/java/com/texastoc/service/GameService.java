@@ -15,6 +15,7 @@ import com.texastoc.repository.SeasonRepository;
 import com.texastoc.service.calculator.GameCalculator;
 import com.texastoc.service.calculator.PayoutCalculator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,6 +44,7 @@ public class GameService {
 //        this.payoutCalculator = payoutCalculator;
     }
 
+    @Transactional
     public Game createGame(Game game) {
         Game gameToCreate = new Game();
 
@@ -97,6 +99,7 @@ public class GameService {
         return gameToCreate;
     }
 
+    @Transactional(readOnly = true)
     public Game getGame(int id) {
         Game game = gameRepository.getById(id);
         game.setPlayers(gamePlayerRepository.selectByGameId(id));
@@ -104,6 +107,7 @@ public class GameService {
         return game;
     }
 
+    @Transactional
     public GamePlayer createGamePlayer(GamePlayer gamePlayer) {
         int id = gamePlayerRepository.save(gamePlayer);
         gamePlayer.setId(id);
@@ -112,7 +116,7 @@ public class GameService {
 //        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(id);
 //        game = gameCalculator.calculate(game, gamePlayers);
 //        payoutCalculator.calculate(game);
-//         pointCalculator.calculate(game, gamePlayers);
+//        pointCalculator.calculate(game, gamePlayers);
 
         return gamePlayer;
     }

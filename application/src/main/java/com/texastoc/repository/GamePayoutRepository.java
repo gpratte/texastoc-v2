@@ -1,8 +1,6 @@
 package com.texastoc.repository;
 
 import com.texastoc.model.game.GamePayout;
-import com.texastoc.model.game.GamePlayer;
-import com.texastoc.model.user.Player;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -32,6 +30,31 @@ public class GamePayoutRepository {
             .query("select * from gamepayout where gameId = :id order by amount desc",
                 params,
                 new GamePayoutMapper());
+    }
+
+    private static final String INSERT_SQL =
+        "INSERT INTO gamepayout "
+            + "(gameId, place, amount, chopAmount, chopPercent) "
+            + " VALUES "
+            + " (:gameId, :place, :amount, :chopAmount, :chopPercent)";
+    public void save(final GamePayout gamePayout) {
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("gameId", gamePayout.getGameId());
+        params.addValue("place", gamePayout.getPlace());
+        params.addValue("amount", gamePayout.getAmount());
+        params.addValue("chopAmount", gamePayout.getChopAmount());
+        params.addValue("chopPercent", gamePayout.getChopPercent());
+
+        jdbcTemplate.update(INSERT_SQL, params);
+    }
+
+
+    public void deleteByGameId(int id) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", id);
+
+        jdbcTemplate.update("delete from gamepayout where gameId = :id", params);
     }
 
     private static final class GamePayoutMapper implements RowMapper<GamePayout> {
