@@ -98,11 +98,8 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
         seasonRetrieved = restTemplate.getForObject(endpoint() + "/seasons/" + seasonCreated.getId(), Season.class);
     }
 
-    @And("^a game is created$")
-    public void a_game_is_created() throws Exception {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
+    @And("^a game is created for the season$")
+    public void a_game_is_created_for_the_season() throws Exception {
         Game gameToCreate = Game.builder()
             .date(LocalDate.now())
             .hostId(1)
@@ -110,12 +107,7 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
             .transportRequired(false)
             .build();
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String gameToCreateAsJson = mapper.writeValueAsString(gameToCreate);
-        HttpEntity<String> entity = new HttpEntity<>(gameToCreateAsJson ,headers);
-
-        Game gameCreated = restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
+        Game gameCreated = createGame(gameToCreate);
         games.add(gameCreated);
     }
 

@@ -20,6 +20,6 @@ Feature: CRUD seasons
   Scenario: get a season with one game and no players
     Given season starts now
     When the season is created
-    And a game is created
+    And a game is created for the season
     And the season is retrieved
     Then the season should have one game and no players

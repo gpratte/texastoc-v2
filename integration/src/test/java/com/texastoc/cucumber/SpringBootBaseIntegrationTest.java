@@ -1,8 +1,11 @@
 package com.texastoc.cucumber;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.texastoc.TestConstants;
+import com.texastoc.model.game.Game;
+import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Season;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,6 +59,32 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
 
         return restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
 
+    }
+
+    protected Game createGame(Game game) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String gameToCreateAsJson = mapper.writeValueAsString(game);
+        HttpEntity<String> entity = new HttpEntity<>(gameToCreateAsJson ,headers);
+        System.out.println(gameToCreateAsJson);
+
+        return restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
+    }
+
+    protected GamePlayer addPlayerToGame(GamePlayer gamePlayer) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String gamePlayerToCreateAsJson = mapper.writeValueAsString(gamePlayer);
+        HttpEntity<String> entity = new HttpEntity<>(gamePlayerToCreateAsJson ,headers);
+        System.out.println(gamePlayerToCreateAsJson);
+
+        return restTemplate.postForObject(endpoint() + "/games/players", entity, GamePlayer.class);
     }
 
 }

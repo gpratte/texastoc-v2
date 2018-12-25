@@ -22,10 +22,3 @@ Feature: CRUD Games
     Then the retrieved game is normal
     Then the retrieved game has no players
 
-  Scenario: create, add player no buy-in and retrieve game
-    Given the game starts now
-    When the game is created
-    And a player is added
-    And the game is retrieved
-    Then the retrieved game is normal
-    Then the retrieved game has one player no buy-in
