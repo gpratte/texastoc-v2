@@ -59,6 +59,7 @@ public class GamePlayerRepository {
         params.addValue("rebuyAddOnCollected", gamePlayer.getRebuyAddOnCollected());
         params.addValue("annualTocCollected", gamePlayer.getAnnualTocCollected());
         params.addValue("quarterlyTocCollected", gamePlayer.getQuarterlyTocCollected());
+        params.addValue("knockedOut", gamePlayer.getKnockedOut());
         params.addValue("chop", gamePlayer.getChop());
 
         String [] keys = {"id"};
@@ -112,8 +113,20 @@ public class GamePlayerRepository {
                     gamePlayer.setQuarterlyTocCollected(Integer.parseInt(value));
                 }
 
-                gamePlayer.setKnockedOut(rs.getBoolean("knockedOut"));
-                gamePlayer.setRoundUpdates(rs.getBoolean("roundUpdates"));
+                value = rs.getString("quarterlyTocCollected");
+                if (value != null) {
+                    gamePlayer.setQuarterlyTocCollected(Integer.parseInt(value));
+                }
+
+                value = rs.getString("knockedOut");
+                if (value != null) {
+                    gamePlayer.setKnockedOut(rs.getBoolean("knockedOut"));
+                }
+
+                value = rs.getString("roundUpdates");
+                if (value != null) {
+                    gamePlayer.setRoundUpdates(rs.getBoolean("roundUpdates"));
+                }
 
             } catch (SQLException e) {
                 log.error("problem mapping game player" , e);

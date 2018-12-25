@@ -123,7 +123,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         GamePlayer gamePlayerToCreate = GamePlayer.builder()
             .playerId(BRIAN_BAKER_PLAYER_ID)
             .gameId(gameCreated.getId())
-            .name(TestConstants.BRIAN_BAKER_NAME)
+            .name(BRIAN_BAKER_NAME)
             .build();
 
         HttpHeaders headers = new HttpHeaders();
@@ -181,16 +181,32 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
     @Then("^the retrieved game has one player no buy-in$")
     public void the_retrieved_game_has_one_player_no_buy_in() throws Exception {
-        Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
-        Assert.assertEquals("num of game players should be 1", 1, (int)gameRetrieved.getNumPlayers());
-        Assert.assertEquals("num of game players should be 1", 1, (int)gameRetrieved.getPlayers().size());
+
+        // Assert game
         Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
         Assert.assertEquals("num of game payouts should be zero", 0, (int)gameRetrieved.getPayouts().size());
+        Assert.assertNotNull("last calculated should be null", gameRetrieved.getLastCalculated());
 
-        GamePlayer gamePlayer = gameRetrieved.getPlayers().get(0);
-        Assert.assertEquals("game player created game id should be " + gamePlayer.getGameId(), gamePlayer.getGameId(), this.gamePlayers.get(0).getGameId());
-        Assert.assertEquals("game player created player id should be " + gamePlayer.getPlayerId(), gamePlayer.getPlayerId(), this.gamePlayers.get(0).getPlayerId());
-        Assert.assertEquals("game player created name should be " + gamePlayer.getName(), gamePlayer.getName(), this.gamePlayers.get(0).getName());
+        // Assert game player
+        Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
+        Assert.assertEquals("num of game players should be 1", 1, (int)gameRetrieved.getNumPlayers());
+        Assert.assertEquals("num of game players in list should be 1", 1, (int)gameRetrieved.getPlayers().size());
+
+        GamePlayer expected = gamePlayers.get(0);
+        GamePlayer actual = gameRetrieved.getPlayers().get(0);
+        Assert.assertEquals("game player created game id should be " + expected.getGameId(), expected.getGameId(), actual.getGameId());
+        Assert.assertEquals("game player created player id should be " + expected.getPlayerId(), expected.getPlayerId(), actual.getPlayerId());
+        Assert.assertEquals("game player created name should be " + expected.getName(), expected.getName(), actual.getName());
+
+        Assert.assertNull("the game player points should be null", actual.getPoints());
+        Assert.assertNull("the game player buyInCollected should be null", actual.getBuyInCollected());
+        Assert.assertNull("the game player rebuyAddOnCollected should be null", actual.getRebuyAddOnCollected());
+        Assert.assertNull("the game player annualTocCollected should be null", actual.getAnnualTocCollected());
+        Assert.assertNull("the game player quarterlyTocCollected should be null", actual.getQuarterlyTocCollected());
+        Assert.assertNull("the game player quarterlyTocCollected should be null", actual.getChop());
+        Assert.assertNull("the game player finish should be null", actual.getFinish());
+        Assert.assertNull("the game player knockedOut should be null", actual.getKnockedOut());
+        Assert.assertNull("the game player roundUpdates should be null", actual.getRoundUpdates());
     }
 
     private void assertNewGame(Game game) throws Exception {
@@ -220,8 +236,8 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("game annual toc collected should be zero", 0, (int)game.getAnnualTocCollected());
         Assert.assertEquals("game quarterly toc collected should be zero", 0, (int)game.getQuarterlyTocCollected());
         Assert.assertFalse("not finalized", game.getFinalized());
-        Assert.assertNull("last calculated should be null", game.getLastCalculated());
         Assert.assertNull("started should be null", game.getStarted());
+
     }
 
 }
