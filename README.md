@@ -39,6 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 17-points-calculator
+## branch 18-add-player-to-game
 
-PointsCalculator component to calculate the points.
+Contine where branch 14-game-with-one-player-no-buy-in left off - add a player to a game.

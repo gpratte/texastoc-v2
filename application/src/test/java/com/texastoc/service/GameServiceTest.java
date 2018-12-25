@@ -14,6 +14,9 @@ import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
 import com.texastoc.TestUtils;
+import com.texastoc.service.calculator.GameCalculator;
+import com.texastoc.service.calculator.PayoutCalculator;
+import com.texastoc.service.calculator.PointsCalculator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +31,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -50,10 +54,16 @@ public class GameServiceTest implements TestConstants {
     private SeasonRepository seasonRepository;
     @MockBean
     private QuarterlySeasonRepository qSeasonRepository;
+    @MockBean
+    private GameCalculator gameCalculator;
+    @MockBean
+    private PayoutCalculator payoutCalculator;
+    @MockBean
+    private PointsCalculator pointsCalculator;
 
     @Before
     public void before() {
-        gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository);
+        gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator);
     }
 
     @Test
@@ -198,15 +208,40 @@ public class GameServiceTest implements TestConstants {
     @Test
     public void testCreateGamePlayer() {
 
-        Mockito.when(gamePlayerRepository.save((GamePlayer) notNull())).thenReturn(1);
-        Mockito.doNothing().when(gameRepository).update((Game) notNull());
+        // GameService#createGamePlayers calls
+        // 1. gamePlayerRepository.save
+        // 2. gameRepository.getById
+        // 3. gamePlayerRepository.selectByGameId
+        // 4. gameCalculator.calculate
+        // 5. payoutCalculator.calculate
+        // 6. pointsCalculator.calculate
+        // Not verifying the calculators because they have their own tests
 
-        Game game = Game.builder()
+        Mockito.when(gamePlayerRepository.save((GamePlayer) notNull())).thenReturn(1);
+
+        Game currentGame = Game.builder()
             .numPlayers(0)
             .build();
-        Mockito.when(gameRepository.getById(1)).thenReturn(game);
+        Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
         String playerName = Long.toString(System.currentTimeMillis());
+        GamePlayer gamePlayerToCreated = GamePlayer.builder()
+            .gameId(1)
+            .playerId(1)
+            .name(playerName)
+            .build();
+        List<GamePlayer> gamePlayersCreated = new LinkedList<>();
+        gamePlayersCreated.add(gamePlayerToCreated);
+        Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayersCreated);
+
+        Game calculatedGame = Game.builder()
+            .numPlayers(1)
+            .prizePot(0)
+            .build();
+
+        Mockito.when(gameCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(calculatedGame);
+        Mockito.when(payoutCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
+        Mockito.when(pointsCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
 
         GamePlayer gamePlayerToCreate = GamePlayer.builder()
             .gameId(1)
@@ -223,10 +258,12 @@ public class GameServiceTest implements TestConstants {
         Assert.assertEquals(1, gamePlayerArg.getValue().getPlayerId());
         Assert.assertEquals(playerName, gamePlayerArg.getValue().getName());
 
-        Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
-        ArgumentCaptor<Game> gameArg = ArgumentCaptor.forClass(Game.class);
-        Mockito.verify(gameRepository).update(gameArg.capture());
-        Assert.assertEquals("should update num players to 1", 1, (int)gameArg.getValue().getNumPlayers());
+        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+        Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
+        Mockito.verify(gameCalculator, Mockito.times(1)).calculate(Mockito.any(Game.class), Mockito.anyList());
+        Mockito.verify(payoutCalculator, Mockito.times(1)).calculate(Mockito.any(Game.class), Mockito.anyList());
+        Mockito.verify(pointsCalculator, Mockito.times(1)).calculate(Mockito.any(Game.class), Mockito.anyList());
+
 
         Assert.assertNotNull("game player created should not be null", gamePlayerCreated);
         Assert.assertEquals("game player id should be 1", 1, gamePlayerCreated.getGameId());

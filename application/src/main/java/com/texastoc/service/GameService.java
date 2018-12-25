@@ -14,6 +14,7 @@ import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
 import com.texastoc.service.calculator.GameCalculator;
 import com.texastoc.service.calculator.PayoutCalculator;
+import com.texastoc.service.calculator.PointsCalculator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,18 +31,20 @@ public class GameService {
     private final GamePayoutRepository gamePayoutRepository;
     private final SeasonRepository seasonRepository;
     private final QuarterlySeasonRepository qSeasonRepository;
-//    private final GameCalculator gameCalculator;
-//    private final PayoutCalculator payoutCalculator;
+    private final GameCalculator gameCalculator;
+    private final PayoutCalculator payoutCalculator;
+    private final PointsCalculator pointsCalculator;
 
-    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository) {
+    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.gamePlayerRepository = gamePlayerRepository;
         this.gamePayoutRepository = gamePayoutRepository;
         this.seasonRepository = seasonRepository;
         this.qSeasonRepository = qSeasonRepository;
-//        this.gameCalculator = gameCalculator;
-//        this.payoutCalculator = payoutCalculator;
+        this.gameCalculator = gameCalculator;
+        this.payoutCalculator = payoutCalculator;
+        this.pointsCalculator = pointsCalculator;
     }
 
     @Transactional
@@ -112,11 +115,12 @@ public class GameService {
         int id = gamePlayerRepository.save(gamePlayer);
         gamePlayer.setId(id);
 
-//        Game game = gameRepository.getById(gamePlayer.getGameId());
-//        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(id);
-//        game = gameCalculator.calculate(game, gamePlayers);
-//        payoutCalculator.calculate(game);
-//        pointCalculator.calculate(game, gamePlayers);
+        Game currentGame = gameRepository.getById(gamePlayer.getGameId());
+        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(id);
+
+        Game calculatedGame = gameCalculator.calculate(currentGame, gamePlayers);
+        payoutCalculator.calculate(calculatedGame, gamePlayers);
+        pointsCalculator.calculate(calculatedGame, gamePlayers);
 
         return gamePlayer;
     }
