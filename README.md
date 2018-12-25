@@ -41,4 +41,4 @@ Choose the branch from the github list of branches to see the readme for that br
 
 ## branch 18-add-player-to-game
 
-Contine where branch 14-game-with-one-player-no-buy-in left off - add a player to a game.
+Continue where branch 14-game-with-one-player-no-buy-in left off. Add a players to a game.
