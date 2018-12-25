@@ -46,7 +46,7 @@ public class PointsCalculator {
         boolean pointsChanged = false;
         for (GamePlayer gamePlayer : gamePlayers) {
             if (gamePlayer.getFinish() != null && gamePlayer.getFinish() < 11) {
-                if (gamePlayer.getFinish() != placePoints.get(gamePlayer.getFinish())) {
+                if (gamePlayer.getPoints() != placePoints.get(gamePlayer.getFinish())) {
                     pointsChanged = true;
                     gamePlayer.setPoints(placePoints.get(gamePlayer.getFinish()));
                 }
