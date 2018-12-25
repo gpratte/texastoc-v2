@@ -39,6 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 16-payout-calculator
+## branch 17-points-calculator
 
-PayoutCalculator component to calculate the payouts. Completely done using TDD.
+PointsCalculator component to calculate the points.

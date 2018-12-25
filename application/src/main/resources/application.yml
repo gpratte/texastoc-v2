@@ -3,3 +3,9 @@ spring:
   h2:
     console:
       enabled: true
+
+points:
+  numPlayers: 2
+  tenthPlaceIncr: 0.5
+  tenthPlacePoints: 3
+  multiplier: 1.291

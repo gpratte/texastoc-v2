@@ -26,6 +26,12 @@ public interface TestConstants {
     int BRIAN_BAKER_PLAYER_ID = 1;
     String BRIAN_BAKER_NAME = "Brian Baker";
 
+    int CHOP_NUM_PLAYERS = 2;
+    double CHOP_TENTH_PLACE_INCR = 0.5;
+    int CHOP_TENTH_PLACE_POINTS = 3;
+    double CHOP_MULTIPLIER = 1.291;
+
+
     static TocConfig getTocConfig() {
 
         return TocConfig.builder()
