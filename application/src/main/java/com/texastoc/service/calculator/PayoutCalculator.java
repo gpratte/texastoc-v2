@@ -57,6 +57,7 @@ public class PayoutCalculator {
                 .place(1)
                 .amount(game.getPrizePot())
                 .build());
+            persistPayouts(gamePayouts, game.getId());
             return gamePayouts;
         }
 
@@ -183,13 +184,17 @@ public class PayoutCalculator {
         }
 
         if (payoutsChanged) {
-            gamePayoutRepository.deleteByGameId(game.getId());
-            for (GamePayout gamePayout : gamePayouts) {
-                gamePayoutRepository.save(gamePayout);
-            }
+            persistPayouts(gamePayouts, game.getId());
         }
 
         return gamePayouts;
+    }
+
+    private void persistPayouts(List<GamePayout> gamePayouts, int gameId) {
+        gamePayoutRepository.deleteByGameId(gameId);
+        for (GamePayout gamePayout : gamePayouts) {
+            gamePayoutRepository.save(gamePayout);
+        }
     }
 
 }

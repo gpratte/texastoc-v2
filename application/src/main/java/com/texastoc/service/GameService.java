@@ -112,11 +112,12 @@ public class GameService {
 
     @Transactional
     public GamePlayer createGamePlayer(GamePlayer gamePlayer) {
-        int id = gamePlayerRepository.save(gamePlayer);
-        gamePlayer.setId(id);
+        int gamePlayerId = gamePlayerRepository.save(gamePlayer);
+        gamePlayer.setId(gamePlayerId);
 
-        Game currentGame = gameRepository.getById(gamePlayer.getGameId());
-        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(id);
+        int gameId = gamePlayer.getGameId();
+        Game currentGame = gameRepository.getById(gameId);
+        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(gameId);
 
         Game calculatedGame = gameCalculator.calculate(currentGame, gamePlayers);
         payoutCalculator.calculate(calculatedGame, gamePlayers);

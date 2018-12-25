@@ -25,6 +25,8 @@ public interface TestConstants {
 
     int BRIAN_BAKER_PLAYER_ID = 1;
     String BRIAN_BAKER_NAME = "Brian Baker";
+    int ANDY_THOMAS_PLAYER_ID = 2;
+    String ANDY_THOMAS_NAME = "Andy Thomas";
 
     int CHOP_NUM_PLAYERS = 2;
     double CHOP_TENTH_PLACE_INCR = 0.5;
