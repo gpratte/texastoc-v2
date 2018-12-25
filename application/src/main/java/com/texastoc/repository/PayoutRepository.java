@@ -35,8 +35,9 @@ public class PayoutRepository {
 
         // Get all the payouts and cache them in PAYOUTS
         MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("numPayouts", num);
 
-        List<Payout> payouts = jdbcTemplate.query("select * from payout order by numPayouts, place", params, new PayoutMapper());
+        List<Payout> payouts = jdbcTemplate.query("select * from payout where numPayouts = :numPayouts order by numPayouts, place", params, new PayoutMapper());
 
         for (Payout payout : payouts) {
             List<Payout> payoutsForPlaces = PAYOUTS.get(num);
