@@ -2,7 +2,6 @@ package com.texastoc.service.calculator;
 
 import com.texastoc.TestConstants;
 import com.texastoc.model.game.Game;
-import com.texastoc.model.game.GamePayout;
 import com.texastoc.model.game.GamePlayer;
 import org.junit.Assert;
 import org.junit.Before;

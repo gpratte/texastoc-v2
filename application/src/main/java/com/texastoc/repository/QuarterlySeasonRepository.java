@@ -1,9 +1,7 @@
 package com.texastoc.repository;
 
-import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
-import com.texastoc.model.season.Season;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -14,13 +12,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Slf4j

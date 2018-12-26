@@ -3,7 +3,6 @@ package com.texastoc.controller;
 import com.texastoc.model.supply.Supplies;
 import com.texastoc.model.supply.Supply;
 import com.texastoc.model.supply.SupplyType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

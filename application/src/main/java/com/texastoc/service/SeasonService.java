@@ -1,6 +1,5 @@
 package com.texastoc.service;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
@@ -13,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

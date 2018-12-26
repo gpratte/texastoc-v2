@@ -13,7 +13,6 @@ import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
-import com.texastoc.TestUtils;
 import com.texastoc.service.calculator.GameCalculator;
 import com.texastoc.service.calculator.PayoutCalculator;
 import com.texastoc.service.calculator.PointsCalculator;
@@ -24,18 +23,15 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.notNull;
 
 @RunWith(SpringRunner.class)

@@ -2,7 +2,6 @@ package com.texastoc.service;
 
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
-import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.user.Player;
@@ -18,8 +17,6 @@ import com.texastoc.service.calculator.PointsCalculator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

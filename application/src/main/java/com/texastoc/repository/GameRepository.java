@@ -1,6 +1,5 @@
 package com.texastoc.repository;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import lombok.extern.slf4j.Slf4j;
@@ -11,12 +10,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.validation.constraints.NotNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
