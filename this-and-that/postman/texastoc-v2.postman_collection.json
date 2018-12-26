@@ -1,0 +1,173 @@
+{
+	"info": {
+		"_postman_id": "993c174e-1ca6-438e-8aa0-4eccb088ac6a",
+		"name": "texastoc-v2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create season",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[2018,12,24]"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v2/seasons",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v2",
+						"seasons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get season",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v2/seasons/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v2",
+						"seasons",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create game",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hostId\": 1,\n    \"date\": \"2018-12-28\",\n    \"doubleBuyIn\": false,\n    \"transportRequired\": false\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v2/games",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v2",
+						"games"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update game",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hostId\": 1,\n    \"date\": \"2018-12-28\",\n    \"doubleBuyIn\": true,\n    \"transportRequired\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v2/games/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v2",
+						"games",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get game",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v2/games/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v2",
+						"games",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
