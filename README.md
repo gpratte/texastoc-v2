@@ -39,6 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 18-add-player-to-game
+## branch 19-double-buy-in
 
-Continue where branch 14-game-with-one-player-no-buy-in left off. Add a players to a game.
+Enhance the tests and code to support double buy-in.

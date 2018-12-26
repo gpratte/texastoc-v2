@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.notNull;
@@ -41,6 +42,7 @@ import static org.mockito.ArgumentMatchers.notNull;
 public class GameServiceTest implements TestConstants {
 
     private GameService gameService;
+    private Random random = new Random(System.currentTimeMillis());
 
     @MockBean
     private GameRepository gameRepository;
@@ -69,13 +71,15 @@ public class GameServiceTest implements TestConstants {
     @Test
     public void testCreateGame() {
 
+        boolean doubleBuyIn = random.nextBoolean();
+
         // Arrange
         LocalDate start = LocalDate.now();
         Game expected = Game.builder()
             .date(start)
             .hostId(1)
             .transportRequired(true)
-            .doubleBuyIn(true)
+            .doubleBuyIn(doubleBuyIn)
             .build();
 
         Mockito.when(gameRepository.save((Game) notNull())).thenReturn(1);
@@ -121,7 +125,7 @@ public class GameServiceTest implements TestConstants {
         Assert.assertEquals(start, gameArg.getValue().getDate());
         Assert.assertEquals(1, (int)gameArg.getValue().getHostId());
         Assert.assertTrue(gameArg.getValue().getTransportRequired());
-        Assert.assertTrue(gameArg.getValue().getDoubleBuyIn());
+        Assert.assertEquals(doubleBuyIn, gameArg.getValue().getDoubleBuyIn());
 
 
         // Assert
