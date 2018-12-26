@@ -65,6 +65,36 @@ public class GamePlayerRepository {
     }
 
 
+    private static final String UPDATE_SQL = "UPDATE gameplayer set " +
+        "playerId=:playerId, gameId=:gameId, name=:name, " +
+        "points=:points, finish=:finish, knockedOut=:knockedOut, " +
+        "roundUpdates=:roundUpdates, buyInCollected=:buyInCollected, " +
+        "rebuyAddOnCollected=:rebuyAddOnCollected, annualTocCollected=:annualTocCollected, " +
+        "quarterlyTocCollected=:quarterlyTocCollected, chop=:chop " +
+        " where id=:id";
+
+    public void update(final GamePlayer player) {
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("playerId", player.getPlayerId());
+        params.addValue("gameId", player.getGameId());
+        params.addValue("name", player.getName());
+        params.addValue("points", player.getPoints());
+        params.addValue("finish", player.getFinish());
+        params.addValue("knockedOut", player.getKnockedOut());
+        params.addValue("roundUpdates", player.getRoundUpdates());
+        params.addValue("buyInCollected", player.getBuyInCollected());
+        params.addValue("rebuyAddOnCollected", player.getRebuyAddOnCollected());
+        params.addValue("annualTocCollected", player.getAnnualTocCollected());
+        params.addValue("quarterlyTocCollected", player.getQuarterlyTocCollected());
+        params.addValue("chop", player.getChop());
+
+        params.addValue("id", player.getId());
+
+        jdbcTemplate.update(UPDATE_SQL, params);
+    }
+
+
     private static final class GamePlayerMapper implements RowMapper<GamePlayer> {
         public GamePlayer mapRow(ResultSet rs, int rowNum) {
             GamePlayer gamePlayer = new GamePlayer();

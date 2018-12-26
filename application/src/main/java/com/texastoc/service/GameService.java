@@ -135,19 +135,30 @@ public class GameService {
         int gamePlayerId = gamePlayerRepository.save(gamePlayer);
         gamePlayer.setId(gamePlayerId);
 
-        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(gameId);
-
-        Game calculatedGame = gameCalculator.calculate(currentGame, gamePlayers);
-        payoutCalculator.calculate(calculatedGame, gamePlayers);
-        pointsCalculator.calculate(calculatedGame, gamePlayers);
+        recalculate(currentGame);
 
         return gamePlayer;
+    }
+
+    @Transactional
+    public void updateGamePlayer(GamePlayer gamePlayer) {
+        int gameId = gamePlayer.getGameId();
+        Game currentGame = gameRepository.getById(gameId);
+
+        // Make sure money is right
+        verifyGamePlayerMoney(currentGame.getDoubleBuyIn(), gamePlayer);
+
+        gamePlayerRepository.update(gamePlayer);
+
+        recalculate(currentGame);
     }
 
     private void verifyGamePlayerMoney(boolean doubleBuyIn, GamePlayer gamePlayer) {
         TocConfig tocConfig = getTocConfig();
         Integer buyIn = gamePlayer.getBuyInCollected();
         Integer rebuyAddOn = gamePlayer.getRebuyAddOnCollected();
+        Integer toc = gamePlayer.getAnnualTocCollected();
+        Integer qToc = gamePlayer.getQuarterlyTocCollected();
 
         if (doubleBuyIn) {
             if (buyIn != null && buyIn != tocConfig.getDoubleBuyInCost()) {
@@ -164,6 +175,22 @@ public class GameService {
                 throw new DoubleBuyInMismatchException("Rebuy/AddOn should not be double");
             }
         }
+
+        if (toc != null && toc != tocConfig.getAnnualTocCost()) {
+            throw new DoubleBuyInMismatchException("Annual TOC incorrect");
+        }
+        if (qToc != null && qToc != tocConfig.getQuarterlyTocCost()) {
+            throw new DoubleBuyInMismatchException("Quarterly TOC incorrect");
+        }
+
+    }
+
+    private void recalculate(Game game) {
+        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(game.getId());
+        Game calculatedGame = gameCalculator.calculate(game, gamePlayers);
+        payoutCalculator.calculate(calculatedGame, gamePlayers);
+        pointsCalculator.calculate(calculatedGame, gamePlayers);
+
     }
 
     // Cache it

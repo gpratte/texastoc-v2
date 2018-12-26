@@ -210,11 +210,25 @@ public class GameServiceTest implements TestConstants {
 
     }
 
+    @Test
+    public void testUpdateGame() {
+
+        Game game = Game.builder()
+            .id(1)
+            .build();
+
+        Mockito.doNothing().when(gameRepository).update((Game) notNull());
+
+        gameService.updateGame(game);
+
+        Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
+    }
+
     /**
      * Buy-in amount does not match the buy-in required for the game
      */
     @Test(expected = DoubleBuyInMismatchException.class)
-    public void testCreateGamePlayerMoneyWrong() {
+    public void testCreateGamePlayerBuyInWrong() {
 
         Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
@@ -237,6 +251,31 @@ public class GameServiceTest implements TestConstants {
         Assert.fail("Should have thrown an exception");
     }
 
+    /**
+     * Annual TOC amount wrong
+     */
+    @Test(expected = DoubleBuyInMismatchException.class)
+    public void testCreateGamePlayerTocWrong() {
+
+        Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
+
+        Game currentGame = Game.builder()
+            .numPlayers(0)
+            .doubleBuyIn(false)
+            .build();
+        Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
+
+        GamePlayer gamePlayerToCreate = GamePlayer.builder()
+            .gameId(1)
+            .playerId(1)
+            .annualTocCollected(TOC_PER_GAME + 1)
+            .build();
+
+        gameService.createGamePlayer(gamePlayerToCreate);
+
+        Assert.fail("Should have thrown an exception");
+    }
+
     @Test
     public void testCreateGamePlayer() {
 
@@ -252,7 +291,9 @@ public class GameServiceTest implements TestConstants {
         Mockito.when(gamePlayerRepository.save((GamePlayer) notNull())).thenReturn(1);
 
         Game currentGame = Game.builder()
+            .id(1)
             .numPlayers(0)
+            .doubleBuyIn(false)
             .build();
         Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
@@ -314,18 +355,106 @@ public class GameServiceTest implements TestConstants {
         Assert.assertNull("game player chop should be null", gamePlayerCreated.getChop());
     }
 
-    @Test
-    public void testUpdateGame() {
+    /**
+     * Rebuy amount does not match the rebuy required for the game
+     */
+    @Test(expected = DoubleBuyInMismatchException.class)
+    public void testUpdateGamePlayerRebuyWrong() {
 
-        Game game = Game.builder()
-            .id(1)
+        Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
+
+        boolean doubleBuyIn = random.nextBoolean();
+
+        Game currentGame = Game.builder()
+            .numPlayers(0)
+            .doubleBuyIn(doubleBuyIn)
+            .build();
+        Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
+
+        Mockito.doNothing().when(gamePlayerRepository).update((GamePlayer) notNull());
+
+        GamePlayer gamePlayerToCreate = GamePlayer.builder()
+            .gameId(1)
+            .playerId(1)
+            .buyInCollected(doubleBuyIn ? GAME_DOUBLE_BUY_IN : GAME_BUY_IN)
+            .rebuyAddOnCollected(doubleBuyIn ? GAME_REBUY : GAME_DOUBLE_REBUY)
             .build();
 
-        Mockito.doNothing().when(gameRepository).update((Game) notNull());
+        gameService.createGamePlayer(gamePlayerToCreate);
 
-        gameService.updateGame(game);
+        Assert.fail("Should have thrown an exception");
+    }
 
-        Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
+    /**
+     * Quarterly TOC amount wrong
+     */
+    @Test(expected = DoubleBuyInMismatchException.class)
+    public void testCreateGamePlayerQtocWrong() {
+
+        Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
+
+        Game currentGame = Game.builder()
+            .numPlayers(0)
+            .doubleBuyIn(false)
+            .build();
+        Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
+
+        GamePlayer gamePlayerToCreate = GamePlayer.builder()
+            .gameId(1)
+            .playerId(1)
+            .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME - 1)
+            .build();
+
+        gameService.createGamePlayer(gamePlayerToCreate);
+
+        Assert.fail("Should have thrown an exception");
+    }
+
+    @Test
+    public void testUpdateGamePlayer() {
+
+        Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
+
+        Game currentGame = Game.builder()
+            .id(1)
+            .numPlayers(0)
+            .doubleBuyIn(false)
+            .build();
+        Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
+
+        GamePlayer gamePlayer = GamePlayer.builder()
+            .id(1)
+            .gameId(1)
+            .buyInCollected(GAME_BUY_IN)
+            .rebuyAddOnCollected(GAME_REBUY)
+            .annualTocCollected(TOC_PER_GAME)
+            .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+            .roundUpdates(true)
+            .finish(10)
+            .knockedOut(true)
+            .chop(500)
+            .build();
+
+        List<GamePlayer> gamePlayersCreated = new LinkedList<>();
+        gamePlayersCreated.add(gamePlayer);
+        Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayersCreated);
+
+        Game calculatedGame = Game.builder()
+            .numPlayers(1)
+            .prizePot(0)
+            .build();
+        Mockito.when(gameCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(calculatedGame);
+        Mockito.when(payoutCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
+        Mockito.when(pointsCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
+
+        gameService.updateGamePlayer(gamePlayer);
+
+        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+        Mockito.verify(gamePlayerRepository, Mockito.times(1)).update(Mockito.any(GamePlayer.class));
+        Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
+        Mockito.verify(gameCalculator, Mockito.times(1)).calculate(Mockito.any(Game.class), Mockito.anyList());
+        Mockito.verify(payoutCalculator, Mockito.times(1)).calculate(Mockito.any(Game.class), Mockito.anyList());
+        Mockito.verify(pointsCalculator, Mockito.times(1)).calculate(Mockito.any(Game.class), Mockito.anyList());
 
     }
 }
