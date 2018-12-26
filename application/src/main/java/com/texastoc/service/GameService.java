@@ -108,7 +108,18 @@ public class GameService {
     }
 
     @Transactional
+    public void updateGame(Game game) {
+        gameRepository.update(game);
+    }
+
+    @Transactional
     public GamePlayer createGamePlayer(GamePlayer gamePlayer) {
+
+        if (gamePlayer.getName() == null) {
+            Player player = playerRepository.get(gamePlayer.getPlayerId());
+            gamePlayer.setName(player.getName());
+        }
+
         int gamePlayerId = gamePlayerRepository.save(gamePlayer);
         gamePlayer.setId(gamePlayerId);
 

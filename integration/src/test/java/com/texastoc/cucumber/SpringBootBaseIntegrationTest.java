@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.texastoc.TestConstants;
+import com.texastoc.controller.request.CreateGamePlayerRequest;
+import com.texastoc.controller.request.CreateGameRequest;
+import com.texastoc.controller.request.UpdateGameRequest;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Season;
@@ -55,34 +58,44 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         mapper.registerModule(new JavaTimeModule());
         String seasonAsJson = mapper.writeValueAsString(start);
         HttpEntity<String> entity = new HttpEntity<>(seasonAsJson, headers);
-        System.out.println(seasonAsJson);
 
         return restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
 
     }
 
-    protected Game createGame(Game game) throws JsonProcessingException {
+    protected Game createGame(CreateGameRequest createGameRequest) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        String gameToCreateAsJson = mapper.writeValueAsString(game);
-        HttpEntity<String> entity = new HttpEntity<>(gameToCreateAsJson ,headers);
-        System.out.println(gameToCreateAsJson);
+
+        String createGameRequestAsJson = mapper.writeValueAsString(createGameRequest);
+        HttpEntity<String> entity = new HttpEntity<>(createGameRequestAsJson ,headers);
 
         return restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
     }
 
-    protected GamePlayer addPlayerToGame(GamePlayer gamePlayer) throws JsonProcessingException {
+    protected void updateGame(int gameId, UpdateGameRequest updateGameRequest) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        String gamePlayerToCreateAsJson = mapper.writeValueAsString(gamePlayer);
-        HttpEntity<String> entity = new HttpEntity<>(gamePlayerToCreateAsJson ,headers);
-        System.out.println(gamePlayerToCreateAsJson);
+        String updateGameRequestAsJson = mapper.writeValueAsString(updateGameRequest);
+        HttpEntity<String> entity = new HttpEntity<>(updateGameRequestAsJson ,headers);
+
+        restTemplate.put(endpoint() + "/games/" + gameId, entity, Game.class);
+    }
+
+    protected GamePlayer addPlayerToGame(CreateGamePlayerRequest cgpr) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String createGamePlayerRequestAsJson = mapper.writeValueAsString(cgpr);
+        HttpEntity<String> entity = new HttpEntity<>(createGamePlayerRequestAsJson ,headers);
 
         return restTemplate.postForObject(endpoint() + "/games/players", entity, GamePlayer.class);
     }

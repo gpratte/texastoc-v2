@@ -76,7 +76,7 @@ public class GameRepository {
         "kittyCollected=:kittyCollected, buyInCollected=:buyInCollected, " +
         "rebuyAddOnCollected=:rebuyAddOnCollected, annualTocCollected=:annualTocCollected, " +
         "quarterlyTocCollected=:quarterlyTocCollected, finalized=:finalized, " +
-        "lastCalculated=:lastCalculated " +
+        "payoutDelta=:payoutDelta, lastCalculated=:lastCalculated " +
         " where id=:id";
 
     public void update(final Game game) {
@@ -104,10 +104,11 @@ public class GameRepository {
         params.addValue("annualTocCollected", game.getAnnualTocCollected());
         params.addValue("quarterlyTocCollected", game.getQuarterlyTocCollected());
         params.addValue("finalized", game.getFinalized());
+        params.addValue("payoutDelta", game.getPayoutDelta());
         params.addValue("lastCalculated", game.getLastCalculated());
         params.addValue("id", game.getId());
 
-        jdbcTemplate.update(UPDATE_SQL, params);
+        int rc = jdbcTemplate.update(UPDATE_SQL, params);
     }
 
 
@@ -174,6 +175,11 @@ public class GameRepository {
                 value = rs.getString("hostName");
                 if (value != null) {
                     game.setHostName(rs.getString("hostName"));
+                }
+
+                value = rs.getString("payoutDelta");
+                if (value != null) {
+                    game.setPayoutDelta(rs.getInt("payoutDelta"));
                 }
 
                 Timestamp time = rs.getTimestamp("started");

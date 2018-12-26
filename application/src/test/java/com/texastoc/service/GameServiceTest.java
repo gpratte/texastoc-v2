@@ -282,4 +282,18 @@ public class GameServiceTest implements TestConstants {
         Assert.assertNull("game player chop should be null", gamePlayerCreated.getChop());
     }
 
+    @Test
+    public void testUpdateGame() {
+
+        Game game = Game.builder()
+            .id(1)
+            .build();
+
+        Mockito.doNothing().when(gameRepository).update((Game) notNull());
+
+        gameService.updateGame(game);
+
+        Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
+
+    }
 }

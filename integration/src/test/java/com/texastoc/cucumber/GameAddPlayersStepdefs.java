@@ -1,6 +1,8 @@
 package com.texastoc.cucumber;
 
 import com.texastoc.TestConstants;
+import com.texastoc.controller.request.CreateGamePlayerRequest;
+import com.texastoc.controller.request.CreateGameRequest;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import cucumber.api.java.Before;
@@ -39,60 +41,56 @@ public class GameAddPlayersStepdefs extends SpringBootBaseIntegrationTest {
         // Arrange
         createSeason();
 
-        Game gameToCreate = Game.builder()
+        CreateGameRequest createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
             .doubleBuyIn(false)
             .transportRequired(false)
             .build();
 
-        gameId = createGame(gameToCreate).getId();
+        gameId = createGame(createGameRequest).getId();
     }
 
 
     @And("^a player is added without buy-in$")
     public void a_player_is_added_without_buy_in() throws Exception {
 
-        GamePlayer gamePlayerToCreate = GamePlayer.builder()
+        CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
             .playerId(BRIAN_BAKER_PLAYER_ID)
             .gameId(gameId)
-            .name(BRIAN_BAKER_NAME)
             .build();
 
-        gamePlayers.add(addPlayerToGame(gamePlayerToCreate));
+        gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
     }
 
     @And("^a player is added with buy-in$")
     public void a_player_is_added_with_buy_in() throws Exception {
 
-        GamePlayer gamePlayerToCreate = GamePlayer.builder()
+        CreateGamePlayerRequest createGamePlayerRequest =CreateGamePlayerRequest.builder()
             .playerId(BRIAN_BAKER_PLAYER_ID)
             .gameId(gameId)
-            .name(BRIAN_BAKER_NAME)
             .buyInCollected(GAME_BUY_IN)
             .build();
 
-        gamePlayers.add(addPlayerToGame(gamePlayerToCreate));
+        gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
     }
 
     @And("^two players are added with buy-in$")
     public void two_players_are_added_with_buy_in() throws Exception {
 
-        GamePlayer gamePlayerToCreate = GamePlayer.builder()
+        CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
             .playerId(BRIAN_BAKER_PLAYER_ID)
             .gameId(gameId)
-            .name(BRIAN_BAKER_NAME)
             .buyInCollected(GAME_BUY_IN)
             .build();
-        gamePlayers.add(addPlayerToGame(gamePlayerToCreate));
+        gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
 
-        gamePlayerToCreate = GamePlayer.builder()
+        createGamePlayerRequest = CreateGamePlayerRequest.builder()
             .playerId(ANDY_THOMAS_PLAYER_ID)
             .gameId(gameId)
-            .name(ANDY_THOMAS_NAME)
             .buyInCollected(GAME_BUY_IN)
             .build();
-        gamePlayers.add(addPlayerToGame(gamePlayerToCreate));
+        gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
     }
 
     @And("^the game is retrieved$")
@@ -191,17 +189,15 @@ public class GameAddPlayersStepdefs extends SpringBootBaseIntegrationTest {
         }
 
         for (int i = 0; i < numPlayers; i++) {
-            GamePlayer gamePlayerToCreate = GamePlayer.builder()
+            CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
                 .playerId(1)
                 .gameId(gameId)
-                .name(Long.toString(System.currentTimeMillis()))
                 .buyInCollected(GAME_BUY_IN)
                 .annualTocCollected(random.nextBoolean() ? TOC_PER_GAME : null)
                 .quarterlyTocCollected(random.nextBoolean() ? QUARTERLY_TOC_PER_GAME : null)
-                .rebuyAddOnCollected(random.nextBoolean() ? GAME_REBUY : null)
                 .build();
 
-            gamePlayers.add(addPlayerToGame(gamePlayerToCreate));
+            gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
         }
     }
 

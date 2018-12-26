@@ -1,7 +1,10 @@
 package com.texastoc.cucumber;
 
+import com.texastoc.controller.request.CreateGameRequest;
+import com.texastoc.controller.request.UpdateGameRequest;
 import com.texastoc.model.game.Game;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -14,14 +17,14 @@ import java.time.LocalDate;
 @Ignore
 public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
-    private Game gameToCreate;
+    private CreateGameRequest createGameRequest;
     private Game gameCreated;
     private Game gameRetrieved;
     private HttpClientErrorException exception;
 
     @Before
     public void before() {
-        gameToCreate = null;
+        createGameRequest = null;
         gameCreated = null;
         gameRetrieved = null;
         exception = null;
@@ -33,7 +36,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         // Arrange
         createSeason();
 
-        gameToCreate = Game.builder()
+        createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
             .doubleBuyIn(false)
@@ -46,7 +49,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         // Arrange
         createSeason();
 
-        gameToCreate = Game.builder()
+        createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
             .doubleBuyIn(true)
@@ -59,7 +62,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         // Arrange
         createSeason();
 
-        gameToCreate = Game.builder()
+        createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
             .doubleBuyIn(false)
@@ -69,12 +72,27 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
     @When("^the game is created$")
     public void the_game_is_created() throws Exception {
-        gameCreated = createGame(gameToCreate);
+        gameCreated = createGame(createGameRequest);
+    }
+
+    @And("^the retrieved game is updated and retrieved$")
+    public void the_retrieved_game_is_updated_and_retrieved() throws Exception {
+
+        UpdateGameRequest updateGameRequest = UpdateGameRequest.builder()
+            .hostId(gameRetrieved.getHostId())
+            .date(gameRetrieved.getDate())
+            .doubleBuyIn(true)
+            .transportRequired(true)
+            .payoutDelta(1)
+            .build();
+        updateGame(gameRetrieved.getId(), updateGameRequest);
+
+        gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameCreated.getId(),Game.class);
     }
 
     @When("^the game is created and retrieved$")
     public void the_game_is_created_and_retrieved() throws Exception {
-        gameCreated = createGame(gameToCreate);
+        gameCreated = createGame(createGameRequest);
 
         gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameCreated.getId(),Game.class);
     }
@@ -82,6 +100,19 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     @Then("^the game is normal$")
     public void the_game_is_normal() throws Exception {
         assertNewGame(gameCreated);
+    }
+
+    @Then("^the game is not double buy in nor transport required$")
+    public void the_game_is_not_double_buy_in_nor_transport_required() throws Exception {
+        Assert.assertFalse("double buy in should be false", gameCreated.getDoubleBuyIn());
+        Assert.assertFalse("transport required should be false", gameCreated.getTransportRequired());
+    }
+
+    @Then("^the game is double buy-in, transport and delta changed$")
+    public void the_game_is_double_buy_in_transport_and_delta_changed() throws Exception {
+        Assert.assertTrue("double buy in should be true", gameRetrieved.getDoubleBuyIn());
+        Assert.assertTrue("transport required should be true", gameRetrieved.getTransportRequired());
+        Assert.assertEquals("payout delta should be 1", 1, (int)gameRetrieved.getPayoutDelta());
     }
 
     @Then("^the game is double buy in$")
@@ -130,8 +161,6 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("game host name should be " + BRIAN_BAKER_NAME, BRIAN_BAKER_NAME, game.getHostName());
 
         // Game setup variables
-        Assert.assertFalse("double buy in should be false", game.getDoubleBuyIn());
-        Assert.assertFalse("transport required should be false", game.getTransportRequired());
         Assert.assertEquals("kitty cost should come from season", KITTY_PER_GAME, (int)game.getKittyCost());
         Assert.assertEquals("buy in cost should come from season", GAME_BUY_IN, (int)game.getBuyInCost());
         Assert.assertEquals("re buy cost should come from season", GAME_REBUY, (int)game.getRebuyAddOnCost());

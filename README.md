@@ -39,6 +39,11 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 19-double-buy-in
+## branch 20-update-game
 
-Enhance the tests and code to support double buy-in.
+Enhance the tests and code to update a game. Can update
+* date game starts
+* host
+* double buy-in
+* supplies need transporting
+* add or remove payouts

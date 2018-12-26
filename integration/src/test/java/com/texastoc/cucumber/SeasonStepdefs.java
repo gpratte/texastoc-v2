@@ -3,6 +3,7 @@ package com.texastoc.cucumber;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.texastoc.TestUtils;
+import com.texastoc.controller.request.CreateGameRequest;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Season;
 import cucumber.api.java.Before;
@@ -100,14 +101,14 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 
     @And("^a game is created for the season$")
     public void a_game_is_created_for_the_season() throws Exception {
-        Game gameToCreate = Game.builder()
+        CreateGameRequest createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
             .doubleBuyIn(false)
             .transportRequired(false)
             .build();
 
-        Game gameCreated = createGame(gameToCreate);
+        Game gameCreated = createGame(createGameRequest);
         games.add(gameCreated);
     }
 
