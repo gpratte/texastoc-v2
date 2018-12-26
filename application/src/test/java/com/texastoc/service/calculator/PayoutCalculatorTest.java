@@ -733,6 +733,50 @@ public class PayoutCalculatorTest implements TestConstants {
         Assert.assertEquals("sum of payouts for " + numPlayers + " players should be " + prizePot, prizePot, totalPaidOut);
     }
 
+    /**
+     * One player will enter the chop and update before the next player.
+     */
+    @Test
+    public void test8Players1Chop() {
+
+        int numPlayers = 8;
+
+        int prizePot = GAME_BUY_IN * numPlayers;
+        Game game = Game.builder()
+            .id(1)
+            .numPlayers(numPlayers)
+            .prizePot(prizePot)
+            .build();
+
+        Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
+
+        List<GamePlayer> gamePlayers = new ArrayList<>(8);
+        gamePlayers.add(GamePlayer.builder()
+            .chop(100000)
+            .finish(1)
+            .build());
+        gamePlayers.add(GamePlayer.builder()
+            .finish(2)
+            .build());
+
+        List<GamePayout> gamePayouts = payoutCalculator.calculate(game, gamePlayers);
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 2", 2, gamePayouts.size());
+
+        int totalPaidOut = 0;
+
+        GamePayout gamePayout = gamePayouts.get(0);
+        Assert.assertEquals("payout should be place 1", 1, gamePayout.getPlace());
+        Assert.assertTrue("amount should be original amount", gamePayout.getAmount() > 0);
+        Assert.assertNull("payout chop should be null", gamePayout.getChopAmount());
+
+        gamePayout = gamePayouts.get(1);
+        Assert.assertEquals("payout should be place 2", 2, gamePayout.getPlace());
+        Assert.assertTrue("amount should be original amount", gamePayout.getAmount() > 0);
+        Assert.assertNull("payout chop should be null", gamePayout.getChopAmount());
+    }
+
     @Test
     public void test8Players2PayoutsChopped() {
 

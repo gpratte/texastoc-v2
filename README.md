@@ -39,13 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 21-update-game-player
+## branch 22-delete-game-player
 
-Enhance the tests and code to update a game player. Can update
-* buy-in
-* rebuy/add on
-* annual TOC
-* quarterly TOC
-* finish
-* knocked out
-* round update notification
+Enhance the tests and code to delete a game player. Can delete a player as long as the player has not finished in the top ten.
