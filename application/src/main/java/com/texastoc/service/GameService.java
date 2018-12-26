@@ -153,6 +153,11 @@ public class GameService {
         recalculate(currentGame);
     }
 
+    @Transactional(readOnly = true)
+    public GamePlayer getGamePlayer(int gamePlayerId) {
+        return gamePlayerRepository.selectById(gamePlayerId);
+    }
+
     private void verifyGamePlayerMoney(boolean doubleBuyIn, GamePlayer gamePlayer) {
         TocConfig tocConfig = getTocConfig();
         Integer buyIn = gamePlayer.getBuyInCollected();

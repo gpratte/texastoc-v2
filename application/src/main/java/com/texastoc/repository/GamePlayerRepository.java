@@ -1,5 +1,6 @@
 package com.texastoc.repository;
 
+import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,6 +33,22 @@ public class GamePlayerRepository {
                 new GamePlayerMapper());
 
         return gamePlayers;
+    }
+
+    public GamePlayer selectById(int id) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", id);
+
+        GamePlayer gamePlayer;
+        try {
+            gamePlayer = jdbcTemplate
+                .queryForObject("select * from gameplayer where id = :id", params, new GamePlayerMapper());
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return gamePlayer;
     }
 
     private static final String INSERT_SQL =

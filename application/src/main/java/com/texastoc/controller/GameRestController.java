@@ -2,6 +2,7 @@ package com.texastoc.controller;
 
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.CreateGameRequest;
+import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGameRequest;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
@@ -41,10 +42,7 @@ public class GameRestController {
         game.setDate(updateGameRequest.getDate());
         game.setDoubleBuyIn(updateGameRequest.getDoubleBuyIn());
         game.setTransportRequired(updateGameRequest.getTransportRequired());
-
-        if (updateGameRequest.getPayoutDelta() != null) {
-            game.setPayoutDelta(updateGameRequest.getPayoutDelta());
-        }
+        game.setPayoutDelta(updateGameRequest.getPayoutDelta());
 
         gameService.updateGame(game);
     }
@@ -64,6 +62,23 @@ public class GameRestController {
             .quarterlyTocCollected(cgpr.getQuarterlyTocCollected())
             .build();
         return gameService.createGamePlayer(gamePlayer);
+    }
+
+    @PutMapping("/api/v2/games/players/{id}")
+    public void updateGamePlayer(@PathVariable("id") int id, @RequestBody @Valid UpdateGamePlayerRequest ugpr) {
+        GamePlayer gamePlayer = gameService.getGamePlayer(id);
+
+        gamePlayer.setPlayerId(ugpr.getPlayerId());
+        gamePlayer.setFinish(ugpr.getFinish());
+        gamePlayer.setKnockedOut(ugpr.getKnockedOut());
+        gamePlayer.setRoundUpdates(ugpr.getRoundUpdates());
+        gamePlayer.setBuyInCollected(ugpr.getBuyInCollected());
+        gamePlayer.setRebuyAddOnCollected(ugpr.getRebuyAddOnCollected());
+        gamePlayer.setAnnualTocCollected(ugpr.getAnnualTocCollected());
+        gamePlayer.setQuarterlyTocCollected(ugpr.getQuarterlyTocCollected());
+        gamePlayer.setChop(ugpr.getChop());
+
+        gameService.updateGamePlayer(gamePlayer);
     }
 
 }

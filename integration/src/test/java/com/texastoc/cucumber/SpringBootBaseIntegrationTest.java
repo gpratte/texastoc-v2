@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.texastoc.TestConstants;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.CreateGameRequest;
+import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGameRequest;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
@@ -85,7 +86,7 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         String updateGameRequestAsJson = mapper.writeValueAsString(updateGameRequest);
         HttpEntity<String> entity = new HttpEntity<>(updateGameRequestAsJson ,headers);
 
-        restTemplate.put(endpoint() + "/games/" + gameId, entity, Game.class);
+        restTemplate.put(endpoint() + "/games/" + gameId, entity);
     }
 
     protected GamePlayer addPlayerToGame(CreateGamePlayerRequest cgpr) throws JsonProcessingException {
@@ -100,4 +101,15 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         return restTemplate.postForObject(endpoint() + "/games/players", entity, GamePlayer.class);
     }
 
+    protected void updatePlayerInGame(int gamePlayerId, UpdateGamePlayerRequest ugpr) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String updateGamePlayerRequestAsJson = mapper.writeValueAsString(ugpr);
+        HttpEntity<String> entity = new HttpEntity<>(updateGamePlayerRequestAsJson ,headers);
+
+        restTemplate.put(endpoint() + "/games/players/" + gamePlayerId, entity);
+    }
 }
