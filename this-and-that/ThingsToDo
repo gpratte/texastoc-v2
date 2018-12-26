@@ -1,8 +1,13 @@
 
-Do not allow game double buy in to change if any players have bought in.
+Write tests for:
+    Add first time player.
+    Delete a game player.
+    Finalize game, calculate season/qseason.
+    Update game player, if ID changes then name changes.
+    Do not allow game double buy in to change if any players have bought in.
+    What happens when there is only 1 chop?
 
-What happens when there is only 1 chop?
+Sonar scan.
 
-Sonar scan
-
+Cache games, qseason, season? MVP?
 
