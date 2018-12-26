@@ -1,12 +1,14 @@
 package com.texastoc.service;
 
 import com.texastoc.TestConstants;
+import com.texastoc.exception.DoubleBuyInMismatchException;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.user.Player;
+import com.texastoc.repository.ConfigRepository;
 import com.texastoc.repository.GamePayoutRepository;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
@@ -32,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import static org.mockito.ArgumentMatchers.booleanThat;
 import static org.mockito.ArgumentMatchers.notNull;
 
 @RunWith(SpringRunner.class)
@@ -58,10 +61,12 @@ public class GameServiceTest implements TestConstants {
     private PayoutCalculator payoutCalculator;
     @MockBean
     private PointsCalculator pointsCalculator;
+    @MockBean
+    private ConfigRepository configRepository;
 
     @Before
     public void before() {
-        gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator);
+        gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator, configRepository);
     }
 
     @Test
@@ -203,6 +208,33 @@ public class GameServiceTest implements TestConstants {
         Assert.assertNotNull("GamePayouts returned should not be null", game.getPayouts());
         Assert.assertEquals("number of payouts should be 0", 0, game.getPayouts().size());
 
+    }
+
+    /**
+     * Buy-in amount does not match the buy-in required for the game
+     */
+    @Test(expected = DoubleBuyInMismatchException.class)
+    public void testCreateGamePlayerMoneyWrong() {
+
+        Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
+
+        boolean doubleBuyIn = random.nextBoolean();
+
+        Game currentGame = Game.builder()
+            .numPlayers(0)
+            .doubleBuyIn(doubleBuyIn)
+            .build();
+        Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
+
+        GamePlayer gamePlayerToCreate = GamePlayer.builder()
+            .gameId(1)
+            .playerId(1)
+            .buyInCollected(doubleBuyIn ? GAME_BUY_IN : GAME_DOUBLE_BUY_IN)
+            .build();
+
+        gameService.createGamePlayer(gamePlayerToCreate);
+
+        Assert.fail("Should have thrown an exception");
     }
 
     @Test

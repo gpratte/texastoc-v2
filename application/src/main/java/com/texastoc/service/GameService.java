@@ -1,10 +1,13 @@
 package com.texastoc.service;
 
+import com.texastoc.exception.DoubleBuyInMismatchException;
+import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.user.Player;
+import com.texastoc.repository.ConfigRepository;
 import com.texastoc.repository.GamePayoutRepository;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
@@ -31,8 +34,10 @@ public class GameService {
     private final GameCalculator gameCalculator;
     private final PayoutCalculator payoutCalculator;
     private final PointsCalculator pointsCalculator;
+    private final ConfigRepository configRepository;
+    private TocConfig tocConfig;
 
-    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator) {
+    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.gamePlayerRepository = gamePlayerRepository;
@@ -42,6 +47,7 @@ public class GameService {
         this.gameCalculator = gameCalculator;
         this.payoutCalculator = payoutCalculator;
         this.pointsCalculator = pointsCalculator;
+        this.configRepository = configRepository;
     }
 
     @Transactional
@@ -115,6 +121,12 @@ public class GameService {
     @Transactional
     public GamePlayer createGamePlayer(GamePlayer gamePlayer) {
 
+        int gameId = gamePlayer.getGameId();
+        Game currentGame = gameRepository.getById(gameId);
+
+        // Make sure money is right
+        verifyGamePlayerMoney(currentGame.getDoubleBuyIn(), gamePlayer);
+
         if (gamePlayer.getName() == null) {
             Player player = playerRepository.get(gamePlayer.getPlayerId());
             gamePlayer.setName(player.getName());
@@ -123,8 +135,6 @@ public class GameService {
         int gamePlayerId = gamePlayerRepository.save(gamePlayer);
         gamePlayer.setId(gamePlayerId);
 
-        int gameId = gamePlayer.getGameId();
-        Game currentGame = gameRepository.getById(gameId);
         List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(gameId);
 
         Game calculatedGame = gameCalculator.calculate(currentGame, gamePlayers);
@@ -133,4 +143,35 @@ public class GameService {
 
         return gamePlayer;
     }
+
+    private void verifyGamePlayerMoney(boolean doubleBuyIn, GamePlayer gamePlayer) {
+        TocConfig tocConfig = getTocConfig();
+        Integer buyIn = gamePlayer.getBuyInCollected();
+        Integer rebuyAddOn = gamePlayer.getRebuyAddOnCollected();
+
+        if (doubleBuyIn) {
+            if (buyIn != null && buyIn != tocConfig.getDoubleBuyInCost()) {
+                throw new DoubleBuyInMismatchException("Buy-in should be double");
+            }
+            if (rebuyAddOn != null && rebuyAddOn != tocConfig.getDoubleRebuyCost()) {
+                throw new DoubleBuyInMismatchException("Rebuy/AddOn should be double");
+            }
+        } else {
+            if (buyIn != null && buyIn == tocConfig.getDoubleBuyInCost()) {
+                throw new DoubleBuyInMismatchException("Buy-in should no be double");
+            }
+            if (rebuyAddOn != null && rebuyAddOn == tocConfig.getDoubleRebuyCost()) {
+                throw new DoubleBuyInMismatchException("Rebuy/AddOn should not be double");
+            }
+        }
+    }
+
+    // Cache it
+    private TocConfig getTocConfig() {
+        if (tocConfig == null) {
+            tocConfig = configRepository.get();
+        }
+        return tocConfig;
+    }
+
 }
