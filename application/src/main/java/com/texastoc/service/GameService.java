@@ -1,6 +1,7 @@
 package com.texastoc.service;
 
 import com.texastoc.exception.DoubleBuyInMismatchException;
+import com.texastoc.exception.FinalizedException;
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
@@ -18,6 +19,8 @@ import com.texastoc.repository.SeasonRepository;
 import com.texastoc.service.calculator.GameCalculator;
 import com.texastoc.service.calculator.PayoutCalculator;
 import com.texastoc.service.calculator.PointsCalculator;
+import com.texastoc.service.calculator.QuarterlySeasonCalculator;
+import com.texastoc.service.calculator.SeasonCalculator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +40,12 @@ public class GameService {
     private final PayoutCalculator payoutCalculator;
     private final PointsCalculator pointsCalculator;
     private final ConfigRepository configRepository;
+    private final SeasonCalculator seasonCalculator;
+    private final QuarterlySeasonCalculator qSeasonCalculator;
+
     private TocConfig tocConfig;
 
-    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository) {
+    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.gamePlayerRepository = gamePlayerRepository;
@@ -50,6 +56,8 @@ public class GameService {
         this.payoutCalculator = payoutCalculator;
         this.pointsCalculator = pointsCalculator;
         this.configRepository = configRepository;
+        this.seasonCalculator = seasonCalculator;
+        this.qSeasonCalculator = qSeasonCalculator;
     }
 
     @Transactional
@@ -117,13 +125,83 @@ public class GameService {
 
     @Transactional
     public void updateGame(Game game) {
+        checkFinalized(game.getId());
         gameRepository.update(game);
     }
 
     @Transactional
     public GamePlayer createGamePlayer(GamePlayer gamePlayer) {
+        checkFinalized(gamePlayer.getGameId());
+        return this.createGamePlayerWorker(gamePlayer);
+    }
+
+    @Transactional
+    public void updateGamePlayer(GamePlayer gamePlayer) {
+        checkFinalized(gamePlayer.getGameId());
+
+        int gameId = gamePlayer.getGameId();
+        Game currentGame = gameRepository.getById(gameId);
+
+        // Make sure money is right
+        verifyGamePlayerMoney(currentGame.getDoubleBuyIn(), gamePlayer);
+
+        gamePlayerRepository.update(gamePlayer);
+
+        recalculate(currentGame);
+    }
+
+    @Transactional
+    public void deleteGamePlayer(int gamePlayerId) {
+        GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
+        checkFinalized(gamePlayer.getGameId());
+
+        gamePlayerRepository.deleteById(gamePlayer.getId());
+
+        Game currentGame = gameRepository.getById(gamePlayer.getGameId());
+        recalculate(currentGame);
+    }
+
+    @Transactional(readOnly = true)
+    public GamePlayer getGamePlayer(int gamePlayerId) {
+        return gamePlayerRepository.selectById(gamePlayerId);
+    }
+
+    @Transactional
+    public GamePlayer createFirstTimeGamePlayer(FirstTimeGamePlayer firstTimeGamePlayer) {
+        checkFinalized(firstTimeGamePlayer.getGameId());
+
+        String firstName = firstTimeGamePlayer.getFirstName();
+        String lastName = firstTimeGamePlayer.getLastName();
+        Player player = Player.builder()
+            .firstName(firstName)
+            .lastName(lastName)
+            .email(firstTimeGamePlayer.getEmail())
+            .build();
+        int playerId = playerRepository.save(player);
+
+        StringBuilder name = new StringBuilder();
+        name.append(!Objects.isNull(firstName) ? firstName : "");
+        name.append((!Objects.isNull(firstName) && !Objects.isNull(lastName)) ? " " : "");
+        name.append(!Objects.isNull(lastName) ? lastName : "");
+
+        GamePlayer gamePlayer = GamePlayer.builder()
+            .gameId(firstTimeGamePlayer.getGameId())
+            .playerId(playerId)
+            .name(name.toString())
+            .buyInCollected(firstTimeGamePlayer.getBuyInCollected())
+            .annualTocCollected(firstTimeGamePlayer.getAnnualTocCollected())
+            .quarterlyTocCollected(firstTimeGamePlayer.getQuarterlyTocCollected())
+            .build();
 
         return this.createGamePlayerWorker(gamePlayer);
+    }
+
+    public void finalize(int id) {
+        Game game = gameRepository.getById(id);
+        game.setFinalized(true);
+        gameRepository.update(game);
+        qSeasonCalculator.calculate(game.getQSeasonId());
+        seasonCalculator.calculate(game.getSeasonId());
     }
 
     // Worker to avoid one @Transacation calling anther @Transactional
@@ -147,31 +225,12 @@ public class GameService {
 
         return gamePlayer;
     }
-    @Transactional
-    public void updateGamePlayer(GamePlayer gamePlayer) {
-        int gameId = gamePlayer.getGameId();
-        Game currentGame = gameRepository.getById(gameId);
 
-        // Make sure money is right
-        verifyGamePlayerMoney(currentGame.getDoubleBuyIn(), gamePlayer);
-
-        gamePlayerRepository.update(gamePlayer);
-
-        recalculate(currentGame);
-    }
-
-    @Transactional
-    public void deleteGamePlayer(int gamePlayerId) {
-        GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
-        gamePlayerRepository.deleteById(gamePlayer.getId());
-
-        Game currentGame = gameRepository.getById(gamePlayer.getGameId());
-        recalculate(currentGame);
-    }
-
-    @Transactional(readOnly = true)
-    public GamePlayer getGamePlayer(int gamePlayerId) {
-        return gamePlayerRepository.selectById(gamePlayerId);
+    private void recalculate(Game game) {
+        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(game.getId());
+        Game calculatedGame = gameCalculator.calculate(game, gamePlayers);
+        payoutCalculator.calculate(calculatedGame, gamePlayers);
+        pointsCalculator.calculate(calculatedGame, gamePlayers);
     }
 
     private void verifyGamePlayerMoney(boolean doubleBuyIn, GamePlayer gamePlayer) {
@@ -206,45 +265,6 @@ public class GameService {
 
     }
 
-    @Transactional
-    public GamePlayer createFirstTimeGamePlayer(FirstTimeGamePlayer firstTimeGamePlayer) {
-        String firstName = firstTimeGamePlayer.getFirstName();
-        String lastName = firstTimeGamePlayer.getLastName();
-        Player player = Player.builder()
-            .firstName(firstName)
-            .lastName(lastName)
-            .email(firstTimeGamePlayer.getEmail())
-            .build();
-        int playerId = playerRepository.save(player);
-
-        StringBuilder name = new StringBuilder();
-        name.append(!Objects.isNull(firstName) ? firstName : "");
-        name.append((!Objects.isNull(firstName) && !Objects.isNull(lastName)) ? " " : "");
-        name.append(!Objects.isNull(lastName) ? lastName : "");
-
-        System.out.println("!!! " + playerId);
-        GamePlayer gamePlayer = GamePlayer.builder()
-            .gameId(firstTimeGamePlayer.getGameId())
-            .playerId(playerId)
-            .name(name.toString())
-            .buyInCollected(firstTimeGamePlayer.getBuyInCollected())
-            .annualTocCollected(firstTimeGamePlayer.getAnnualTocCollected())
-            .quarterlyTocCollected(firstTimeGamePlayer.getQuarterlyTocCollected())
-            .build();
-
-        return this.createGamePlayerWorker(gamePlayer);
-    }
-
-
-
-    private void recalculate(Game game) {
-        List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(game.getId());
-        Game calculatedGame = gameCalculator.calculate(game, gamePlayers);
-        payoutCalculator.calculate(calculatedGame, gamePlayers);
-        pointsCalculator.calculate(calculatedGame, gamePlayers);
-
-    }
-
     // Cache it
     private TocConfig getTocConfig() {
         if (tocConfig == null) {
@@ -253,4 +273,10 @@ public class GameService {
         return tocConfig;
     }
 
+    private void checkFinalized(int id) {
+        Game currentGame = gameRepository.getById(id);
+        if (currentGame.getFinalized() != null && currentGame.getFinalized() == true) {
+            throw new FinalizedException("Game is finalized");
+        }
+    }
 }

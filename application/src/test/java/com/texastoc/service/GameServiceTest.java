@@ -2,6 +2,7 @@ package com.texastoc.service;
 
 import com.texastoc.TestConstants;
 import com.texastoc.exception.DoubleBuyInMismatchException;
+import com.texastoc.exception.FinalizedException;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
@@ -19,6 +20,8 @@ import com.texastoc.repository.SeasonRepository;
 import com.texastoc.service.calculator.GameCalculator;
 import com.texastoc.service.calculator.PayoutCalculator;
 import com.texastoc.service.calculator.PointsCalculator;
+import com.texastoc.service.calculator.QuarterlySeasonCalculator;
+import com.texastoc.service.calculator.SeasonCalculator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,10 +67,14 @@ public class GameServiceTest implements TestConstants {
     private PointsCalculator pointsCalculator;
     @MockBean
     private ConfigRepository configRepository;
+    @MockBean
+    private SeasonCalculator seasonCalculator;
+    @MockBean
+    private QuarterlySeasonCalculator qSeasonCalculator;
 
     @Before
     public void before() {
-        gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator, configRepository);
+        gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator, configRepository, seasonCalculator, qSeasonCalculator);
     }
 
     @Test
@@ -509,6 +516,82 @@ public class GameServiceTest implements TestConstants {
         Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any(Player.class));
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).save(Mockito.any(GamePlayer.class));
         Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+    }
+
+    @Test
+    public void testFinalize() {
+        Mockito.when(gameRepository.getById(1))
+            .thenReturn(Game.builder()
+                .id(1)
+                .qSeasonId(1)
+                .seasonId(1)
+                .build());
+
+        Mockito.doNothing().when(gameRepository).update((Game) notNull());
+
+        gameService.finalize(1);
+
+        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+        Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
+        Mockito.verify(qSeasonCalculator, Mockito.times(1)).calculate(1);
+        Mockito.verify(seasonCalculator, Mockito.times(1)).calculate(1);
+    }
+
+    @Test
+    public void testFinalizeNoChanges() {
+        Mockito.when(gameRepository.getById(1))
+            .thenReturn(Game.builder()
+                .id(1)
+                .finalized(true)
+                .build());
+
+        try {
+            gameService.updateGame(Game.builder()
+                .id(1)
+                .build());
+            Assert.fail("should not be able to update a finalized game");
+        } catch (FinalizedException e) {
+            // all good
+        }
+
+        try {
+            gameService.createGamePlayer(GamePlayer.builder()
+                .gameId(1)
+                .build());
+            Assert.fail("should not be able to update a finalized game");
+        } catch (FinalizedException e) {
+            // all good
+        }
+
+        try {
+            gameService.updateGamePlayer(GamePlayer.builder()
+                .gameId(1)
+                .build());
+            Assert.fail("should not be able to update a finalized game");
+        } catch (FinalizedException e) {
+            // all good
+        }
+
+        Mockito.when(gamePlayerRepository.selectById(1)).thenReturn(GamePlayer.builder()
+            .id(1)
+            .gameId(1)
+            .build());
+        try {
+            gameService.deleteGamePlayer(1);
+            Assert.fail("should not be able to update a finalized game");
+        } catch (FinalizedException e) {
+            // all good
+        }
+
+        try {
+            gameService.createFirstTimeGamePlayer(FirstTimeGamePlayer.builder()
+                .gameId(1)
+                .build());
+            Assert.fail("should not be able to update a finalized game");
+        } catch (FinalizedException e) {
+            // all good
+        }
+
     }
 
 }
