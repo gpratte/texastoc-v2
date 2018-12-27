@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Random;
 
 @Ignore
-public class GameAddPlayersStepdefs extends SpringBootBaseIntegrationTest {
+public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
 
     private Integer gameId;
     private Integer numPlayers;
@@ -117,6 +117,13 @@ public class GameAddPlayersStepdefs extends SpringBootBaseIntegrationTest {
         GamePlayer gamePlayer = gamePlayers.get(0);
         updatePlayerInGame(gamePlayer.getId(), updateGamePlayerRequest);
         gamePlayersUpdated.add(updateGamePlayerRequest);
+    }
+
+    @And("^the player is deleted$")
+    public void the_player_is_deleted() throws Exception {
+
+        GamePlayer gamePlayer = gamePlayers.get(0);
+        deletePlayerFromGame(gamePlayer.getId());
     }
 
     @Then("^the retrieved game has one player no buy-in$")
@@ -294,6 +301,20 @@ public class GameAddPlayersStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("the game player quarterlyTocCollected should be " + expected.getQuarterlyTocCollected(), (int)expected.getQuarterlyTocCollected(), (int)actual.getQuarterlyTocCollected());
 
         Assert.assertNull("the game player chop should be null", actual.getChop());
+    }
+
+    @Then("^the retrieved game does not have the player$")
+    public void the_retrieved_game_does_not_have_the_player() throws Exception {
+
+        // Assert game
+        Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
+        Assert.assertEquals("num of game payouts should be 0", 0, (int)gameRetrieved.getPayouts().size());
+        Assert.assertNotNull("last calculated should not be null", gameRetrieved.getLastCalculated());
+
+        // Assert game player
+        Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
+        Assert.assertEquals("num of game players should be 0", 0, (int)gameRetrieved.getNumPlayers());
+        Assert.assertEquals("num of game players in list should be 0", 0, (int)gameRetrieved.getPlayers().size());
     }
 
 }

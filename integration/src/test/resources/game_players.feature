@@ -31,3 +31,9 @@ Feature: Add players to a game
     And the game is retrieved
     Then the retrieved game has one player with updates
 
+  Scenario: add player and delete player
+    Given a game is created
+    And a player is added with buy-in
+    And the player is deleted
+    And the game is retrieved
+    Then the retrieved game does not have the player

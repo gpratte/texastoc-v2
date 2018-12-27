@@ -7,6 +7,7 @@ import com.texastoc.controller.request.UpdateGameRequest;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.service.GameService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +80,11 @@ public class GameRestController {
         gamePlayer.setChop(ugpr.getChop());
 
         gameService.updateGamePlayer(gamePlayer);
+    }
+
+    @DeleteMapping("/api/v2/games/players/{id}")
+    public void deleteGamePlayer(@PathVariable("id") int id) {
+        gameService.deleteGamePlayer(id);
     }
 
 }
