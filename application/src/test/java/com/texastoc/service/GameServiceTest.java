@@ -2,6 +2,7 @@ package com.texastoc.service;
 
 import com.texastoc.TestConstants;
 import com.texastoc.exception.DoubleBuyInMismatchException;
+import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Quarter;
@@ -479,6 +480,33 @@ public class GameServiceTest implements TestConstants {
 
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectById(1);
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).deleteById(1);
+        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+    }
+
+    @Test
+    public void testFirstTimeGamePlayer() {
+
+        Mockito.when(playerRepository.save((Player) notNull())).thenReturn(1);
+
+        Mockito.when(gamePlayerRepository.save((GamePlayer) notNull())).thenReturn(1);
+
+        Game currentGame = Game.builder()
+            .id(1)
+            .numPlayers(0)
+            .doubleBuyIn(false)
+            .build();
+        Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
+
+        FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
+            .firstName("John")
+            .lastName("Doe")
+            .email("johndoe@texastoc.com")
+            .build();
+        GamePlayer gamePlayer = gameService.createFirstTimeGamePlayer(1, firstTimeGamePlayer);
+
+        Assert.assertNotNull(gamePlayer);
+        Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any(Player.class));
+        Mockito.verify(gamePlayerRepository, Mockito.times(1)).save(Mockito.any(GamePlayer.class));
         Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
     }
 

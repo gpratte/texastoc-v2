@@ -2,6 +2,7 @@ package com.texastoc.service;
 
 import com.texastoc.exception.DoubleBuyInMismatchException;
 import com.texastoc.model.config.TocConfig;
+import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.QuarterlySeason;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GameService {
@@ -121,6 +123,12 @@ public class GameService {
     @Transactional
     public GamePlayer createGamePlayer(GamePlayer gamePlayer) {
 
+        return this.createGamePlayerWorker(gamePlayer);
+    }
+
+    // Worker to avoid one @Transacation calling anther @Transactional
+    private GamePlayer createGamePlayerWorker(GamePlayer gamePlayer) {
+
         int gameId = gamePlayer.getGameId();
         Game currentGame = gameRepository.getById(gameId);
 
@@ -139,7 +147,6 @@ public class GameService {
 
         return gamePlayer;
     }
-
     @Transactional
     public void updateGamePlayer(GamePlayer gamePlayer) {
         int gameId = gamePlayer.getGameId();
@@ -198,6 +205,36 @@ public class GameService {
         }
 
     }
+
+    @Transactional
+    public GamePlayer createFirstTimeGamePlayer(int gameId, FirstTimeGamePlayer firstTimeGamePlayer) {
+        String firstName = firstTimeGamePlayer.getFirstName();
+        String lastName = firstTimeGamePlayer.getLastName();
+        Player player = Player.builder()
+            .firstName(firstName)
+            .lastName(lastName)
+            .email(firstTimeGamePlayer.getEmail())
+            .build();
+        int playerId = playerRepository.save(player);
+
+        StringBuilder name = new StringBuilder();
+        name.append(!Objects.isNull(firstName) ? firstName : "");
+        name.append((!Objects.isNull(firstName) && !Objects.isNull(lastName)) ? " " : "");
+        name.append(!Objects.isNull(lastName) ? lastName : "");
+
+        GamePlayer gamePlayer = GamePlayer.builder()
+            .gameId(gameId)
+            .playerId(playerId)
+            .name(name.toString())
+            .buyInCollected(firstTimeGamePlayer.getBuyInCollected())
+            .annualTocCollected(firstTimeGamePlayer.getAnnualTocCollected())
+            .quarterlyTocCollected(firstTimeGamePlayer.getQuarterlyTocCollected())
+            .build();
+
+        return this.createGamePlayerWorker(gamePlayer);
+    }
+
+
 
     private void recalculate(Game game) {
         List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(game.getId());

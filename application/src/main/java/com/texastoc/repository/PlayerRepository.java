@@ -28,6 +28,10 @@ public class PlayerRepository {
         return jdbcTemplate.queryForObject("select * from player where id = :id", params, new PlayerMapper());
     }
 
+    public int save(Player player) {
+        return 0;
+    }
+
     private static final class PlayerMapper implements RowMapper<Player> {
         public Player mapRow(ResultSet rs, int rowNum) {
             Player player = new Player();
