@@ -1,14 +1,14 @@
 
 Write tests for:
-    Finalize game
-        do not allow updates
-        calculate season
-        cache season
+    Calculate season/qseason
     Update game player, do not allow player id to change.
     Update game, do not allow game double buy in to change if any players have bought in.
-    Roles
-        Login
-        Only admin can unfinalized a game/season
+
+Roles
+    Login
+    Only admin can unfinalized a game/season
+
+Cache season
 
 Sonar scan.
 
