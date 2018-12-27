@@ -1,12 +1,11 @@
 
 Write tests for:
-    Finalize game, calculate season/qseason.
-    Update game player, if playerId changes then name changes.
-    Do not allow game double buy in to change if any players have bought in.
-
-Break game player out of GameService.
+    Finalize game
+        do not allow updates
+        calculate season
+        cache season
+    Update game player, do not allow player id to change.
+    Update game, do not allow game double buy in to change if any players have bought in.
 
 Sonar scan.
-
-Cache games, qseason, season? MVP?
 
