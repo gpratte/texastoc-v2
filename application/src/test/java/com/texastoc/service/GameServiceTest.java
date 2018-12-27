@@ -501,8 +501,9 @@ public class GameServiceTest implements TestConstants {
             .firstName("John")
             .lastName("Doe")
             .email("johndoe@texastoc.com")
+            .gameId(1)
             .build();
-        GamePlayer gamePlayer = gameService.createFirstTimeGamePlayer(1, firstTimeGamePlayer);
+        GamePlayer gamePlayer = gameService.createFirstTimeGamePlayer(firstTimeGamePlayer);
 
         Assert.assertNotNull(gamePlayer);
         Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any(Player.class));

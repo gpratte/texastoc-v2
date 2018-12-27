@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -28,8 +30,23 @@ public class PlayerRepository {
         return jdbcTemplate.queryForObject("select * from player where id = :id", params, new PlayerMapper());
     }
 
-    public int save(Player player) {
-        return 0;
+    private static final String INSERT_SQL = "INSERT INTO player "
+        + " (firstName, lastName, phone, email) "
+        + " VALUES "
+        + " (:firstName, :lastName, :phone, :email) ";
+    public int save(final Player player) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("firstName", player.getFirstName());
+        params.addValue("lastName", player.getLastName());
+        params.addValue("phone", player.getPhone());
+        params.addValue("email", player.getEmail());
+
+        String [] keys = {"id"};
+        jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
+
+        return keyHolder.getKey().intValue();
     }
 
     private static final class PlayerMapper implements RowMapper<Player> {

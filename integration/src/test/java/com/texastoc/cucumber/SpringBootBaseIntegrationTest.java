@@ -8,6 +8,7 @@ import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.CreateGameRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGameRequest;
+import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Season;
@@ -99,6 +100,18 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         HttpEntity<String> entity = new HttpEntity<>(createGamePlayerRequestAsJson ,headers);
 
         return restTemplate.postForObject(endpoint() + "/games/players", entity, GamePlayer.class);
+    }
+
+    protected GamePlayer addFirstTimePlayerToGame(FirstTimeGamePlayer firstTimeGamePlayer) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String firstTimeGamePlayerRequestAsJson = mapper.writeValueAsString(firstTimeGamePlayer);
+        HttpEntity<String> entity = new HttpEntity<>(firstTimeGamePlayerRequestAsJson ,headers);
+
+        return restTemplate.postForObject(endpoint() + "/games/players/first", entity, GamePlayer.class);
     }
 
     protected void updatePlayerInGame(int gamePlayerId, UpdateGamePlayerRequest ugpr) throws JsonProcessingException {

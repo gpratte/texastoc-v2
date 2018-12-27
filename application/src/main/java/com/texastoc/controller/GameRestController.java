@@ -4,6 +4,7 @@ import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.CreateGameRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGameRequest;
+import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.service.GameService;
@@ -63,6 +64,11 @@ public class GameRestController {
             .quarterlyTocCollected(cgpr.getQuarterlyTocCollected())
             .build();
         return gameService.createGamePlayer(gamePlayer);
+    }
+
+    @PostMapping("/api/v2/games/players/first")
+    public GamePlayer createGamePlayer(@RequestBody @Valid FirstTimeGamePlayer firstTimeGamePlayer) {
+        return gameService.createFirstTimeGamePlayer(firstTimeGamePlayer);
     }
 
     @PutMapping("/api/v2/games/players/{id}")

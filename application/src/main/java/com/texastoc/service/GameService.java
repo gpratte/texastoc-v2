@@ -207,7 +207,7 @@ public class GameService {
     }
 
     @Transactional
-    public GamePlayer createFirstTimeGamePlayer(int gameId, FirstTimeGamePlayer firstTimeGamePlayer) {
+    public GamePlayer createFirstTimeGamePlayer(FirstTimeGamePlayer firstTimeGamePlayer) {
         String firstName = firstTimeGamePlayer.getFirstName();
         String lastName = firstTimeGamePlayer.getLastName();
         Player player = Player.builder()
@@ -222,8 +222,9 @@ public class GameService {
         name.append((!Objects.isNull(firstName) && !Objects.isNull(lastName)) ? " " : "");
         name.append(!Objects.isNull(lastName) ? lastName : "");
 
+        System.out.println("!!! " + playerId);
         GamePlayer gamePlayer = GamePlayer.builder()
-            .gameId(gameId)
+            .gameId(firstTimeGamePlayer.getGameId())
             .playerId(playerId)
             .name(name.toString())
             .buyInCollected(firstTimeGamePlayer.getBuyInCollected())

@@ -3,6 +3,7 @@ package com.texastoc.cucumber;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.CreateGameRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
+import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import cucumber.api.java.Before;
@@ -14,6 +15,7 @@ import org.junit.Ignore;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,8 +25,9 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     private Integer gameId;
     private Integer numPlayers;
     private Game gameRetrieved;
-    private List<GamePlayer> gamePlayers = new ArrayList<>();
-    private List<UpdateGamePlayerRequest> gamePlayersUpdated = new ArrayList<>();
+    private List<GamePlayer> gamePlayers = new LinkedList<>();
+    private List<UpdateGamePlayerRequest> gamePlayersUpdated = new LinkedList<>();
+    private List<FirstTimeGamePlayer> firstTimeGamePlayers = new LinkedList<>();
 
     private Random random = new Random(System.currentTimeMillis());
 
@@ -35,6 +38,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         gameRetrieved = null;
         gamePlayers.clear();
         gamePlayersUpdated.clear();
+        firstTimeGamePlayers.clear();
     }
 
 
@@ -124,6 +128,23 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
 
         GamePlayer gamePlayer = gamePlayers.get(0);
         deletePlayerFromGame(gamePlayer.getId());
+    }
+
+    @And("^a first time player is added$")
+    public void a_first_time_player_is_added() throws Exception {
+
+        FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
+            .firstName("Joe")
+            .lastName("Schmoe")
+            .email("joe.schmoe@texastoc.com")
+            .gameId(gameId)
+            .buyInCollected(GAME_BUY_IN)
+            .annualTocCollected(TOC_PER_GAME)
+            .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+            .build();
+
+        firstTimeGamePlayers.add(firstTimeGamePlayer);
+        gamePlayers.add(addFirstTimePlayerToGame(firstTimeGamePlayer));
     }
 
     @Then("^the retrieved game has one player no buy-in$")
@@ -315,6 +336,31 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
         Assert.assertEquals("num of game players should be 0", 0, (int)gameRetrieved.getNumPlayers());
         Assert.assertEquals("num of game players in list should be 0", 0, (int)gameRetrieved.getPlayers().size());
+    }
+
+    @Then("^the retrieved game has the first time player$")
+    public void the_retrieved_game_has_the_first_time_player() throws Exception {
+
+        // Assert game player
+        Assert.assertNotNull("game players should not be null", gameRetrieved.getPlayers());
+        Assert.assertEquals("num of game players should be 1", 1, (int)gameRetrieved.getNumPlayers());
+        Assert.assertEquals("num of game players in list should be 1", 1, (int)gameRetrieved.getPlayers().size());
+
+        FirstTimeGamePlayer expected = firstTimeGamePlayers.get(0);
+        GamePlayer actual = gameRetrieved.getPlayers().get(0);
+        Assert.assertEquals("game player created game id should be " + expected.getGameId(), expected.getGameId(), actual.getGameId());
+        Assert.assertTrue("game player created player id should be set", actual.getPlayerId() > 0);
+        Assert.assertEquals("game player created name should be " + expected.getFirstName() + " " + expected.getLastName(), (expected.getFirstName() + " " + expected.getLastName()), actual.getName());
+
+        Assert.assertNull("the game player points should be null", actual.getPoints());
+        Assert.assertEquals("the game player buyInCollected should be " + GAME_BUY_IN, GAME_BUY_IN, (int)actual.getBuyInCollected());
+        Assert.assertNull("the game player rebuyAddOnCollected should be null", actual.getRebuyAddOnCollected());
+        Assert.assertEquals("the game player annual toc should be " + TOC_PER_GAME, TOC_PER_GAME, (int)actual.getAnnualTocCollected());
+        Assert.assertEquals("the game player quarterly toc should be " + QUARTERLY_TOC_PER_GAME, QUARTERLY_TOC_PER_GAME, (int)actual.getQuarterlyTocCollected());
+        Assert.assertNull("the game player chop should be null", actual.getChop());
+        Assert.assertNull("the game player finish should be null", actual.getFinish());
+        Assert.assertNull("the game player knockedOut should be null", actual.getKnockedOut());
+        Assert.assertNull("the game player roundUpdates should be null", actual.getRoundUpdates());
     }
 
 }
