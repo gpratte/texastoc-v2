@@ -153,6 +153,15 @@ public class GameService {
         recalculate(currentGame);
     }
 
+    @Transactional
+    public void deleteGamePlayer(int gamePlayerId) {
+        GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
+        gamePlayerRepository.deleteById(gamePlayer.getId());
+
+        Game currentGame = gameRepository.getById(gamePlayer.getGameId());
+        recalculate(currentGame);
+    }
+
     @Transactional(readOnly = true)
     public GamePlayer getGamePlayer(int gamePlayerId) {
         return gamePlayerRepository.selectById(gamePlayerId);

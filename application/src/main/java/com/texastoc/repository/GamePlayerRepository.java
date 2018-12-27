@@ -51,6 +51,14 @@ public class GamePlayerRepository {
         return gamePlayer;
     }
 
+    public void deleteById(int id) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", id);
+
+        jdbcTemplate
+            .update("delete from gameplayer where id = :id", params);
+    }
+
     private static final String INSERT_SQL =
         "INSERT INTO gameplayer "
             + "(playerId, gameId, name, points, finish, knockedOut, roundUpdates, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, chop) "
