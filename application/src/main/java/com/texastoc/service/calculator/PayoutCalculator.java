@@ -25,7 +25,7 @@ public class PayoutCalculator {
 
     public List<GamePayout> calculate(Game game, List<GamePlayer> gamePlayers) {
 
-        if (game.getPrizePot() <= 0) {
+        if (game.getPrizePotCalculated() <= 0) {
             return Collections.EMPTY_LIST;
         }
 
@@ -33,7 +33,7 @@ public class PayoutCalculator {
         int numPlayers = (int)Math.round((double)game.getNumPlayers()/5) * 5;
 
         int numberPaid = numPlayers / 5;
-        numberPaid += game.getPayoutDelta() == null ? 0 : game.getPayoutDelta();
+        numberPaid += game.getPayoutDelta();
 
         // Always pay at least 1 player
         if (numberPaid < 1) {
@@ -55,14 +55,14 @@ public class PayoutCalculator {
             gamePayouts.add(GamePayout.builder()
                 .gameId(game.getId())
                 .place(1)
-                .amount(game.getPrizePot())
+                .amount(game.getPrizePotCalculated())
                 .build());
             persistPayouts(gamePayouts, game.getId());
             return gamePayouts;
         }
 
         List<Payout> payouts = payoutRepository.get(numToPay);
-        int prizePot = game.getPrizePot();
+        int prizePot = game.getPrizePotCalculated();
         int totalPayout = 0;
         for (Payout payout : payouts) {
             GamePayout gp = new GamePayout();

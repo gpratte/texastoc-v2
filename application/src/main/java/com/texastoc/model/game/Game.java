@@ -21,47 +21,57 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Game {
 
-    private Integer id;
-    private Integer seasonId;
-    private Integer qSeasonId;
+    private int id;
+    private int seasonId;
+    private int qSeasonId;
 
-    @NotNull(message = "host id is required")
-    private Integer hostId;
+    private int hostId;
 
-    @NotNull(message = "date is required")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     // Denormalized fields
     private String hostName;
     private Quarter quarter;
 
-    // Game setup variables
-    private Boolean doubleBuyIn;
-    private Boolean transportRequired;
-    private Integer kittyCost;
-    private Integer buyInCost;
-    private Integer rebuyAddOnCost;
-    private Integer rebuyAddOnTocDebit;
-    private Integer annualTocCost;
-    private Integer quarterlyTocCost;
+    // Game setup variables. End with "Cost" or "Debit"
+    private boolean doubleBuyIn;
+    private boolean transportRequired;
+    private int kittyCost;
+    private int buyInCost;
+    private int rebuyAddOnCost;
+    private int rebuyAddOnTocDebit;
+    private int annualTocCost;
+    private int quarterlyTocCost;
 
-    // Game time variables
+    // Game time variables. End with "Collected" for physical money in
+    // money in for game buy-in
+    private int buyInCollected;
+    // money in for rebuy add on
+    private int rebuyAddOnCollected;
+    // money in for annual toc
+    private int annualTocCollected;
+    // money in for quarterly toc
+    private int quarterlyTocCollected;
+    // all physical money collected which is buy-in, rebuy add on, annual toc, quarterly toc
+    private int totalCollected;
+
+    // Game time variables. End with "Calculated" for the where the money goes
+    // rebuy add on that goes to annual TOC
+    private int annualTocFromRebuyAddOnCalculated;
+    // rebuy add on minus amount that goes to annual toc
+    private int rebuyAddOnLessAnnualTocCalculated;
+    // annual toc, quarterly toc, annual toc from rebuy add on
+    private int totalCombinedTocCalculated;
+    // amount that goes to the kitty for supplies
+    private int kittyCalculated;
+    // total collected minus total combined toc collected minus kitty
+    private int prizePotCalculated;
+
+    // Other game time variables
+    private int payoutDelta;
+    private boolean finalized;
     private LocalDateTime started;
-    private Integer numPlayers;
-    private Integer kittyCollected;
-    private Integer buyInCollected;
-    private Integer rebuyAddOnCollected;
-    private Integer annualTocCollected;
-    private Integer quarterlyTocCollected;
-    // Rebuy that goes to annual TOC
-    private Integer rebuyAddOnTocCollected;
-    private Integer totalCollected;
-    private Integer totalTocCollected;
-    private Integer prizePot;
-    private Integer payoutDelta;
-    private Boolean finalized;
-
+    private int numPlayers;
     private LocalDateTime lastCalculated;
 
     private List<GamePlayer> players;

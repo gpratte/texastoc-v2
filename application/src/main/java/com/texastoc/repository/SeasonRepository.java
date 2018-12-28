@@ -50,7 +50,7 @@ public class SeasonRepository {
         params.addValue("doubleRebuyAddOnTocDebit", season.getDoubleRebuyAddOnTocDebit());
         params.addValue("buyInCollected", season.getBuyInCollected());
         params.addValue("rebuyAddOnCollected", season.getRebuyAddOnCollected());
-        params.addValue("tocCollected", season.getTocCollected());
+        params.addValue("tocCollected", season.getAnnualTocCollected());
         params.addValue("tocPerGame", season.getTocPerGame());
         params.addValue("kittyPerGame", season.getKittyPerGame());
         params.addValue("quarterlyTocPerGame", season.getQuarterlyTocPerGame());
@@ -106,7 +106,7 @@ public class SeasonRepository {
                 season.setKittyPerGame(rs.getInt("kittyPerGame"));
                 season.setBuyInCollected(rs.getInt("buyInCollected"));
                 season.setRebuyAddOnCollected(rs.getInt("rebuyAddOnCollected"));
-                season.setTocCollected(rs.getInt("tocCollected"));
+                season.setAnnualTocCollected(rs.getInt("tocCollected"));
                 season.setQuarterlyTocPerGame(rs.getInt("quarterlyTocPerGame"));
                 season.setQuarterlyNumPayouts(rs.getInt("quarterlyTocPayouts"));
 

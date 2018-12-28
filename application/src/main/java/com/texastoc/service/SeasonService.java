@@ -96,7 +96,7 @@ public class SeasonService {
             .numGamesPlayed(0)
             .buyInCollected(0)
             .rebuyAddOnCollected(0)
-            .tocCollected(0)
+            .annualTocCollected(0)
             .finalized(false)
             .quarterlySeasons(qSeasons)
             .build();

@@ -183,7 +183,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         // Assert game
         Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
         Assert.assertEquals("num of game payouts should be 0", 0, (int)gameRetrieved.getPayouts().size());
-        Assert.assertEquals("kitty should be " + KITTY_PER_GAME, KITTY_PER_GAME, (int)gameRetrieved.getKittyCollected());
+        Assert.assertEquals("kitty should be " + KITTY_PER_GAME, KITTY_PER_GAME, (int)gameRetrieved.getKittyCalculated());
         Assert.assertNotNull("last calculated should be null", gameRetrieved.getLastCalculated());
 
         // Assert game player
@@ -208,7 +208,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         // Assert game
         Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
         Assert.assertEquals("num of game payouts should be 1", 1, (int)gameRetrieved.getPayouts().size());
-        Assert.assertEquals("kitty should be " + KITTY_PER_GAME, KITTY_PER_GAME, (int)gameRetrieved.getKittyCollected());
+        Assert.assertEquals("kitty should be " + KITTY_PER_GAME, KITTY_PER_GAME, (int)gameRetrieved.getKittyCalculated());
         Assert.assertNotNull("last calculated should be null", gameRetrieved.getLastCalculated());
 
         // Assert game player
@@ -257,7 +257,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         // Assert game
         Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
         Assert.assertTrue("num of game payouts should be greater than 0", gameRetrieved.getPayouts().size() > 0);
-        Assert.assertEquals("kitty should be " + KITTY_PER_GAME, KITTY_PER_GAME, (int)gameRetrieved.getKittyCollected());
+        Assert.assertEquals("kitty should be " + KITTY_PER_GAME, KITTY_PER_GAME, (int)gameRetrieved.getKittyCalculated());
         Assert.assertNotNull("last calculated should be null", gameRetrieved.getLastCalculated());
 
         // Assert game player
@@ -300,7 +300,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         // Assert game
         Assert.assertNotNull("game payouts should not be null", gameRetrieved.getPayouts());
         Assert.assertEquals("num of game payouts should be 0", 0, (int)gameRetrieved.getPayouts().size());
-        Assert.assertEquals("kitty should be " + KITTY_PER_GAME, KITTY_PER_GAME, (int)gameRetrieved.getKittyCollected());
+        Assert.assertEquals("kitty should be " + KITTY_PER_GAME, KITTY_PER_GAME, (int)gameRetrieved.getKittyCalculated());
         Assert.assertNotNull("last calculated should not be null", gameRetrieved.getLastCalculated());
 
         // Assert game player

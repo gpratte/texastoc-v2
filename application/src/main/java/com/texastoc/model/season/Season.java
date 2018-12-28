@@ -41,12 +41,31 @@ public class Season {
     private Integer doubleRebuyAddOnCost;
     private Integer doubleRebuyAddOnTocDebit;
 
-    // Runtime
+    // Runtime variables. End with "Collected" for physical money in
+    // money in for game buy-in
+    private Integer buyInCollected;
+    // money in for rebuy add on
+    private Integer rebuyAddOnCollected;
+    // money in for annual toc
+    private Integer annualTocCollected;
+    // all physical money collected which is buy-in, rebuy add on, annual toc
+    private Integer totalCollected;
+
+    // Runtime variables. End with "Calculated" for the where the money goes
+    // rebuy add on that goes to annual TOC
+    private Integer annualTocFromRebuyAddOnCalculated;
+    // rebuy add on minus amount that goes to annual toc
+    private Integer rebuyAddOnLessAnnualTocCalculated;
+    // annual toc, annual toc from rebuy add on
+    private Integer totalCombinedAnnualTocCalculated;
+    // amount that goes to the kitty for supplies
+    private Integer kittyCalculated;
+    // total collected minus total combined toc collected minus kitty
+    private Integer prizePotCalculated;
+
+    // Other runtime variables
     private Integer numGames;
     private Integer numGamesPlayed;
-    private Integer buyInCollected;
-    private Integer rebuyAddOnCollected;
-    private Integer tocCollected;
     private LocalDateTime lastCalculated;
     private Boolean finalized;
 

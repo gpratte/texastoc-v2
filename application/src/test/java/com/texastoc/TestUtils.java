@@ -29,7 +29,7 @@ public class TestUtils implements TestConstants {
         Assert.assertTrue(actual.getNumGamesPlayed() == 0);
         Assert.assertTrue(actual.getBuyInCollected() == 0);
         Assert.assertTrue(actual.getRebuyAddOnCollected() == 0);
-        Assert.assertTrue(actual.getTocCollected() == 0);
+        Assert.assertTrue(actual.getAnnualTocCollected() == 0);
 
         Assert.assertEquals(false, actual.getFinalized());
         Assert.assertNull(actual.getLastCalculated());

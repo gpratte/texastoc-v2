@@ -1,14 +1,69 @@
 package com.texastoc.service.calculator;
 
+import com.texastoc.model.game.Game;
+import com.texastoc.model.season.Season;
+import com.texastoc.model.season.SeasonPayout;
+import com.texastoc.model.season.SeasonPlayer;
+import com.texastoc.repository.GameRepository;
+import com.texastoc.repository.SeasonPlayerRepository;
+import com.texastoc.repository.SeasonRepository;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @Component
 public class SeasonCalculator {
 
-    public void calculate(int id) {
+    private final GameRepository gameRepository;
+    private final SeasonRepository seasonRepository;
+    private final SeasonPlayerRepository seasonPlayerRepository;
 
+    public SeasonCalculator(GameRepository gameRepository, SeasonRepository seasonRepository, SeasonPlayerRepository seasonPlayerRepository) {
+        this.gameRepository = gameRepository;
+        this.seasonRepository = seasonRepository;
+        this.seasonPlayerRepository = seasonPlayerRepository;
     }
-//    @Autowired
+
+    public Season calculate(int id) {
+
+        Season season = seasonRepository.get(id);
+        List<Game> games = gameRepository.getBySeasonId(id);
+
+        season.setNumGamesPlayed(games.size());
+
+        int buyInCollected = 0;
+        int rebuyAddOnCollected = 0;
+        int tocCollected = 0;
+        int prizePot = 0;
+        for (Game game : games) {
+            buyInCollected += game.getBuyInCollected() == null ? 0 : game.getBuyInCollected();
+            rebuyAddOnCollected += game.getRebuyAddOnCollected() == null ? 0 : game.getRebuyAddOnCollected();
+            tocCollected += game.getAnnualTocCollected() == null ? 0 : game.getAnnualTocCollected();
+            prizePot += game.getPrizePotCalculated() == null ? 0 : game.getPrizePotCalculated();
+        }
+
+        season.setBuyInCollected(buyInCollected);
+        season.setRebuyAddOnCollected(rebuyAddOnCollected);
+        season.setAnnualTocCollected(tocCollected);
+        season.setPrizePotCalculated(prizePot);
+        season.setLastCalculated(LocalDateTime.now());
+
+
+        // Payouts
+        List<SeasonPayout> payouts = new ArrayList<>(10);
+        season.setPayouts(payouts);
+
+        // Season players
+        List<SeasonPlayer> seasonPlayers = new LinkedList<>();
+        season.setPlayers(seasonPlayers);
+
+        return season;
+    }
+
+    //    @Autowired
 //    GameDao gameDao;
 //    @Autowired
 //    SeasonDao seasonDao;

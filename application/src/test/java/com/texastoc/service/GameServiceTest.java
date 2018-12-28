@@ -133,8 +133,8 @@ public class GameServiceTest implements TestConstants {
         Mockito.verify(gameRepository).save(gameArg.capture());
         Assert.assertEquals(start, gameArg.getValue().getDate());
         Assert.assertEquals(1, (int)gameArg.getValue().getHostId());
-        Assert.assertTrue(gameArg.getValue().getTransportRequired());
-        Assert.assertEquals(doubleBuyIn, gameArg.getValue().getDoubleBuyIn());
+        Assert.assertTrue(gameArg.getValue().isTransportRequired());
+        Assert.assertEquals(doubleBuyIn, gameArg.getValue().isDoubleBuyIn());
 
 
         // Assert
@@ -153,24 +153,32 @@ public class GameServiceTest implements TestConstants {
 
 
         // Game setup variables
-        Assert.assertEquals("Double buy in", expected.getDoubleBuyIn(), actual.getDoubleBuyIn());
-        Assert.assertEquals("transport required", expected.getTransportRequired(), actual.getTransportRequired());
+        Assert.assertEquals("Double buy in", expected.isDoubleBuyIn(), actual.isDoubleBuyIn());
+        Assert.assertEquals("transport required", expected.isTransportRequired(), actual.isTransportRequired());
         Assert.assertEquals("Kitty cost should be amount set for season", KITTY_PER_GAME, (int)actual.getKittyCost());
         Assert.assertEquals("Annual TOC be amount set for season", TOC_PER_GAME, (int)actual.getAnnualTocCost());
         Assert.assertEquals("Quarterly TOC be amount set for season", QUARTERLY_TOC_PER_GAME, (int)actual.getQuarterlyTocCost());
 
+        // Game runtime variables
         Assert.assertNull("not started", actual.getStarted());
 
         Assert.assertEquals("No players", 0, (int)actual.getNumPlayers());
-        Assert.assertEquals("No kitty collected", 0, (int)actual.getKittyCollected());
         Assert.assertEquals("No buy in collected", 0, (int)actual.getBuyInCollected());
         Assert.assertEquals("No rebuy collected", 0, (int)actual.getRebuyAddOnCollected());
         Assert.assertEquals("No annual toc collected", 0, (int)actual.getAnnualTocCollected());
         Assert.assertEquals("No quarterly toc collected", 0, (int)actual.getQuarterlyTocCollected());
+        Assert.assertEquals("total collected", 0, (int)actual.getTotalCollected());
 
-        Assert.assertFalse("not finalized", actual.getFinalized());
 
-        if (expected.getDoubleBuyIn()) {
+        Assert.assertEquals("no annualTocFromRebuyAddOnCalculated", 0, (int)actual.getAnnualTocFromRebuyAddOnCalculated());
+        Assert.assertEquals("no rebuyAddOnLessAnnualTocCalculated", 0, (int)actual.getRebuyAddOnLessAnnualTocCalculated());
+        Assert.assertEquals("no totalCombinedTocCalculated", 0, (int)actual.getTotalCombinedTocCalculated());
+        Assert.assertEquals("No kitty calculated", 0, (int)actual.getKittyCalculated());
+        Assert.assertEquals("no prizePotCalculated", 0, (int)actual.getPrizePotCalculated());
+
+        Assert.assertFalse("not finalized", actual.isFinalized());
+
+        if (expected.isDoubleBuyIn()) {
             Assert.assertEquals("Buy in cost should be double the amount set for season", GAME_DOUBLE_BUY_IN, (int)actual.getBuyInCost());
             Assert.assertEquals("Rebuy cost should be double the amount set for season", GAME_DOUBLE_REBUY, (int)actual.getRebuyAddOnCost());
             Assert.assertEquals("Rebuy Toc debit cost should be double the amount set for season", GAME_DOUBLE_REBUY_TOC_DEBIT, (int)actual.getRebuyAddOnTocDebit());
@@ -317,7 +325,7 @@ public class GameServiceTest implements TestConstants {
 
         Game calculatedGame = Game.builder()
             .numPlayers(1)
-            .prizePot(0)
+            .prizePotCalculated(0)
             .build();
 
         Mockito.when(gameCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(calculatedGame);
@@ -449,7 +457,7 @@ public class GameServiceTest implements TestConstants {
 
         Game calculatedGame = Game.builder()
             .numPlayers(1)
-            .prizePot(0)
+            .prizePotCalculated(0)
             .build();
         Mockito.when(gameCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(calculatedGame);
         Mockito.when(payoutCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);

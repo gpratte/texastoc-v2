@@ -42,8 +42,8 @@ public class GameRepository {
         params.addValue("hostId", game.getHostId());
         params.addValue("hostName", game.getHostName());
         params.addValue("quarter", game.getQuarter().getValue());
-        params.addValue("doubleBuyIn", game.getDoubleBuyIn());
-        params.addValue("transportRequired", game.getTransportRequired());
+        params.addValue("doubleBuyIn", game.isDoubleBuyIn());
+        params.addValue("transportRequired", game.isTransportRequired());
         params.addValue("kittyCost", game.getKittyCost());
         params.addValue("buyInCost", game.getBuyInCost());
         params.addValue("rebuyAddOnCost", game.getRebuyAddOnCost());
@@ -51,12 +51,12 @@ public class GameRepository {
         params.addValue("annualTocCost", game.getAnnualTocCost());
         params.addValue("quarterlyTocCost", game.getQuarterlyTocCost());
         params.addValue("numPlayers", game.getNumPlayers());
-        params.addValue("kittyCollected", game.getKittyCollected());
+        params.addValue("kittyCollected", game.getKittyCalculated());
         params.addValue("buyInCollected", game.getBuyInCollected());
         params.addValue("rebuyAddOnCollected", game.getRebuyAddOnCollected());
         params.addValue("annualTocCollected", game.getAnnualTocCollected());
         params.addValue("quarterlyTocCollected", game.getQuarterlyTocCollected());
-        params.addValue("finalized", game.getFinalized());
+        params.addValue("finalized", game.isFinalized());
         params.addValue("lastCalculated", game.getLastCalculated());
         params.addValue("started", game.getStarted() == null ? null : Timestamp.valueOf(game.getStarted()));
 
@@ -88,8 +88,8 @@ public class GameRepository {
         params.addValue("hostName", game.getHostName());
         params.addValue("gameDate", game.getDate());
         params.addValue("quarter", game.getQuarter().getValue());
-        params.addValue("doubleBuyIn", game.getDoubleBuyIn());
-        params.addValue("transportRequired", game.getTransportRequired());
+        params.addValue("doubleBuyIn", game.isDoubleBuyIn());
+        params.addValue("transportRequired", game.isTransportRequired());
         params.addValue("kittyCost", game.getKittyCost());
         params.addValue("buyInCost", game.getBuyInCost());
         params.addValue("rebuyAddOnCost", game.getRebuyAddOnCost());
@@ -98,12 +98,12 @@ public class GameRepository {
         params.addValue("quarterlyTocCost", game.getQuarterlyTocCost());
         params.addValue("started", game.getStarted() == null ? null : Timestamp.valueOf(game.getStarted()));
         params.addValue("numPlayers", game.getNumPlayers());
-        params.addValue("kittyCollected", game.getKittyCollected());
+        params.addValue("kittyCollected", game.getKittyCalculated());
         params.addValue("buyInCollected", game.getBuyInCollected());
         params.addValue("rebuyAddOnCollected", game.getRebuyAddOnCollected());
         params.addValue("annualTocCollected", game.getAnnualTocCollected());
         params.addValue("quarterlyTocCollected", game.getQuarterlyTocCollected());
-        params.addValue("finalized", game.getFinalized());
+        params.addValue("finalized", game.isFinalized());
         params.addValue("payoutDelta", game.getPayoutDelta());
         params.addValue("lastCalculated", game.getLastCalculated());
         params.addValue("id", game.getId());
@@ -161,7 +161,7 @@ public class GameRepository {
                 game.setAnnualTocCost(rs.getInt("annualTocCost"));
                 game.setQuarterlyTocCost(rs.getInt("quarterlyTocCost"));
                 game.setNumPlayers(rs.getInt("numPlayers"));
-                game.setKittyCollected(rs.getInt("kittyCollected"));
+                game.setKittyCalculated(rs.getInt("kittyCollected"));
                 game.setBuyInCollected(rs.getInt("buyInCollected"));
                 game.setRebuyAddOnCollected(rs.getInt("rebuyAddOnCollected"));
                 game.setAnnualTocCollected(rs.getInt("annualTocCollected"));

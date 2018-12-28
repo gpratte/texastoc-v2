@@ -169,7 +169,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("quarterly toc cost should come from season", QUARTERLY_TOC_PER_GAME, (int)game.getQuarterlyTocCost());
 
         // Game time variables
-        Assert.assertEquals("game kitty collected should be zero", 0, (int)game.getKittyCollected());
+        Assert.assertEquals("game kitty collected should be zero", 0, (int)game.getKittyCalculated());
         Assert.assertEquals("game buy in should be zero", 0, (int)game.getBuyInCollected());
         Assert.assertEquals("game rebuy should be zero", 0, (int)game.getRebuyAddOnCollected());
         Assert.assertEquals("game annual toc collected should be zero", 0, (int)game.getAnnualTocCollected());

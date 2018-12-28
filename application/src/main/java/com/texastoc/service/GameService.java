@@ -78,8 +78,8 @@ public class GameService {
         gameToCreate.setHostName(player.getName());
 
         // Game setup variables
-        gameToCreate.setDoubleBuyIn(game.getDoubleBuyIn());
-        gameToCreate.setTransportRequired(game.getTransportRequired());
+        gameToCreate.setDoubleBuyIn(game.isDoubleBuyIn());
+        gameToCreate.setTransportRequired(game.isTransportRequired());
 
         Season currentSeason = seasonRepository.getCurrent();
         gameToCreate.setKittyCost(currentSeason.getKittyPerGame());
@@ -89,15 +89,7 @@ public class GameService {
         gameToCreate.setAnnualTocCost(currentSeason.getTocPerGame());
         gameToCreate.setQuarterlyTocCost(currentSeason.getQuarterlyTocPerGame());
 
-        // Game time variables
-        gameToCreate.setNumPlayers(0);
-        gameToCreate.setKittyCollected(0);
-        gameToCreate.setBuyInCollected(0);
-        gameToCreate.setRebuyAddOnCollected(0);
-        gameToCreate.setAnnualTocCollected(0);
-        gameToCreate.setQuarterlyTocCollected(0);
-
-        if (game.getDoubleBuyIn()) {
+        if (game.isDoubleBuyIn()) {
             gameToCreate.setBuyInCost(currentSeason.getDoubleBuyInCost());
             gameToCreate.setRebuyAddOnCost(currentSeason.getDoubleRebuyAddOnCost());
             gameToCreate.setRebuyAddOnTocDebit(currentSeason.getDoubleRebuyAddOnTocDebit());
@@ -106,8 +98,6 @@ public class GameService {
             gameToCreate.setRebuyAddOnCost(currentSeason.getRebuyAddOnCost());
             gameToCreate.setRebuyAddOnTocDebit(currentSeason.getRebuyAddOnTocDebit());
         }
-
-        gameToCreate.setFinalized(false);
 
         int id = gameRepository.save(gameToCreate);
         gameToCreate.setId(id);
@@ -143,7 +133,7 @@ public class GameService {
         Game currentGame = gameRepository.getById(gameId);
 
         // Make sure money is right
-        verifyGamePlayerMoney(currentGame.getDoubleBuyIn(), gamePlayer);
+        verifyGamePlayerMoney(currentGame.isDoubleBuyIn(), gamePlayer);
 
         gamePlayerRepository.update(gamePlayer);
 
@@ -211,7 +201,7 @@ public class GameService {
         Game currentGame = gameRepository.getById(gameId);
 
         // Make sure money is right
-        verifyGamePlayerMoney(currentGame.getDoubleBuyIn(), gamePlayer);
+        verifyGamePlayerMoney(currentGame.isDoubleBuyIn(), gamePlayer);
 
         if (gamePlayer.getName() == null) {
             Player player = playerRepository.get(gamePlayer.getPlayerId());
@@ -275,7 +265,7 @@ public class GameService {
 
     private void checkFinalized(int id) {
         Game currentGame = gameRepository.getById(id);
-        if (currentGame.getFinalized() != null && currentGame.getFinalized() == true) {
+        if (currentGame.isFinalized()) {
             throw new FinalizedException("Game is finalized");
         }
     }
