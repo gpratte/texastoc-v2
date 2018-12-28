@@ -104,14 +104,14 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
     @Then("^the game is not double buy in nor transport required$")
     public void the_game_is_not_double_buy_in_nor_transport_required() throws Exception {
-        Assert.assertFalse("double buy in should be false", gameCreated.getDoubleBuyIn());
-        Assert.assertFalse("transport required should be false", gameCreated.getTransportRequired());
+        Assert.assertFalse("double buy in should be false", gameCreated.isDoubleBuyIn());
+        Assert.assertFalse("transport required should be false", gameCreated.isTransportRequired());
     }
 
     @Then("^the game is double buy-in, transport and delta changed$")
     public void the_game_is_double_buy_in_transport_and_delta_changed() throws Exception {
-        Assert.assertTrue("double buy in should be true", gameRetrieved.getDoubleBuyIn());
-        Assert.assertTrue("transport required should be true", gameRetrieved.getTransportRequired());
+        Assert.assertTrue("double buy in should be true", gameRetrieved.isDoubleBuyIn());
+        Assert.assertTrue("transport required should be true", gameRetrieved.isTransportRequired());
         Assert.assertEquals("payout delta should be 1", 1, (int)gameRetrieved.getPayoutDelta());
     }
 
@@ -120,8 +120,8 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertNotNull("game create should not be null", gameCreated);
 
         // Game setup variables
-        Assert.assertTrue("double buy in should be true", gameCreated.getDoubleBuyIn());
-        Assert.assertFalse("transport required should be false", gameCreated.getTransportRequired());
+        Assert.assertTrue("double buy in should be true", gameCreated.isDoubleBuyIn());
+        Assert.assertFalse("transport required should be false", gameCreated.isTransportRequired());
         Assert.assertEquals("buy in cost should come from season", GAME_DOUBLE_BUY_IN, (int)gameCreated.getBuyInCost());
         Assert.assertEquals("re buy cost should come from season", GAME_DOUBLE_REBUY, (int)gameCreated.getRebuyAddOnCost());
         Assert.assertEquals("re buy toc debit cost should come from season", GAME_DOUBLE_REBUY_TOC_DEBIT, (int)gameCreated.getRebuyAddOnTocDebit());
@@ -132,8 +132,8 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertNotNull("game create should not be null", gameCreated);
 
         // Game setup variables
-        Assert.assertFalse("double buy in should be false", gameCreated.getDoubleBuyIn());
-        Assert.assertTrue("transport required should be true", gameCreated.getTransportRequired());
+        Assert.assertFalse("double buy in should be false", gameCreated.isDoubleBuyIn());
+        Assert.assertTrue("transport required should be true", gameCreated.isTransportRequired());
     }
 
     @Then("^the retrieved game is normal$")
@@ -174,7 +174,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("game rebuy should be zero", 0, (int)game.getRebuyAddOnCollected());
         Assert.assertEquals("game annual toc collected should be zero", 0, (int)game.getAnnualTocCollected());
         Assert.assertEquals("game quarterly toc collected should be zero", 0, (int)game.getQuarterlyTocCollected());
-        Assert.assertFalse("not finalized", game.getFinalized());
+        Assert.assertFalse("not finalized", game.isFinalized());
         Assert.assertNull("started should be null", game.getStarted());
 
     }

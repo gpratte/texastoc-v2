@@ -84,7 +84,7 @@ public class GameCalculatorTest implements TestConstants {
         Assert.assertEquals("kitty calculated should be 0", 0, (int) gameCalculated.getKittyCalculated());
         Assert.assertEquals("prize pot should be 0", 0, (int) gameCalculated.getPrizePotCalculated());
 
-        Assert.assertFalse("not finalized", gameCalculated.getFinalized());
+        Assert.assertFalse("not finalized", gameCalculated.isFinalized());
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime lastCalculated = gameCalculated.getLastCalculated();

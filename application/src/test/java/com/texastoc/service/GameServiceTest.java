@@ -223,18 +223,21 @@ public class GameServiceTest implements TestConstants {
         Mockito.verify(gamePayoutRepository, Mockito.times(1)).getByGameId(1);
         Assert.assertNotNull("GamePayouts returned should not be null", game.getPayouts());
         Assert.assertEquals("number of payouts should be 0", 0, game.getPayouts().size());
-
     }
 
     @Test
     public void testUpdateGame() {
 
-        Game game = Game.builder()
+        Mockito.when(gameRepository.getById(1)).thenReturn(Game.builder()
             .id(1)
-            .build();
+            .finalized(false)
+            .build());
 
         Mockito.doNothing().when(gameRepository).update((Game) notNull());
 
+        Game game = Game.builder()
+            .id(1)
+            .build();
         gameService.updateGame(game);
 
         Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
@@ -310,6 +313,7 @@ public class GameServiceTest implements TestConstants {
             .id(1)
             .numPlayers(0)
             .doubleBuyIn(false)
+            .finalized(false)
             .build();
         Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
@@ -347,7 +351,7 @@ public class GameServiceTest implements TestConstants {
         Assert.assertEquals(1, gamePlayerArg.getValue().getPlayerId());
         Assert.assertEquals(playerName, gamePlayerArg.getValue().getName());
 
-        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+        Mockito.verify(gameRepository, Mockito.times(2)).getById(1);
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
         Mockito.verify(gameCalculator, Mockito.times(1)).calculate(Mockito.any(Game.class), Mockito.anyList());
         Mockito.verify(payoutCalculator, Mockito.times(1)).calculate(Mockito.any(Game.class), Mockito.anyList());
@@ -434,6 +438,7 @@ public class GameServiceTest implements TestConstants {
         Game currentGame = Game.builder()
             .id(1)
             .numPlayers(1)
+            .finalized(false)
             .doubleBuyIn(false)
             .build();
         Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
@@ -465,7 +470,7 @@ public class GameServiceTest implements TestConstants {
 
         gameService.updateGamePlayer(gamePlayer);
 
-        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+        Mockito.verify(gameRepository, Mockito.times(2)).getById(1);
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).update(Mockito.any(GamePlayer.class));
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
         Mockito.verify(gameCalculator, Mockito.times(1)).calculate(Mockito.any(Game.class), Mockito.anyList());
@@ -495,7 +500,7 @@ public class GameServiceTest implements TestConstants {
 
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectById(1);
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).deleteById(1);
-        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+        Mockito.verify(gameRepository, Mockito.times(2)).getById(1);
     }
 
     @Test
@@ -509,6 +514,7 @@ public class GameServiceTest implements TestConstants {
             .id(1)
             .numPlayers(0)
             .doubleBuyIn(false)
+            .finalized(false)
             .build();
         Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
@@ -523,7 +529,7 @@ public class GameServiceTest implements TestConstants {
         Assert.assertNotNull(gamePlayer);
         Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any(Player.class));
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).save(Mockito.any(GamePlayer.class));
-        Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+        Mockito.verify(gameRepository, Mockito.times(2)).getById(1);
     }
 
     @Test

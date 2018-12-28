@@ -39,10 +39,10 @@ public class SeasonCalculator {
         int tocCollected = 0;
         int prizePot = 0;
         for (Game game : games) {
-            buyInCollected += game.getBuyInCollected() == null ? 0 : game.getBuyInCollected();
-            rebuyAddOnCollected += game.getRebuyAddOnCollected() == null ? 0 : game.getRebuyAddOnCollected();
-            tocCollected += game.getAnnualTocCollected() == null ? 0 : game.getAnnualTocCollected();
-            prizePot += game.getPrizePotCalculated() == null ? 0 : game.getPrizePotCalculated();
+            buyInCollected += game.getBuyInCollected();
+            rebuyAddOnCollected += game.getRebuyAddOnCollected();
+            tocCollected += game.getAnnualTocCollected();
+            prizePot += game.getPrizePotCalculated();
         }
 
         season.setBuyInCollected(buyInCollected);
