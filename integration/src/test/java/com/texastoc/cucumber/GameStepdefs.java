@@ -169,11 +169,19 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("quarterly toc cost should come from season", QUARTERLY_TOC_PER_GAME, (int)game.getQuarterlyTocCost());
 
         // Game time variables
-        Assert.assertEquals("game kitty collected should be zero", 0, (int)game.getKittyCalculated());
-        Assert.assertEquals("game buy in should be zero", 0, (int)game.getBuyInCollected());
-        Assert.assertEquals("game rebuy should be zero", 0, (int)game.getRebuyAddOnCollected());
+        Assert.assertEquals("game buy in collected should be zero", 0, (int)game.getBuyInCollected());
+        Assert.assertEquals("game rebuy collected should be zero", 0, (int)game.getRebuyAddOnCollected());
         Assert.assertEquals("game annual toc collected should be zero", 0, (int)game.getAnnualTocCollected());
         Assert.assertEquals("game quarterly toc collected should be zero", 0, (int)game.getQuarterlyTocCollected());
+        Assert.assertEquals("total collected", 0, game.getTotalCollected());
+
+
+        Assert.assertEquals("no annualTocFromRebuyAddOnCalculated", 0, game.getAnnualTocFromRebuyAddOnCalculated());
+        Assert.assertEquals("no rebuyAddOnLessAnnualTocCalculated", 0, game.getRebuyAddOnLessAnnualTocCalculated());
+        Assert.assertEquals("no totalCombinedTocCalculated", 0, game.getTotalCombinedTocCalculated());
+        Assert.assertEquals("No kitty calculated", 0, game.getKittyCalculated());
+        Assert.assertEquals("no prizePotCalculated", 0, game.getPrizePotCalculated());
+
         Assert.assertFalse("not finalized", game.isFinalized());
         Assert.assertNull("started should be null", game.getStarted());
 

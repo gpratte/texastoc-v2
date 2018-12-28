@@ -4,7 +4,6 @@ import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.repository.ConfigRepository;
-import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import org.springframework.stereotype.Component;
 
@@ -25,16 +24,23 @@ public class GameCalculator {
 
     public Game calculate(Game game, List<GamePlayer> gamePlayers) {
 
-        int kittyCollected = 0;
         int numPlayers = 0;
+
         int buyInCollected = 0;
         int rebuyAddOnCollected = 0;
         int annualTocCollected = 0;
         int quarterlyTocCollected = 0;
-        int rebuyAddOnTocCollected = 0;
+        int totalCollected = 0;
+
+        int kittyCalculated = 0;
+        int annualTocFromRebuyAddOnCalculated = 0;
+        int rebuyAddOnLessAnnualTocCalculated = 0;
+        int totalCombinedTocCalculated = 0;
+        int prizePotCalculated = 0;
 
         for (GamePlayer gamePlayer : gamePlayers) {
             ++numPlayers;
+
             buyInCollected += gamePlayer.getBuyInCollected() == null ? 0 : gamePlayer.getBuyInCollected();
             rebuyAddOnCollected += gamePlayer.getRebuyAddOnCollected() == null ? 0 : gamePlayer.getRebuyAddOnCollected();
             annualTocCollected += gamePlayer.getAnnualTocCollected() == null ? 0 : gamePlayer.getAnnualTocCollected();
@@ -44,34 +50,37 @@ public class GameCalculator {
             boolean isRebuyAddOn = gamePlayer.getRebuyAddOnCollected() != null && gamePlayer.getRebuyAddOnCollected() > 0;
             if (isAnnualToc && isRebuyAddOn) {
                 if (game.isDoubleBuyIn()) {
-                    rebuyAddOnTocCollected += getTocConfig().getDoubleRebuyTocDebit();
+                    annualTocFromRebuyAddOnCalculated += getTocConfig().getDoubleRebuyTocDebit();
                 } else {
-                    rebuyAddOnTocCollected += getTocConfig().getRegularRebuyTocDebit();
+                    annualTocFromRebuyAddOnCalculated += getTocConfig().getRegularRebuyTocDebit();
                 }
             }
         }
 
         if (buyInCollected > 0) {
-            kittyCollected = getTocConfig().getKittyDebit();
+            kittyCalculated = getTocConfig().getKittyDebit();
         }
 
-        game.setKittyCalculated(kittyCollected);
         game.setNumPlayers(numPlayers);
+
         game.setBuyInCollected(buyInCollected);
         game.setRebuyAddOnCollected(rebuyAddOnCollected);
         game.setAnnualTocCollected(annualTocCollected);
         game.setQuarterlyTocCollected(quarterlyTocCollected);
-        game.setLastCalculated(LocalDateTime.now());
-        game.setAnnualTocFromRebuyAddOnCalculated(rebuyAddOnTocCollected);
 
-        int totalCollected = buyInCollected + rebuyAddOnCollected + annualTocCollected + quarterlyTocCollected;
+        totalCollected += buyInCollected + rebuyAddOnCollected + annualTocCollected + quarterlyTocCollected;
         game.setTotalCollected(totalCollected);
 
-        int totalTocCollected = annualTocCollected + quarterlyTocCollected + rebuyAddOnTocCollected;
-        game.setTotalCombinedTocCalculated(totalTocCollected);
+        game.setKittyCalculated(kittyCalculated);
+        game.setAnnualTocFromRebuyAddOnCalculated(annualTocFromRebuyAddOnCalculated);
+        game.setRebuyAddOnLessAnnualTocCalculated(rebuyAddOnCollected - annualTocFromRebuyAddOnCalculated);
+        int totalTocCalculated = annualTocCollected + quarterlyTocCollected + annualTocFromRebuyAddOnCalculated;
+        game.setTotalCombinedTocCalculated(totalTocCalculated);
 
-        // prizePot = total collected minus total toc minus kitty =  59</li>
-        game.setPrizePotCalculated(totalCollected - totalTocCollected - kittyCollected);
+        // prizePot = total collected minus total toc minus kitty
+        game.setPrizePotCalculated(totalCollected - totalTocCalculated - kittyCalculated);
+
+        game.setLastCalculated(LocalDateTime.now());
 
         gameRepository.update(game);
 
