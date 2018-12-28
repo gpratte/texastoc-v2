@@ -54,6 +54,7 @@ public class GameRestController {
         return gameService.getGame(id);
     }
 
+    // TODO api/v1/games/{id}/players
     @PostMapping("/api/v2/games/players")
     public GamePlayer createGamePlayer(@RequestBody @Valid CreateGamePlayerRequest cgpr) {
         GamePlayer gamePlayer = GamePlayer.builder()
@@ -66,11 +67,13 @@ public class GameRestController {
         return gameService.createGamePlayer(gamePlayer);
     }
 
+    // TODO api/v1/games/{id}/players/first
     @PostMapping("/api/v2/games/players/first")
     public GamePlayer createGamePlayer(@RequestBody @Valid FirstTimeGamePlayer firstTimeGamePlayer) {
         return gameService.createFirstTimeGamePlayer(firstTimeGamePlayer);
     }
 
+    // TODO api/v1/games/{id}/players/{pid}
     @PutMapping("/api/v2/games/players/{id}")
     public void updateGamePlayer(@PathVariable("id") int id, @RequestBody @Valid UpdateGamePlayerRequest ugpr) {
         GamePlayer gamePlayer = gameService.getGamePlayer(id);
@@ -88,6 +91,7 @@ public class GameRestController {
         gameService.updateGamePlayer(gamePlayer);
     }
 
+    // TODO api/v1/games/{id}/players/{pid}
     @DeleteMapping("/api/v2/games/players/{id}")
     public void deleteGamePlayer(@PathVariable("id") int id) {
         gameService.deleteGamePlayer(id);
