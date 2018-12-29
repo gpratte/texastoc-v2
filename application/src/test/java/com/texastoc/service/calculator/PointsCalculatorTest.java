@@ -3,10 +3,12 @@ package com.texastoc.service.calculator;
 import com.texastoc.TestConstants;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
+import com.texastoc.repository.GamePlayerRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -20,9 +22,12 @@ public class PointsCalculatorTest implements TestConstants {
     private PointsCalculator pointsCalculator;
     private Random random = new Random(System.currentTimeMillis());
 
+    @MockBean
+    private GamePlayerRepository gamePlayerRepository;
+
     @Before
     public void before() {
-        pointsCalculator = new PointsCalculator(CHOP_NUM_PLAYERS, CHOP_TENTH_PLACE_INCR, CHOP_TENTH_PLACE_POINTS, CHOP_MULTIPLIER);
+        pointsCalculator = new PointsCalculator(CHOP_NUM_PLAYERS, CHOP_TENTH_PLACE_INCR, CHOP_TENTH_PLACE_POINTS, CHOP_MULTIPLIER, gamePlayerRepository);
     }
 
     @Test

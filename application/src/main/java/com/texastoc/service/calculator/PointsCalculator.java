@@ -2,6 +2,7 @@ package com.texastoc.service.calculator;
 
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
+import com.texastoc.repository.GamePlayerRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,14 +18,16 @@ public class PointsCalculator {
     private final Double tenthPlaceIncr;
     private final Integer tenthPlacePoints;
     private final Double multiplier;
+    private final GamePlayerRepository gamePlayerRepository;
 
     private final Map<Integer, Map<Integer, Integer>> POINT_SYSTEM = new HashMap<>();
 
-    public PointsCalculator(@Value("${points.numPlayers}") Integer numPlayers, @Value("${points.tenthPlaceIncr}") Double tenthPlaceIncr, @Value("${points.tenthPlacePoints}") Integer tenthPlacePoints, @Value("${points.multiplier}") Double multiplier) {
+    public PointsCalculator(@Value("${points.numPlayers}") Integer numPlayers, @Value("${points.tenthPlaceIncr}") Double tenthPlaceIncr, @Value("${points.tenthPlacePoints}") Integer tenthPlacePoints, @Value("${points.multiplier}") Double multiplier, GamePlayerRepository gamePlayerRepository) {
         this.numPlayers = numPlayers;
         this.tenthPlaceIncr = tenthPlaceIncr;
         this.tenthPlacePoints = tenthPlacePoints;
         this.multiplier = multiplier;
+        this.gamePlayerRepository = gamePlayerRepository;
     }
 
     public List<GamePlayer> calculate(Game game, List<GamePlayer> gamePlayers) {
@@ -162,7 +165,11 @@ public class PointsCalculator {
     }
 
     private void persistPoints(List<GamePlayer> gamePlayers) {
-        // TODO
+        for (GamePlayer gamePlayer : gamePlayers) {
+            GamePlayer currentGamePlayer = gamePlayerRepository.selectById(gamePlayer.getId());
+            currentGamePlayer.setPoints(gamePlayer.getPoints());
+            gamePlayerRepository.update(currentGamePlayer);
+        }
     }
 
 }

@@ -70,7 +70,7 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
             GamePlayer gamePlayer = gamePlayers.get(i);
             UpdateGamePlayerRequest ugpr = UpdateGamePlayerRequest.builder()
                 .playerId(gamePlayer.getPlayerId())
-                .finish(i)
+                .finish(i+1)
                 .buyInCollected(GAME_BUY_IN)
                 .rebuyAddOnCollected(GAME_REBUY)
                 .annualTocCollected(TOC_PER_GAME)
@@ -99,6 +99,8 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
         checkGameRuntime(gameRetrieved);
 
         checkPayouts(gameRetrieved.getPrizePotCalculated(), gameRetrieved.getPayouts());
+
+        checkPoints(gameRetrieved.getPlayers());
     }
 
     private void checkGameRuntime(Game game) {
@@ -158,5 +160,41 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
 
         Assert.assertEquals("sum of payouts for 10 players should be " + prizePot, prizePot, totalPaidOut);
 
+    }
+
+    private void checkPoints(List<GamePlayer> gamePlayers) {
+        Assert.assertNotNull("list of game players should not be null", gamePlayers);
+        Assert.assertEquals("list of game players should be 10", NUM_PLAYERS, gamePlayers.size());
+
+        int pointsCount = 0;
+        for (GamePlayer gamePlayer : gamePlayers) {
+            if (gamePlayer.getPoints() != null) {
+                ++pointsCount;
+            }
+        }
+
+        int pointsChop = 0;
+        for (GamePlayer gamePlayer : gamePlayers) {
+            if (gamePlayer.getChop() != null) {
+                ++pointsChop;
+            }
+        }
+
+        Assert.assertEquals("ten players should have points", NUM_PLAYERS, pointsCount);
+        Assert.assertEquals("no players should have chop points", 0, pointsChop);
+
+        int points[] = {70,	54,	42,	32,	25,	19,	15,	12,	9, 7};
+        int expectedPoints = 0;
+        for (int point : points) {
+            expectedPoints += point;
+        }
+
+        int totalPoints = 0;
+        for (GamePlayer gamePlayer : gamePlayers) {
+            if (gamePlayer.getPoints() != null && gamePlayer.getPoints() > 0) {
+                totalPoints += gamePlayer.getPoints();
+            }
+        }
+        Assert.assertEquals("total points should be 285", expectedPoints, totalPoints);
     }
 }
