@@ -39,8 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 24-finalize-game
+## branch 25-refactor-game-and-season-model
 
-Set the game to finalized. 
-* do not allow updates to game
-* recalculate season
+Change and added fields to the game and season models for better names.
