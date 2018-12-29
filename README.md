@@ -39,8 +39,9 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## branch 24-finalize-game
+## Current Branch: 26-calcuations-feature
 
-Set the game to finalized. 
-* do not allow updates to game
-* recalculate season
+Cucumber tests that the calcuations work. This branch tests the game calculations which include
+* game runtime fields 
+* payouts
+* points
