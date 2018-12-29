@@ -1,21 +1,22 @@
 package com.texastoc.model.season;
 
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@Builder
 public class SeasonPlayer {
 
     private int id;
     private int playerId;
     private int seasonId;
     private String name;
+    private int entries;
+    private int points;
     private Integer place;
-    private Integer points;
-    private Integer entries;
     private boolean forfeit;
 
 }

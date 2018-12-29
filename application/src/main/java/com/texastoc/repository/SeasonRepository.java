@@ -39,7 +39,7 @@ public class SeasonRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("startDate", season.getStart());
         params.addValue("endDate", season.getEnd());
-        params.addValue("finalized", season.getFinalized());
+        params.addValue("finalized", season.isFinalized());
         params.addValue("numGames", season.getNumGames());
         params.addValue("numGamesPlayed", season.getNumGamesPlayed());
         params.addValue("buyInCost", season.getBuyInCost());

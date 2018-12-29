@@ -93,11 +93,6 @@ public class SeasonService {
             .doubleRebuyAddOnCost(tocConfig.getDoubleRebuyCost())
             .doubleRebuyAddOnTocDebit(tocConfig.getDoubleRebuyTocDebit())
             .numGames(numThursdays)
-            .numGamesPlayed(0)
-            .buyInCollected(0)
-            .rebuyAddOnCollected(0)
-            .annualTocCollected(0)
-            .finalized(false)
             .quarterlySeasons(qSeasons)
             .build();
 

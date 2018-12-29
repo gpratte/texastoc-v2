@@ -26,10 +26,24 @@ public class GamePlayerRepository {
 
 
     public List<GamePlayer> selectByGameId(int gameId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("gameId", gameId);
         List<GamePlayer> gamePlayers = jdbcTemplate
             .query("select * from gameplayer"
-                    + " where gameId = " + gameId
+                    + " where gameId = :gameId"
                     + " order by name",
+                new GamePlayerMapper());
+
+        return gamePlayers;
+    }
+
+    public List<GamePlayer> selectAnnualTocPlayersBySeasonId(int seasonId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("seasonId", seasonId);
+        List<GamePlayer> gamePlayers = jdbcTemplate
+            .query("select * from gameplayer "
+                    + " where seasonId = :seasonId "
+                    + " and annualTocCollected IS NOT NULL ",
                 new GamePlayerMapper());
 
         return gamePlayers;
