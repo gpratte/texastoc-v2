@@ -5,6 +5,7 @@ import com.texastoc.controller.request.CreateGameRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
+import com.texastoc.model.game.GamePayout;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Quarter;
 import cucumber.api.java.Before;
@@ -95,6 +96,12 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
         // Assert
         Assert.assertNotNull("new game should not be null", gameRetrieved);
 
+        checkGameRuntime(gameRetrieved);
+
+        checkPayouts(gameRetrieved.getPrizePotCalculated(), gameRetrieved.getPayouts());
+    }
+
+    private void checkGameRuntime(Game game) {
         Assert.assertEquals("buy in collected should be ", GAME_BUY_IN * NUM_PLAYERS, gameRetrieved.getBuyInCollected());
         Assert.assertEquals("rebuy collected", GAME_REBUY * NUM_PLAYERS, gameRetrieved.getRebuyAddOnCollected());
         Assert.assertEquals("annual toc collected", TOC_PER_GAME * NUM_PLAYERS, gameRetrieved.getAnnualTocCollected());
@@ -119,6 +126,37 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("prizePotCalculated", prizePot, gameRetrieved.getPrizePotCalculated());
 
         Assert.assertTrue("not finalized", gameRetrieved.isFinalized());
+    }
+
+    private void checkPayouts(int prizePot, List<GamePayout> gamePayouts) {
+
+        Assert.assertNotNull("list of game payouts should not be null", gamePayouts);
+        Assert.assertEquals("list of game payouts should be size 2", 2, gamePayouts.size());
+
+        List<Integer> amounts = new ArrayList<>(2);
+        int firstPlace = (int)Math.round(0.65 * prizePot);
+        amounts.add(firstPlace);
+        int secondPlace = (int)Math.round(0.35 * prizePot);
+        amounts.add(secondPlace);
+
+        double leftover = prizePot - firstPlace - secondPlace;
+        leftover = Math.abs(leftover);
+
+        int totalPaidOut = 0;
+
+        for (int i = 0; i < gamePayouts.size(); ++i) {
+            GamePayout gamePayout = gamePayouts.get(i);
+            int amount = amounts.get(i);
+            int place = i+1;
+
+            Assert.assertEquals("payout should be place " + place, place, gamePayout.getPlace());
+            Assert.assertEquals(amount, gamePayout.getAmount(), leftover);
+            Assert.assertNull("payout chop amount should be null", gamePayout.getChopAmount());
+            Assert.assertNull("payout chop percentage should be null", gamePayout.getChopPercent());
+            totalPaidOut += gamePayout.getAmount();
+        }
+
+        Assert.assertEquals("sum of payouts for 10 players should be " + prizePot, prizePot, totalPaidOut);
 
     }
 }

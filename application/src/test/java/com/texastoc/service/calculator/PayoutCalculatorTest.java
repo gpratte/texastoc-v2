@@ -560,7 +560,7 @@ public class PayoutCalculatorTest implements TestConstants {
     }
 
     @Test
-    public void test48OrAbovePlayers10Payouts() {
+    public void test48orMorePlayers10Payouts() {
 
         // Create 48 or more
         int numPlayers = 0;
