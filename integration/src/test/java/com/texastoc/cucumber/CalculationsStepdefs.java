@@ -6,8 +6,10 @@ import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
+import com.texastoc.model.season.Quarter;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
@@ -34,7 +36,7 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
     }
 
 
-    @When("^a game has 10 players all finished$")
+    @Given("^a game has 10 players all finished$")
     public void a_game_has_10_players_all_finished() throws Exception {
         // Arrange
         createSeason();
@@ -76,5 +78,47 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
 
             updatePlayerInGame(gamePlayer.getId(), ugpr);
         }
+    }
+
+    @When("^the game is finalized$")
+    public void the_game_is_finalized() throws Exception {
+        finalizeGame(gameId);
+    }
+
+    @And("^the finalized game is retrieved$")
+    public void the_finalized_game_is_retrieved() throws Exception {
+        gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameId,Game.class);
+    }
+
+    @Then("^the retrieved game is properly calculated$")
+    public void the_retrieved_game_is_properly_calculated() throws Exception {
+        // Assert
+        Assert.assertNotNull("new game should not be null", gameRetrieved);
+
+        Assert.assertEquals("buy in collected should be ", GAME_BUY_IN * NUM_PLAYERS, gameRetrieved.getBuyInCollected());
+        Assert.assertEquals("rebuy collected", GAME_REBUY * NUM_PLAYERS, gameRetrieved.getRebuyAddOnCollected());
+        Assert.assertEquals("annual toc collected", TOC_PER_GAME * NUM_PLAYERS, gameRetrieved.getAnnualTocCollected());
+        Assert.assertEquals("quarterly toc collected", QUARTERLY_TOC_PER_GAME * NUM_PLAYERS, gameRetrieved.getQuarterlyTocCollected());
+
+        int totalCollected = GAME_BUY_IN * NUM_PLAYERS + GAME_REBUY * NUM_PLAYERS + TOC_PER_GAME * NUM_PLAYERS + QUARTERLY_TOC_PER_GAME * NUM_PLAYERS;
+        Assert.assertEquals("total collected", totalCollected, gameRetrieved.getTotalCollected());
+
+
+        Assert.assertEquals("annualTocFromRebuyAddOnCalculated", GAME_REBUY_TOC_DEBIT * NUM_PLAYERS, gameRetrieved.getAnnualTocFromRebuyAddOnCalculated());
+
+        int rebuyLessToc = GAME_REBUY * NUM_PLAYERS - GAME_REBUY_TOC_DEBIT * NUM_PLAYERS;
+        Assert.assertEquals("rebuyAddOnLessAnnualTocCalculated", rebuyLessToc, gameRetrieved.getRebuyAddOnLessAnnualTocCalculated());
+
+        int totalToc = TOC_PER_GAME * NUM_PLAYERS + QUARTERLY_TOC_PER_GAME * NUM_PLAYERS + GAME_REBUY_TOC_DEBIT * NUM_PLAYERS;
+        Assert.assertEquals("totalCombinedTocCalculated", totalToc, gameRetrieved.getTotalCombinedTocCalculated());
+
+        int kitty = KITTY_PER_GAME;
+        Assert.assertEquals("kitty calculated", kitty, gameRetrieved.getKittyCalculated());
+
+        int prizePot = totalCollected - totalToc - kitty;
+        Assert.assertEquals("prizePotCalculated", prizePot, gameRetrieved.getPrizePotCalculated());
+
+        Assert.assertTrue("not finalized", gameRetrieved.isFinalized());
+
     }
 }

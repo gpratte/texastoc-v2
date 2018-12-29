@@ -26,11 +26,15 @@ public class GameRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //    public GameRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+//        this.jdbcTemplate = jdbcTemplate;
+//    }
+
     private static final String INSERT_SQL =
         "INSERT INTO game "
-            + "(seasonId, qSeasonId, gameDate, hostId, hostName, quarter, doubleBuyIn, transportRequired, kittyCost, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, annualTocCost, quarterlyTocCost, numPlayers, kittyCollected, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, finalized, lastCalculated, started) "
+            + "(seasonId, qSeasonId, gameDate, hostId, hostName, quarter, doubleBuyIn, transportRequired, kittyCost, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, annualTocCost, quarterlyTocCost, numPlayers, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, totalCollected, kittyCalculated, annualTocFromRebuyAddOnCalculated, rebuyAddOnLessAnnualTocCalculated, totalCombinedTocCalculated, prizePotCalculated, finalized, lastCalculated, started) "
             + " VALUES "
-            + " (:seasonId, :qSeasonId, :gameDate, :hostId, :hostName, :quarter, :doubleBuyIn, :transportRequired, :kittyCost, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :annualTocCost, :quarterlyTocCost, :numPlayers, :kittyCollected, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :finalized, :lastCalculated, :started)";
+            + " (:seasonId, :qSeasonId, :gameDate, :hostId, :hostName, :quarter, :doubleBuyIn, :transportRequired, :kittyCost, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :annualTocCost, :quarterlyTocCost, :numPlayers, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :totalCollected, :kittyCalculated, :annualTocFromRebuyAddOnCalculated, :rebuyAddOnLessAnnualTocCalculated, :totalCombinedTocCalculated, :prizePotCalculated, :finalized, :lastCalculated, :started)";
 
     public int save(final Game game) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -51,11 +55,16 @@ public class GameRepository {
         params.addValue("annualTocCost", game.getAnnualTocCost());
         params.addValue("quarterlyTocCost", game.getQuarterlyTocCost());
         params.addValue("numPlayers", game.getNumPlayers());
-        params.addValue("kittyCollected", game.getKittyCalculated());
         params.addValue("buyInCollected", game.getBuyInCollected());
         params.addValue("rebuyAddOnCollected", game.getRebuyAddOnCollected());
         params.addValue("annualTocCollected", game.getAnnualTocCollected());
         params.addValue("quarterlyTocCollected", game.getQuarterlyTocCollected());
+        params.addValue("totalCollected", game.getKittyCalculated());
+        params.addValue("kittyCalculated", game.getKittyCalculated());
+        params.addValue("annualTocFromRebuyAddOnCalculated", game.getAnnualTocFromRebuyAddOnCalculated());
+        params.addValue("rebuyAddOnLessAnnualTocCalculated", game.getRebuyAddOnLessAnnualTocCalculated());
+        params.addValue("totalCombinedTocCalculated", game.getTotalCombinedTocCalculated());
+        params.addValue("prizePotCalculated", game.getPrizePotCalculated());
         params.addValue("finalized", game.isFinalized());
         params.addValue("lastCalculated", game.getLastCalculated());
         params.addValue("started", game.getStarted() == null ? null : Timestamp.valueOf(game.getStarted()));
@@ -73,9 +82,14 @@ public class GameRepository {
         "kittyCost=:kittyCost, buyInCost=:buyInCost, rebuyAddOnCost=:rebuyAddOnCost, " +
         "rebuyAddOnTocDebit=:rebuyAddOnTocDebit, annualTocCost=:annualTocCost, " +
         "quarterlyTocCost=:quarterlyTocCost, started=:started, numPlayers=:numPlayers, " +
-        "kittyCollected=:kittyCollected, buyInCollected=:buyInCollected, " +
-        "rebuyAddOnCollected=:rebuyAddOnCollected, annualTocCollected=:annualTocCollected, " +
-        "quarterlyTocCollected=:quarterlyTocCollected, finalized=:finalized, " +
+        "buyInCollected=:buyInCollected, rebuyAddOnCollected=:rebuyAddOnCollected, " +
+        "annualTocCollected=:annualTocCollected, " +
+        "quarterlyTocCollected=:quarterlyTocCollected, " +
+        "totalCollected=:totalCollected, kittyCalculated=:kittyCalculated, " +
+        "annualTocFromRebuyAddOnCalculated=:annualTocFromRebuyAddOnCalculated, " +
+        "rebuyAddOnLessAnnualTocCalculated=:rebuyAddOnLessAnnualTocCalculated, " +
+        "totalCombinedTocCalculated=:totalCombinedTocCalculated, " +
+        "prizePotCalculated=:prizePotCalculated, finalized=:finalized, " +
         "payoutDelta=:payoutDelta, lastCalculated=:lastCalculated " +
         " where id=:id";
 
@@ -98,11 +112,16 @@ public class GameRepository {
         params.addValue("quarterlyTocCost", game.getQuarterlyTocCost());
         params.addValue("started", game.getStarted() == null ? null : Timestamp.valueOf(game.getStarted()));
         params.addValue("numPlayers", game.getNumPlayers());
-        params.addValue("kittyCollected", game.getKittyCalculated());
         params.addValue("buyInCollected", game.getBuyInCollected());
         params.addValue("rebuyAddOnCollected", game.getRebuyAddOnCollected());
         params.addValue("annualTocCollected", game.getAnnualTocCollected());
         params.addValue("quarterlyTocCollected", game.getQuarterlyTocCollected());
+        params.addValue("totalCollected", game.getTotalCollected());
+        params.addValue("kittyCalculated", game.getKittyCalculated());
+        params.addValue("annualTocFromRebuyAddOnCalculated", game.getAnnualTocFromRebuyAddOnCalculated());
+        params.addValue("rebuyAddOnLessAnnualTocCalculated", game.getRebuyAddOnLessAnnualTocCalculated());
+        params.addValue("totalCombinedTocCalculated", game.getTotalCombinedTocCalculated());
+        params.addValue("prizePotCalculated", game.getPrizePotCalculated());
         params.addValue("finalized", game.isFinalized());
         params.addValue("payoutDelta", game.getPayoutDelta());
         params.addValue("lastCalculated", game.getLastCalculated());
@@ -161,25 +180,23 @@ public class GameRepository {
                 game.setAnnualTocCost(rs.getInt("annualTocCost"));
                 game.setQuarterlyTocCost(rs.getInt("quarterlyTocCost"));
                 game.setNumPlayers(rs.getInt("numPlayers"));
-                game.setKittyCalculated(rs.getInt("kittyCollected"));
                 game.setBuyInCollected(rs.getInt("buyInCollected"));
                 game.setRebuyAddOnCollected(rs.getInt("rebuyAddOnCollected"));
                 game.setAnnualTocCollected(rs.getInt("annualTocCollected"));
                 game.setQuarterlyTocCollected(rs.getInt("quarterlyTocCollected"));
+                game.setTotalCollected(rs.getInt("totalCollected"));
+                game.setKittyCalculated(rs.getInt("kittyCalculated"));
+                game.setAnnualTocFromRebuyAddOnCalculated(rs.getInt("annualTocFromRebuyAddOnCalculated"));
+                game.setRebuyAddOnLessAnnualTocCalculated(rs.getInt("rebuyAddOnLessAnnualTocCalculated"));
+                game.setTotalCombinedTocCalculated(rs.getInt("totalCombinedTocCalculated"));
+                game.setPrizePotCalculated(rs.getInt("prizePotCalculated"));
                 game.setFinalized(rs.getBoolean("finalized"));
+                game.setHostId(rs.getInt("hostId"));
+                game.setPayoutDelta(rs.getInt("payoutDelta"));
 
-                String value = rs.getString("hostId");
-                if (value != null) {
-                    game.setHostId(rs.getInt("hostId"));
-                }
-                value = rs.getString("hostName");
+                String value = rs.getString("hostName");
                 if (value != null) {
                     game.setHostName(rs.getString("hostName"));
-                }
-
-                value = rs.getString("payoutDelta");
-                if (value != null) {
-                    game.setPayoutDelta(rs.getInt("payoutDelta"));
                 }
 
                 Timestamp time = rs.getTimestamp("started");

@@ -129,4 +129,12 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     protected void deletePlayerFromGame(int gamePlayerId) throws JsonProcessingException {
         restTemplate.delete(endpoint() + "/games/players/" + gamePlayerId);
     }
+
+    protected void finalizeGame(int gameId) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        restTemplate.put(endpoint() + "/games/" + gameId + "/finalize", entity);
+    }
+
 }

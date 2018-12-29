@@ -54,6 +54,12 @@ public class GameRestController {
         return gameService.getGame(id);
     }
 
+    @PutMapping("/api/v2/games/{id}/finalize")
+    public void finalizeGame(@PathVariable("id") int id) {
+        gameService.finalize(id);
+    }
+
+
     // TODO api/v1/games/{id}/players
     @PostMapping("/api/v2/games/players")
     public GamePlayer createGamePlayer(@RequestBody @Valid CreateGamePlayerRequest cgpr) {
