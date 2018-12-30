@@ -39,9 +39,7 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 26-game-calcuations-feature
+## Current Branch: 27-season-calculations
 
-Cucumber tests that the game calcuations work. This branch tests the game calculations which include
-* game runtime fields 
-* payouts
-* points
+* TDD for SeasonCalculator and QuarterlySeasonCalculator
+* Cucumber tests for SeasonCalculator and QuarterlySeasonCalculator
