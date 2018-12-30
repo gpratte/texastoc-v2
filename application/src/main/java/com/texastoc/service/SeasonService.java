@@ -1,10 +1,13 @@
 package com.texastoc.service;
 
 import com.texastoc.model.config.TocConfig;
+import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.repository.ConfigRepository;
+import com.texastoc.repository.GamePayoutRepository;
+import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
@@ -22,14 +25,18 @@ public class SeasonService {
     private final SeasonRepository seasonRepository;
     private final QuarterlySeasonRepository qSeasonRepository;
     private final GameRepository gameRepository;
+    private final GamePlayerRepository gamePlayerRepository;
+    private final GamePayoutRepository gamePayoutRepository;
     private final ConfigRepository configRepository;
 
     @Autowired
-    public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository) {
+    public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository) {
         this.seasonRepository = seasonRepository;
         this.qSeasonRepository = qSeasonRepository;
         this.gameRepository = gameRepository;
         this.configRepository = configRepository;
+        this.gamePlayerRepository = gamePlayerRepository;
+        this.gamePayoutRepository = gamePayoutRepository;
     }
 
     @Transactional
@@ -113,6 +120,18 @@ public class SeasonService {
         Season season = seasonRepository.get(id);
         season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(id));
         season.setGames(gameRepository.getBySeasonId(id));
+        for (Game game : season.getGames()) {
+            game.setPlayers(gamePlayerRepository.selectByGameId(game.getId()));
+            game.setPayouts(gamePayoutRepository.getByGameId(game.getId()));
+        }
+        return season;
+    }
+
+    @Transactional(readOnly = true)
+    public Season getCurrentSeason() {
+        Season season = seasonRepository.getCurrent();
+        season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(season.getId()));
+        season.setGames(gameRepository.getBySeasonId(season.getId()));
         return season;
     }
 }

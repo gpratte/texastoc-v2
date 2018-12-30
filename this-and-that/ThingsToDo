@@ -1,6 +1,5 @@
 
 Write tests for:
-    game calculate feature - assert payouts and points
     Calculate season/qseason
     Update game player, do not allow player id to change.
     Update game, do not allow game double buy in to change if any players have bought in.

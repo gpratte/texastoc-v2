@@ -14,6 +14,8 @@ public class GamePlayer {
 
     private int id;
     private int playerId;
+    private int qSeasonId;
+    private int seasonId;
     private int gameId;
     private String name;
     private Integer points;

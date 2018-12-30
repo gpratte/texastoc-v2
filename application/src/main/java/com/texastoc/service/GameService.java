@@ -122,7 +122,7 @@ public class GameService {
     @Transactional
     public GamePlayer createGamePlayer(GamePlayer gamePlayer) {
         checkFinalized(gamePlayer.getGameId());
-        return this.createGamePlayerWorker(gamePlayer);
+        return createGamePlayerWorker(gamePlayer);
     }
 
     @Transactional
@@ -207,6 +207,8 @@ public class GameService {
             Player player = playerRepository.get(gamePlayer.getPlayerId());
             gamePlayer.setName(player.getName());
         }
+        gamePlayer.setQSeasonId(currentGame.getQSeasonId());
+        gamePlayer.setSeasonId(currentGame.getSeasonId());
 
         int gamePlayerId = gamePlayerRepository.save(gamePlayer);
         gamePlayer.setId(gamePlayerId);

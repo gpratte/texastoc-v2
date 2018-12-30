@@ -32,6 +32,7 @@ public class GamePlayerRepository {
             .query("select * from gameplayer"
                     + " where gameId = :gameId"
                     + " order by name",
+                params,
                 new GamePlayerMapper());
 
         return gamePlayers;
@@ -44,6 +45,7 @@ public class GamePlayerRepository {
             .query("select * from gameplayer "
                     + " where seasonId = :seasonId "
                     + " and annualTocCollected IS NOT NULL ",
+                params,
                 new GamePlayerMapper());
 
         return gamePlayers;
@@ -56,6 +58,7 @@ public class GamePlayerRepository {
             .query("select * from gameplayer "
                     + " where qSeasonId = :qSeasonId "
                     + " and quarterlyTocCollected IS NOT NULL ",
+                params,
                 new GamePlayerMapper());
 
         return gamePlayers;
@@ -87,9 +90,9 @@ public class GamePlayerRepository {
 
     private static final String INSERT_SQL =
         "INSERT INTO gameplayer "
-            + "(playerId, gameId, name, points, finish, knockedOut, roundUpdates, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, chop) "
+            + "(playerId, gameId, qSeasonId, seasonId, name, points, finish, knockedOut, roundUpdates, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, chop) "
             + " VALUES "
-            + " (:playerId, :gameId, :name, :points, :finish, :knockedOut, :roundUpdates, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :chop)";
+            + " (:playerId, :gameId, :qSeasonId, :seasonId, :name, :points, :finish, :knockedOut, :roundUpdates, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :chop)";
 
     public int save(final GamePlayer gamePlayer) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -97,6 +100,8 @@ public class GamePlayerRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("playerId", gamePlayer.getPlayerId());
         params.addValue("gameId", gamePlayer.getGameId());
+        params.addValue("qSeasonId", gamePlayer.getQSeasonId());
+        params.addValue("seasonId", gamePlayer.getSeasonId());
         params.addValue("name", gamePlayer.getName());
         params.addValue("points", gamePlayer.getPoints());
         params.addValue("finish", gamePlayer.getFinish());
@@ -117,8 +122,8 @@ public class GamePlayerRepository {
 
 
     private static final String UPDATE_SQL = "UPDATE gameplayer set " +
-        "playerId=:playerId, gameId=:gameId, name=:name, " +
-        "points=:points, finish=:finish, knockedOut=:knockedOut, " +
+        "playerId=:playerId, gameId=:gameId, qSeasonId=:qSeasonId, seasonId=seasonId, " +
+        "name=:name, points=:points, finish=:finish, knockedOut=:knockedOut, " +
         "roundUpdates=:roundUpdates, buyInCollected=:buyInCollected, " +
         "rebuyAddOnCollected=:rebuyAddOnCollected, annualTocCollected=:annualTocCollected, " +
         "quarterlyTocCollected=:quarterlyTocCollected, chop=:chop " +
@@ -129,6 +134,8 @@ public class GamePlayerRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("playerId", player.getPlayerId());
         params.addValue("gameId", player.getGameId());
+        params.addValue("qSeasonId", player.getQSeasonId());
+        params.addValue("seasonId", player.getSeasonId());
         params.addValue("name", player.getName());
         params.addValue("points", player.getPoints());
         params.addValue("finish", player.getFinish());
@@ -153,6 +160,8 @@ public class GamePlayerRepository {
                 gamePlayer.setId(rs.getInt("id"));
                 gamePlayer.setPlayerId(rs.getInt("playerId"));
                 gamePlayer.setGameId(rs.getInt("gameId"));
+                gamePlayer.setQSeasonId(rs.getInt("qSeasonId"));
+                gamePlayer.setSeasonId(rs.getInt("seasonId"));
                 gamePlayer.setName(rs.getString("name"));
 
                 String value = rs.getString("buyInCollected");

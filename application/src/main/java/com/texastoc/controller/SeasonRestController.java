@@ -27,8 +27,13 @@ public class SeasonRestController {
     }
 
     @GetMapping("/api/v2/seasons/{id}")
-    public Season getCurrentSeason(@PathVariable("id") int id) {
+    public Season getSeason(@PathVariable("id") int id) {
         return seasonService.getSeason(id);
+    }
+
+    @GetMapping("/api/v2/seasons/current")
+    public Season getCurrentSeason() {
+        return seasonService.getCurrentSeason();
     }
 
 }
