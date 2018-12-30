@@ -8,9 +8,9 @@ create table if not exists season (id INT auto_increment, startDate DATE, endDat
 
 create table if not exists quarterlyseason (id INT auto_increment, seasonId INT NOT NULL, startDate DATE, endDate DATE, finalized BOOLEAN, quarter INT NOT NULL, numGames INT, numGamesPlayed INT, qTocCollected INT, qTocPerGame INT, numPayouts INT NOT NULL, lastCalculated DATE, primary key(id))
 
-create table if not exists seasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points DEFAULT 0, place DEFAULT 0, forfeit BOOLEAN DEFAULT false, primary key (seasonId, place))
+create table if not exists seasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT DEFAULT 0, forfeit BOOLEAN DEFAULT false, primary key (seasonId, place))
 
-create table if not exists quarterlyseasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, qSeasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points DEFAULT 0, place DEFAULT 0, primary key (seasonId, qSeasonId, place))
+create table if not exists quarterlyseasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, qSeasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT DEFAULT 0, primary key (seasonId, qSeasonId, place))
 
 create table if not exists player (id INT auto_increment, firstName varchar(32) DEFAULT NULL, lastName varchar(32) DEFAULT NULL, phone varchar(32) DEFAULT NULL, email varchar(64) DEFAULT NULL, primary key (id))
 
@@ -25,7 +25,7 @@ create table if not exists gamepayout (gameId INT NOT NULL, place INT NOT NULL, 
 
 create table if not exists seasonpayout (seasonId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, PRIMARY KEY (seasonId, place))
 
-create table if not exists quaterlyseasonpayout (seasonId INT NOT NULL, qSeasonId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, PRIMARY KEY (seasonId, qSeasonId, place))
+create table if not exists quarterlyseasonpayout (seasonId INT NOT NULL, qSeasonId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, PRIMARY KEY (seasonId, qSeasonId, place))
 
 create table if not exists payout (numPayouts INT NOT NULL, place INT NOT NULL, percent DOUBLE DEFAULT NULL, PRIMARY KEY (numPayouts, place))
 insert into payout (numPayouts, place, percent) values (2, 1, 0.65)

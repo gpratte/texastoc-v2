@@ -311,7 +311,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         UpdateGamePlayerRequest expected = gamePlayersUpdated.get(0);
         GamePlayer actual = gameRetrieved.getPlayers().get(0);
 
-        Assert.assertNull("the game player points should be null", actual.getPoints());
+        Assert.assertTrue("the game player points should be null or 0", actual.getPoints() == null || actual.getPoints() < 1);
 
         Assert.assertEquals("the game player finish should be " + expected.getFinish(), (int)expected.getFinish(), (int)actual.getFinish());
         Assert.assertEquals("the game player knockedOut should be " + expected.getKnockedOut(), expected.getKnockedOut(), actual.getKnockedOut());
