@@ -38,7 +38,7 @@ public class QuarterlySeasonPayoutRepository {
         "INSERT INTO quarterlyseasonpayout "
             + "(seasonId, qSeasonId, place, amount) "
             + " VALUES "
-            + " (:seasonId, qSeasonId, :place, :amount)";
+            + " (:seasonId, :qSeasonId, :place, :amount)";
     public void save(final QuarterlySeasonPayout payout) {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -54,7 +54,7 @@ public class QuarterlySeasonPayoutRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("qSeasonId", qSeasonId);
 
-        jdbcTemplate.update("delete from quarterlyseasonpayouts where qSeasonId=:qSeasonId", params);
+        jdbcTemplate.update("delete from quarterlyseasonpayout where qSeasonId=:qSeasonId", params);
     }
 
     private static final class QuarterlySeasonPayoutMapper implements RowMapper<QuarterlySeasonPayout> {

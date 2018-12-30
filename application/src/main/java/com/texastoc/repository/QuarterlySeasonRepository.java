@@ -59,7 +59,7 @@ public class QuarterlySeasonRepository {
     }
 
     private static final String UPDATE_SQL = "UPDATE quarterlyseason set " +
-        "seasonId=:seasonId, start=:start, end=:end, " +
+        "seasonId=:seasonId, startDate=:startDate, endDate=:endDate, " +
         "finalized=:finalized, quarter=:quarter, numGames=:numGames, " +
         "numGamesPlayed=:numGamesPlayed, qTocCollected=:qTocCollected, " +
         "qTocPerGame=:qTocPerGame, numPayouts=:numPayouts, " +
@@ -70,13 +70,13 @@ public class QuarterlySeasonRepository {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("seasonId", qSeason.getSeasonId());
-        params.addValue("start", qSeason.getStart());
-        params.addValue("end", qSeason.getEnd());
+        params.addValue("startDate", qSeason.getStart());
+        params.addValue("endDate", qSeason.getEnd());
         params.addValue("finalized", qSeason.isFinalized());
         params.addValue("quarter", qSeason.getQuarter().getValue());
         params.addValue("numGames", qSeason.getNumGames());
         params.addValue("numGamesPlayed", qSeason.getNumGamesPlayed());
-        params.addValue("qTocCollected()", qSeason.getQTocCollected());
+        params.addValue("qTocCollected", qSeason.getQTocCollected());
         params.addValue("qTocPerGame", qSeason.getQTocPerGame());
         params.addValue("numPayouts", qSeason.getNumPayouts());
         params.addValue("lastCalculated", qSeason.getLastCalculated());

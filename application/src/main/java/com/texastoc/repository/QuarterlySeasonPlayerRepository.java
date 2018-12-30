@@ -37,11 +37,30 @@ public class QuarterlySeasonPlayerRepository {
     }
 
     public void deleteByQSeasonId(int qSeasonId) {
-        throw new RuntimeException("not implemented");
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("qSeasonId", qSeasonId);
+
+        jdbcTemplate
+            .update("delete from quarterlyseasonplayer where qSeasonId = :qSeasonId", params);
     }
 
+    private static final String INSERT_SQL =
+        "INSERT INTO quarterlyseasonplayer "
+            + "(playerId, seasonId, qSeasonId, name, entries, points, place) "
+            + " VALUES "
+            + " (:playerId, :seasonId, :qSeasonId, :name, :entries, :points, :place)";
+
     public void save(QuarterlySeasonPlayer qSeasonPlayer) {
-        throw new RuntimeException("not implemented");
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("playerId", qSeasonPlayer.getPlayerId());
+        params.addValue("seasonId", qSeasonPlayer.getSeasonId());
+        params.addValue("qSeasonId", qSeasonPlayer.getQSeasonId());
+        params.addValue("name", qSeasonPlayer.getName());
+        params.addValue("entries", qSeasonPlayer.getEntries());
+        params.addValue("points", qSeasonPlayer.getPoints());
+        params.addValue("place", qSeasonPlayer.getPlace());
+
+        jdbcTemplate.update(INSERT_SQL, params);
     }
 
     private static final class QuarterlySeasonPlayerMapper implements RowMapper<QuarterlySeasonPlayer> {
@@ -54,13 +73,9 @@ public class QuarterlySeasonPlayerRepository {
                 qSeasonPlayer.setQSeasonId(rs.getInt("qSeasonId"));
                 qSeasonPlayer.setEntries(rs.getInt("entries"));
                 qSeasonPlayer.setPoints(rs.getInt("points"));
+                qSeasonPlayer.setPlace(rs.getInt("place"));
 
                 qSeasonPlayer.setName(rs.getString("name"));
-
-                String value = rs.getString("place");
-                if (value != null) {
-                    qSeasonPlayer.setPlace(Integer.parseInt(value));
-                }
 
             } catch (SQLException e) {
                 log.error("problem mapping quarterly season player", e);

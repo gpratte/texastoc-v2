@@ -10,7 +10,7 @@ create table if not exists quarterlyseason (id INT auto_increment, seasonId INT 
 
 create table if not exists seasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT DEFAULT 0, forfeit BOOLEAN DEFAULT false, primary key (seasonId, place))
 
-create table if not exists quarterlyseasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, qSeasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT DEFAULT 0, primary key (seasonId, qSeasonId, place))
+create table if not exists quarterlyseasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, qSeasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT)
 
 create table if not exists player (id INT auto_increment, firstName varchar(32) DEFAULT NULL, lastName varchar(32) DEFAULT NULL, phone varchar(32) DEFAULT NULL, email varchar(64) DEFAULT NULL, primary key (id))
 

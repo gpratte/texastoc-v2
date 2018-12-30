@@ -107,7 +107,19 @@ public class QuarterlySeasonCalculator {
             player.setEntries(player.getEntries() + 1);
         }
 
-        return new ArrayList<>(seasonPlayerMap.values());
+        List<QuarterlySeasonPlayer> players = new ArrayList<>(seasonPlayerMap.values());
+
+        // Sort and set the place
+        players.sort( (p1,p2) -> p2.getPoints() - p1.getPoints());
+        int place = 1;
+        for (QuarterlySeasonPlayer player : players) {
+            if (player.getPoints() > 0) {
+                player.setPlace(place);
+                ++place;
+            }
+        }
+
+        return players;
     }
 
     private List<QuarterlySeasonPayout> calculatePayouts(int pot, int seasonId, int qSeasonId) {
