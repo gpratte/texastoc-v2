@@ -23,12 +23,12 @@ public class SeasonPayoutRepository {
     }
 
 
-    public List<SeasonPayout> getByQuarterlySeasonId(int id) {
+    public List<SeasonPayout> getBySeasonId(int id) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", id);
 
         return jdbcTemplate
-            .query("select * from seasonpayout where qSeasonId = :id order by amount desc",
+            .query("select * from seasonpayout where seasonId = :id order by amount desc",
                 params,
                 new SeasonPayoutMapper());
     }
@@ -62,9 +62,7 @@ public class SeasonPayoutRepository {
         public SeasonPayout mapRow(ResultSet rs, int rowNum) {
             SeasonPayout seasonPayout = new SeasonPayout();
             try {
-                seasonPayout.setId(rs.getInt("id"));
                 seasonPayout.setSeasonId(rs.getInt("seasonId"));
-                seasonPayout.setQSeasonId(rs.getInt("qSeasonId"));
                 seasonPayout.setPlace(rs.getInt("place"));
                 seasonPayout.setAmount(rs.getInt("amount"));
             } catch (SQLException e) {

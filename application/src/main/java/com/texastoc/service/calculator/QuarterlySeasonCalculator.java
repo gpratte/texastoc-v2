@@ -3,12 +3,17 @@ package com.texastoc.service.calculator;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.QuarterlySeason;
+import com.texastoc.model.season.QuarterlySeasonPayout;
+import com.texastoc.model.season.QuarterlySeasonPlayer;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.season.SeasonPayout;
 import com.texastoc.model.season.SeasonPlayer;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
+import com.texastoc.repository.QuarterlySeasonPayoutRepository;
+import com.texastoc.repository.QuarterlySeasonPlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
+import com.texastoc.repository.SeasonPlayerRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,16 +28,21 @@ public class QuarterlySeasonCalculator {
     private final GameRepository gameRepository;
     private final GamePlayerRepository gamePlayerRepository;
     private final QuarterlySeasonRepository qSeasonRepository;
+    private final QuarterlySeasonPlayerRepository qSeasonPlayerRepository;
+    private final QuarterlySeasonPayoutRepository qSeasonPayoutRepository;
 
-    public QuarterlySeasonCalculator(QuarterlySeasonRepository qSeasonRepository, GamePlayerRepository gamePlayerRepository, GameRepository gameRepository) {
+    public QuarterlySeasonCalculator(QuarterlySeasonRepository qSeasonRepository, GamePlayerRepository gamePlayerRepository, GameRepository gameRepository, QuarterlySeasonPlayerRepository qSeasonPlayerRepository, QuarterlySeasonPayoutRepository qSeasonPayoutRepository) {
         this.qSeasonRepository = qSeasonRepository;
         this.gamePlayerRepository = gamePlayerRepository;
         this.gameRepository = gameRepository;
+        this.qSeasonPlayerRepository = qSeasonPlayerRepository;
+        this.qSeasonPayoutRepository = qSeasonPayoutRepository;
     }
 
     public QuarterlySeason calculate(int id) {
         QuarterlySeason qSeason = qSeasonRepository.getById(id);
 
+        // Calculate quarterly season
         List<Game> games = gameRepository.getByQuarterlySeasonId(id);
 
         qSeason.setNumGamesPlayed(games.size());
@@ -43,46 +53,65 @@ public class QuarterlySeasonCalculator {
         }
         qSeason.setQTocCollected(qTocCollected);
 
-        List<SeasonPlayer> seasonPlayers = calculatePlayers(id);
-        qSeason.setPlayers(seasonPlayers);
+        // Persist quarterly season
+        qSeasonRepository.update(qSeason);
 
-        List<SeasonPayout> payouts = calculatePayouts(qTocCollected, qSeason.getSeasonId(), qSeason.getId());
+
+        // Calculate quarterly season players
+        List<QuarterlySeasonPlayer> players = calculatePlayers(qSeason.getSeasonId(), id);
+        qSeason.setPlayers(players);
+
+        // Persist quarterly season players
+        qSeasonPlayerRepository.deleteByQSeasonId(id);
+        for (QuarterlySeasonPlayer player : players) {
+            qSeasonPlayerRepository.save(player);
+        }
+
+        // Calculate quarterly season payouts
+        List<QuarterlySeasonPayout> payouts = calculatePayouts(qTocCollected, qSeason.getSeasonId(), id);
         qSeason.setPayouts(payouts);
+
+        // Persist quarterly season payouts
+        qSeasonPayoutRepository.deleteByQSeasonId(id);
+        for (QuarterlySeasonPayout payout : payouts) {
+            qSeasonPayoutRepository.save(payout);
+        }
 
         return qSeason;
     }
 
-    private List<SeasonPlayer> calculatePlayers(int id) {
+    private List<QuarterlySeasonPlayer> calculatePlayers(int seasonId, int qSeasonId) {
 
-        Map<Integer, SeasonPlayer> seasonPlayerMap = new HashMap<>();
+        Map<Integer, QuarterlySeasonPlayer> seasonPlayerMap = new HashMap<>();
 
-        List<GamePlayer> gamePlayers = gamePlayerRepository.selectQuarterlyTocPlayersByQuarterlySeasonId(id);
+        List<GamePlayer> gamePlayers = gamePlayerRepository.selectQuarterlyTocPlayersByQuarterlySeasonId(qSeasonId);
 
         for (GamePlayer gamePlayer : gamePlayers) {
-            SeasonPlayer seasonPlayer = seasonPlayerMap.get(gamePlayer.getId());
-            if (seasonPlayer == null) {
+            QuarterlySeasonPlayer player = seasonPlayerMap.get(gamePlayer.getId());
+            if (player == null) {
 
-                seasonPlayer = SeasonPlayer.builder()
+                player = QuarterlySeasonPlayer.builder()
                     .playerId(gamePlayer.getPlayerId())
-                    .seasonId(id)
+                    .seasonId(seasonId)
+                    .qSeasonId(qSeasonId)
                     .name(gamePlayer.getName())
                     .build();
 
-                seasonPlayerMap.put(gamePlayer.getId(), seasonPlayer);
+                seasonPlayerMap.put(gamePlayer.getId(), player);
             }
 
             if (gamePlayer.getPoints() != null && gamePlayer.getPoints() > 0) {
-                seasonPlayer.setPoints(seasonPlayer.getPoints() + gamePlayer.getPoints());
+                player.setPoints(player.getPoints() + gamePlayer.getPoints());
             }
 
-            seasonPlayer.setEntries(seasonPlayer.getEntries() + 1);
+            player.setEntries(player.getEntries() + 1);
         }
 
         return new ArrayList<>(seasonPlayerMap.values());
     }
 
-    private List<SeasonPayout> calculatePayouts(int pot, int seasonId, int qSeasonId) {
-        List<SeasonPayout> payouts = new ArrayList<>(3);
+    private List<QuarterlySeasonPayout> calculatePayouts(int pot, int seasonId, int qSeasonId) {
+        List<QuarterlySeasonPayout> payouts = new ArrayList<>(3);
 
         if (pot < 1) {
             return payouts;
@@ -92,19 +121,19 @@ public class QuarterlySeasonCalculator {
         int secondPlace = (int) Math.round(pot * 0.3d);
         int thirdPlace = pot - firstPlace - secondPlace;
 
-        payouts.add(SeasonPayout.builder()
+        payouts.add(QuarterlySeasonPayout.builder()
             .seasonId(seasonId)
             .qSeasonId(qSeasonId)
             .place(1)
             .amount(firstPlace)
             .build());
-        payouts.add(SeasonPayout.builder()
+        payouts.add(QuarterlySeasonPayout.builder()
             .seasonId(seasonId)
             .qSeasonId(qSeasonId)
             .place(2)
             .amount(secondPlace)
             .build());
-        payouts.add(SeasonPayout.builder()
+        payouts.add(QuarterlySeasonPayout.builder()
             .seasonId(seasonId)
             .qSeasonId(qSeasonId)
             .place(3)

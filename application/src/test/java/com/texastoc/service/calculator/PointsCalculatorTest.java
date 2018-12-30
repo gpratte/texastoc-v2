@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -86,6 +87,13 @@ public class PointsCalculatorTest implements TestConstants {
         int pickOnePlayer = random.nextInt(numPlayers);
         gamePlayers.get(pickOnePlayer).setFinish(numPlayers);
 
+        // Needed in the persistPoints method
+        Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
+            .thenReturn(GamePlayer.builder()
+                .points(1)
+                .build());
+
+
         gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 
         Assert.assertNotNull("list of game players should not be null", gamePlayers);
@@ -126,6 +134,12 @@ public class PointsCalculatorTest implements TestConstants {
         }
         gamePlayers.get(1).setFinish(10);
         gamePlayers.get(4).setFinish(9);
+
+        // Needed in the persistPoints method
+        Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
+            .thenReturn(GamePlayer.builder()
+                .points(1)
+                .build());
 
         gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 
@@ -178,6 +192,12 @@ public class PointsCalculatorTest implements TestConstants {
         gamePlayers.get(16).setFinish(3);
         gamePlayers.get(7).setFinish(2);
         gamePlayers.get(15).setFinish(1);
+
+        // Needed in the persistPoints method
+        Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
+            .thenReturn(GamePlayer.builder()
+                .points(1)
+                .build());
 
         gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 
@@ -244,6 +264,12 @@ public class PointsCalculatorTest implements TestConstants {
         gamePlayers.get(15).setFinish(1);
         gamePlayers.get(15).setChop(60000);
 
+        // Needed in the persistPoints method
+        Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
+            .thenReturn(GamePlayer.builder()
+                .points(1)
+                .build());
+
         gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 
         Assert.assertNotNull("list of game players should not be null", gamePlayers);
@@ -303,6 +329,12 @@ public class PointsCalculatorTest implements TestConstants {
 
         gamePlayers.get(15).setFinish(1);
         gamePlayers.get(15).setChop(100000);
+
+        // Needed in the persistPoints method
+        Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
+            .thenReturn(GamePlayer.builder()
+                .points(1)
+                .build());
 
         gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 

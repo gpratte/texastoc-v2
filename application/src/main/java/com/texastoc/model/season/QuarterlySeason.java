@@ -28,17 +28,17 @@ public class QuarterlySeason {
     private int qTocPerGame;
     private int numPayouts;
     private LocalDateTime lastCalculated;
-    private List<SeasonPlayer> players;
-    private List<SeasonPayout> payouts;
+    private List<QuarterlySeasonPlayer> players;
+    private List<QuarterlySeasonPayout> payouts;
 
-    public void addPlayer(SeasonPlayer player) {
+    public void addPlayer(QuarterlySeasonPlayer player) {
         if (players == null) {
             players = new LinkedList<>();
         }
         players.add(player);
     }
 
-    public void addPayout(SeasonPayout payout) {
+    public void addPayout(QuarterlySeasonPayout payout) {
         if (payouts == null) {
             payouts = new LinkedList<>();
         }

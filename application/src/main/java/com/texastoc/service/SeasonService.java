@@ -11,6 +11,8 @@ import com.texastoc.repository.GamePayoutRepository;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
+import com.texastoc.repository.QuarterlySeasonPayoutRepository;
+import com.texastoc.repository.QuarterlySeasonPlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonPayoutRepository;
 import com.texastoc.repository.SeasonPlayerRepository;
@@ -34,9 +36,11 @@ public class SeasonService {
     private final SeasonPlayerRepository seasonPlayerRepository;
     private final ConfigRepository configRepository;
     private final SeasonPayoutRepository seasonPayoutRepository;
+    private final QuarterlySeasonPlayerRepository qSeasonPlayerRepository;
+    private final QuarterlySeasonPayoutRepository qSeasonPayoutRepository;
 
     @Autowired
-    public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonPlayerRepository seasonPlayerRepository, SeasonPayoutRepository seasonPayoutRepository) {
+    public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonPlayerRepository seasonPlayerRepository, SeasonPayoutRepository seasonPayoutRepository, QuarterlySeasonPlayerRepository qSeasonPlayerRepository, QuarterlySeasonPayoutRepository qSeasonPayoutRepository) {
         this.seasonRepository = seasonRepository;
         this.qSeasonRepository = qSeasonRepository;
         this.gameRepository = gameRepository;
@@ -45,6 +49,8 @@ public class SeasonService {
         this.gamePayoutRepository = gamePayoutRepository;
         this.seasonPlayerRepository = seasonPlayerRepository;
         this.seasonPayoutRepository = seasonPayoutRepository;
+        this.qSeasonPlayerRepository = qSeasonPlayerRepository;
+        this.qSeasonPayoutRepository = qSeasonPayoutRepository;
     }
 
     @Transactional
@@ -130,8 +136,8 @@ public class SeasonService {
         season.setGames(gameRepository.getBySeasonId(id));
 
         for (QuarterlySeason qSeason : season.getQuarterlySeasons()) {
-            qSeason.setPlayers(seasonPlayerRepository.getByQuarterlySeasonId(qSeason.getId()));
-            qSeason.setPayouts(seasonPayoutRepository.getByQuarterlySeasonId(qSeason.getId()));
+            qSeason.setPlayers(qSeasonPlayerRepository.getByQSeasonId(qSeason.getId()));
+            qSeason.setPayouts(qSeasonPayoutRepository.getByQSeasonId(qSeason.getId()));
         }
 
         for (Game game : season.getGames()) {

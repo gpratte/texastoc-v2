@@ -190,6 +190,7 @@ public class GameService {
         Game game = gameRepository.getById(id);
         game.setFinalized(true);
         gameRepository.update(game);
+        // Do not need to recalculate game b/c that is all done by other methods
         qSeasonCalculator.calculate(game.getQSeasonId());
         seasonCalculator.calculate(game.getSeasonId());
     }

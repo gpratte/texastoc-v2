@@ -4,12 +4,16 @@ import com.texastoc.TestConstants;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.QuarterlySeason;
+import com.texastoc.model.season.QuarterlySeasonPayout;
+import com.texastoc.model.season.QuarterlySeasonPlayer;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.season.SeasonPayout;
 import com.texastoc.model.season.SeasonPlayer;
 import com.texastoc.repository.ConfigRepository;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
+import com.texastoc.repository.QuarterlySeasonPayoutRepository;
+import com.texastoc.repository.QuarterlySeasonPlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,10 +46,14 @@ public class QuarterlyCalculatorTest implements TestConstants {
     private ConfigRepository configRepository;
     @MockBean
     private QuarterlySeasonRepository qSeasonRepository;
+    @MockBean
+    private QuarterlySeasonPlayerRepository qSeasonPlayerRepository;
+    @MockBean
+    private QuarterlySeasonPayoutRepository qSeasonPayoutRepository;
 
     @Before
     public void before() {
-        qSeasonCalculator = new QuarterlySeasonCalculator(qSeasonRepository, gamePlayerRepository, gameRepository);
+        qSeasonCalculator = new QuarterlySeasonCalculator(qSeasonRepository, gamePlayerRepository, gameRepository, qSeasonPlayerRepository, qSeasonPayoutRepository);
         gameCalculator = new GameCalculator(gameRepository, configRepository);
     }
 
@@ -150,7 +158,7 @@ public class QuarterlyCalculatorTest implements TestConstants {
         Assert.assertEquals("players 10", 10, qSeason.getPlayers().size());
         checkPoints(expectedPoints, qSeason.getPlayers());
 
-        List<SeasonPayout> payouts = qSeason.getPayouts();
+        List<QuarterlySeasonPayout> payouts = qSeason.getPayouts();
         Assert.assertEquals("payouts " + QUARTERLY_NUM_PAYOUTS, QUARTERLY_NUM_PAYOUTS, payouts.size());
 
         int firstPlace = (int) Math.round(qTocCollected * 0.5d);
@@ -161,7 +169,7 @@ public class QuarterlyCalculatorTest implements TestConstants {
         for (int i = 0; i < 3; i++) {
             int place = i+1;
             boolean found = false;
-            for (SeasonPayout payout : payouts) {
+            for (QuarterlySeasonPayout payout : payouts) {
                 if (payout.getPlace() == place) {
                     found = true;
                     Assert.assertEquals("payout " + place + " should be " + amounts[i], amounts[i], payout.getAmount());
@@ -171,11 +179,11 @@ public class QuarterlyCalculatorTest implements TestConstants {
         }
     }
 
-    private void checkPoints(Collection<Integer> expectedPoints, List<SeasonPlayer> seasonPlayers) {
+    private void checkPoints(Collection<Integer> expectedPoints, List<QuarterlySeasonPlayer> players) {
         for (int points : expectedPoints) {
             boolean found = false;
-            for (SeasonPlayer seasonPlayer : seasonPlayers) {
-                if (points != 0 && seasonPlayer.getPoints() == points) {
+            for (QuarterlySeasonPlayer player : players) {
+                if (points != 0 && player.getPoints() == points) {
                     if (found) {
                         Assert.fail("already found player with points " + points);
                     } else {

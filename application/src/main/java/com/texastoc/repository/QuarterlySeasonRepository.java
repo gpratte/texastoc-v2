@@ -1,5 +1,6 @@
 package com.texastoc.repository;
 
+import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -53,6 +56,33 @@ public class QuarterlySeasonRepository {
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
 
         return keyHolder.getKey().intValue();
+    }
+
+    private static final String UPDATE_SQL = "UPDATE quarterlyseason set " +
+        "seasonId=:seasonId, start=:start, end=:end, " +
+        "finalized=:finalized, quarter=:quarter, numGames=:numGames, " +
+        "numGamesPlayed=:numGamesPlayed, qTocCollected=:qTocCollected, " +
+        "qTocPerGame=:qTocPerGame, numPayouts=:numPayouts, " +
+        "lastCalculated=:lastCalculated " +
+        " where id=:id";
+
+    public void update(final QuarterlySeason qSeason) {
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("seasonId", qSeason.getSeasonId());
+        params.addValue("start", qSeason.getStart());
+        params.addValue("end", qSeason.getEnd());
+        params.addValue("finalized", qSeason.isFinalized());
+        params.addValue("quarter", qSeason.getQuarter().getValue());
+        params.addValue("numGames", qSeason.getNumGames());
+        params.addValue("numGamesPlayed", qSeason.getNumGamesPlayed());
+        params.addValue("qTocCollected()", qSeason.getQTocCollected());
+        params.addValue("qTocPerGame", qSeason.getQTocPerGame());
+        params.addValue("numPayouts", qSeason.getNumPayouts());
+        params.addValue("lastCalculated", qSeason.getLastCalculated());
+        params.addValue("id", qSeason.getId());
+
+        int rc = jdbcTemplate.update(UPDATE_SQL, params);
     }
 
     public QuarterlySeason getById(int id) {
@@ -94,6 +124,8 @@ public class QuarterlySeasonRepository {
                 quarterly.setSeasonId(rs.getInt("seasonId"));
                 quarterly.setStart(rs.getDate("startDate").toLocalDate());
                 quarterly.setEnd(rs.getDate("endDate").toLocalDate());
+                quarterly.setNumGames(rs.getInt("numGames"));
+                quarterly.setNumGamesPlayed(rs.getInt("numGamesPlayed"));
                 quarterly.setQTocCollected(rs.getInt("qTocCollected"));
 
                 Timestamp lastCalculated = rs.getTimestamp("lastCalculated");

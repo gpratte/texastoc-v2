@@ -127,7 +127,7 @@ public class GameRepository {
         params.addValue("lastCalculated", game.getLastCalculated());
         params.addValue("id", game.getId());
 
-        int rc = jdbcTemplate.update(UPDATE_SQL, params);
+        jdbcTemplate.update(UPDATE_SQL, params);
     }
 
 

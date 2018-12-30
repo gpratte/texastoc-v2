@@ -1,6 +1,6 @@
 package com.texastoc.repository;
 
-import com.texastoc.model.season.SeasonPlayer;
+import com.texastoc.model.season.QuarterlySeasonPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -8,28 +8,24 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class SeasonPlayerRepository {
+public class QuarterlySeasonPlayerRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    public SeasonPlayerRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public QuarterlySeasonPlayerRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<SeasonPlayer> getBySeasonId(int id) {
+    public List<QuarterlySeasonPlayer> getByQSeasonId(int qSeason) {
         throw new RuntimeException("not implemented");
     }
 
-    public List<SeasonPlayer> getByQuarterlySeasonId(int id) {
+    public void deleteByQSeasonId(int qSeasonId) {
         throw new RuntimeException("not implemented");
     }
 
-    public void deleteByIds(int seasonId, int qSeasonId) {
-        throw new RuntimeException("not implemented");
-    }
-
-    public void save(SeasonPlayer seasonPlayer) {
+    public void save(QuarterlySeasonPlayer qSeasonPlayer) {
         throw new RuntimeException("not implemented");
     }
 

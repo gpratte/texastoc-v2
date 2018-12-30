@@ -120,6 +120,7 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
 
         QuarterlySeason qSeason = season.getQuarterlySeasons().get(0);
         Assert.assertNotNull("quarterly season not null", qSeason);
+        Assert.assertEquals("quarter has 13 games", 13, qSeason.getNumGames());
         Assert.assertEquals("quarter has 1 game played", 1, qSeason.getNumGamesPlayed());
         Assert.assertEquals("qTocCollected is " + (QUARTERLY_TOC_PER_GAME * NUM_PLAYERS), QUARTERLY_TOC_PER_GAME * NUM_PLAYERS, qSeason.getQTocCollected());
 
