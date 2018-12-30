@@ -8,7 +8,9 @@ import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePayout;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Quarter;
+import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
+import com.texastoc.model.season.SeasonPayout;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -93,8 +95,8 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
         season = restTemplate.getForObject(endpoint() + "/seasons/" + season.getId(), Season.class);
     }
 
-    @Then("^the retrieved game is properly calculated$")
-    public void the_retrieved_game_is_properly_calculated() throws Exception {
+    @Then("^the game is properly calculated$")
+    public void the_game_is_properly_calculated() throws Exception {
         // Assert
         Assert.assertNotNull("season should not be null", season);
         Assert.assertNotNull("games of the season should not be null", season.getGames());
@@ -109,6 +111,43 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
 
         checkPoints(game.getPlayers());
     }
+
+    @Then("^the quarterly seasions are properly calculated$")
+    public void the_quarterly_seasions_are_properly_calculated() {
+        Assert.assertNotNull("season should not be null", season);
+        Assert.assertNotNull("quarterly seasions of the season should not be null", season.getQuarterlySeasons());
+        Assert.assertEquals("quarterly seasions size should be 4", 4, season.getQuarterlySeasons().size());
+
+        QuarterlySeason qSeason = season.getQuarterlySeasons().get(0);
+        Assert.assertNotNull("quarterly season not null", qSeason);
+        Assert.assertEquals("quarter has 1 game played", 1, qSeason.getNumGamesPlayed());
+        Assert.assertEquals("qTocCollected is " + (QUARTERLY_TOC_PER_GAME * NUM_PLAYERS), QUARTERLY_TOC_PER_GAME * NUM_PLAYERS, qSeason.getQTocCollected());
+
+//        Assert.assertEquals("players 10", 10, qSeason.getPlayers().size());
+//        checkPoints(expectedPoints, qSeason.getPlayers());
+//
+//        List<SeasonPayout> payouts = qSeason.getPayouts();
+//        Assert.assertEquals("payouts " + QUARTERLY_NUM_PAYOUTS, QUARTERLY_NUM_PAYOUTS, payouts.size());
+//
+//        int firstPlace = (int) Math.round(qTocCollected * 0.5d);
+//        int secondPlace = (int) Math.round(qTocCollected * 0.3d);
+//        int thirdPlace = qTocCollected - firstPlace - secondPlace;
+//        int amounts[] = {firstPlace, secondPlace, thirdPlace};
+//
+//        for (int i = 0; i < 3; i++) {
+//            int place = i+1;
+//            boolean found = false;
+//            for (SeasonPayout payout : payouts) {
+//                if (payout.getPlace() == place) {
+//                    found = true;
+//                    Assert.assertEquals("payout " + place + " should be " + amounts[i], amounts[i], payout.getAmount());
+//                }
+//            }
+//            Assert.assertTrue("should have found a payout for place " + place, found);
+//        }
+
+    }
+
 
     private void checkGameRuntime(Game game) {
         Assert.assertEquals("buy in collected should be ", GAME_BUY_IN * NUM_PLAYERS, game.getBuyInCollected());

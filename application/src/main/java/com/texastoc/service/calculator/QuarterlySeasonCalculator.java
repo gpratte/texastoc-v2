@@ -94,19 +94,19 @@ public class QuarterlySeasonCalculator {
 
         payouts.add(SeasonPayout.builder()
             .seasonId(seasonId)
-            .quarterlySeasonId(qSeasonId)
+            .qSeasonId(qSeasonId)
             .place(1)
             .amount(firstPlace)
             .build());
         payouts.add(SeasonPayout.builder()
             .seasonId(seasonId)
-            .quarterlySeasonId(qSeasonId)
+            .qSeasonId(qSeasonId)
             .place(2)
             .amount(secondPlace)
             .build());
         payouts.add(SeasonPayout.builder()
             .seasonId(seasonId)
-            .quarterlySeasonId(qSeasonId)
+            .qSeasonId(qSeasonId)
             .place(3)
             .amount(thirdPlace)
             .build());

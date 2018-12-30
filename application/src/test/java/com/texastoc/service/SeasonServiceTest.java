@@ -11,6 +11,8 @@ import com.texastoc.repository.GamePayoutRepository;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
+import com.texastoc.repository.SeasonPayoutRepository;
+import com.texastoc.repository.SeasonPlayerRepository;
 import com.texastoc.repository.SeasonRepository;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,10 +47,14 @@ public class SeasonServiceTest implements TestConstants {
     private GamePlayerRepository gamePlayerRepository;
     @MockBean
     private GamePayoutRepository gamePayoutRepository;
+    @MockBean
+    private SeasonPlayerRepository seasonPlayerRepository;
+    @MockBean
+    private SeasonPayoutRepository seasonPayoutRepository;
 
     @Before
     public void before() {
-        service = new SeasonService(seasonRepository, qSeasonRepository, gameRepository, configRepository, gamePlayerRepository, gamePayoutRepository);
+        service = new SeasonService(seasonRepository, qSeasonRepository, gameRepository, configRepository, gamePlayerRepository, gamePayoutRepository, seasonPlayerRepository, seasonPayoutRepository);
     }
 
     @Test

@@ -19,6 +19,8 @@ create table if not exists gameplayer (id INT auto_increment, playerId INT NOT N
 
 create table if not exists gamepayout (gameId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, chopAmount INT DEFAULT NULL, chopPercent DOUBLE DEFAULT NULL, PRIMARY KEY (gameId, place))
 
+create table if not exists seasonpayout (id INT auto_increment, seasonId INT NOT NULL, qSeasonId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, PRIMARY KEY (id))
+
 create table if not exists payout (numPayouts INT NOT NULL, place INT NOT NULL, percent DOUBLE DEFAULT NULL, PRIMARY KEY (numPayouts, place))
 insert into payout (numPayouts, place, percent) values (2, 1, 0.65)
 insert into payout (numPayouts, place, percent) values (2, 2, 0.35)

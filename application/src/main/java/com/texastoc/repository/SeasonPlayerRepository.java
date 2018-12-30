@@ -20,4 +20,9 @@ public class SeasonPlayerRepository {
     public List<SeasonPlayer> getBySeasonId(int id) {
         return null;
     }
+
+    public List<SeasonPlayer> getByQuarterlySeasonId(int id) {
+        return null;
+    }
+
 }
