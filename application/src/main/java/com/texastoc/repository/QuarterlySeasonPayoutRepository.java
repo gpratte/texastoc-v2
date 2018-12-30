@@ -53,7 +53,6 @@ public class QuarterlySeasonPayoutRepository {
     public void deleteByQSeasonId(int qSeasonId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("qSeasonId", qSeasonId);
-
         jdbcTemplate.update("delete from quarterlyseasonpayout where qSeasonId=:qSeasonId", params);
     }
 
