@@ -1,12 +1,13 @@
 package com.texastoc.model.season;
 
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@Builder
 public class SeasonPayout {
 
     private int id;

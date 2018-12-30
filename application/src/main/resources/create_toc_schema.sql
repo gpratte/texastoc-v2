@@ -6,7 +6,7 @@ insert into tocconfig (kittyDebit, annualTocCost, quarterlyTocCost, quarterlyNum
 
 create table if not exists season (id INT auto_increment, startDate DATE, endDate DATE, finalized BOOLEAN, numGames INT, numGamesPlayed INT, buyInCost INT, rebuyAddOnCost INT, rebuyAddOnTocDebit INT, doubleBuyInCost INT, doubleRebuyAddOnCost INT, doubleRebuyAddOnTocDebit INT, buyInCollected INT, rebuyAddOnCollected INT, tocCollected INT, tocPerGame INT, kittyPerGame INT, quarterlyTocPerGame INT, quarterlyTocPayouts INT, lastCalculated DATE, primary key(id))
 
-create table if not exists quarterlyseason (id INT auto_increment, seasonId INT NOT NULL, startDate DATE, endDate DATE, finalized BOOLEAN, quarter INT NOT NULL, numGames INT, numGamesPlayed INT, totalQuarterlyToc INT, tocPerGame INT, numPayouts INT NOT NULL, lastCalculated DATE, primary key(id))
+create table if not exists quarterlyseason (id INT auto_increment, seasonId INT NOT NULL, startDate DATE, endDate DATE, finalized BOOLEAN, quarter INT NOT NULL, numGames INT, numGamesPlayed INT, qTocCollected INT, qTocPerGame INT, numPayouts INT NOT NULL, lastCalculated DATE, primary key(id))
 
 create table if not exists player (id INT auto_increment, firstName varchar(32) DEFAULT NULL, lastName varchar(32) DEFAULT NULL, phone varchar(32) DEFAULT NULL, email varchar(64) DEFAULT NULL, primary key (id))
 

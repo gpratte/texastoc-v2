@@ -5,6 +5,8 @@ import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
+import com.texastoc.model.season.SeasonPayout;
+import com.texastoc.model.season.SeasonPlayer;
 import com.texastoc.repository.ConfigRepository;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
@@ -18,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +45,7 @@ public class QuarterlyCalculatorTest implements TestConstants {
 
     @Before
     public void before() {
-        qSeasonCalculator = new QuarterlySeasonCalculator(qSeasonRepository, gamePlayerRepository);
+        qSeasonCalculator = new QuarterlySeasonCalculator(qSeasonRepository, gamePlayerRepository, gameRepository);
         gameCalculator = new GameCalculator(gameRepository, configRepository);
     }
 
@@ -65,7 +68,7 @@ public class QuarterlyCalculatorTest implements TestConstants {
         Assert.assertEquals("quarterly season id 1", 1, (int)qSeason.getId());
 
         Assert.assertEquals("quarter has no games played", 0, qSeason.getNumGamesPlayed());
-        Assert.assertEquals("tocCollected is 0", 0, qSeason.getTocCollected());
+        Assert.assertEquals("qTocCollected is 0", 0, qSeason.getQTocCollected());
 
         Assert.assertEquals("players 0", 0, qSeason.getPlayers().size());
         Assert.assertEquals("payouts 0", 0, qSeason.getPayouts().size());
@@ -113,6 +116,8 @@ public class QuarterlyCalculatorTest implements TestConstants {
             gameNonSeasonPlayers.add(gamePlayer);
         }
 
+        Mockito.when(gamePlayerRepository.selectQuarterlyTocPlayersByQuarterlySeasonId(1)).thenReturn(gameQSeasonPlayers);
+
         List<GamePlayer> gameCombinedPlayers = new ArrayList<>(15);
         gameCombinedPlayers.addAll(gameQSeasonPlayers);
         gameCombinedPlayers.addAll(gameNonSeasonPlayers);
@@ -124,33 +129,62 @@ public class QuarterlyCalculatorTest implements TestConstants {
         Game calculatedGame = gameCalculator.calculate(currentGame, gameCombinedPlayers);
         List<Game> calculatedGames = new LinkedList<>();
         calculatedGames.add(calculatedGame);
-
         Mockito.when(gameRepository.getByQuarterlySeasonId(1)).thenReturn(calculatedGames);
-        Mockito.when(gamePlayerRepository.selectQuarterlyTocPlayersByQuarterlySeasonId(1)).thenReturn(gameQSeasonPlayers);
 
-        int buyInCollected = 0;
-        int rebuyAddOnCollected = 0;
-        int annualTocCollected = 0;
-        int totalCollected = 0;
-        int annualTocFromRebuyAddOnCalculated = 0;
-        int rebuyAddOnLessAnnualTocCalculated = 0;
-        int totalCombinedAnnualTocCalculated = 0;
-        int kittyCalculated = 0;
-        int prizePotCalculated = 0;
-
+        int qTocCollected = 0;
         for (Game game : calculatedGames) {
-            buyInCollected += game.getBuyInCollected();
-            rebuyAddOnCollected += game.getRebuyAddOnCollected();
-            annualTocCollected += game.getAnnualTocCollected();
-            totalCollected += game.getTotalCollected();
-
-            annualTocFromRebuyAddOnCalculated += game.getAnnualTocFromRebuyAddOnCalculated();
-            rebuyAddOnLessAnnualTocCalculated += game.getRebuyAddOnLessAnnualTocCalculated();
-            totalCombinedAnnualTocCalculated += game.getTotalCombinedTocCalculated();
-            kittyCalculated += game.getKittyCalculated();
-            prizePotCalculated += game.getPrizePotCalculated();
+            qTocCollected += game.getQuarterlyTocCollected();
         }
 
+        QuarterlySeason qSeason = qSeasonCalculator.calculate(1);
+
+        Mockito.verify(qSeasonRepository, Mockito.times(1)).getById(1);
+        Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectQuarterlyTocPlayersByQuarterlySeasonId(1);
+
+        Assert.assertNotNull("quarterly season not null", qSeason);
+        Assert.assertEquals("quarterly season id 1", 1, (int)qSeason.getId());
+
+        Assert.assertEquals("quarter has 1 game played", 1, qSeason.getNumGamesPlayed());
+        Assert.assertEquals("qTocCollected is " + qTocCollected, qTocCollected, qSeason.getQTocCollected());
+
+        Assert.assertEquals("players 10", 10, qSeason.getPlayers().size());
+        checkPoints(expectedPoints, qSeason.getPlayers());
+
+        List<SeasonPayout> payouts = qSeason.getPayouts();
+        Assert.assertEquals("payouts " + QUARTERLY_NUM_PAYOUTS, QUARTERLY_NUM_PAYOUTS, payouts.size());
+
+        int firstPlace = (int) Math.round(qTocCollected * 0.5d);
+        int secondPlace = (int) Math.round(qTocCollected * 0.3d);
+        int thirdPlace = qTocCollected - firstPlace - secondPlace;
+        int amounts[] = {firstPlace, secondPlace, thirdPlace};
+
+        for (int i = 0; i < 3; i++) {
+            int place = i+1;
+            boolean found = false;
+            for (SeasonPayout payout : payouts) {
+                if (payout.getPlace() == place) {
+                    found = true;
+                    Assert.assertEquals("payout " + place + " should be " + amounts[i], amounts[i], payout.getAmount());
+                }
+            }
+            Assert.assertTrue("should have found a payout for place " + place, found);
+        }
+    }
+
+    private void checkPoints(Collection<Integer> expectedPoints, List<SeasonPlayer> seasonPlayers) {
+        for (int points : expectedPoints) {
+            boolean found = false;
+            for (SeasonPlayer seasonPlayer : seasonPlayers) {
+                if (points != 0 && seasonPlayer.getPoints() == points) {
+                    if (found) {
+                        Assert.fail("already found player with points " + points);
+                    } else {
+                        found = true;
+                    }
+                }
+            }
+            Assert.assertTrue("should have found a player with points " + points, found);
+        }
     }
 
 }

@@ -29,9 +29,9 @@ public class QuarterlySeasonRepository {
     }
 
     private static final String INSERT_SQL = "INSERT INTO quarterlyseason "
-        + " (seasonId, startDate, endDate, finalized, quarter, numGames, numGamesPlayed, totalQuarterlyToc, qTocPerGame, numPayouts) "
+        + " (seasonId, startDate, endDate, finalized, quarter, numGames, numGamesPlayed, qTocCollected, qTocPerGame, numPayouts) "
         + " VALUES "
-        + " (:seasonId, :startDate, :endDate, :finalized, :quarter, :numGames, :numGamesPlayed, :totalQuarterlyToc, :qTocPerGame, :numPayouts)";
+        + " (:seasonId, :startDate, :endDate, :finalized, :quarter, :numGames, :numGamesPlayed, :qTocCollected, :qTocPerGame, :numPayouts)";
 
     public int save(QuarterlySeason quarterlySeason) {
 
@@ -45,7 +45,7 @@ public class QuarterlySeasonRepository {
         params.addValue("quarter", quarterlySeason.getQuarter().getValue());
         params.addValue("numGames", quarterlySeason.getNumGames());
         params.addValue("numGamesPlayed", quarterlySeason.getNumGamesPlayed());
-        params.addValue("totalQuarterlyToc", quarterlySeason.getQTocCollected());
+        params.addValue("qTocCollected", quarterlySeason.getQTocCollected());
         params.addValue("qTocPerGame", quarterlySeason.getQTocPerGame());
         params.addValue("numPayouts", quarterlySeason.getNumPayouts());
 

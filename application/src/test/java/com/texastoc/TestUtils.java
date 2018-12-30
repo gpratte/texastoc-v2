@@ -44,10 +44,10 @@ public class TestUtils implements TestConstants {
             Assert.assertTrue(qSeason.getId() > 0);
             Assert.assertEquals((int) i + 1, (int) qSeason.getQuarter().getValue());
 
-            Assert.assertEquals((int) QUARTERLY_TOC_PER_GAME, (int) qSeason.getTocPerGame());
+            Assert.assertEquals((int) QUARTERLY_TOC_PER_GAME, (int) qSeason.getQTocPerGame());
             Assert.assertEquals((int) QUARTERLY_NUM_PAYOUTS, (int) qSeason.getNumPayouts());
 
-            Assert.assertTrue(qSeason.getTocCollected() == 0);
+            Assert.assertTrue(qSeason.getQTocCollected() == 0);
 
             LocalDate qSeasonExpectedEnd = LocalDate.now().plusWeeks(13 * (i + 1)).minusDays(1);
 

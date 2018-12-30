@@ -72,8 +72,8 @@ public class SeasonService {
                 .finalized(false)
                 .numGames(qNumThursdays)
                 .numGamesPlayed(0)
-                .tocCollected(0)
-                .tocPerGame(tocConfig.getQuarterlyTocCost())
+                .qTocCollected(0)
+                .qTocPerGame(tocConfig.getQuarterlyTocCost())
                 .numPayouts(tocConfig.getQuarterlyNumPayouts())
                 .build();
             qSeasons.add(qSeason);
