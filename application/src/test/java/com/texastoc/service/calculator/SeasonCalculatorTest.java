@@ -88,8 +88,8 @@ public class SeasonCalculatorTest implements TestConstants {
 
         Assert.assertTrue("last calculated should be within the last few seconds", season.getLastCalculated().isAfter(LocalDateTime.now().minusSeconds(3)));
 
-        Assert.assertEquals("payouts 0", 0, season.getPayouts().size());
         Assert.assertEquals("players 0", 0, season.getPlayers().size());
+        Assert.assertEquals("payouts 0", 0, season.getPayouts().size());
     }
 
     @Test

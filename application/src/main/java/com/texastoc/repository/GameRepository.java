@@ -162,6 +162,21 @@ public class GameRepository {
         return games;
     }
 
+    public List<Game> getByQuarterlySeasonId(int qSeasonId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("qSeasonId", qSeasonId);
+
+        List<Game> games = Collections.EMPTY_LIST;
+        try {
+            games = jdbcTemplate
+                .query("select * from game where qSeasonId = :qSeasonId", params, new GameMapper());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return games;
+    }
+
     private static final class GameMapper implements RowMapper<Game> {
         public Game mapRow(ResultSet rs, int rowNum) {
             Game game = new Game();

@@ -49,6 +49,18 @@ public class GamePlayerRepository {
         return gamePlayers;
     }
 
+    public List<GamePlayer> selectQuarterlyTocPlayersByQuarterlySeasonId(int qSeasonId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("qSeasonId", qSeasonId);
+        List<GamePlayer> gamePlayers = jdbcTemplate
+            .query("select * from gameplayer "
+                    + " where qSeasonId = :qSeasonId "
+                    + " and quarterlyTocCollected IS NOT NULL ",
+                new GamePlayerMapper());
+
+        return gamePlayers;
+    }
+
     public GamePlayer selectById(int id) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", id);

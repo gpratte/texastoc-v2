@@ -29,9 +29,9 @@ public class QuarterlySeasonRepository {
     }
 
     private static final String INSERT_SQL = "INSERT INTO quarterlyseason "
-        + " (seasonId, startDate, endDate, finalized, quarter, numGames, numGamesPlayed, totalQuarterlyToc, tocPerGame, numPayouts) "
+        + " (seasonId, startDate, endDate, finalized, quarter, numGames, numGamesPlayed, totalQuarterlyToc, qTocPerGame, numPayouts) "
         + " VALUES "
-        + " (:seasonId, :startDate, :endDate, :finalized, :quarter, :numGames, :numGamesPlayed, :totalQuarterlyToc, :tocPerGame, :numPayouts)";
+        + " (:seasonId, :startDate, :endDate, :finalized, :quarter, :numGames, :numGamesPlayed, :totalQuarterlyToc, :qTocPerGame, :numPayouts)";
 
     public int save(QuarterlySeason quarterlySeason) {
 
@@ -45,8 +45,8 @@ public class QuarterlySeasonRepository {
         params.addValue("quarter", quarterlySeason.getQuarter().getValue());
         params.addValue("numGames", quarterlySeason.getNumGames());
         params.addValue("numGamesPlayed", quarterlySeason.getNumGamesPlayed());
-        params.addValue("totalQuarterlyToc", quarterlySeason.getTocCollected());
-        params.addValue("tocPerGame", quarterlySeason.getTocPerGame());
+        params.addValue("totalQuarterlyToc", quarterlySeason.getQTocCollected());
+        params.addValue("qTocPerGame", quarterlySeason.getQTocPerGame());
         params.addValue("numPayouts", quarterlySeason.getNumPayouts());
 
         String[] keys = {"id"};
@@ -55,10 +55,22 @@ public class QuarterlySeasonRepository {
         return keyHolder.getKey().intValue();
     }
 
+    public QuarterlySeason getById(int id) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", id);
+
+        try {
+            return jdbcTemplate
+                .queryForObject("select * from quarterlyseason where id = :id", params, new QuarterlySeasonMapper());
+        } catch(Exception e) {
+            return null;
+        }
+    }
+
     public List<QuarterlySeason> getBySeasonId(int seasonId) {
         return jdbcTemplate.query("select * from quarterlyseason "
-                    + " where seasonId=" + seasonId + " order by quarter",
-                new QuarterlySeasonMapper());
+                + " where seasonId=" + seasonId + " order by quarter",
+            new QuarterlySeasonMapper());
     }
 
     public QuarterlySeason getCurrent() {
@@ -82,7 +94,7 @@ public class QuarterlySeasonRepository {
                 quarterly.setSeasonId(rs.getInt("seasonId"));
                 quarterly.setStart(rs.getDate("startDate").toLocalDate());
                 quarterly.setEnd(rs.getDate("endDate").toLocalDate());
-                quarterly.setTocCollected(rs.getInt("totalQuarterlyToc"));
+                quarterly.setQTocCollected(rs.getInt("qTocCollected"));
 
                 Timestamp lastCalculated = rs.getTimestamp("lastCalculated");
                 if (lastCalculated != null) {
