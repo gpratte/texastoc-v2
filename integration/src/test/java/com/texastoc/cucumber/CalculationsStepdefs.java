@@ -114,12 +114,13 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
         checkGamePoints(game.getPlayers());
     }
 
-    @Then("^the quarterly seasions are properly calculated$")
-    public void the_quarterly_seasions_are_properly_calculated() {
+    @Then("^the quarterly seasons are properly calculated$")
+    public void the_quarterly_seasons_are_properly_calculated() {
         Assert.assertNotNull("season should not be null", season);
         Assert.assertNotNull("quarterly seasions of the season should not be null", season.getQuarterlySeasons());
         Assert.assertEquals("quarterly seasions size should be 4", 4, season.getQuarterlySeasons().size());
 
+        // First quarter has the game
         QuarterlySeason qSeason = season.getQuarterlySeasons().get(0);
         Assert.assertNotNull("quarterly season not null", qSeason);
         Assert.assertEquals("quarter has 13 games", 13, qSeason.getNumGames());
@@ -147,6 +148,21 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
                 }
             }
             Assert.assertTrue("should have found a payout for place " + place, found);
+        }
+
+        // Other three quarters have no games
+        for (int i = 1; i < 4; i++) {
+            qSeason = season.getQuarterlySeasons().get(i);
+            Assert.assertNotNull("quarterly season not null", qSeason);
+            Assert.assertEquals("quarter has 13 games", 13, qSeason.getNumGames());
+            Assert.assertEquals("quarter has no games played", 0, qSeason.getNumGamesPlayed());
+            Assert.assertEquals("qTocCollected is 0", 0, qSeason.getQTocCollected());
+
+            Assert.assertNotNull("players should not be null", qSeason.getPlayers());
+            Assert.assertEquals("no players", 0, qSeason.getPlayers().size());
+
+            Assert.assertNotNull("payouts should not be null", qSeason.getPayouts());
+            Assert.assertEquals("no payouts", 0, qSeason.getPayouts().size());
         }
     }
 

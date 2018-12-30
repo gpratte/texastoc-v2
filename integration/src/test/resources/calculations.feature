@@ -10,4 +10,5 @@ Feature: Finalizing a game results in calculations
     Given a game has 10 players all finished
     When the game is finalized
     And the calculated season is retrieved
-    Then the quarterly seasions are properly calculated
+    Then the quarterly seasons are properly calculated
+
