@@ -1,6 +1,5 @@
 
 Write tests for:
-    Calculate season/qseason
     Update game player, do not allow player id to change.
     Update game, do not allow game double buy in to change if any players have bought in.
     Test last calculated
@@ -10,7 +9,7 @@ Roles
     Login
     Only admin can unfinalized a game/season
 
-Cache season
+Cache season (do not need ehcache but instead save it in a variable in the season service object and then when get season is called check the last caculated. Calculate the game/quarter/season on a thread when a game is finalized).
 
 Sonar scan.
 
