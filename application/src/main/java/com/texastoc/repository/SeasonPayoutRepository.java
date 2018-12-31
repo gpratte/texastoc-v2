@@ -1,5 +1,6 @@
 package com.texastoc.repository;
 
+import com.texastoc.model.common.Payout;
 import com.texastoc.model.game.GamePayout;
 import com.texastoc.model.season.SeasonPayout;
 import lombok.extern.slf4j.Slf4j;
@@ -33,30 +34,27 @@ public class SeasonPayoutRepository {
                 new SeasonPayoutMapper());
     }
 
-//    private static final String INSERT_SQL =
-//        "INSERT INTO gamepayout "
-//            + "(gameId, place, amount, chopAmount, chopPercent) "
-//            + " VALUES "
-//            + " (:gameId, :place, :amount, :chopAmount, :chopPercent)";
-//    public void save(final GamePayout gamePayout) {
-//
-//        MapSqlParameterSource params = new MapSqlParameterSource();
-//        params.addValue("gameId", gamePayout.getGameId());
-//        params.addValue("place", gamePayout.getPlace());
-//        params.addValue("amount", gamePayout.getAmount());
-//        params.addValue("chopAmount", gamePayout.getChopAmount());
-//        params.addValue("chopPercent", gamePayout.getChopPercent());
-//
-//        jdbcTemplate.update(INSERT_SQL, params);
-//    }
-//
-//
-//    public void deleteByGameId(int id) {
-//        MapSqlParameterSource params = new MapSqlParameterSource();
-//        params.addValue("id", id);
-//
-//        jdbcTemplate.update("delete from gamepayout where gameId = :id", params);
-//    }
+    private static final String INSERT_SQL =
+        "INSERT INTO seasonpayout "
+            + "(seasonId, place, amount) "
+            + " VALUES "
+            + " (:seasonId, :place, :amount)";
+    public void save(final SeasonPayout payout) {
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("seasonId", payout.getSeasonId());
+        params.addValue("place", payout.getPlace());
+        params.addValue("amount", payout.getAmount());
+
+        jdbcTemplate.update(INSERT_SQL, params);
+    }
+
+    public void deleteBySeasonId(int id) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", id);
+
+        jdbcTemplate.update("delete from seasonpayout where seasonId = :id", params);
+    }
 
     private static final class SeasonPayoutMapper implements RowMapper<SeasonPayout> {
         public SeasonPayout mapRow(ResultSet rs, int rowNum) {

@@ -132,6 +132,8 @@ public class SeasonService {
     @Transactional(readOnly = true)
     public Season getSeason(int id) {
         Season season = seasonRepository.get(id);
+        season.setPlayers(seasonPlayerRepository.getBySeasonId(id));
+
         season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(id));
         season.setGames(gameRepository.getBySeasonId(id));
 

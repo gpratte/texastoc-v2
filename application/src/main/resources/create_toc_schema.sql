@@ -4,11 +4,11 @@ create table if not exists tocconfig (kittyDebit INT NOT NULL, annualTocCost INT
 
 insert into tocconfig (kittyDebit, annualTocCost, quarterlyTocCost, quarterlyNumPayouts, regularBuyInCost, regularRebuyCost, regularRebuyTocDebit, doubleBuyInCost, doubleRebuyCost, doubleRebuyTocDebit) values (9, 8, 7, 3, 6, 5, 4, 12, 10, 8)
 
-create table if not exists season (id INT auto_increment, startDate DATE, endDate DATE, finalized BOOLEAN, numGames INT, numGamesPlayed INT, buyInCost INT, rebuyAddOnCost INT, rebuyAddOnTocDebit INT, doubleBuyInCost INT, doubleRebuyAddOnCost INT, doubleRebuyAddOnTocDebit INT, buyInCollected INT, rebuyAddOnCollected INT, tocCollected INT, tocPerGame INT, kittyPerGame INT, quarterlyTocPerGame INT, quarterlyTocPayouts INT, lastCalculated DATE, primary key(id))
+create table if not exists season (id INT auto_increment, startDate DATE, endDate DATE, kittyPerGame INT, tocPerGame INT, quarterlyTocPerGame INT, quarterlyTocPayouts INT, buyInCost INT, rebuyAddOnCost INT, rebuyAddOnTocDebit INT, doubleBuyInCost INT, doubleRebuyAddOnCost INT, doubleRebuyAddOnTocDebit INT, buyInCollected INT, rebuyAddOnCollected INT, annualTocCollected INT, totalCollected INT, annualTocFromRebuyAddOnCalculated INT, rebuyAddOnLessAnnualTocCalculated INT, totalCombinedAnnualTocCalculated INT, kittyCalculated INT, prizePotCalculated INT, numGames INT, numGamesPlayed INT, finalized BOOLEAN, lastCalculated DATE, primary key(id))
 
 create table if not exists quarterlyseason (id INT auto_increment, seasonId INT NOT NULL, startDate DATE, endDate DATE, finalized BOOLEAN, quarter INT NOT NULL, numGames INT, numGamesPlayed INT, qTocCollected INT, qTocPerGame INT, numPayouts INT NOT NULL, lastCalculated DATE, primary key(id))
 
-create table if not exists seasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT DEFAULT 0, forfeit BOOLEAN DEFAULT false, primary key (seasonId, place))
+create table if not exists seasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT DEFAULT 0, forfeit BOOLEAN DEFAULT false)
 
 create table if not exists quarterlyseasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, qSeasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT)
 

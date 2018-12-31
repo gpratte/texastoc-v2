@@ -1,5 +1,6 @@
 package com.texastoc.repository;
 
+import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Season;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -28,9 +31,9 @@ public class SeasonRepository {
     }
 
     private static final String INSERT_SQL = "INSERT INTO season "
-        + " (startDate, endDate, finalized, numGames, numGamesPlayed, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, doubleBuyInCost, doubleRebuyAddOnCost, doubleRebuyAddOnTocDebit, buyInCollected, rebuyAddOnCollected, tocCollected, tocPerGame, kittyPerGame, quarterlyTocPerGame, quarterlyTocPayouts) "
+        + " (startDate, endDate, finalized, numGames, numGamesPlayed, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, doubleBuyInCost, doubleRebuyAddOnCost, doubleRebuyAddOnTocDebit, tocPerGame, kittyPerGame, quarterlyTocPerGame, quarterlyTocPayouts) "
         + " VALUES "
-        + " (:startDate, :endDate, :finalized, :numGames, :numGamesPlayed, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :doubleBuyInCost, :doubleRebuyAddOnCost, :doubleRebuyAddOnTocDebit, :buyInCollected, :rebuyAddOnCollected, :tocCollected, :tocPerGame, :kittyPerGame, :quarterlyTocPerGame, :quarterlyTocPayouts)";
+        + " (:startDate, :endDate, :finalized, :numGames, :numGamesPlayed, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :doubleBuyInCost, :doubleRebuyAddOnCost, :doubleRebuyAddOnTocDebit, :tocPerGame, :kittyPerGame, :quarterlyTocPerGame, :quarterlyTocPayouts)";
 
     public int save(Season season) {
 
@@ -48,9 +51,6 @@ public class SeasonRepository {
         params.addValue("doubleBuyInCost", season.getDoubleBuyInCost());
         params.addValue("doubleRebuyAddOnCost", season.getDoubleRebuyAddOnCost());
         params.addValue("doubleRebuyAddOnTocDebit", season.getDoubleRebuyAddOnTocDebit());
-        params.addValue("buyInCollected", season.getBuyInCollected());
-        params.addValue("rebuyAddOnCollected", season.getRebuyAddOnCollected());
-        params.addValue("tocCollected", season.getAnnualTocCollected());
         params.addValue("tocPerGame", season.getTocPerGame());
         params.addValue("kittyPerGame", season.getKittyPerGame());
         params.addValue("quarterlyTocPerGame", season.getQuarterlyTocPerGame());
@@ -60,6 +60,37 @@ public class SeasonRepository {
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
 
         return keyHolder.getKey().intValue();
+    }
+
+    private static final String UPDATE_SQL = "UPDATE season set " +
+        "buyInCollected=:buyInCollected, rebuyAddOnCollected=:rebuyAddOnCollected, " +
+        "annualTocCollected=:annualTocCollected, totalCollected=:totalCollected, " +
+        "annualTocFromRebuyAddOnCalculated=:annualTocFromRebuyAddOnCalculated, " +
+        "rebuyAddOnLessAnnualTocCalculated=:rebuyAddOnLessAnnualTocCalculated, " +
+        "totalCombinedAnnualTocCalculated=:totalCombinedAnnualTocCalculated, " +
+        "kittyCalculated=:kittyCalculated, prizePotCalculated=:prizePotCalculated, " +
+        "numGamesPlayed=:numGamesPlayed, lastCalculated=:lastCalculated, " +
+        "finalized=:finalized " +
+        " where id=:id";
+
+    public void update(final Season season) {
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("buyInCollected", season.getBuyInCollected());
+        params.addValue("rebuyAddOnCollected", season.getRebuyAddOnCollected());
+        params.addValue("annualTocCollected", season.getAnnualTocCollected());
+        params.addValue("totalCollected", season.getTotalCollected());
+        params.addValue("annualTocFromRebuyAddOnCalculated", season.getAnnualTocFromRebuyAddOnCalculated());
+        params.addValue("rebuyAddOnLessAnnualTocCalculated", season.getRebuyAddOnLessAnnualTocCalculated());
+        params.addValue("totalCombinedAnnualTocCalculated", season.getTotalCombinedAnnualTocCalculated());
+        params.addValue("kittyCalculated", season.getKittyCalculated());
+        params.addValue("prizePotCalculated", season.getPrizePotCalculated());
+        params.addValue("numGamesPlayed", season.getNumGamesPlayed());
+        params.addValue("lastCalculated", season.getLastCalculated());
+        params.addValue("finalized", season.isFinalized());
+        params.addValue("id", season.getId());
+
+        jdbcTemplate.update(UPDATE_SQL, params);
     }
 
     public Season get(int id) {
@@ -104,11 +135,17 @@ public class SeasonRepository {
                 season.setDoubleRebuyAddOnTocDebit(rs.getInt("doubleRebuyAddOnTocDebit"));
                 season.setTocPerGame(rs.getInt("tocPerGame"));
                 season.setKittyPerGame(rs.getInt("kittyPerGame"));
-                season.setBuyInCollected(rs.getInt("buyInCollected"));
-                season.setRebuyAddOnCollected(rs.getInt("rebuyAddOnCollected"));
-                season.setAnnualTocCollected(rs.getInt("tocCollected"));
                 season.setQuarterlyTocPerGame(rs.getInt("quarterlyTocPerGame"));
                 season.setQuarterlyNumPayouts(rs.getInt("quarterlyTocPayouts"));
+                season.setBuyInCollected(rs.getInt("buyInCollected"));
+                season.setRebuyAddOnCollected(rs.getInt("rebuyAddOnCollected"));
+                season.setAnnualTocCollected(rs.getInt("annualTocCollected"));
+                season.setTotalCollected(rs.getInt("totalCollected"));
+                season.setAnnualTocFromRebuyAddOnCalculated(rs.getInt("annualTocFromRebuyAddOnCalculated"));
+                season.setRebuyAddOnLessAnnualTocCalculated(rs.getInt("rebuyAddOnLessAnnualTocCalculated"));
+                season.setTotalCombinedAnnualTocCalculated(rs.getInt("totalCombinedAnnualTocCalculated"));
+                season.setKittyCalculated(rs.getInt("kittyCalculated"));
+                season.setPrizePotCalculated(rs.getInt("prizePotCalculated"));
 
                 Timestamp lastCalculated = rs.getTimestamp("lastCalculated");
                 if (lastCalculated != null) {

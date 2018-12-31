@@ -13,6 +13,7 @@ import com.texastoc.model.season.QuarterlySeasonPayout;
 import com.texastoc.model.season.QuarterlySeasonPlayer;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.season.SeasonPayout;
+import com.texastoc.model.season.SeasonPlayer;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -166,6 +167,22 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
         }
     }
 
+    @Then("^the season is properly calculated$")
+    public void the_season_is_properly_calculated() {
+        Assert.assertNotNull("season should not be null", season);
+
+        Assert.assertEquals("season has 52 games", 52, season.getNumGames());
+        Assert.assertEquals("season has 1 game played", 1, season.getNumGamesPlayed());
+        Assert.assertEquals("annualTocCollected is " + (TOC_PER_GAME * NUM_PLAYERS), TOC_PER_GAME * NUM_PLAYERS, season.getAnnualTocCollected());
+
+        Assert.assertEquals("players 10", 10, season.getPlayers().size());
+        checkSeasonPoints(season.getPlayers());
+
+        // TODO need to test once I know what the season payouts are
+//        List<SeasonPayout> payouts = season.getPayouts();
+//        Assert.assertEquals("payouts " + QUARTERLY_NUM_PAYOUTS, QUARTERLY_NUM_PAYOUTS, payouts.size());
+    }
+
 
     private void checkGameRuntime(Game game) {
         Assert.assertEquals("buy in collected should be ", GAME_BUY_IN * NUM_PLAYERS, game.getBuyInCollected());
@@ -281,6 +298,32 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
 
         int totalPoints = 0;
         for (QuarterlySeasonPlayer player : players) {
+            if (player.getPoints() > 0) {
+                totalPoints += player.getPoints();
+            }
+        }
+        Assert.assertEquals("total points should be 285", expectedPoints, totalPoints);
+    }
+
+    private void checkSeasonPoints(List<SeasonPlayer> players) {
+        Assert.assertNotNull("list of game players should not be null", players);
+        Assert.assertEquals("list of game players should be 10", NUM_PLAYERS, players.size());
+
+        int pointsCount = 0;
+        for (SeasonPlayer player : players) {
+            ++pointsCount;
+        }
+
+        Assert.assertEquals("ten players should have points", NUM_PLAYERS, pointsCount);
+
+        int points[] = {70,	54,	42,	32,	25,	19,	15,	12,	9, 7};
+        int expectedPoints = 0;
+        for (int point : points) {
+            expectedPoints += point;
+        }
+
+        int totalPoints = 0;
+        for (SeasonPlayer player : players) {
             if (player.getPoints() > 0) {
                 totalPoints += player.getPoints();
             }

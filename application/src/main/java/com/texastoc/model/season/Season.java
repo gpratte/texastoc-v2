@@ -23,10 +23,7 @@ import java.util.List;
 public class Season {
 
     private int id;
-    @NotNull(message = "start date is required")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate start;
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate end;
 
     // From TocConfig

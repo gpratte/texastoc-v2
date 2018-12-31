@@ -8,6 +8,7 @@ import com.texastoc.model.season.SeasonPlayer;
 import com.texastoc.repository.ConfigRepository;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
+import com.texastoc.repository.SeasonPayoutRepository;
 import com.texastoc.repository.SeasonPlayerRepository;
 import com.texastoc.repository.SeasonRepository;
 import org.junit.Assert;
@@ -46,11 +47,13 @@ public class SeasonCalculatorTest implements TestConstants {
     private SeasonPlayerRepository seasonPlayerRepository;
     @MockBean
     private GamePlayerRepository gamePlayerRepository;
+    @MockBean
+    private SeasonPayoutRepository seasonPayoutRepository;
 
 
     @Before
     public void before() {
-        seasonCalculator = new SeasonCalculator(gameRepository, seasonRepository, seasonPlayerRepository, gamePlayerRepository);
+        seasonCalculator = new SeasonCalculator(gameRepository, seasonRepository, seasonPlayerRepository, gamePlayerRepository, seasonPayoutRepository);
         gameCalculator = new GameCalculator(gameRepository, configRepository);
     }
 

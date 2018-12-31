@@ -2,11 +2,14 @@ package com.texastoc.service.calculator;
 
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
+import com.texastoc.model.season.QuarterlySeasonPayout;
+import com.texastoc.model.season.QuarterlySeasonPlayer;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.season.SeasonPayout;
 import com.texastoc.model.season.SeasonPlayer;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
+import com.texastoc.repository.SeasonPayoutRepository;
 import com.texastoc.repository.SeasonPlayerRepository;
 import com.texastoc.repository.SeasonRepository;
 import org.springframework.stereotype.Component;
@@ -24,17 +27,21 @@ public class SeasonCalculator {
     private final SeasonRepository seasonRepository;
     private final GamePlayerRepository gamePlayerRepository;
     private final SeasonPlayerRepository seasonPlayerRepository;
+    private final SeasonPayoutRepository seasonPayoutRepository;
 
-    public SeasonCalculator(GameRepository gameRepository, SeasonRepository seasonRepository, SeasonPlayerRepository seasonPlayerRepository, GamePlayerRepository gamePlayerRepository) {
+    public SeasonCalculator(GameRepository gameRepository, SeasonRepository seasonRepository, SeasonPlayerRepository seasonPlayerRepository, GamePlayerRepository gamePlayerRepository, SeasonPayoutRepository seasonPayoutRepository) {
         this.gameRepository = gameRepository;
         this.seasonRepository = seasonRepository;
         this.seasonPlayerRepository = seasonPlayerRepository;
         this.gamePlayerRepository = gamePlayerRepository;
+        this.seasonPayoutRepository = seasonPayoutRepository;
     }
 
     public Season calculate(int id) {
 
         Season season = seasonRepository.get(id);
+
+        // Calculate season
         List<Game> games = gameRepository.getBySeasonId(id);
 
         season.setNumGamesPlayed(games.size());
@@ -76,13 +83,29 @@ public class SeasonCalculator {
 
         season.setLastCalculated(LocalDateTime.now());
 
-        // Season players
-        List<SeasonPlayer> seasonPlayers = calculatePlayers(id);
-        season.setPlayers(seasonPlayers);
+        // Persist season
+        seasonRepository.update(season);
 
-        // Payouts
+        // Calculate season players
+        List<SeasonPlayer> players = calculatePlayers(id);
+        season.setPlayers(players);
+
+        // Persist season players
+        seasonPlayerRepository.deleteBySeasonId(id);
+        for (SeasonPlayer player : players) {
+            seasonPlayerRepository.save(player);
+        }
+
+        // Calculate season payouts
+        // TODO need to test once I know what the season payouts are
         List<SeasonPayout> payouts = new ArrayList<>(10);
         season.setPayouts(payouts);
+
+        // Persist season payouts
+        seasonPayoutRepository.deleteBySeasonId(id);
+        for (SeasonPayout payout : payouts) {
+            seasonPayoutRepository.save(payout);
+        }
 
         return season;
     }
