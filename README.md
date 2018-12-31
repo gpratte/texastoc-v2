@@ -39,7 +39,7 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 27-season-calculations
+## Current Branch: 28-supplies
 
-* TDD for SeasonCalculator and QuarterlySeasonCalculator
-* Cucumber tests for SeasonCalculator and QuarterlySeasonCalculator
+* TDD for SupplyService
+* Cucumber integration tests for SupplyController
