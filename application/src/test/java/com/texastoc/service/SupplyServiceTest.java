@@ -109,12 +109,4 @@ public class SupplyServiceTest implements TestConstants {
             .build());
     }
 
-    @Test
-    public void testDeleteSupply() {
-        supplyService.delete(1);
-
-        Mockito.verify(supplyRepository, Mockito.times(1)).delete(1);
-    }
-
-
 }

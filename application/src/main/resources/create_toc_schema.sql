@@ -12,6 +12,8 @@ create table if not exists seasonplayer (playerId INT NOT NULL, seasonId INT NOT
 
 create table if not exists quarterlyseasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, qSeasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT)
 
+create table if not exists supply (id INT auto_increment, amount INT NOT NULL, date DATE NOT NULL, type varchar(16) NOT NULL, description varchar(64), primary key(id))
+
 create table if not exists player (id INT auto_increment, firstName varchar(32) DEFAULT NULL, lastName varchar(32) DEFAULT NULL, phone varchar(32) DEFAULT NULL, email varchar(64) DEFAULT NULL, primary key (id))
 
 insert into player (id, firstName, lastName, phone, email) values (1, 'Brian', 'Baker', '5121231234', 'brianbaker@texastoc.com')

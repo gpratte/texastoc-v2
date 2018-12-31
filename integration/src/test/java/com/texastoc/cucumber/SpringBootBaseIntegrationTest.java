@@ -12,6 +12,7 @@ import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.Season;
+import com.texastoc.model.supply.Supply;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -135,6 +136,20 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         restTemplate.put(endpoint() + "/games/" + gameId + "/finalize", entity);
+    }
+
+    protected void createSupply(Supply supply) throws Exception {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        String supplyAsJson = mapper.writeValueAsString(supply);
+        HttpEntity<String> entity = new HttpEntity<>(supplyAsJson, headers);
+
+        restTemplate.postForObject(endpoint() + "/supplies", entity, String.class);
     }
 
 }

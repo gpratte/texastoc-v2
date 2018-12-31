@@ -27,8 +27,4 @@ public class SupplyService {
         Assert.notNull(supply.getType(), "Type is required");
         supplyRepository.save(supply);
     }
-
-    public void delete(int id) {
-        supplyRepository.delete(id);
-    }
 }
