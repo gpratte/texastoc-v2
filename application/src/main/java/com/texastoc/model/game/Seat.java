@@ -14,7 +14,8 @@ import lombok.Setter;
 public class Seat {
 
     private int gameId;
-    private int number;
+    private int seatNumber;
+    private int tableNumber;
     private Integer gamePlayerId;
     private String gamePlayerName;
 }

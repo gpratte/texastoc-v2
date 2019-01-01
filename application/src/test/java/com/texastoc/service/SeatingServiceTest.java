@@ -62,25 +62,29 @@ public class SeatingServiceTest implements TestConstants {
             .gameId(1)
             .gamePlayerId(1)
             .gamePlayerName("One")
-            .number(1)
+            .seatNumber(1)
+            .tableNumber(1)
             .build());
         currentSeats.add(Seat.builder()
             .gameId(1)
             .gamePlayerId(2)
             .gamePlayerName("Two")
-            .number(2)
+            .seatNumber(2)
+            .tableNumber(1)
             .build());
         currentSeats.add(Seat.builder()
             .gameId(1)
             .gamePlayerId(3)
             .gamePlayerName("Three")
-            .number(3)
+            .seatNumber(3)
+            .tableNumber(1)
             .build());
         currentSeats.add(Seat.builder()
             .gameId(1)
             .gamePlayerId(4)
             .gamePlayerName("Four")
-            .number(4)
+            .seatNumber(4)
+            .tableNumber(1)
             .build());
 
         Table table = Table.builder()
@@ -95,19 +99,22 @@ public class SeatingServiceTest implements TestConstants {
             .gameId(1)
             .gamePlayerId(5)
             .gamePlayerName("Five")
-            .number(1)
+            .seatNumber(1)
+            .tableNumber(2)
             .build());
         currentSeats.add(Seat.builder()
             .gameId(1)
             .gamePlayerId(6)
             .gamePlayerName("Six")
-            .number(2)
+            .seatNumber(2)
+            .tableNumber(2)
             .build());
         currentSeats.add(Seat.builder()
             .gameId(1)
             .gamePlayerId(7)
             .gamePlayerName("Seven")
-            .number(3)
+            .seatNumber(3)
+            .tableNumber(2)
             .build());
 
         table = Table.builder()
@@ -254,7 +261,7 @@ public class SeatingServiceTest implements TestConstants {
                 .build());
         }
 
-        List<Table> tables = seatingService.seat(1, 0, null);
+        List<Table> tables = seatingService.seat(1, 0, tableRequests);
 
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
 
@@ -267,6 +274,7 @@ public class SeatingServiceTest implements TestConstants {
         Table firstTable = tables.get(0);
         Assert.assertNotNull("seats for table 1 should not be null", firstTable.getSeats());
         Assert.assertNotNull("seats for table 1 should be 6", firstTable.getSeats().size());
+
         for (int i = 0; i < 6; i++) {
             boolean found = false;
             for (Seat seat : firstTable.getSeats()) {
@@ -276,7 +284,5 @@ public class SeatingServiceTest implements TestConstants {
             }
             Assert.assertTrue("should have found game player " + i + " at table 1", found);
         }
-
     }
-
 }
