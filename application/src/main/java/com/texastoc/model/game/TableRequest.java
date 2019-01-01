@@ -3,18 +3,14 @@ package com.texastoc.model.game;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Seat {
+public class TableRequest {
 
-    private int gameId;
-    private int number;
-    private Integer gamePlayerId;
-    private String gamePlayerName;
+    private int gamePlayerId;
+    private int tableNum;
 }

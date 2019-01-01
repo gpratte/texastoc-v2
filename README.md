@@ -39,7 +39,7 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 28-supplies
+## Current Branch: 29-seating
 
-* TDD for SupplyService
-* Cucumber integration tests for SupplyController
+* TDD for SeatingService
+* Cucumber integration tests for SeatingController
