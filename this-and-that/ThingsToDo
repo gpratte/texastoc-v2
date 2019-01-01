@@ -1,12 +1,10 @@
 
 Write tests for:
+    Seating
     Test that update game, does not allow game double buy in to change if any players have bought in.
     Test last calculated
-    Supplies
 
 Test coverage?
-
-Seating
 
 Roles
     Login
@@ -15,5 +13,5 @@ Roles
 Cache season (do not need ehcache but instead save it in a variable in the season service object and then when get season is called check the last caculated. Calculate the game/quarter/season on a thread when a game is finalized).
 
 Logging
-Sonar scan.
+Sonar scan
 
