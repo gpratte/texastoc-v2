@@ -211,6 +211,7 @@ public class GameService {
         // Do not need to recalculate game b/c that is all done by other methods
         qSeasonCalculator.calculate(game.getQSeasonId());
         seasonCalculator.calculate(game.getSeasonId());
+        seatingRepository.deleteByGameId(id);
     }
 
     // Worker to avoid one @Transacation calling anther @Transactional

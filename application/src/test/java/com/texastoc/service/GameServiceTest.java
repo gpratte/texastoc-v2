@@ -552,6 +552,7 @@ public class GameServiceTest implements TestConstants {
         Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
         Mockito.verify(qSeasonCalculator, Mockito.times(1)).calculate(1);
         Mockito.verify(seasonCalculator, Mockito.times(1)).calculate(1);
+        Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
     }
 
     @Test
