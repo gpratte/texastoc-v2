@@ -1,6 +1,5 @@
 
 Write tests for:
-    Seating
     Test that update game, does not allow game double buy in to change if any players have bought in.
     Test last calculated
 
