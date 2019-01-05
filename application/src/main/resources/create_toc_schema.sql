@@ -29,8 +29,7 @@ create table if not exists seasonpayout (seasonId INT NOT NULL, place INT NOT NU
 
 create table if not exists quarterlyseasonpayout (seasonId INT NOT NULL, qSeasonId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, PRIMARY KEY (seasonId, qSeasonId, place))
 
-create table if not exists gametable (gameId INT NOT NULL, number INT NOT NULL, PRIMARY KEY (gameId, number))
-create table if not exists gameseat (gameId INT NOT NULL, seatNumber INT NOT NULL, tableNumber INT NOT NULL, gamePlayerId INT NOT NULL, gamePlayerName varchar(64), PRIMARY KEY (gameId, seatNumber, tableNumber))
+create table if not exists gameseat (gameId INT NOT NULL, seatNumber INT NOT NULL, tableNumber INT NOT NULL, gamePlayerId INT, gamePlayerName varchar(64), PRIMARY KEY (gameId, seatNumber, tableNumber))
 
 create table if not exists payout (numPayouts INT NOT NULL, place INT NOT NULL, percent DOUBLE DEFAULT NULL, PRIMARY KEY (numPayouts, place))
 insert into payout (numPayouts, place, percent) values (2, 1, 0.65)

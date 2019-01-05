@@ -124,7 +124,7 @@ public class SeatingServiceTest implements TestConstants {
             .build();
         currentTables.add(table);
 
-        Mockito.when(seatingRepository.get(1)).thenReturn(currentTables);
+        Mockito.when(seatingRepository.getTables(1)).thenReturn(currentTables);
 
         List<Table> tables = seatingService.get(1);
 
@@ -178,7 +178,7 @@ public class SeatingServiceTest implements TestConstants {
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
 
         Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
-        Mockito.verify(seatingRepository, Mockito.times(1)).save(Mockito.any(Table.class));
+        Mockito.verify(seatingRepository, Mockito.times(1)).saveTable(Mockito.any(Table.class));
 
         Assert.assertNotNull("tables should not be null", tables);
         Assert.assertEquals("number of tables 1", 1, tables.size());
@@ -208,7 +208,7 @@ public class SeatingServiceTest implements TestConstants {
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
 
         Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
-        Mockito.verify(seatingRepository, Mockito.times(2)).save(Mockito.any(Table.class));
+        Mockito.verify(seatingRepository, Mockito.times(2)).saveTable(Mockito.any(Table.class));
 
         Assert.assertNotNull("tables should not be null", tables);
         Assert.assertEquals("number of tables 2", 2, tables.size());
@@ -266,7 +266,7 @@ public class SeatingServiceTest implements TestConstants {
         Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
 
         Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
-        Mockito.verify(seatingRepository, Mockito.times(2)).save(Mockito.any(Table.class));
+        Mockito.verify(seatingRepository, Mockito.times(2)).saveTable(Mockito.any(Table.class));
 
         Assert.assertNotNull("tables should not be null", tables);
         Assert.assertEquals("number of tables 2", 2, tables.size());

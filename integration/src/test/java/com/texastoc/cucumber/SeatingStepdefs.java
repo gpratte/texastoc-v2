@@ -133,14 +133,14 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertNotNull("table 1 seats should not be null", table.getSeats());
 
         List<Seat> seats = table.getSeats();
-        Assert.assertEquals("7 seats", 7, seats.size());
+        Assert.assertEquals("table 1 has 7 seats", 7, seats.size());
 
         table = tables.get(1);
         Assert.assertEquals("table number should be 2", 2, table.getNumber());
         Assert.assertNotNull("table 2 seats should not be null", table.getSeats());
 
         seats = table.getSeats();
-        Assert.assertEquals("7 seats", 7, seats.size());
+        Assert.assertEquals("table 2 has 6 seats", 6, seats.size());
 
     }
 

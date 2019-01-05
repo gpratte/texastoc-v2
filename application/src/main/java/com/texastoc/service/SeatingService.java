@@ -31,7 +31,7 @@ public class SeatingService {
     }
 
     public List<Table> get(int gameId) {
-        return seatingRepository.get(gameId);
+        return seatingRepository.getTables(gameId);
     }
 
     public List<Table> seat(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests) {
@@ -170,7 +170,7 @@ public class SeatingService {
 
         seatingRepository.deleteByGameId(gameId);
         for (Table table : tables) {
-            seatingRepository.save(table);
+            seatingRepository.saveTable(table);
         }
 
         return tables;
