@@ -76,6 +76,7 @@ public class Game {
 
     private List<GamePlayer> players;
     private List<GamePayout> payouts;
+    private List<Table> tables;
 
     public void addPlayer(GamePlayer player) {
         if (players == null) {

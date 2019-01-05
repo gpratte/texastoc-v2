@@ -34,7 +34,7 @@ public class SeatingService {
         return seatingRepository.get(gameId);
     }
 
-    public List<Table> seat(int gameId, int numDeadStacks, List<TableRequest> tableRequests) {
+    public List<Table> seat(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests) {
 
         List<GamePlayer> currentPlayers = gamePlayerRepository.selectByGameId(gameId);
 
@@ -58,6 +58,8 @@ public class SeatingService {
                 playersToRandomize.set(index2, gamePlayer);
             }
         }
+
+        numDeadStacks = numDeadStacks == null ? 0 : numDeadStacks;
 
         // Create tables max 10 players
         int numTables = (int)Math.ceil((playersToRandomize.size() + numDeadStacks) / (double)10);

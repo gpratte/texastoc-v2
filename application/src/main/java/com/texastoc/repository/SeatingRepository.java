@@ -1,5 +1,6 @@
 package com.texastoc.repository;
 
+import com.texastoc.model.game.Seat;
 import com.texastoc.model.game.Table;
 import com.texastoc.model.supply.Supply;
 import com.texastoc.model.supply.SupplyType;
@@ -26,9 +27,8 @@ public class SeatingRepository {
     public List<Table> get(int gameId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("gameId", gameId);
-        // TODO outer join on gameseat
         return jdbcTemplate
-            .query("select * from gametable where gameId = :gameId",
+            .query("select gt.*, gs.* from gametable gt, gameseat gs where gt.gameId = :gameId and gs.gameId = gt.gameId",
                 params,
                 new TableMapper());
     }
@@ -44,18 +44,37 @@ public class SeatingRepository {
             .update("delete from gameseat where gameId = :gameId", params);
     }
 
-    private static final String INSERT_SQL = "INSERT INTO supply "
-        + " (date, type, amount, description) "
+    private static final String INSERT_TABLE_SQL = "INSERT INTO gametable "
+        + " (gameId, number) "
         + " VALUES "
-        + " (:date, :type, :amount, :description)";
+        + " (:gameId, :number)";
     public void save(Table table) {
-//        MapSqlParameterSource params = new MapSqlParameterSource();
-//        params.addValue("date", supply.getDate());
-//        params.addValue("type", supply.getType().name());
-//        params.addValue("amount", supply.getAmount());
-//        params.addValue("description", supply.getDescription());
-//
-//        jdbcTemplate.update(INSERT_SQL, params);
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("gameId", table.getGameId());
+        params.addValue("number", table.getNumber());
+
+        jdbcTemplate.update(INSERT_TABLE_SQL, params);
+
+        if (table.getSeats() != null) {
+            for (Seat seat : table.getSeats()) {
+                save(seat);
+            }
+        }
+    }
+
+    private static final String INSERT_SEAT_SQL = "INSERT INTO gameseat "
+        + " (gameId, seatNumber, tableNumber, gamePlayerId, gamePlayerName) "
+        + " VALUES "
+        + " (:gameId, :seatNumber, :tableNumber, :gamePlayerId, :gamePlayerName)";
+    public void save(Seat seat) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("gameId", seat.getGameId());
+        params.addValue("seatNumber", seat.getSeatNumber());
+        params.addValue("tableNumber", seat.getTableNumber());
+        params.addValue("gamePlayerId", seat.getGamePlayerId());
+        params.addValue("gamePlayerName", seat.getGamePlayerName());
+
+        jdbcTemplate.update(INSERT_SEAT_SQL, params);
     }
 
     private static final class TableMapper implements RowMapper<Table> {

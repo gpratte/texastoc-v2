@@ -6,23 +6,30 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.texastoc.TestConstants;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.CreateGameRequest;
+import com.texastoc.controller.request.SeatingRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGameRequest;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
+import com.texastoc.model.game.Table;
+import com.texastoc.model.game.TableRequest;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.supply.Supply;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -150,6 +157,30 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         HttpEntity<String> entity = new HttpEntity<>(supplyAsJson, headers);
 
         restTemplate.postForObject(endpoint() + "/supplies", entity, String.class);
+    }
+
+    protected List<Table> seatPlayers(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests) throws Exception {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        SeatingRequest seatingRequest = SeatingRequest.builder()
+            .gameId(gameId)
+            .numDeadStacks(numDeadStacks)
+            .tableRequests(tableRequests)
+            .build();
+        String seatingRequestAsJson = mapper.writeValueAsString(seatingRequest);
+        HttpEntity<String> entity = new HttpEntity<>(seatingRequestAsJson, headers);
+
+        ResponseEntity<List<Table>> response = restTemplate.exchange(
+            endpoint() + "/games/seats",
+            HttpMethod.POST,
+            entity,
+            new ParameterizedTypeReference<List<Table>>(){});
+        return response.getBody();
     }
 
 }

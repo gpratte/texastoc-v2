@@ -1,5 +1,6 @@
 package com.texastoc.service;
 
+import com.texastoc.controller.request.SeatingRequest;
 import com.texastoc.exception.DoubleBuyInMismatchException;
 import com.texastoc.exception.FinalizedException;
 import com.texastoc.model.config.TocConfig;
@@ -16,6 +17,7 @@ import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
+import com.texastoc.repository.SeatingRepository;
 import com.texastoc.service.calculator.GameCalculator;
 import com.texastoc.service.calculator.PayoutCalculator;
 import com.texastoc.service.calculator.PointsCalculator;
@@ -31,11 +33,13 @@ import java.util.Objects;
 public class GameService {
 
     private final GameRepository gameRepository;
+    private final SeasonRepository seasonRepository;
+    private final SeatingRepository seatingRepository;
     private final PlayerRepository playerRepository;
     private final GamePlayerRepository gamePlayerRepository;
     private final GamePayoutRepository gamePayoutRepository;
-    private final SeasonRepository seasonRepository;
     private final QuarterlySeasonRepository qSeasonRepository;
+
     private final GameCalculator gameCalculator;
     private final PayoutCalculator payoutCalculator;
     private final PointsCalculator pointsCalculator;
@@ -45,7 +49,7 @@ public class GameService {
 
     private TocConfig tocConfig;
 
-    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator) {
+    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.gamePlayerRepository = gamePlayerRepository;
@@ -58,6 +62,7 @@ public class GameService {
         this.configRepository = configRepository;
         this.seasonCalculator = seasonCalculator;
         this.qSeasonCalculator = qSeasonCalculator;
+        this.seatingRepository = seatingRepository;
     }
 
     @Transactional
@@ -110,6 +115,7 @@ public class GameService {
         Game game = gameRepository.getById(id);
         game.setPlayers(gamePlayerRepository.selectByGameId(id));
         game.setPayouts(gamePayoutRepository.getByGameId(id));
+        game.setTables(seatingRepository.get(id));
         return game;
     }
 

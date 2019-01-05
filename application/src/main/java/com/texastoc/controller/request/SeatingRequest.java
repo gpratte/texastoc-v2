@@ -15,8 +15,7 @@ public class SeatingRequest {
     @NotNull(message = "game id is required")
     private Integer gameId;
 
-    @NotNull(message = "game player ids is required")
-    private List<Integer> gamePlayerIds;
+    private Integer numDeadStacks;
 
     private List<TableRequest> tableRequests;
 }

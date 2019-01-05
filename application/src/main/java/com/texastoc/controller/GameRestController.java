@@ -2,12 +2,15 @@ package com.texastoc.controller;
 
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.CreateGameRequest;
+import com.texastoc.controller.request.SeatingRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGameRequest;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
+import com.texastoc.model.game.Table;
 import com.texastoc.service.GameService;
+import com.texastoc.service.SeatingService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,14 +20,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class GameRestController {
 
     private final GameService gameService;
+    private final SeatingService seatingService;
 
-    public GameRestController(GameService gameService) {
+    public GameRestController(GameService gameService, SeatingService seatingService) {
         this.gameService = gameService;
+        this.seatingService = seatingService;
     }
 
     @PostMapping("/api/v2/games")
@@ -101,6 +107,13 @@ public class GameRestController {
     @DeleteMapping("/api/v2/games/players/{id}")
     public void deleteGamePlayer(@PathVariable("id") int id) {
         gameService.deleteGamePlayer(id);
+    }
+
+    @PostMapping("/api/v2/games/seats")
+    public List<Table> seat(@RequestBody @Valid SeatingRequest seatingRequest) {
+        int gameId = seatingRequest.getGameId();
+        List<Table> tables = seatingService.seat(seatingRequest.getGameId(), seatingRequest.getNumDeadStacks(), seatingRequest.getTableRequests());
+        return tables;
     }
 
 }

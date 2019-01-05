@@ -17,6 +17,7 @@ import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonRepository;
+import com.texastoc.repository.SeatingRepository;
 import com.texastoc.service.calculator.GameCalculator;
 import com.texastoc.service.calculator.PayoutCalculator;
 import com.texastoc.service.calculator.PointsCalculator;
@@ -58,6 +59,8 @@ public class GameServiceTest implements TestConstants {
     @MockBean
     private SeasonRepository seasonRepository;
     @MockBean
+    private SeatingRepository seatingRepository;
+    @MockBean
     private QuarterlySeasonRepository qSeasonRepository;
     @MockBean
     private GameCalculator gameCalculator;
@@ -74,7 +77,7 @@ public class GameServiceTest implements TestConstants {
 
     @Before
     public void before() {
-        gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator, configRepository, seasonCalculator, qSeasonCalculator);
+        gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator, configRepository, seasonCalculator, qSeasonCalculator, seatingRepository);
     }
 
     @Test
