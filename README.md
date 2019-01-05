@@ -39,7 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 29-seating
+## Current Branch: 30-reject-update-game
 
-* TDD for SeatingService
-* Cucumber integration tests for SeatingController
+Do not allow game double buy in to change if any players have bought in.

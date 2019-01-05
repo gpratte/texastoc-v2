@@ -1,8 +1,7 @@
 
 Write tests for:
-    Test that update game, does not allow game double buy in to change if any players have bought in.
-    Test last calculated (cache season?)
     Remove seats when game finalized
+    Test last calculated
 
 Test coverage?
 

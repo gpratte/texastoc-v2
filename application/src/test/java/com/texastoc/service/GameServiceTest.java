@@ -1,6 +1,7 @@
 package com.texastoc.service;
 
 import com.texastoc.TestConstants;
+import com.texastoc.exception.DoubleBuyInChangeDisallowedException;
 import com.texastoc.exception.DoubleBuyInMismatchException;
 import com.texastoc.exception.FinalizedException;
 import com.texastoc.model.game.FirstTimeGamePlayer;
@@ -39,7 +40,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import static org.mockito.ArgumentMatchers.booleanThat;
 import static org.mockito.ArgumentMatchers.notNull;
 
 @RunWith(SpringRunner.class)
@@ -593,6 +593,7 @@ public class GameServiceTest implements TestConstants {
             .id(1)
             .gameId(1)
             .build());
+
         try {
             gameService.deleteGamePlayer(1);
             Assert.fail("should not be able to update a finalized game");
@@ -610,5 +611,32 @@ public class GameServiceTest implements TestConstants {
         }
 
     }
+
+    @Test(expected = DoubleBuyInChangeDisallowedException.class)
+    public void testRejectUpdateGame() {
+
+        // Do not allow game double buy in to change if any players have bought in.
+
+        Mockito.when(gameRepository.getById(1)).thenReturn(Game.builder()
+            .id(1)
+            .finalized(false)
+            .doubleBuyIn(true)
+            .build());
+
+        List<GamePlayer> gamePlayers = new LinkedList<>();
+        gamePlayers.add(GamePlayer.builder()
+            .id(1)
+            .gameId(1)
+            .buyInCollected(GAME_DOUBLE_BUY_IN)
+            .build());
+        Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayers);
+
+        Game game = Game.builder()
+            .id(1)
+            .doubleBuyIn(false)
+            .build();
+        gameService.updateGame(game);
+    }
+
 
 }

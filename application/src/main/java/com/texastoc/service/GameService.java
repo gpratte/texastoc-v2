@@ -1,6 +1,6 @@
 package com.texastoc.service;
 
-import com.texastoc.controller.request.SeatingRequest;
+import com.texastoc.exception.DoubleBuyInChangeDisallowedException;
 import com.texastoc.exception.DoubleBuyInMismatchException;
 import com.texastoc.exception.FinalizedException;
 import com.texastoc.model.config.TocConfig;
@@ -121,7 +121,19 @@ public class GameService {
 
     @Transactional
     public void updateGame(Game game) {
-        checkFinalized(game.getId());
+        Game currentGame = gameRepository.getById(game.getId());
+        checkFinalized(currentGame);
+
+        // Do not allow the game double buy-in to change if any players have bought in
+        if (currentGame.isDoubleBuyIn() != game.isDoubleBuyIn()) {
+            List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(game.getId());
+            for (GamePlayer gamePlayer : gamePlayers) {
+                if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0) {
+                    throw new DoubleBuyInChangeDisallowedException();
+                }
+            }
+        }
+
         gameRepository.update(game);
     }
 
@@ -273,9 +285,13 @@ public class GameService {
     }
 
     private void checkFinalized(int id) {
-        Game currentGame = gameRepository.getById(id);
-        if (currentGame.isFinalized()) {
+        checkFinalized(gameRepository.getById(id));
+    }
+
+    private void checkFinalized(Game game) {
+        if (game.isFinalized()) {
             throw new FinalizedException("Game is finalized");
         }
     }
+
 }
