@@ -39,6 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 34-cache-season
+## Current Branch: 35-logging
 
-Cache season by saving the season in a variable in the season service. Subsequent calls check the last caculated of the persisted season to determine if the cached season should be returned or the persisted season. Of course overwrite the cached season whenever the persisted season is read.
+Configure logback logs to console and to rolling file.

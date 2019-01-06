@@ -1,6 +1,7 @@
 
 # All target directories
 target/
+logs/
 
 # IntelliJ IDEA
 .idea

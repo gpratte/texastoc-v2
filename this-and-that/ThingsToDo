@@ -1,8 +1,8 @@
 
-Logging
-
 Roles
-    Login
+    Login return JWT token
+    Endpoints require token
+    Integration tests requiring login and token
     Only admin can unfinalized a game/season
 
 CICD
