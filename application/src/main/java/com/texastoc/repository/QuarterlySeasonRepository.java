@@ -1,6 +1,5 @@
 package com.texastoc.repository;
 
-import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -36,6 +33,7 @@ public class QuarterlySeasonRepository {
         + " VALUES "
         + " (:seasonId, :startDate, :endDate, :finalized, :quarter, :numGames, :numGamesPlayed, :qTocCollected, :qTocPerGame, :numPayouts)";
 
+    @SuppressWarnings("Duplicates")
     public int save(QuarterlySeason quarterlySeason) {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -55,6 +53,7 @@ public class QuarterlySeasonRepository {
         String[] keys = {"id"};
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
 
+        //noinspection ConstantConditions
         return keyHolder.getKey().intValue();
     }
 
@@ -66,6 +65,7 @@ public class QuarterlySeasonRepository {
         "lastCalculated=:lastCalculated " +
         " where id=:id";
 
+    @SuppressWarnings("Duplicates")
     public void update(final QuarterlySeason qSeason) {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -82,7 +82,7 @@ public class QuarterlySeasonRepository {
         params.addValue("lastCalculated", qSeason.getLastCalculated());
         params.addValue("id", qSeason.getId());
 
-        int rc = jdbcTemplate.update(UPDATE_SQL, params);
+        jdbcTemplate.update(UPDATE_SQL, params);
     }
 
     public QuarterlySeason getById(int id) {
@@ -117,6 +117,7 @@ public class QuarterlySeasonRepository {
     }
 
     private static final class QuarterlySeasonMapper implements RowMapper<QuarterlySeason> {
+        @SuppressWarnings("Duplicates")
         public QuarterlySeason mapRow(ResultSet rs, int rowNum) {
             QuarterlySeason quarterly = new QuarterlySeason();
             try {

@@ -23,7 +23,7 @@ public class PayoutRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private static HashMap<Integer, List<Payout>> PAYOUTS =
+    private static final HashMap<Integer, List<Payout>> PAYOUTS =
         new HashMap<>();
 
 
@@ -41,8 +41,9 @@ public class PayoutRepository {
 
         for (Payout payout : payouts) {
             List<Payout> payoutsForPlaces = PAYOUTS.get(num);
+            //noinspection Java8MapApi
             if (payoutsForPlaces == null) {
-                payoutsForPlaces = new ArrayList<Payout>(num);
+                payoutsForPlaces = new ArrayList<>(num);
                 PAYOUTS.put(num, payoutsForPlaces);
             }
             payoutsForPlaces.add(payout);

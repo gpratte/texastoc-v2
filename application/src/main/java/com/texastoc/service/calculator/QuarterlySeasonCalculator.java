@@ -5,20 +5,15 @@ import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.QuarterlySeasonPayout;
 import com.texastoc.model.season.QuarterlySeasonPlayer;
-import com.texastoc.model.season.Season;
-import com.texastoc.model.season.SeasonPayout;
-import com.texastoc.model.season.SeasonPlayer;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.QuarterlySeasonPayoutRepository;
 import com.texastoc.repository.QuarterlySeasonPlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
-import com.texastoc.repository.SeasonPlayerRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +77,7 @@ public class QuarterlySeasonCalculator {
         return qSeason;
     }
 
+    @SuppressWarnings("Duplicates")
     private List<QuarterlySeasonPlayer> calculatePlayers(int seasonId, int qSeasonId) {
 
         Map<Integer, QuarterlySeasonPlayer> seasonPlayerMap = new HashMap<>();

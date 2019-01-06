@@ -28,7 +28,7 @@ public class PointsCalculatorTest implements TestConstants {
 
     @Before
     public void before() {
-        pointsCalculator = new PointsCalculator(CHOP_NUM_PLAYERS, CHOP_TENTH_PLACE_INCR, CHOP_TENTH_PLACE_POINTS, CHOP_MULTIPLIER, gamePlayerRepository);
+        pointsCalculator = new PointsCalculator(CHOP_TENTH_PLACE_INCR, CHOP_TENTH_PLACE_POINTS, CHOP_MULTIPLIER, gamePlayerRepository);
     }
 
     @Test

@@ -26,7 +26,7 @@ public class PayoutCalculator {
     public List<GamePayout> calculate(Game game, List<GamePlayer> gamePlayers) {
 
         if (game.getPrizePotCalculated() <= 0) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         // round to multiple of 5 (e.g. 12 rounds to 10 but 13 rounds to 15)
@@ -68,7 +68,7 @@ public class PayoutCalculator {
             GamePayout gp = new GamePayout();
             gp.setGameId(game.getId());
             gp.setPlace(payout.getPlace());
-            double percent = Double.valueOf(payout.getPercent());
+            double percent = payout.getPercent();
             int amount = (int)Math.round(percent * prizePot);
             gp.setAmount(amount);
             totalPayout += amount;
@@ -106,9 +106,9 @@ public class PayoutCalculator {
         for (GamePlayer gamePlayer : gamePlayers) {
             if (gamePlayer.getChop() != null) {
                 if (chips == null) {
-                    chips = new ArrayList<Integer>();
+                    chips = new ArrayList<>();
                     chips.add(gamePlayer.getChop());
-                    amounts = new ArrayList<Integer>();
+                    amounts = new ArrayList<>();
                     for (GamePayout gamePayout : gamePayouts) {
                         if (gamePayout.getPlace() == gamePlayer.getFinish()) {
                             amounts.add(gamePayout.getAmount());
@@ -118,7 +118,7 @@ public class PayoutCalculator {
                 } else {
                     boolean inserted = false;
                     for (int i = 0; i < chips.size(); ++i) {
-                        if (gamePlayer.getChop().intValue() >= chips.get(i).intValue()) {
+                        if (gamePlayer.getChop() >= chips.get(i)) {
                             chips.add(i, gamePlayer.getChop());
                             for (GamePayout gamePayout : gamePayouts) {
                                 if (gamePayout.getPlace() == gamePlayer.getFinish()) {
@@ -132,7 +132,7 @@ public class PayoutCalculator {
                     if (!inserted) {
                         chips.add(gamePlayer.getChop());
                         for (GamePayout gamePayout : gamePayouts) {
-                            if (gamePayout != null && gamePlayer != null && gamePayout.getPlace() == gamePlayer.getFinish()) {
+                            if (gamePayout != null && gamePayout.getPlace() == gamePlayer.getFinish()) {
                                 amounts.add(gamePayout.getAmount());
                                 break;
                             }

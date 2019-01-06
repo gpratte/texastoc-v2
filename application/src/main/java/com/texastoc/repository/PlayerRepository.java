@@ -46,6 +46,7 @@ public class PlayerRepository {
         String [] keys = {"id"};
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
 
+        //noinspection ConstantConditions
         return keyHolder.getKey().intValue();
     }
 

@@ -22,7 +22,7 @@ public class SetupDatabase {
         return args -> {
             File file = ResourceUtils.getFile("classpath:create_toc_schema.sql");
             try (BufferedReader bf = Files.newBufferedReader(file.toPath())) {
-                String line = null;
+                String line;
                 while ((line = bf.readLine()) != null) {
                     jdbcTemplate.execute(line);
                 }

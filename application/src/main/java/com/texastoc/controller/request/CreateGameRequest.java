@@ -1,7 +1,6 @@
 package com.texastoc.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.texastoc.model.season.Quarter;
 import lombok.Builder;
 import lombok.Data;
 

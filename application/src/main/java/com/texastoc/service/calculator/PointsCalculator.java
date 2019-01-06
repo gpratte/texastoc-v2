@@ -14,7 +14,6 @@ import java.util.Map;
 @Component
 public class PointsCalculator {
 
-    private final Integer numPlayers;
     private final Double tenthPlaceIncr;
     private final Integer tenthPlacePoints;
     private final Double multiplier;
@@ -22,8 +21,7 @@ public class PointsCalculator {
 
     private final Map<Integer, Map<Integer, Integer>> POINT_SYSTEM = new HashMap<>();
 
-    public PointsCalculator(@Value("${points.numPlayers}") Integer numPlayers, @Value("${points.tenthPlaceIncr}") Double tenthPlaceIncr, @Value("${points.tenthPlacePoints}") Integer tenthPlacePoints, @Value("${points.multiplier}") Double multiplier, GamePlayerRepository gamePlayerRepository) {
-        this.numPlayers = numPlayers;
+    public PointsCalculator(@Value("${points.tenthPlaceIncr}") Double tenthPlaceIncr, @Value("${points.tenthPlacePoints}") Integer tenthPlacePoints, @Value("${points.multiplier}") Double multiplier, GamePlayerRepository gamePlayerRepository) {
         this.tenthPlaceIncr = tenthPlaceIncr;
         this.tenthPlacePoints = tenthPlacePoints;
         this.multiplier = multiplier;
@@ -49,7 +47,7 @@ public class PointsCalculator {
         boolean pointsChanged = false;
         for (GamePlayer gamePlayer : gamePlayers) {
             if (gamePlayer.getFinish() != null && gamePlayer.getFinish() < 11) {
-                if (gamePlayer.getPoints() != placePoints.get(gamePlayer.getFinish())) {
+                if (gamePlayer.getPoints() == null || gamePlayer.getPoints().intValue() != placePoints.get(gamePlayer.getFinish())) {
                     pointsChanged = true;
                     gamePlayer.setPoints(placePoints.get(gamePlayer.getFinish()));
                 }
@@ -77,16 +75,16 @@ public class PointsCalculator {
         for (GamePlayer gamePlayer : gamePlayers) {
             if (gamePlayer.getChop() != null) {
                 if (chips == null) {
-                    chips = new ArrayList<Integer>();
+                    chips = new ArrayList<>();
                     chips.add(gamePlayer.getChop());
-                    amounts = new ArrayList<Integer>();
+                    amounts = new ArrayList<>();
                     if (gamePlayer.getPoints() != null) {
                         amounts.add(gamePlayer.getPoints());
                     }
                 } else {
                     boolean inserted = false;
                     for (int i = 0; i < chips.size(); ++i) {
-                        if (gamePlayer.getChop().intValue() >= chips.get(i).intValue()) {
+                        if (gamePlayer.getChop() >= chips.get(i)) {
                             chips.add(i, gamePlayer.getChop());
                             if (gamePlayer.getPoints() != null) {
                                 amounts.add(i, gamePlayer.getPoints());
@@ -111,7 +109,7 @@ public class PointsCalculator {
                 for (Chop chop : chops) {
                     for (GamePlayer gamePlayer : gamePlayers) {
                         if (gamePlayer.getPoints() != null &&
-                            gamePlayer.getPoints().intValue() == chop.getOrgAmount()) {
+                            gamePlayer.getPoints() == chop.getOrgAmount()) {
                             gamePlayer.setPoints(chop.getChopAmount());
                             break;
                         }

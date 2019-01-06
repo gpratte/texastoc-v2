@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
+@SuppressWarnings("unused")
 @RestController
 @CrossOrigin(origins="*", maxAge=3600)
 public class UserController {

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -31,18 +30,22 @@ public class QuarterlySeason {
     private List<QuarterlySeasonPlayer> players;
     private List<QuarterlySeasonPayout> payouts;
 
-    public void addPlayer(QuarterlySeasonPlayer player) {
-        if (players == null) {
-            players = new LinkedList<>();
-        }
-        players.add(player);
-    }
+// --Commented out by Inspection START (2019-01-06 09:21):
+//    public void addPlayer(QuarterlySeasonPlayer player) {
+//        if (players == null) {
+//            players = new LinkedList<>();
+//        }
+//        players.add(player);
+//    }
+// --Commented out by Inspection STOP (2019-01-06 09:21)
 
-    public void addPayout(QuarterlySeasonPayout payout) {
-        if (payouts == null) {
-            payouts = new LinkedList<>();
-        }
-        payouts.add(payout);
-    }
+// --Commented out by Inspection START (2019-01-06 09:21):
+//    public void addPayout(QuarterlySeasonPayout payout) {
+//        if (payouts == null) {
+//            payouts = new LinkedList<>();
+//        }
+//        payouts.add(payout);
+//    }
+// --Commented out by Inspection STOP (2019-01-06 09:21)
 
 }

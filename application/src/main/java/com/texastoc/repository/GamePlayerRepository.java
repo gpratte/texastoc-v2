@@ -1,6 +1,5 @@
 package com.texastoc.repository;
 
-import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@SuppressWarnings("Duplicates")
 @Slf4j
 @Repository
 public class GamePlayerRepository {
@@ -28,40 +28,34 @@ public class GamePlayerRepository {
     public List<GamePlayer> selectByGameId(int gameId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("gameId", gameId);
-        List<GamePlayer> gamePlayers = jdbcTemplate
+        return jdbcTemplate
             .query("select * from gameplayer"
                     + " where gameId = :gameId"
                     + " order by name",
                 params,
                 new GamePlayerMapper());
-
-        return gamePlayers;
     }
 
     public List<GamePlayer> selectAnnualTocPlayersBySeasonId(int seasonId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("seasonId", seasonId);
-        List<GamePlayer> gamePlayers = jdbcTemplate
+        return jdbcTemplate
             .query("select * from gameplayer "
                     + " where seasonId = :seasonId "
                     + " and annualTocCollected IS NOT NULL ",
                 params,
                 new GamePlayerMapper());
-
-        return gamePlayers;
     }
 
     public List<GamePlayer> selectQuarterlyTocPlayersByQuarterlySeasonId(int qSeasonId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("qSeasonId", qSeasonId);
-        List<GamePlayer> gamePlayers = jdbcTemplate
+        return jdbcTemplate
             .query("select * from gameplayer "
                     + " where qSeasonId = :qSeasonId "
                     + " and quarterlyTocCollected IS NOT NULL ",
                 params,
                 new GamePlayerMapper());
-
-        return gamePlayers;
     }
 
     public GamePlayer selectById(int id) {
@@ -117,6 +111,7 @@ public class GamePlayerRepository {
         String [] keys = {"id"};
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
 
+        //noinspection ConstantConditions
         return keyHolder.getKey().intValue();
     }
 

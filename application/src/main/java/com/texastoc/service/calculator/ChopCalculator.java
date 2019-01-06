@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ChopCalculator {
+class ChopCalculator {
     /**
      * Calculates the chop
      *
@@ -35,7 +35,7 @@ public class ChopCalculator {
             }
         }
 
-        List<Chop> chops = new ArrayList<Chop>();
+        List<Chop> chops = new ArrayList<>();
 
         int smallestAmount = amounts.get(amounts.size() -1);
         int combinedAmount = 0;

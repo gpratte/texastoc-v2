@@ -2,8 +2,6 @@ package com.texastoc.service.calculator;
 
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
-import com.texastoc.model.season.QuarterlySeasonPayout;
-import com.texastoc.model.season.QuarterlySeasonPlayer;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.season.SeasonPayout;
 import com.texastoc.model.season.SeasonPlayer;
@@ -37,6 +35,7 @@ public class SeasonCalculator {
         this.seasonPayoutRepository = seasonPayoutRepository;
     }
 
+    @SuppressWarnings("Duplicates")
     public Season calculate(int id) {
 
         Season season = seasonRepository.get(id);
@@ -110,6 +109,7 @@ public class SeasonCalculator {
         return season;
     }
 
+    @SuppressWarnings("Duplicates")
     private List<SeasonPlayer> calculatePlayers(int id) {
 
         Map<Integer, SeasonPlayer> seasonPlayerMap = new HashMap<>();

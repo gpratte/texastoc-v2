@@ -1,6 +1,5 @@
 package com.texastoc.model.game;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.texastoc.model.season.Quarter;
 import lombok.AllArgsConstructor;
@@ -8,10 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -78,17 +75,21 @@ public class Game {
     private List<GamePayout> payouts;
     private List<Table> tables;
 
-    public void addPlayer(GamePlayer player) {
-        if (players == null) {
-            players = new LinkedList<>();
-        }
-        players.add(player);
-    }
+// --Commented out by Inspection START (2019-01-06 09:21):
+//    public void addPlayer(GamePlayer player) {
+//        if (players == null) {
+//            players = new LinkedList<>();
+//        }
+//        players.add(player);
+//    }
+// --Commented out by Inspection STOP (2019-01-06 09:21)
 
-    public void addPayout(GamePayout payout) {
-        if (payouts == null) {
-            payouts = new LinkedList<>();
-        }
-        payouts.add(payout);
-    }
+// --Commented out by Inspection START (2019-01-06 09:21):
+//    public void addPayout(GamePayout payout) {
+//        if (payouts == null) {
+//            payouts = new LinkedList<>();
+//        }
+//        payouts.add(payout);
+//    }
+// --Commented out by Inspection STOP (2019-01-06 09:21)
 }

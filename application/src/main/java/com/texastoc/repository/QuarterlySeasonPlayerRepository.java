@@ -1,8 +1,6 @@
 package com.texastoc.repository;
 
-import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.season.QuarterlySeasonPlayer;
-import com.texastoc.model.season.SeasonPlayer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -50,6 +48,7 @@ public class QuarterlySeasonPlayerRepository {
             + " VALUES "
             + " (:playerId, :seasonId, :qSeasonId, :name, :entries, :points, :place)";
 
+    @SuppressWarnings("Duplicates")
     public void save(QuarterlySeasonPlayer qSeasonPlayer) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("playerId", qSeasonPlayer.getPlayerId());
@@ -64,6 +63,7 @@ public class QuarterlySeasonPlayerRepository {
     }
 
     private static final class QuarterlySeasonPlayerMapper implements RowMapper<QuarterlySeasonPlayer> {
+        @SuppressWarnings("Duplicates")
         public QuarterlySeasonPlayer mapRow(ResultSet rs, int rowNum) {
             QuarterlySeasonPlayer qSeasonPlayer = new QuarterlySeasonPlayer();
 

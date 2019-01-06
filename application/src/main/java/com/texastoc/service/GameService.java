@@ -204,7 +204,7 @@ public class GameService {
         return this.createGamePlayerWorker(gamePlayer);
     }
 
-    public void finalize(int id) {
+    public void endGame(int id) {
         Game game = gameRepository.getById(id);
         game.setFinalized(true);
         gameRepository.update(game);

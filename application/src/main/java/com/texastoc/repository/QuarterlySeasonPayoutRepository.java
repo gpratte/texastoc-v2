@@ -1,8 +1,6 @@
 package com.texastoc.repository;
 
-import com.texastoc.model.game.GamePayout;
 import com.texastoc.model.season.QuarterlySeasonPayout;
-import com.texastoc.model.season.SeasonPayout;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

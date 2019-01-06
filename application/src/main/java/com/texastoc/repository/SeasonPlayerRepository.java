@@ -48,6 +48,7 @@ public class SeasonPlayerRepository {
             + " VALUES "
             + " (:playerId, :seasonId, :name, :entries, :points, :place)";
 
+    @SuppressWarnings("Duplicates")
     public void save(SeasonPlayer seasonPlayer) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("playerId", seasonPlayer.getPlayerId());
@@ -62,6 +63,7 @@ public class SeasonPlayerRepository {
     }
 
     private static final class SeasonPlayerMapper implements RowMapper<SeasonPlayer> {
+        @SuppressWarnings("Duplicates")
         public SeasonPlayer mapRow(ResultSet rs, int rowNum) {
             SeasonPlayer seasonPlayer = new SeasonPlayer();
 

@@ -1,6 +1,5 @@
 package com.texastoc.repository;
 
-import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Season;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -35,6 +32,7 @@ public class SeasonRepository {
         + " VALUES "
         + " (:startDate, :endDate, :finalized, :numGames, :numGamesPlayed, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :doubleBuyInCost, :doubleRebuyAddOnCost, :doubleRebuyAddOnTocDebit, :tocPerGame, :kittyPerGame, :quarterlyTocPerGame, :quarterlyTocPayouts)";
 
+    @SuppressWarnings("Duplicates")
     public int save(Season season) {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -59,6 +57,7 @@ public class SeasonRepository {
         String [] keys = {"id"};
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
 
+        //noinspection ConstantConditions
         return keyHolder.getKey().intValue();
     }
 
@@ -118,6 +117,7 @@ public class SeasonRepository {
     }
 
     private static final class SeasonMapper implements RowMapper<Season> {
+        @SuppressWarnings("Duplicates")
         public Season mapRow(ResultSet rs, int rowNum) {
             Season season = new Season();
             try {

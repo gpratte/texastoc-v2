@@ -3,8 +3,8 @@ package com.texastoc.model.season;
 public enum Quarter {
     FIRST(1, "1st"), SECOND(2, "2nd"), THIRD(3, "3rd"), FOURTH(4, "4th");
 
-    private int value;
-    private String text;
+    private final int value;
+    private final String text;
 
     Quarter(int value, String text) {
         this.value = value;
@@ -14,6 +14,7 @@ public enum Quarter {
     public int getValue() {
         return value;
     }
+    @SuppressWarnings("unused")
     public String getText() {
         return text;
     }

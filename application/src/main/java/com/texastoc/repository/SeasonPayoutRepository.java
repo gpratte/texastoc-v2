@@ -1,7 +1,5 @@
 package com.texastoc.repository;
 
-import com.texastoc.model.common.Payout;
-import com.texastoc.model.game.GamePayout;
 import com.texastoc.model.season.SeasonPayout;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
@@ -39,6 +37,7 @@ public class SeasonPayoutRepository {
             + "(seasonId, place, amount) "
             + " VALUES "
             + " (:seasonId, :place, :amount)";
+    @SuppressWarnings("Duplicates")
     public void save(final SeasonPayout payout) {
 
         MapSqlParameterSource params = new MapSqlParameterSource();

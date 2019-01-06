@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RestController
 public class SupplyRestController {
 
@@ -24,9 +25,8 @@ public class SupplyRestController {
     }
 
     @PostMapping("/api/v2/supplies")
-    public String createSupply(@RequestBody Supply supply) {
-        supplyService.create(supply);
-        return "hi";
+    public Supply createSupply(@RequestBody Supply supply) {
+        return supplyService.create(supply);
     }
 
 }

@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("Duplicates")
 @Slf4j
 @Repository
 public class GameRepository {
@@ -68,6 +69,7 @@ public class GameRepository {
         String [] keys = {"id"};
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
 
+        //noinspection ConstantConditions
         return keyHolder.getKey().intValue();
     }
 
@@ -147,7 +149,7 @@ public class GameRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("seasonId", seasonId);
 
-        List<Game> games = Collections.EMPTY_LIST;
+        List<Game> games = Collections.emptyList();
         try {
             games = jdbcTemplate
                 .query("select * from game where seasonId = :seasonId", params, new GameMapper());
@@ -162,7 +164,7 @@ public class GameRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("qSeasonId", qSeasonId);
 
-        List<Game> games = Collections.EMPTY_LIST;
+        List<Game> games = Collections.emptyList();
         try {
             games = jdbcTemplate
                 .query("select * from game where qSeasonId = :qSeasonId", params, new GameMapper());

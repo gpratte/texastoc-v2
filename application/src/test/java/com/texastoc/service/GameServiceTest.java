@@ -546,7 +546,7 @@ public class GameServiceTest implements TestConstants {
 
         Mockito.doNothing().when(gameRepository).update((Game) notNull());
 
-        gameService.finalize(1);
+        gameService.endGame(1);
 
         Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
         Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));

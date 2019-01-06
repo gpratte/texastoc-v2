@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @Builder
@@ -66,34 +64,5 @@ public class Season {
     private List<SeasonPayout> payouts;
     private List<QuarterlySeason> quarterlySeasons;
     private List<Game> games;
-
-
-    public void addPlayer(SeasonPlayer player) {
-        if (players == null) {
-            players = new LinkedList<>();
-        }
-        players.add(player);
-    }
-
-    public void addPayout(SeasonPayout payout) {
-        if (payouts == null) {
-            payouts = new LinkedList<>();
-        }
-        payouts.add(payout);
-    }
-
-    public void addQuarterlySeason(QuarterlySeason quarterlySeason) {
-        if (quarterlySeasons == null) {
-            quarterlySeasons = new ArrayList<>(4);
-        }
-        quarterlySeasons.add(quarterlySeason);
-    }
-
-    public void addGame(Game game) {
-        if (games == null) {
-            games = new LinkedList<>();
-        }
-        games.add(game);
-    }
 
 }

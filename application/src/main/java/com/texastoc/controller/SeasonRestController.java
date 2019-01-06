@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
+@SuppressWarnings("unused")
 @RestController
 public class SeasonRestController {
 

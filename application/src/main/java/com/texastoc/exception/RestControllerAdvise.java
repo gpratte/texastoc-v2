@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -25,12 +24,14 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
         return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = { RuntimeException.class })
-    protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
-        log.error(ex.getMessage(), ex);
-        String bodyOfResponse = "This should be application specific";
-        return handleExceptionInternal(ex, bodyOfResponse,
-            new HttpHeaders(), HttpStatus.CONFLICT, request);
-    }
+// --Commented out by Inspection START (2019-01-06 09:21):
+//    @ExceptionHandler(value = { RuntimeException.class })
+//    protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
+//        log.error(ex.getMessage(), ex);
+//        String bodyOfResponse = "This should be application specific";
+//        return handleExceptionInternal(ex, bodyOfResponse,
+//            new HttpHeaders(), HttpStatus.CONFLICT, request);
+//    }
+// --Commented out by Inspection STOP (2019-01-06 09:21)
 
 }

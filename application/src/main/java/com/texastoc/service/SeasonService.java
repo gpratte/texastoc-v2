@@ -5,12 +5,10 @@ import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
-import com.texastoc.model.season.SeasonPayout;
 import com.texastoc.repository.ConfigRepository;
 import com.texastoc.repository.GamePayoutRepository;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
-import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.QuarterlySeasonPayoutRepository;
 import com.texastoc.repository.QuarterlySeasonPlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
@@ -133,6 +131,7 @@ public class SeasonService {
     public Season getSeason(int id) {
         Season season = seasonRepository.get(id);
         season.setPlayers(seasonPlayerRepository.getBySeasonId(id));
+        season.setPayouts(seasonPayoutRepository.getBySeasonId(id));
 
         season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(id));
         season.setGames(gameRepository.getBySeasonId(id));

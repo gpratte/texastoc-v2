@@ -64,7 +64,7 @@ public class SeatingRepository {
         + " (gameId, seatNumber, tableNumber, gamePlayerId, gamePlayerName) "
         + " VALUES "
         + " (:gameId, :seatNumber, :tableNumber, :gamePlayerId, :gamePlayerName)";
-    public void save(List<Seat> seats) {
+    private void save(List<Seat> seats) {
 
         for (Seat seat : seats) {
             MapSqlParameterSource params = new MapSqlParameterSource();

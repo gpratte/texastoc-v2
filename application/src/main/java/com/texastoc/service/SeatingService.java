@@ -1,20 +1,16 @@
 package com.texastoc.service;
 
-import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.game.Seat;
 import com.texastoc.model.game.Table;
 import com.texastoc.model.game.TableRequest;
 import com.texastoc.repository.GamePlayerRepository;
-import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.SeatingRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -23,7 +19,7 @@ public class SeatingService {
     private final SeatingRepository seatingRepository;
     private final GamePlayerRepository gamePlayerRepository;
 
-    private Random random = new Random(System.currentTimeMillis());
+    private final Random random = new Random(System.currentTimeMillis());
 
     public SeatingService(SeatingRepository seatingRepository, GamePlayerRepository gamePlayerRepository) {
         this.seatingRepository = seatingRepository;
@@ -38,7 +34,7 @@ public class SeatingService {
 
         List<GamePlayer> currentPlayers = gamePlayerRepository.selectByGameId(gameId);
 
-        List<GamePlayer> playersToRandomize = new ArrayList<GamePlayer>();
+        List<GamePlayer> playersToRandomize = new ArrayList<>();
 
         // Add players that are in the game and have a buy in
         for (GamePlayer gamePlayer : currentPlayers) {
@@ -86,9 +82,8 @@ public class SeatingService {
         while ( (totalPlayersRemaining + totalDeadStacksRemaining) > 0 ) {
 
             // Add players in order
-            for (int i = 0; i < tables.size(); i++) {
+            for (Table table : tables) {
                 if (totalPlayersRemaining > 0) {
-                    Table table = tables.get(i);
 
                     // Get a player
                     GamePlayer gamePlayer = playersToRandomize.get(totalPlayersRemaining - 1);

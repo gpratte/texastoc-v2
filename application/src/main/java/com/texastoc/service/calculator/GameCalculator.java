@@ -22,6 +22,7 @@ public class GameCalculator {
         this.configRepository = configRepository;
     }
 
+    @SuppressWarnings("Duplicates")
     public Game calculate(Game game, List<GamePlayer> gamePlayers) {
 
         int numPlayers = 0;
@@ -34,9 +35,6 @@ public class GameCalculator {
 
         int kittyCalculated = 0;
         int annualTocFromRebuyAddOnCalculated = 0;
-        int rebuyAddOnLessAnnualTocCalculated = 0;
-        int totalCombinedTocCalculated = 0;
-        int prizePotCalculated = 0;
 
         for (GamePlayer gamePlayer : gamePlayers) {
             ++numPlayers;

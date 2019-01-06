@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RestController
 public class GameRestController {
 
@@ -62,7 +63,7 @@ public class GameRestController {
 
     @PutMapping("/api/v2/games/{id}/finalize")
     public void finalizeGame(@PathVariable("id") int id) {
-        gameService.finalize(id);
+        gameService.endGame(id);
     }
 
 
@@ -112,8 +113,7 @@ public class GameRestController {
     @PostMapping("/api/v2/games/seats")
     public List<Table> seat(@RequestBody @Valid SeatingRequest seatingRequest) {
         int gameId = seatingRequest.getGameId();
-        List<Table> tables = seatingService.seat(seatingRequest.getGameId(), seatingRequest.getNumDeadStacks(), seatingRequest.getTableRequests());
-        return tables;
+        return seatingService.seat(seatingRequest.getGameId(), seatingRequest.getNumDeadStacks(), seatingRequest.getTableRequests());
     }
 
 }
