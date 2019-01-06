@@ -47,7 +47,7 @@ public class SeatingServiceTest implements TestConstants {
 
         List<Table> tables = seatingService.get(1);
 
-        Mockito.verify(seatingRepository, Mockito.times(1)).get(1);
+        Mockito.verify(seatingRepository, Mockito.times(1)).getTables(1);
 
         Assert.assertNotNull("tables should not be null", tables);
         Assert.assertEquals("number of tables 0", 0, tables.size());
@@ -128,7 +128,7 @@ public class SeatingServiceTest implements TestConstants {
 
         List<Table> tables = seatingService.get(1);
 
-        Mockito.verify(seatingRepository, Mockito.times(1)).get(1);
+        Mockito.verify(seatingRepository, Mockito.times(1)).getTables(1);
 
         Assert.assertNotNull("tables should not be null", tables);
         Assert.assertEquals("number of tables 2", 2, tables.size());
