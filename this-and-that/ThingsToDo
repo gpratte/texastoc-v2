@@ -7,4 +7,7 @@ Roles
     Login
     Only admin can unfinalized a game/season
 
+CICD
+    Test environment
+    Database versioning
 
