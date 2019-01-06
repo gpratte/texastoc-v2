@@ -16,6 +16,7 @@ import com.texastoc.repository.QuarterlySeasonRepository;
 import com.texastoc.repository.SeasonPlayerRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class QuarterlySeasonCalculator {
             qTocCollected += game.getQuarterlyTocCollected();
         }
         qSeason.setQTocCollected(qTocCollected);
+        qSeason.setLastCalculated(LocalDateTime.now());
 
         // Persist quarterly season
         qSeasonRepository.update(qSeason);
