@@ -39,6 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 31-remove-seats-when-game-finalized
+## Current Branch: 32-run-tests-with-coverage
 
-Remove seats from the database when the game is finalized.
+Run the tests with coverage. In IntelliJ I was able to run the application JUnit tests with coverage but the integration cucumber tests did not measure the coverage.

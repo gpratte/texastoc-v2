@@ -6,7 +6,4 @@ public class DoubleBuyInChangeDisallowedException extends RuntimeException {
         super("Cannot change the game double buy-in");
     }
 
-    public DoubleBuyInChangeDisallowedException(String message) {
-        super(message);
-    }
 }

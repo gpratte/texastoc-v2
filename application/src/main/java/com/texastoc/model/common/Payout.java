@@ -1,14 +1,10 @@
 package com.texastoc.model.common;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public final class Payout {
     private int numPayouts;
     private int place;
