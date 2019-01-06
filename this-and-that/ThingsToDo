@@ -1,6 +1,4 @@
 
-Cache season (do not need ehcache but instead save it in a variable in the season service object and then when get season is called check the last caculated. Calculate the game/quarter/season on a thread when a game is finalized).
-
 Logging
 
 Roles

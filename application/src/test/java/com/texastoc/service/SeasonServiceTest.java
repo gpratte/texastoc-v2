@@ -26,6 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -162,6 +163,64 @@ public class SeasonServiceTest implements TestConstants {
         Assert.assertNotNull("season games should not be null ", actualSeason.getGames());
         Assert.assertEquals(1, actualSeason.getGames().size());
         Assert.assertTrue(actualSeason.getGames().get(0).getId() > 0);
+
+    }
+
+    @Test
+    public void testCacheSeason() {
+        // If the cached season last calculated date is equal to the current
+        // season's last calcuated date then return the cached value
+
+        LocalDateTime now = LocalDateTime.now();
+
+        Season season1 = Season.builder()
+            .id(1)
+            .buyInCost(100)
+            .lastCalculated(now)
+            .build();
+
+        Mockito.when(seasonRepository.get(1)).thenReturn(season1);
+
+        Season season = service.getSeason(1);
+
+        Mockito.verify(seasonRepository, Mockito.times(1)).get(1);
+        Mockito.verify(seasonRepository, Mockito.times(0)).getLastCalculated(1);
+
+        Assert.assertEquals("last calculated should match", now, season.getLastCalculated());
+        Assert.assertEquals("buyInCost should be 100", 100, season.getBuyInCost());
+
+        // The season should be cached
+        Mockito.reset(seasonRepository);
+        Mockito.when(seasonRepository.getLastCalculated(1)).thenReturn(now);
+
+        season = service.getSeason(1);
+
+        Mockito.verify(seasonRepository, Mockito.times(0)).get(1);
+        Mockito.verify(seasonRepository, Mockito.times(1)).getLastCalculated(1);
+
+        Assert.assertEquals("last calculated should match", now, season.getLastCalculated());
+        Assert.assertEquals("buyInCost should be 100", 100, season.getBuyInCost());
+
+        // Change the last calculated so that the cached value is not returned
+        LocalDateTime later = LocalDateTime.now();
+        Mockito.reset(seasonRepository);
+        Mockito.when(seasonRepository.getLastCalculated(1)).thenReturn(later);
+
+        Season season2 = Season.builder()
+            .id(1)
+            .buyInCost(200)
+            .lastCalculated(later)
+            .build();
+
+        Mockito.when(seasonRepository.get(1)).thenReturn(season2);
+
+        season = service.getSeason(1);
+
+        Mockito.verify(seasonRepository, Mockito.times(1)).get(1);
+        Mockito.verify(seasonRepository, Mockito.times(1)).getLastCalculated(1);
+
+        Assert.assertEquals("last calculated should match", later, season.getLastCalculated());
+        Assert.assertEquals("buyInCost should be 100", 200, season.getBuyInCost());
 
     }
 }

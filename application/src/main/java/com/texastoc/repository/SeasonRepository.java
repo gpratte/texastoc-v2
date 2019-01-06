@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -99,6 +100,18 @@ public class SeasonRepository {
         try {
             return jdbcTemplate
                 .queryForObject("select * from season where id = :id", params, new SeasonMapper());
+        } catch(Exception e) {
+            return null;
+        }
+    }
+
+    public LocalDateTime getLastCalculated(int id) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", id);
+
+        try {
+            return jdbcTemplate
+                .queryForObject("select lastCalculated from season where id = :id", params, LocalDateTime.class);
         } catch(Exception e) {
             return null;
         }

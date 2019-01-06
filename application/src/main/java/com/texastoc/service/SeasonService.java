@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class SeasonService {
     private final SeasonPayoutRepository seasonPayoutRepository;
     private final QuarterlySeasonPlayerRepository qSeasonPlayerRepository;
     private final QuarterlySeasonPayoutRepository qSeasonPayoutRepository;
+
+    private Season cachedSeason = null;
 
     @Autowired
     public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonPlayerRepository seasonPlayerRepository, SeasonPayoutRepository seasonPayoutRepository, QuarterlySeasonPlayerRepository qSeasonPlayerRepository, QuarterlySeasonPayoutRepository qSeasonPayoutRepository) {
@@ -129,6 +132,19 @@ public class SeasonService {
 
     @Transactional(readOnly = true)
     public Season getSeason(int id) {
+
+        if (cachedSeason != null) {
+            LocalDateTime lastCalculated = seasonRepository.getLastCalculated(id);
+
+            if (cachedSeason.getLastCalculated() == null) {
+                if (lastCalculated == null) {
+                    return cachedSeason;
+                }
+            } else if (cachedSeason.getLastCalculated().isEqual(lastCalculated)) {
+                return cachedSeason;
+            }
+        }
+
         Season season = seasonRepository.get(id);
         season.setPlayers(seasonPlayerRepository.getBySeasonId(id));
         season.setPayouts(seasonPayoutRepository.getBySeasonId(id));
@@ -145,6 +161,8 @@ public class SeasonService {
             game.setPlayers(gamePlayerRepository.selectByGameId(game.getId()));
             game.setPayouts(gamePayoutRepository.getByGameId(game.getId()));
         }
+
+        cachedSeason = season;
         return season;
     }
 
