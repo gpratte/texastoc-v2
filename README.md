@@ -39,6 +39,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 35-logging
+## Current Branch: 36-continuous-integration
 
-Configure logback logs to console and to rolling file.
+Attempting to use CircleCI
