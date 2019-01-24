@@ -22,7 +22,6 @@ public class PlayerRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
     public Player get(int id) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", id);
@@ -30,10 +29,17 @@ public class PlayerRepository {
         return jdbcTemplate.queryForObject("select * from player where id = :id", params, new PlayerMapper());
     }
 
+    public int create(Player player) {
+        return -1;
+    }
+
+    public void update(Player player) {
+    }
+
     private static final String INSERT_SQL = "INSERT INTO player "
-        + " (firstName, lastName, phone, email) "
+        + " (firstName, lastName, phone, email, password) "
         + " VALUES "
-        + " (:firstName, :lastName, :phone, :email) ";
+        + " (:firstName, :lastName, :phone, :email, :password) ";
     public int save(final Player player) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -42,6 +48,7 @@ public class PlayerRepository {
         params.addValue("lastName", player.getLastName());
         params.addValue("phone", player.getPhone());
         params.addValue("email", player.getEmail());
+        params.addValue("password", player.getPassword());
 
         String [] keys = {"id"};
         jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
@@ -59,6 +66,7 @@ public class PlayerRepository {
                 player.setLastName(rs.getString("lastName"));
                 player.setPhone(rs.getString("phone"));
                 player.setEmail(rs.getString("email"));
+                player.setPassword(rs.getString("password"));
             } catch (SQLException e) {
                 log.error("Problem mapping player", e);
             }

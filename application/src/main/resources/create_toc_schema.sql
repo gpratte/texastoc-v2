@@ -14,10 +14,12 @@ create table if not exists quarterlyseasonplayer (playerId INT NOT NULL, seasonI
 
 create table if not exists supply (id INT auto_increment, amount INT NOT NULL, date DATE NOT NULL, type varchar(16) NOT NULL, description varchar(64), primary key(id))
 
-create table if not exists player (id INT auto_increment, firstName varchar(32) DEFAULT NULL, lastName varchar(32) DEFAULT NULL, phone varchar(32) DEFAULT NULL, email varchar(64) DEFAULT NULL, primary key (id))
+create table if not exists player (id INT auto_increment, firstName varchar(32) DEFAULT NULL, lastName varchar(32) DEFAULT NULL, phone varchar(32) DEFAULT NULL, email varchar(64) DEFAULT NULL, password varchar(255) DEFAULT NULL, primary key (id))
 
 insert into player (id, firstName, lastName, phone, email) values (1, 'Brian', 'Baker', '5121231234', 'brianbaker@texastoc.com')
 insert into player (id, firstName, lastName, phone, email) values (2, 'Andy', 'Thomas', '5121231235', 'andythomas@texastoc.com')
+-- password is password1
+insert into player (id, firstName, lastName, phone, email) values (3, 'Gil', 'Pratte', '5121231235', 'gilpratte@texastoc.com', '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK')
 
 create table game (id INT AUTO_INCREMENT, seasonId INT NOT NULL, qSeasonId INT NOT NULL, hostId INT DEFAULT NULL, gameDate DATE NOT NULL, hostName varchar(64) DEFAULT NULL, quarter INT DEFAULT NULL, doubleBuyIn BOOLEAN DEFAULT FALSE, transportRequired BOOLEAN DEFAULT FALSE, kittyCost INT DEFAULT 0, buyInCost INT DEFAULT 0, rebuyAddOnCost INT DEFAULT 0, rebuyAddOnTocDebit INT DEFAULT 0, annualTocCost INT DEFAULT 0, quarterlyTocCost INT DEFAULT 0, started TIMESTAMP DEFAULT NULL, numPlayers INT DEFAULT 0, buyInCollected INT DEFAULT 0, rebuyAddOnCollected INT DEFAULT 0, annualTocCollected INT DEFAULT 0, quarterlyTocCollected INT DEFAULT 0, totalCollected INT DEFAULT 0, kittyCalculated INT DEFAULT 0, annualTocFromRebuyAddOnCalculated INT DEFAULT 0, rebuyAddOnLessAnnualTocCalculated INT DEFAULT 0, totalCombinedTocCalculated INT DEFAULT 0, prizePotCalculated INT DEFAULT 0, payoutDelta INT DEFAULT NULL, finalized BOOLEAN DEFAULT FALSE, lastCalculated DATE DEFAULT NULL, PRIMARY KEY (id))
 

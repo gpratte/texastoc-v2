@@ -16,6 +16,7 @@ public class Player {
     private String lastName;
     private String phone;
     private String email;
+    private String password;
 
     public String getName() {
         String name = null;

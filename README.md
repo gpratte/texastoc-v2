@@ -39,6 +39,8 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 36-continuous-integration
+## Current Branch: 37-jwt-auth
 
-Attempting to use CircleCI
+Going to apply the lessons learned in using JWT base Authentication and Authorization (A&A) learn in the Proof Of Concept (POC) at https://github.com/gpratte/jwtauth.
+
+See the readme for POC.
