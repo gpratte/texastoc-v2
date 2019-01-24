@@ -1,4 +1,4 @@
-Feature: Update Player
+Feature: Player features
 
   Scenario: Update password
     Given a new player

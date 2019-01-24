@@ -16,6 +16,7 @@ import com.texastoc.model.game.Table;
 import com.texastoc.model.game.TableRequest;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.supply.Supply;
+import com.texastoc.model.user.Player;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -182,5 +183,18 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
             new ParameterizedTypeReference<List<Table>>(){});
         return response.getBody();
     }
+
+    protected Player createPlayer(Player player) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String playerRequestAsJson = mapper.writeValueAsString(player);
+        HttpEntity<String> entity = new HttpEntity<>(playerRequestAsJson ,headers);
+
+        return restTemplate.postForObject(endpoint() + "/players", entity, Player.class);
+    }
+
 
 }
