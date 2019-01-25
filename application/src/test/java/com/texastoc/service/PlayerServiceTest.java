@@ -47,7 +47,7 @@ public class PlayerServiceTest implements TestConstants {
         // Act
         Player actual = playerService.create(expected);
 
-        Mockito.verify(playerRepository, Mockito.times(1)).create(Mockito.any(Player.class));
+        Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any(Player.class));
 
         // Assert
         Assert.assertNotNull("created player not null", actual);

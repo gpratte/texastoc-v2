@@ -29,11 +29,20 @@ public class PlayerRepository {
         return jdbcTemplate.queryForObject("select * from player where id = :id", params, new PlayerMapper());
     }
 
-    public int create(Player player) {
-        return -1;
-    }
-
+    private static final String UPDATE_SQL = "UPDATE player set " +
+        "firstName=:firstName, lastName=:lastName, phone=:phone, " +
+        "email=:email, password=:password where id=:id";
     public void update(Player player) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("firstName", player.getFirstName());
+        params.addValue("lastName", player.getLastName());
+        params.addValue("phone", player.getPhone());
+        params.addValue("email", player.getEmail());
+        params.addValue("password", player.getPassword());
+        params.addValue("id", player.getId());
+
+        int rc = jdbcTemplate.update(UPDATE_SQL, params);
+        System.out.println("!!! rc " + rc);
     }
 
     private static final String INSERT_SQL = "INSERT INTO player "

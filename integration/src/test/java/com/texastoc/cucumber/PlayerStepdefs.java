@@ -16,16 +16,22 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Ignore
 public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
 
     Player playerToCreate;
     Player playerCreated;
+    Player updatePlayer;
+    Player playerRetrieved;
 
     @Before
     public void before() {
         playerToCreate = null;
+        playerCreated = null;
+        updatePlayer = null;
+        playerRetrieved = null;
     }
 
     @Given("^a new player$")
@@ -40,20 +46,32 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
 
     @When("^the player password is updated$")
     public void the_player_password_is_updated() throws Exception {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        updatePlayer = Player.builder()
+            .id(playerCreated.getId())
+            .firstName(playerCreated.getFirstName())
+            .lastName(playerCreated.getLastName())
+            .email("abc@rst.com")
+            .phone("2344322345")
+            .password(UUID.randomUUID().toString())
+            .build();
+
+        updatePlayer(updatePlayer);
     }
 
     @When("^the player is retrieved$")
     public void the_player_is_retrieved() throws Exception {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        playerRetrieved = getPlayer(playerCreated.getId());
     }
 
     @Then("^the player has the expected encoded password$")
     public void the_player_has_the_expected_encoded_password() throws Exception {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        Assert.assertNotNull("player retrieved not null", playerRetrieved);
+        Assert.assertEquals("id match", playerRetrieved.getId(), playerCreated.getId());
+        Assert.assertEquals("first name match", updatePlayer.getFirstName(), playerRetrieved.getFirstName());
+        Assert.assertEquals("last name match", updatePlayer.getLastName(), playerRetrieved.getLastName());
+        Assert.assertEquals("email match", updatePlayer.getEmail(), playerRetrieved.getEmail());
+        Assert.assertEquals("phone match", updatePlayer.getPhone(), playerRetrieved.getPhone());
+        Assert.assertEquals("password match", "TODO encoded password", playerRetrieved.getPassword());
     }
 
 }

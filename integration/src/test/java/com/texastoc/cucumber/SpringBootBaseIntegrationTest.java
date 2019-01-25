@@ -196,5 +196,20 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         return restTemplate.postForObject(endpoint() + "/players", entity, Player.class);
     }
 
+    protected void updatePlayer(Player player) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String playerRequestAsJson = mapper.writeValueAsString(player);
+        HttpEntity<String> entity = new HttpEntity<>(playerRequestAsJson ,headers);
+
+        restTemplate.put(endpoint() + "/players/" + player.getId(), entity);
+    }
+
+    protected Player getPlayer(int id) throws JsonProcessingException {
+        return restTemplate.getForObject(endpoint() + "/players/" + id, Player.class);
+    }
 
 }
