@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -17,6 +19,7 @@ public class Player {
     private String phone;
     private String email;
     private String password;
+    private Set<Role> roles;
 
     public String getName() {
         String name = null;

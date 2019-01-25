@@ -27,14 +27,8 @@ public class PlayerRestController {
     }
 
     @PutMapping("/api/v2/players/{id}")
-    public void updatePlayer(@PathVariable("id") int id, @RequestBody @Valid Player updatePlayer) {
-        Player player = playerService.get(id);
-        player.setFirstName(updatePlayer.getFirstName());
-        player.setLastName(updatePlayer.getLastName());
-        player.setEmail(updatePlayer.getEmail());
-        player.setPhone(updatePlayer.getPhone());
-        player.setPassword(updatePlayer.getPassword());
-
+    public void updatePlayer(@PathVariable("id") int id, @RequestBody @Valid Player player) {
+        player.setId(id);
         playerService.update(player);
     }
 

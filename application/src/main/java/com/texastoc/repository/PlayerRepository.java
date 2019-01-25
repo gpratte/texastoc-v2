@@ -2,6 +2,8 @@ package com.texastoc.repository;
 
 import com.texastoc.model.user.Player;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -26,7 +28,14 @@ public class PlayerRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", id);
 
-        return jdbcTemplate.queryForObject("select * from player where id = :id", params, new PlayerMapper());
+        return jdbcTemplate.query("select * from player where id = :id", params, new PlayerResultSetExtractor());
+    }
+
+    public Player getByEmail(String email) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("email", email);
+
+        return jdbcTemplate.query("select * from player where email = :email", params, new PlayerResultSetExtractor());
     }
 
     private static final String UPDATE_SQL = "UPDATE player set " +
@@ -41,8 +50,7 @@ public class PlayerRepository {
         params.addValue("password", player.getPassword());
         params.addValue("id", player.getId());
 
-        int rc = jdbcTemplate.update(UPDATE_SQL, params);
-        System.out.println("!!! rc " + rc);
+        jdbcTemplate.update(UPDATE_SQL, params);
     }
 
     private static final String INSERT_SQL = "INSERT INTO player "
@@ -83,4 +91,21 @@ public class PlayerRepository {
         }
     }
 
+    private static final class PlayerResultSetExtractor implements ResultSetExtractor<Player> {
+
+        @Override
+        public Player extractData(ResultSet rs) throws SQLException, DataAccessException {
+            Player player = new Player();
+
+            while (rs.next()) {
+                player.setId(rs.getInt("id"));
+                player.setFirstName(rs.getString("firstName"));
+                player.setLastName(rs.getString("lastName"));
+                player.setPhone(rs.getString("phone"));
+                player.setEmail(rs.getString("email"));
+                player.setPassword(rs.getString("password"));
+            }
+            return player;
+        }
+    }
 }

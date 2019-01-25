@@ -33,6 +33,20 @@ create table if not exists quarterlyseasonpayout (seasonId INT NOT NULL, qSeason
 
 create table if not exists gameseat (gameId INT NOT NULL, seatNumber INT NOT NULL, tableNumber INT NOT NULL, gamePlayerId INT, gamePlayerName varchar(64), PRIMARY KEY (gameId, seatNumber, tableNumber))
 
+create table if not exists role (id int auto_increment, description varchar(255), name varchar(255), primary key (id));
+
+INSERT INTO role (id, description, name) VALUES (1, 'Admin role', 'ADMIN');
+INSERT INTO role (id, description, name) VALUES (2, 'User role', 'USER');
+
+create table if not exists player_roles (player_id int not null, role_id int not null, primary key (player_id, role_id));
+
+alter table player_roles add constraint fk_role_id foreign key (role_id) references role (id);
+
+alter table player_roles add constraint fk_player_id foreign key (player_id) references player (id);
+
+INSERT INTO player_roles (player_id, role_id) VALUES (3, 1);
+
+
 create table if not exists payout (numPayouts INT NOT NULL, place INT NOT NULL, percent DOUBLE DEFAULT NULL, PRIMARY KEY (numPayouts, place))
 insert into payout (numPayouts, place, percent) values (2, 1, 0.65)
 insert into payout (numPayouts, place, percent) values (2, 2, 0.35)

@@ -25,6 +25,7 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
     Player playerCreated;
     Player updatePlayer;
     Player playerRetrieved;
+    String token;
 
     @Before
     public void before() {
@@ -32,6 +33,7 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
         playerCreated = null;
         updatePlayer = null;
         playerRetrieved = null;
+        token = null;
     }
 
     @Given("^a new player$")
@@ -44,6 +46,17 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
         playerCreated = createPlayer(playerToCreate);
     }
 
+    @Given("^a new player with email and password$")
+    public void a_new_player_with_email_and_password() throws Exception {
+        playerToCreate = Player.builder()
+            .firstName("John")
+            .lastName("Luther")
+            .email("john.luther@example.com")
+            .password("jacket")
+            .build();
+
+        playerCreated = createPlayer(playerToCreate);
+    }
     @When("^the player password is updated$")
     public void the_player_password_is_updated() throws Exception {
         updatePlayer = Player.builder()
@@ -61,6 +74,17 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
     @When("^the player is retrieved$")
     public void the_player_is_retrieved() throws Exception {
         playerRetrieved = getPlayer(playerCreated.getId());
+    }
+
+    @When("^the player logs in$")
+    public void the_player_logs_in() throws Exception {
+        token = login(playerToCreate.getEmail(), playerCreated.getPassword());
+    }
+
+    @Then("^a token is returned$")
+    public void a_token_is_returned() throws Exception {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
     }
 
     @Then("^the player has the expected encoded password$")

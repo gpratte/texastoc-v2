@@ -10,7 +10,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Random;
@@ -26,9 +28,12 @@ public class PlayerServiceTest implements TestConstants {
     @MockBean
     private PlayerRepository playerRepository;
 
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Before
     public void before() {
-        playerService = new PlayerService(playerRepository);
+        playerService = new PlayerService(playerRepository, bCryptPasswordEncoder);
     }
 
     @Test

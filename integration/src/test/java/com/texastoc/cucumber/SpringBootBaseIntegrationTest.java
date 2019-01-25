@@ -17,6 +17,8 @@ import com.texastoc.model.game.TableRequest;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.supply.Supply;
 import com.texastoc.model.user.Player;
+import lombok.Getter;
+import lombok.Setter;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -212,4 +214,27 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         return restTemplate.getForObject(endpoint() + "/players/" + id, Player.class);
     }
 
+    protected String login(String email, String password) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        LoginParameters loginParameters = new LoginParameters();
+        loginParameters.username = email;
+        loginParameters.password = password;
+        String loginParametersAsJson = mapper.writeValueAsString(loginParameters);
+        HttpEntity<String> entity = new HttpEntity<>(loginParametersAsJson, headers);
+
+        return restTemplate.postForObject(endpoint() + "/login", entity, String.class);
+    }
+
+
+    @Getter
+    @Setter
+    private static class LoginParameters {
+        String username;
+        String password;
+    }
 }
