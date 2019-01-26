@@ -30,16 +30,8 @@ public class QuarterlySeasonStepdefs extends SpringBootBaseIntegrationTest {
 
     @When("^the quarterly seasons are created$")
     public void the_season_is_created() throws Exception {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String seasonToCreateAsJson = mapper.writeValueAsString(start);
-        HttpEntity<String> entity = new HttpEntity<>(seasonToCreateAsJson ,headers);
-        System.out.println(seasonToCreateAsJson);
-
-        seasonCreated = restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
+        String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
+        seasonCreated = createSeason(start, token);
 
     }
 

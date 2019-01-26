@@ -30,7 +30,6 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     Integer numPlayers;
     Integer numDeadStacks;
     Game game;
-    String token;
 
     @Before
     public void before() {
@@ -39,12 +38,13 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
         numPlayers = null;
         numDeadStacks = null;
         game = null;
-        token = null;
     }
 
     @Given("^a game has 9 players$")
     public void a_game_has_9_players() throws Exception {
+        String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
         createSeason(LocalDate.now(), token);
+
         Game game = createGame(CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
@@ -54,7 +54,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
         gameId = game.getId();
 
-        String token = login(USER_EMAIL, USER_PASSWORD);
+        token = login(USER_EMAIL, USER_PASSWORD);
 
         numPlayers = 9;
         for (int i = 0; i < numPlayers; i++) {
@@ -71,6 +71,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
     @Given("^a game has 11 players$")
     public void a_game_has_11_players() throws Exception {
+        String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
         createSeason(LocalDate.now(), token);
         Game game = createGame(CreateGameRequest.builder()
             .date(LocalDate.now())
@@ -81,7 +82,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
         gameId = game.getId();
 
-        String token = login(USER_EMAIL, USER_PASSWORD);
+        token = login(USER_EMAIL, USER_PASSWORD);
 
         numPlayers = 11;
         for (int i = 0; i < numPlayers; i++) {
@@ -98,13 +99,15 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
     @When("^seating is done with 0 dead stacks$")
     public void seating_is_done_with_0_dead_stacks() throws Exception {
-        tables = seatPlayers(gameId, null, null);
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        tables = seatPlayers(gameId, null, null, token);
     }
 
     @When("^seating is done with 2 dead stacks$")
     public void seating_is_done_with_2_dead_stacks() throws Exception {
+        String token = login(USER_EMAIL, USER_PASSWORD);
         numDeadStacks = 2;
-        tables = seatPlayers(gameId, numDeadStacks, null);
+        tables = seatPlayers(gameId, numDeadStacks, null, token);
     }
 
     @Then("^9 seats have been assigned$")
@@ -123,7 +126,8 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
     @And("^the seated game is retrieved$")
     public void the_seated_game_is_retrieved() throws Exception {
-        game = restTemplate.getForObject(endpoint() + "/games/" + gameId, Game.class);
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        game = getGame(gameId, token);
     }
 
     @Then("^13 seats have been assigned$")

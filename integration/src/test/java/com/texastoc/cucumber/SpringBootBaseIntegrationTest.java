@@ -170,10 +170,11 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         restTemplate.put(endpoint() + "/games/" + gameId + "/finalize", entity);
     }
 
-    protected void createSupply(Supply supply) throws Exception {
+    protected void createSupply(Supply supply, String token) throws Exception {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer "+ token);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -184,10 +185,26 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         restTemplate.postForObject(endpoint() + "/supplies", entity, String.class);
     }
 
-    protected List<Table> seatPlayers(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests) throws Exception {
+    protected List<Supply> getSupplies(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer "+ token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<List<Supply>> response = restTemplate.exchange(
+            endpoint() + "/supplies",
+            HttpMethod.GET,
+            entity,
+            new ParameterizedTypeReference<List<Supply>>(){});
+        return response.getBody();
+
+    }
+
+    protected List<Table> seatPlayers(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests, String token) throws Exception {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer "+ token);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());

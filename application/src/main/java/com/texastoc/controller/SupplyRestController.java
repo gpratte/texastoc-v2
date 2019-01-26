@@ -2,6 +2,7 @@ package com.texastoc.controller;
 
 import com.texastoc.model.supply.Supply;
 import com.texastoc.service.SupplyService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ public class SupplyRestController {
         return supplyService.get();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/v2/supplies")
     public Supply createSupply(@RequestBody Supply supply) {
         return supplyService.create(supply);
