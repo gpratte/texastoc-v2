@@ -44,3 +44,7 @@ Choose the branch from the github list of branches to see the readme for that br
 Going to apply the lessons learned in using JWT base Authentication and Authorization (A&A) learn in the Proof Of Concept (POC) at https://github.com/gpratte/jwtauth.
 
 See the readme for POC.
+
+This implementation differs in two respects
+1. player instead of a user
+2. email instead of a username
