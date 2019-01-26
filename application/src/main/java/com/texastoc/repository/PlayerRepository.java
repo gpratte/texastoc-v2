@@ -1,6 +1,7 @@
 package com.texastoc.repository;
 
 import com.texastoc.model.user.Player;
+import com.texastoc.model.user.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -24,18 +27,30 @@ public class PlayerRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private static final String GET_SQL = "select pl.*, " +
+        "r.name, r.description, r.id as roleId " +
+        "from player pl " +
+        "left join player_roles on pl.id = player_roles.playerId " +
+        "left join role r on r.id = player_roles.roleId " +
+        "where pl.id = :id";
     public Player get(int id) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", id);
 
-        return jdbcTemplate.query("select * from player where id = :id", params, new PlayerResultSetExtractor());
+        return jdbcTemplate.query(GET_SQL, params, new PlayerResultSetExtractor());
     }
 
+    private static final String GET_BY_EMAIL_SQL = "select pl.*, " +
+        "r.name, r.description, r.id as roleId " +
+        "from player pl " +
+        "left join player_roles on pl.id = player_roles.playerId " +
+        "left join role r on r.id = player_roles.roleId " +
+        "where pl.email = :email";
     public Player getByEmail(String email) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("email", email);
 
-        return jdbcTemplate.query("select * from player where email = :email", params, new PlayerResultSetExtractor());
+        return jdbcTemplate.query(GET_BY_EMAIL_SQL, params, new PlayerResultSetExtractor());
     }
 
     private static final String UPDATE_SQL = "UPDATE player set " +
@@ -96,14 +111,28 @@ public class PlayerRepository {
         @Override
         public Player extractData(ResultSet rs) throws SQLException, DataAccessException {
             Player player = new Player();
+            Set<Role> roles = new HashSet<>();
+            player.setRoles(roles);
 
             while (rs.next()) {
-                player.setId(rs.getInt("id"));
-                player.setFirstName(rs.getString("firstName"));
-                player.setLastName(rs.getString("lastName"));
-                player.setPhone(rs.getString("phone"));
-                player.setEmail(rs.getString("email"));
-                player.setPassword(rs.getString("password"));
+                if (player.getId() == 0) {
+                    player.setId(rs.getInt("id"));
+                    player.setFirstName(rs.getString("firstName"));
+                    player.setLastName(rs.getString("lastName"));
+                    player.setPhone(rs.getString("phone"));
+                    player.setEmail(rs.getString("email"));
+                    player.setPassword(rs.getString("password"));
+                }
+
+                String roleName = rs.getString("name");
+                if (roleName != null) {
+                    Role role = Role.builder()
+                        .id(rs.getLong("roleId"))
+                        .description(rs.getString("description"))
+                        .name(rs.getString("name"))
+                        .build();
+                    roles.add(role);
+                }
             }
             return player;
         }

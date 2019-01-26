@@ -38,13 +38,14 @@ create table if not exists role (id int auto_increment, description varchar(255)
 INSERT INTO role (id, description, name) VALUES (1, 'Admin role', 'ADMIN');
 INSERT INTO role (id, description, name) VALUES (2, 'User role', 'USER');
 
-create table if not exists player_roles (player_id int not null, role_id int not null, primary key (player_id, role_id));
+create table if not exists player_roles (playerId int not null, roleId int not null, primary key (playerId, roleId));
 
-alter table player_roles add constraint fk_role_id foreign key (role_id) references role (id);
+alter table player_roles add constraint fk_role_id foreign key (roleId) references role (id);
 
-alter table player_roles add constraint fk_player_id foreign key (player_id) references player (id);
+alter table player_roles add constraint fk_player_id foreign key (playerId) references player (id);
 
-INSERT INTO player_roles (player_id, role_id) VALUES (3, 1);
+INSERT INTO player_roles (playerId, roleId) VALUES (3, 1);
+INSERT INTO player_roles (playerId, roleId) VALUES (3, 2);
 
 
 create table if not exists payout (numPayouts INT NOT NULL, place INT NOT NULL, percent DOUBLE DEFAULT NULL, PRIMARY KEY (numPayouts, place))
