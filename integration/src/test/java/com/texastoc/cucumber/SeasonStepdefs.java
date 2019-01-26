@@ -30,6 +30,7 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
     private Season seasonRetrieved;
     private List<Game> games = new ArrayList<>();
     private HttpClientErrorException exception;
+    private String token;
 
     @Before
     public void before() {
@@ -38,6 +39,7 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
         seasonRetrieved = null;
         exception = null;
         games.clear();
+        token = null;
     }
 
     @Given("^season starts now$")
@@ -108,7 +110,7 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
             .transportRequired(false)
             .build();
 
-        Game gameCreated = createGame(createGameRequest);
+        Game gameCreated = createGame(createGameRequest, token);
         games.add(gameCreated);
     }
 

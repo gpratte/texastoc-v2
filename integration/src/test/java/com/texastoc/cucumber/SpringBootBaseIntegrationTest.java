@@ -57,15 +57,18 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         return V2_ENDPOINT;
     }
 
-    protected Season createSeason() throws Exception {
-        return createSeason(LocalDate.now());
-
+    protected String endpointRoot() {
+        return SERVER_URL + ":" + port;
     }
 
-    protected Season createSeason(LocalDate start) throws Exception {
+    protected Season createSeason(String token) throws Exception {
+        return createSeason(LocalDate.now(), token);
+    }
 
+    protected Season createSeason(LocalDate start, String token) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer "+ token);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -73,12 +76,12 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         HttpEntity<String> entity = new HttpEntity<>(seasonAsJson, headers);
 
         return restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
-
     }
 
-    protected Game createGame(CreateGameRequest createGameRequest) throws JsonProcessingException {
+    protected Game createGame(CreateGameRequest createGameRequest, String token) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer "+ token);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -215,6 +218,7 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     }
 
     protected String login(String email, String password) throws JsonProcessingException {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -222,19 +226,27 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         mapper.registerModule(new JavaTimeModule());
 
         LoginParameters loginParameters = new LoginParameters();
-        loginParameters.username = email;
+        loginParameters.email = email;
         loginParameters.password = password;
         String loginParametersAsJson = mapper.writeValueAsString(loginParameters);
         HttpEntity<String> entity = new HttpEntity<>(loginParametersAsJson, headers);
 
-        return restTemplate.postForObject(endpoint() + "/login", entity, String.class);
+        String url = endpointRoot() + "/login";
+        return restTemplate.postForObject(url, entity, Token.class).getToken();
     }
 
 
     @Getter
     @Setter
     private static class LoginParameters {
-        String username;
+        String email;
         String password;
     }
+
+    @Getter
+    @Setter
+    private static class Token {
+        String token;
+    }
+
 }

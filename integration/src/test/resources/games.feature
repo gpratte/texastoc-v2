@@ -2,6 +2,7 @@ Feature: CRUD Games
   Create, Retrieve, Update (start, end) and Delete games
 
   Scenario: create a simple game
+    Given admin user logs in
     Given the game starts now
     When the game is created
     Then the game is normal

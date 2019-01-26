@@ -28,6 +28,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     private List<GamePlayer> gamePlayers = new LinkedList<>();
     private List<UpdateGamePlayerRequest> gamePlayersUpdated = new LinkedList<>();
     private List<FirstTimeGamePlayer> firstTimeGamePlayers = new LinkedList<>();
+    private String token;
 
     private Random random = new Random(System.currentTimeMillis());
 
@@ -39,13 +40,14 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         gamePlayers.clear();
         gamePlayersUpdated.clear();
         firstTimeGamePlayers.clear();
+        token = null;
     }
 
 
     @When("^a game is created$")
     public void a_game_is_created() throws Exception {
         // Arrange
-        createSeason();
+        createSeason(token);
 
         CreateGameRequest createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
@@ -54,7 +56,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
             .transportRequired(false)
             .build();
 
-        gameId = createGame(createGameRequest).getId();
+        gameId = createGame(createGameRequest, token).getId();
     }
 
 

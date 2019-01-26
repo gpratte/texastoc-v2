@@ -45,8 +45,12 @@ alter table player_roles add constraint fk_role_id foreign key (roleId) referenc
 
 alter table player_roles add constraint fk_player_id foreign key (playerId) references player (id);
 
+// Gil is admin
 INSERT INTO player_roles (playerId, roleId) VALUES (3, 1);
+// Gil is user
 INSERT INTO player_roles (playerId, roleId) VALUES (3, 2);
+// Brian is user
+INSERT INTO player_roles (playerId, roleId) VALUES (1, 2);
 
 
 create table if not exists payout (numPayouts INT NOT NULL, place INT NOT NULL, percent DOUBLE DEFAULT NULL, PRIMARY KEY (numPayouts, place))

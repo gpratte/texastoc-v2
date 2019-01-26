@@ -35,18 +35,20 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
 
     private Integer gameId;
     private Season season;
+    private String token;
 
     @Before
     public void before() {
         gameId = null;
         season = null;
+        token = null;
     }
 
 
     @Given("^a game has 10 players all finished$")
     public void a_game_has_10_players_all_finished() throws Exception {
         // Arrange
-        createSeason();
+        createSeason(token);
 
         CreateGameRequest createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
@@ -55,7 +57,7 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
             .transportRequired(false)
             .build();
 
-        gameId = createGame(createGameRequest).getId();
+        gameId = createGame(createGameRequest, token).getId();
 
         List<GamePlayer> gamePlayers = new ArrayList<>(NUM_PLAYERS);
         for (int i = 0; i < NUM_PLAYERS; i++) {

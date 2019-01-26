@@ -28,7 +28,7 @@ public class PlayerServiceTest implements TestConstants {
     @MockBean
     private PlayerRepository playerRepository;
 
-    @Autowired
+    @MockBean
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Before
@@ -86,11 +86,11 @@ public class PlayerServiceTest implements TestConstants {
         Player updatedPlayer = playerService.get(1);
 
         Mockito.verify(playerRepository, Mockito.times(1)).update(Mockito.any(Player.class));
-        Mockito.verify(playerRepository, Mockito.times(1)).get(1);
+        Mockito.verify(playerRepository, Mockito.times(2)).get(1);
 
         // Assert
         Assert.assertNotNull("updated player not null", updatedPlayer);
-        Assert.assertEquals("new password should be updated", newPasswordEncoded, updatedPlayer.getPassword());
+        Assert.assertNull("new password null", updatedPlayer.getPassword());
     }
 
 }

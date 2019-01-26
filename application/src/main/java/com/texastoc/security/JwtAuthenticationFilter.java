@@ -50,9 +50,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             Authentication auth) throws IOException, ServletException {
         final String token = JwtTokenProvider.generateToken(auth);
 
-        // return token in header
-        //res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
-
         // return token in body as json
         res.setContentType("application/json");
         res.setCharacterEncoding("UTF-8");

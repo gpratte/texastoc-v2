@@ -31,6 +31,10 @@ public interface TestConstants {
     int CHOP_TENTH_PLACE_POINTS = 3;
     double CHOP_MULTIPLIER = 1.291;
 
+    String ADMIN_EMAIL = "gilpratte@texastoc.com";
+    String ADMIN_PASSWORD = "password";
+    String USER_EMAIL = "brianbaker@texastoc.com";
+    String USER_PASSWORD = "password";
 
     static TocConfig getTocConfig() {
 

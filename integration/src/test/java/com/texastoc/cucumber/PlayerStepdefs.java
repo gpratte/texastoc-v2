@@ -83,8 +83,7 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
 
     @Then("^a token is returned$")
     public void a_token_is_returned() throws Exception {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        Assert.assertNotNull("token not null", token);
     }
 
     @Then("^the player has the expected encoded password$")

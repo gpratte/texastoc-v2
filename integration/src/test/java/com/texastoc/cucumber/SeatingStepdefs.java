@@ -30,6 +30,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     Integer numPlayers;
     Integer numDeadStacks;
     Game game;
+    String token;
 
     @Before
     public void before() {
@@ -38,17 +39,18 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
         numPlayers = null;
         numDeadStacks = null;
         game = null;
+        token = null;
     }
 
     @Given("^a game has 9 players$")
     public void a_game_has_9_players() throws Exception {
-        createSeason(LocalDate.now());
+        createSeason(LocalDate.now(), token);
         Game game = createGame(CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
             .doubleBuyIn(false)
             .transportRequired(false)
-            .build());
+            .build(), token);
 
         gameId = game.getId();
 
@@ -67,13 +69,13 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
     @Given("^a game has 11 players$")
     public void a_game_has_11_players() throws Exception {
-        createSeason(LocalDate.now());
+        createSeason(LocalDate.now(), token);
         Game game = createGame(CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
             .doubleBuyIn(false)
             .transportRequired(false)
-            .build());
+            .build(), token);
 
         gameId = game.getId();
 

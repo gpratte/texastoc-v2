@@ -1,5 +1,7 @@
 package com.texastoc.cucumber;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.texastoc.TestConstants;
 import com.texastoc.controller.request.CreateGameRequest;
 import com.texastoc.controller.request.UpdateGameRequest;
 import com.texastoc.model.game.Game;
@@ -20,6 +22,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     private CreateGameRequest createGameRequest;
     private Game gameCreated;
     private Game gameRetrieved;
+    private String token;
     private HttpClientErrorException exception;
 
     @Before
@@ -27,6 +30,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         createGameRequest = null;
         gameCreated = null;
         gameRetrieved = null;
+        token = null;
         exception = null;
     }
 
@@ -34,7 +38,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     @Given("^the game starts now$")
     public void the_game_starts_now() throws Exception {
         // Arrange
-        createSeason();
+        createSeason(token);
 
         createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
@@ -44,10 +48,16 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
             .build();
     }
 
+    @Given("^admin user logs in$")
+    public void admin_user_logs_in() throws JsonProcessingException {
+        token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
+    }
+
+
     @Given("^the double buy in game starts now$")
     public void the_double_buy_in_game_starts_now() throws Exception {
         // Arrange
-        createSeason();
+        createSeason(token);
 
         createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
@@ -60,7 +70,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     @Given("^the game supplies need to be moved$")
     public void the_game_supplies_need_to_be_moved() throws Exception {
         // Arrange
-        createSeason();
+        createSeason(token);
 
         createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
@@ -72,7 +82,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
     @When("^the game is created$")
     public void the_game_is_created() throws Exception {
-        gameCreated = createGame(createGameRequest);
+        gameCreated = createGame(createGameRequest, token);
     }
 
     @And("^the retrieved game is updated and retrieved$")
@@ -92,7 +102,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
     @When("^the game is created and retrieved$")
     public void the_game_is_created_and_retrieved() throws Exception {
-        gameCreated = createGame(createGameRequest);
+        gameCreated = createGame(createGameRequest, token);
 
         gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameCreated.getId(),Game.class);
     }

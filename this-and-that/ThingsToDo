@@ -1,8 +1,6 @@
 
 Roles
-    Login return JWT token
-    Endpoints require token
-    Integration tests requiring login and token
+    Every player has a role
     Only admin can unfinalized a game/season
 
 CICD
