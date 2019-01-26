@@ -11,6 +11,7 @@ import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.game.Table;
 import com.texastoc.service.GameService;
 import com.texastoc.service.SeatingService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,6 +65,12 @@ public class GameRestController {
     @PutMapping("/api/v2/games/{id}/finalize")
     public void finalizeGame(@PathVariable("id") int id) {
         gameService.endGame(id);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/api/v2/games/{id}/unfinalize")
+    public void unfinalizeGame(@PathVariable("id") int id) {
+        gameService.openGame(id);
     }
 
 

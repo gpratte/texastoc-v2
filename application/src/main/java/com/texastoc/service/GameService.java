@@ -218,6 +218,19 @@ public class GameService {
         seatingRepository.deleteByGameId(id);
     }
 
+    public void openGame(int id) {
+        Game game = gameRepository.getById(id);
+
+        Season season = seasonRepository.get(game.getSeasonId());
+        if (season.isFinalized()) {
+            // TODO throw exception and handle in RestControllerAdvise
+            return;
+        }
+
+        game.setFinalized(false);
+        gameRepository.update(game);
+    }
+
     // Worker to avoid one @Transacation calling anther @Transactional
     private GamePlayer createGamePlayerWorker(GamePlayer gamePlayer) {
 

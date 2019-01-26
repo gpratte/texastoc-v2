@@ -1,6 +1,7 @@
 
 Roles
-    Only admin can unfinalized a game/season
+    Only admin can finalize/unfinalized a season
+    Shore up RestControllerAdvise
 
 CICD
     Test environment (http)
