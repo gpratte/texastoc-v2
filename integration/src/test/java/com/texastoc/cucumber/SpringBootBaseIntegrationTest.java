@@ -92,9 +92,10 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         return restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
     }
 
-    protected void updateGame(int gameId, UpdateGameRequest updateGameRequest) throws JsonProcessingException {
+    protected void updateGame(int gameId, UpdateGameRequest updateGameRequest, String token) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer "+ token);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -215,6 +216,19 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
 
     protected Player getPlayer(int id) throws JsonProcessingException {
         return restTemplate.getForObject(endpoint() + "/players/" + id, Player.class);
+    }
+
+    protected Game getGame(int id, String token) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer "+ token);
+        HttpEntity<String> entity = new HttpEntity<>("", headers);
+
+        ResponseEntity<Game> response = restTemplate.exchange(
+            endpoint() + "/games/" + id,
+            HttpMethod.GET,
+            entity,
+            Game.class);
+        return response.getBody();
     }
 
     protected String login(String email, String password) throws JsonProcessingException {

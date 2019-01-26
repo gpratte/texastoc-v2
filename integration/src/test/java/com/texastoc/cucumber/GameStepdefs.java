@@ -22,7 +22,6 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     private CreateGameRequest createGameRequest;
     private Game gameCreated;
     private Game gameRetrieved;
-    private String token;
     private HttpClientErrorException exception;
 
     @Before
@@ -30,16 +29,20 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
         createGameRequest = null;
         gameCreated = null;
         gameRetrieved = null;
-        token = null;
         exception = null;
     }
 
 
+    @Given("^a season exists$")
+    public void a_season_exists() throws Exception {
+        // Arrange
+        String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
+        createSeason(token);
+    }
+
     @Given("^the game starts now$")
     public void the_game_starts_now() throws Exception {
         // Arrange
-        createSeason(token);
-
         createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
@@ -48,17 +51,8 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
             .build();
     }
 
-    @Given("^admin user logs in$")
-    public void admin_user_logs_in() throws JsonProcessingException {
-        token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
-    }
-
-
     @Given("^the double buy in game starts now$")
     public void the_double_buy_in_game_starts_now() throws Exception {
-        // Arrange
-        createSeason(token);
-
         createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
@@ -69,9 +63,6 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
     @Given("^the game supplies need to be moved$")
     public void the_game_supplies_need_to_be_moved() throws Exception {
-        // Arrange
-        createSeason(token);
-
         createGameRequest = CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
@@ -82,6 +73,7 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
     @When("^the game is created$")
     public void the_game_is_created() throws Exception {
+        String token = login(USER_EMAIL, USER_PASSWORD);
         gameCreated = createGame(createGameRequest, token);
     }
 
@@ -95,16 +87,17 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
             .transportRequired(true)
             .payoutDelta(1)
             .build();
-        updateGame(gameRetrieved.getId(), updateGameRequest);
 
-        gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameCreated.getId(),Game.class);
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        updateGame(gameRetrieved.getId(), updateGameRequest, token);
+        gameRetrieved = getGame(gameCreated.getId(), token);
     }
 
     @When("^the game is created and retrieved$")
     public void the_game_is_created_and_retrieved() throws Exception {
+        String token = login(USER_EMAIL, USER_PASSWORD);
         gameCreated = createGame(createGameRequest, token);
-
-        gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameCreated.getId(),Game.class);
+        gameRetrieved = getGame(gameCreated.getId(), token);
     }
 
     @Then("^the game is normal$")
@@ -194,7 +187,6 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
 
         Assert.assertFalse("not finalized", game.isFinalized());
         Assert.assertNull("started should be null", game.getStarted());
-
     }
 
 }
