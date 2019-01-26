@@ -3,6 +3,7 @@ package com.texastoc.controller;
 import com.texastoc.model.season.Season;
 import com.texastoc.service.SeasonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ public class SeasonRestController {
         this.seasonService = seasonService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/v2/seasons")
     public Season createSeason(@RequestBody LocalDate start) {
         return seasonService.createSeason(start);

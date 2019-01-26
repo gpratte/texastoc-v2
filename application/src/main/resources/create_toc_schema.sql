@@ -16,7 +16,8 @@ create table if not exists supply (id INT auto_increment, amount INT NOT NULL, d
 
 create table if not exists player (id INT auto_increment, firstName varchar(32) DEFAULT NULL, lastName varchar(32) DEFAULT NULL, phone varchar(32) DEFAULT NULL, email varchar(64) DEFAULT NULL, password varchar(255) DEFAULT NULL, primary key (id))
 
-insert into player (id, firstName, lastName, phone, email) values (1, 'Brian', 'Baker', '5121231234', 'brianbaker@texastoc.com')
+-- password is password
+insert into player (id, firstName, lastName, phone, email, password) values (1, 'Brian', 'Baker', '5121231234', 'brianbaker@texastoc.com', '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK')
 insert into player (id, firstName, lastName, phone, email) values (2, 'Andy', 'Thomas', '5121231235', 'andythomas@texastoc.com')
 -- password is password
 insert into player (id, firstName, lastName, phone, email, password) values (3, 'Gil', 'Pratte', '5121231235', 'gilpratte@texastoc.com', '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK')

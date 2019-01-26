@@ -2,6 +2,4 @@
 curl -X POST \
   http://localhost:8080/api/v2/seasons \
   -H 'Content-Type: application/json' \
-  -H 'Postman-Token: a3c95efe-07ee-4689-b300-40a800f835ff' \
-  -H 'cache-control: no-cache' \
   -d '[2018,12,20]'
