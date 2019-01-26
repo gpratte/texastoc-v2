@@ -28,7 +28,6 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     private List<GamePlayer> gamePlayers = new LinkedList<>();
     private List<UpdateGamePlayerRequest> gamePlayersUpdated = new LinkedList<>();
     private List<FirstTimeGamePlayer> firstTimeGamePlayers = new LinkedList<>();
-    private String token;
 
     private Random random = new Random(System.currentTimeMillis());
 
@@ -40,13 +39,13 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         gamePlayers.clear();
         gamePlayersUpdated.clear();
         firstTimeGamePlayers.clear();
-        token = null;
     }
 
 
     @When("^a game is created$")
     public void a_game_is_created() throws Exception {
         // Arrange
+        String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
         createSeason(token);
 
         CreateGameRequest createGameRequest = CreateGameRequest.builder()
@@ -68,7 +67,8 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
             .gameId(gameId)
             .build();
 
-        gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
     }
 
     @And("^a player is added with buy-in$")
@@ -80,7 +80,8 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
             .buyInCollected(GAME_BUY_IN)
             .build();
 
-        gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
     }
 
     @And("^two players are added with buy-in$")
@@ -91,19 +92,22 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
             .gameId(gameId)
             .buyInCollected(GAME_BUY_IN)
             .build();
-        gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
+
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
 
         createGamePlayerRequest = CreateGamePlayerRequest.builder()
             .playerId(ANDY_THOMAS_PLAYER_ID)
             .gameId(gameId)
             .buyInCollected(GAME_BUY_IN)
             .build();
-        gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
+        gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
     }
 
     @And("^the game is retrieved$")
     public void the_game_is_retrieved() throws Exception {
-        gameRetrieved = restTemplate.getForObject(endpoint() + "/games/" + gameId, Game.class);
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        gameRetrieved = getGame(gameId, token);
     }
 
     @And("^the player is updated$")
@@ -120,16 +124,18 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
             .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
             .build();
 
+        String token = login(USER_EMAIL, USER_PASSWORD);
+
         GamePlayer gamePlayer = gamePlayers.get(0);
-        updatePlayerInGame(gamePlayer.getId(), updateGamePlayerRequest);
+        updatePlayerInGame(gamePlayer.getId(), updateGamePlayerRequest, token);
         gamePlayersUpdated.add(updateGamePlayerRequest);
     }
 
     @And("^the player is deleted$")
     public void the_player_is_deleted() throws Exception {
-
+        String token = login(USER_EMAIL, USER_PASSWORD);
         GamePlayer gamePlayer = gamePlayers.get(0);
-        deletePlayerFromGame(gamePlayer.getId());
+        deletePlayerFromGame(gamePlayer.getId(), token);
     }
 
     @And("^a first time player is added$")
@@ -145,8 +151,10 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
             .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
             .build();
 
+        String token = login(USER_EMAIL, USER_PASSWORD);
+
         firstTimeGamePlayers.add(firstTimeGamePlayer);
-        gamePlayers.add(addFirstTimePlayerToGame(firstTimeGamePlayer));
+        gamePlayers.add(addFirstTimePlayerToGame(firstTimeGamePlayer, token));
     }
 
     @Then("^the retrieved game has one player no buy-in$")
@@ -239,6 +247,8 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
             numPlayers = random.nextInt(50);
         }
 
+        String token = login(USER_EMAIL, USER_PASSWORD);
+
         for (int i = 0; i < numPlayers; i++) {
             CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
                 .playerId(1)
@@ -248,7 +258,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
                 .quarterlyTocCollected(random.nextBoolean() ? QUARTERLY_TOC_PER_GAME : null)
                 .build();
 
-            gamePlayers.add(addPlayerToGame(createGamePlayerRequest));
+            gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
         }
     }
 

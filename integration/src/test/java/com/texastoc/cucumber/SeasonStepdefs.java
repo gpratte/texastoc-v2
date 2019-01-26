@@ -30,7 +30,6 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
     private Season seasonRetrieved;
     private List<Game> games = new ArrayList<>();
     private HttpClientErrorException exception;
-    private String token;
 
     @Before
     public void before() {
@@ -39,7 +38,6 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
         seasonRetrieved = null;
         exception = null;
         games.clear();
-        token = null;
     }
 
     @Given("^season starts now$")
@@ -50,31 +48,15 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 
     @When("^the season is created$")
     public void the_season_is_created() throws Exception {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String seasonToCreateAsJson = mapper.writeValueAsString(start);
-        HttpEntity<String> entity = new HttpEntity<>(seasonToCreateAsJson ,headers);
-        System.out.println(seasonToCreateAsJson);
-
-        seasonCreated = restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
+        String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
+        seasonCreated = createSeason(start, token);
     }
 
     @When("^attempting to create the season$")
     public void attempting_to_create_the_season() throws Exception {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String seasonToCreateAsJson = mapper.writeValueAsString(start);
-        HttpEntity<String> entity = new HttpEntity<>(seasonToCreateAsJson ,headers);
-        System.out.println(seasonToCreateAsJson);
-
+        String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
         try {
-            seasonCreated = restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
+            seasonCreated = createSeason(start, token);
         } catch (HttpClientErrorException e) {
             exception = e;
         }
@@ -98,20 +80,8 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 
     @And("^the season is retrieved$")
     public void the_season_is_retrieved() throws Exception {
-        seasonRetrieved = restTemplate.getForObject(endpoint() + "/seasons/" + seasonCreated.getId(), Season.class);
-    }
-
-    @And("^a game is created for the season$")
-    public void a_game_is_created_for_the_season() throws Exception {
-        CreateGameRequest createGameRequest = CreateGameRequest.builder()
-            .date(LocalDate.now())
-            .hostId(1)
-            .doubleBuyIn(false)
-            .transportRequired(false)
-            .build();
-
-        Game gameCreated = createGame(createGameRequest, token);
-        games.add(gameCreated);
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        seasonRetrieved = getSeason(seasonCreated.getId(), token);
     }
 
     @Then("^the season should have four quarters$")
@@ -121,14 +91,6 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals(4, seasonRetrieved.getQuarterlySeasons().size());
         Assert.assertNotNull("games should not be null", seasonRetrieved.getGames());
         Assert.assertEquals("season should have 0 games", 0, seasonRetrieved.getGames().size());
-    }
-
-    @Then("^the season should have one game and no players$")
-    public void the_season_should_have_one_game_and_no_players() throws Exception {
-        Assert.assertNotNull("season retrieved should not be null", seasonRetrieved);
-        Assert.assertNotNull("season retrieved quarterly seasons should not be null", seasonRetrieved.getQuarterlySeasons());
-        Assert.assertNotNull("games should not be null", seasonRetrieved.getGames());
-        Assert.assertEquals("season should have 1 game", 1, seasonRetrieved.getGames().size());
     }
 
 }

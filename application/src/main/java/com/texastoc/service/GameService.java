@@ -16,6 +16,7 @@ import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.QuarterlySeasonRepository;
+import com.texastoc.repository.RoleRepository;
 import com.texastoc.repository.SeasonRepository;
 import com.texastoc.repository.SeatingRepository;
 import com.texastoc.service.calculator.GameCalculator;
@@ -32,6 +33,7 @@ import java.util.Objects;
 @Service
 public class GameService {
 
+    private final RoleRepository roleRepository;
     private final GameRepository gameRepository;
     private final SeasonRepository seasonRepository;
     private final SeatingRepository seatingRepository;
@@ -49,7 +51,7 @@ public class GameService {
 
     private TocConfig tocConfig;
 
-    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository) {
+    public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository, RoleRepository roleRepository) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.gamePlayerRepository = gamePlayerRepository;
@@ -63,6 +65,7 @@ public class GameService {
         this.seasonCalculator = seasonCalculator;
         this.qSeasonCalculator = qSeasonCalculator;
         this.seatingRepository = seatingRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Transactional
@@ -186,6 +189,7 @@ public class GameService {
             .email(firstTimeGamePlayer.getEmail())
             .build();
         int playerId = playerRepository.save(player);
+        roleRepository.save(playerId);
 
         StringBuilder name = new StringBuilder();
         name.append(!Objects.isNull(firstName) ? firstName : "");

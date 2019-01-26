@@ -4,6 +4,7 @@ import com.texastoc.TestConstants;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.user.Player;
 import com.texastoc.repository.PlayerRepository;
+import com.texastoc.repository.RoleRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,11 +30,14 @@ public class PlayerServiceTest implements TestConstants {
     private PlayerRepository playerRepository;
 
     @MockBean
+    private RoleRepository roleRepository;
+
+    @MockBean
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Before
     public void before() {
-        playerService = new PlayerService(playerRepository, bCryptPasswordEncoder);
+        playerService = new PlayerService(playerRepository, roleRepository, bCryptPasswordEncoder);
     }
 
     @Test

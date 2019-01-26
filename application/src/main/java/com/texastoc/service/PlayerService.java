@@ -2,6 +2,7 @@ package com.texastoc.service;
 
 import com.texastoc.model.user.Player;
 import com.texastoc.repository.PlayerRepository;
+import com.texastoc.repository.RoleRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public PlayerService(PlayerRepository playerRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public PlayerService(PlayerRepository playerRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.playerRepository = playerRepository;
+        this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -28,6 +31,10 @@ public class PlayerService {
             .build();
 
         int id = playerRepository.save(playerToCreate);
+
+        // Default to USER role
+        roleRepository.save(id);
+
         player.setId(id);
         return player;
     }

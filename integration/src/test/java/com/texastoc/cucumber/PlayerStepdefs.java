@@ -65,15 +65,17 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
             .lastName(playerCreated.getLastName())
             .email("abc@rst.com")
             .phone("2344322345")
-            .password(UUID.randomUUID().toString())
+            .password("password")
             .build();
 
-        updatePlayer(updatePlayer);
+        String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
+        updatePlayer(updatePlayer, token);
     }
 
     @When("^the player is retrieved$")
     public void the_player_is_retrieved() throws Exception {
-        playerRetrieved = getPlayer(playerCreated.getId());
+        String token = login("abc@rst.com", "password");
+        playerRetrieved = getPlayer(playerCreated.getId(), token);
     }
 
     @When("^the player logs in$")
@@ -94,7 +96,6 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("last name match", updatePlayer.getLastName(), playerRetrieved.getLastName());
         Assert.assertEquals("email match", updatePlayer.getEmail(), playerRetrieved.getEmail());
         Assert.assertEquals("phone match", updatePlayer.getPhone(), playerRetrieved.getPhone());
-        Assert.assertEquals("password match", "TODO encoded password", playerRetrieved.getPassword());
     }
 
 }

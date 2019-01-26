@@ -35,19 +35,18 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
 
     private Integer gameId;
     private Season season;
-    private String token;
 
     @Before
     public void before() {
         gameId = null;
         season = null;
-        token = null;
     }
 
 
     @Given("^a game has 10 players all finished$")
     public void a_game_has_10_players_all_finished() throws Exception {
         // Arrange
+        String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
         createSeason(token);
 
         CreateGameRequest createGameRequest = CreateGameRequest.builder()
@@ -71,7 +70,7 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
                 .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
                 .build();
 
-            gamePlayers.add(addFirstTimePlayerToGame(firstTimeGamePlayer));
+            gamePlayers.add(addFirstTimePlayerToGame(firstTimeGamePlayer, token));
         }
 
         for (int i = 0; i < NUM_PLAYERS; i++) {
@@ -85,19 +84,21 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
                 .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
                 .build();
 
-            updatePlayerInGame(gamePlayer.getId(), ugpr);
+            updatePlayerInGame(gamePlayer.getId(), ugpr, token);
         }
     }
 
     @When("^the game is finalized$")
     public void the_game_is_finalized() throws Exception {
-        finalizeGame(gameId);
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        finalizeGame(gameId, token);
     }
 
     @And("^the calculated season is retrieved$")
     public void the_calculated_season_is_retrieved() throws Exception {
-        season = restTemplate.getForObject(endpoint() + "/seasons/current", Season.class);
-        season = restTemplate.getForObject(endpoint() + "/seasons/" + season.getId(), Season.class);
+        String token = login(USER_EMAIL, USER_PASSWORD);
+        season = getCurrentSeason(token);
+        season = getSeason(season.getId(), token);
     }
 
     @Then("^the game is properly calculated$")

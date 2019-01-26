@@ -54,6 +54,8 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
         gameId = game.getId();
 
+        String token = login(USER_EMAIL, USER_PASSWORD);
+
         numPlayers = 9;
         for (int i = 0; i < numPlayers; i++) {
             FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
@@ -63,7 +65,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
                 .gameId(gameId)
                 .buyInCollected(GAME_BUY_IN)
                 .build();
-            addFirstTimePlayerToGame(firstTimeGamePlayer);
+            addFirstTimePlayerToGame(firstTimeGamePlayer, token);
         }
     }
 
@@ -79,6 +81,8 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
         gameId = game.getId();
 
+        String token = login(USER_EMAIL, USER_PASSWORD);
+
         numPlayers = 11;
         for (int i = 0; i < numPlayers; i++) {
             FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
@@ -88,7 +92,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
                 .gameId(gameId)
                 .buyInCollected(GAME_BUY_IN)
                 .build();
-            addFirstTimePlayerToGame(firstTimeGamePlayer);
+            addFirstTimePlayerToGame(firstTimeGamePlayer, token);
         }
     }
 
