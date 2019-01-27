@@ -36,6 +36,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .antMatchers("/h2-console/*").permitAll()
+            .antMatchers("/actuator/*").permitAll()
             .anyRequest().authenticated()
             .and()
             .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtTokenProvider))
