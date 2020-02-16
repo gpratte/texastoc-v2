@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+// Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
 public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
 

@@ -63,6 +63,9 @@ public class Game {
     private int kittyCalculated;
     // total collected minus total combined toc collected minus kitty
     private int prizePotCalculated;
+    // TODO averageStack
+    // TODO paidPlayers
+    // TODO paidPlayersRemaining
 
     // Other game time variables
     private int payoutDelta;
@@ -73,7 +76,13 @@ public class Game {
 
     private List<GamePlayer> players;
     private List<GamePayout> payouts;
+
+    // TODO break tables out of game into it's own thing
+    private int seatingId;
     private List<Table> tables;
+
+    // TODO
+    private int clockId;
 
 // --Commented out by Inspection START (2019-01-06 09:21):
 //    public void addPlayer(GamePlayer player) {

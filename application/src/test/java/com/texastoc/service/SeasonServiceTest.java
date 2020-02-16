@@ -18,6 +18,7 @@ import com.texastoc.repository.SeasonPlayerRepository;
 import com.texastoc.repository.SeasonRepository;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -166,12 +167,12 @@ public class SeasonServiceTest implements TestConstants {
 
     }
 
+    // See TODO for caching in SeasonService
+    @Ignore
     @Test
     public void testCacheSeason() {
         // If the cached season last calculated date is equal to the current
         // season's last calcuated date then return the cached value
-
-
         Season season1 = Season.builder()
             .id(1)
             .buyInCost(100)

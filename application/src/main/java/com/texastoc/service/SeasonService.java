@@ -133,17 +133,18 @@ public class SeasonService {
     @Transactional(readOnly = true)
     public Season getSeason(int id) {
 
-        if (cachedSeason != null) {
-            LocalDateTime lastCalculated = seasonRepository.getLastCalculated(id);
-
-            if (cachedSeason.getLastCalculated() == null) {
-                if (lastCalculated == null) {
-                    return cachedSeason;
-                }
-            } else if (cachedSeason.getLastCalculated().isEqual(lastCalculated)) {
-                return cachedSeason;
-            }
-        }
+        // TODO move to a real in memory cache
+//        if (cachedSeason != null) {
+//            LocalDateTime lastCalculated = seasonRepository.getLastCalculated(id);
+//
+//            if (cachedSeason.getLastCalculated() == null) {
+//                if (lastCalculated == null) {
+//                    return cachedSeason;
+//                }
+//            } else if (cachedSeason.getLastCalculated().isEqual(lastCalculated)) {
+//                return cachedSeason;
+//            }
+//        }
 
         Season season = seasonRepository.get(id);
         season.setPlayers(seasonPlayerRepository.getBySeasonId(id));

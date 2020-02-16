@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+// Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
 public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
 

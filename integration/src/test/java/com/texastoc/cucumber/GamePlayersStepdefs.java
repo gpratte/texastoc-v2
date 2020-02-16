@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+// Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
 public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
 

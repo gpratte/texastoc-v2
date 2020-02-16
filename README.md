@@ -9,15 +9,20 @@ The only application code that was written was code to fix a failing test case (
 
 
 # Run tests
-In IntelliJ the JUnit tests in the application module run with no extra configuration.
+You can run the tests in IntelliJ or from the command line.
 
-In IntelliJ the cucumber tests in the integration module require the following spring profile to be set:
-* spring.profiles.active=test
+To run in IntelliJ right click on the java folder and choose _Run 'All Tests'_
+* application -> src -> test -> java
+* integration -> src -> test -> java
 
-To run all the tests from the command line type:
-* mvn -Dspring.profiles.active=true test
+To run all the tests from the command line type
+* mvn test
 
-Setting the **spring.profiles.active=true** results in creating an H2 database and runs the statements in the *create_toc_schema.sql* file.
+The cucumber tests in the integration module run with
+* @ActiveProfiles("test")
+
+
+Setting **spring.profiles.active=true** results in creating an H2 database and runs the statements in the *create_toc_schema.sql* file for the tests are run.
 
 
 # Run Server with H2 database
@@ -39,6 +44,10 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 38-heroku
+## Current Branch: 39-housekeeping
 
-Add Procfile for running on heroku
+It's been months since this project has seen any action while I've been learning react/redux.
+
+This branch does a couple of things
+* set the active profile to "test" when running the integration tests
+* use Travis CI for continuous integration

@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+// Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
 public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
 
@@ -174,7 +175,8 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
     public void the_season_is_properly_calculated() {
         Assert.assertNotNull("season should not be null", season);
 
-        Assert.assertEquals("season has 52 games", 52, season.getNumGames());
+        Assert.assertTrue("season has 52 or 53 games ",
+                season.getNumGames() == 52 || season.getNumGames() == 53);
         Assert.assertEquals("season has 1 game played", 1, season.getNumGamesPlayed());
         Assert.assertEquals("annualTocCollected is " + (TOC_PER_GAME * NUM_PLAYERS), TOC_PER_GAME * NUM_PLAYERS, season.getAnnualTocCollected());
 
