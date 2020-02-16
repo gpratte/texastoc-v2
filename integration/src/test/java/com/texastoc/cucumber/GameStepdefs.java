@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 
+// Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
 public class GameStepdefs extends SpringBootBaseIntegrationTest {
 

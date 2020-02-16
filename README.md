@@ -9,15 +9,20 @@ The only application code that was written was code to fix a failing test case (
 
 
 # Run tests
-In IntelliJ the JUnit tests in the application module run with no extra configuration.
+You can run the tests in IntelliJ or from the command line.
 
-In IntelliJ the cucumber tests in the integration module require the following spring profile to be set:
-* spring.profiles.active=test
+To run in IntelliJ right click on the java folder and choose _Run 'All Tests'_
+* application -> src -> test -> java
+* integration -> src -> test -> java
 
-To run all the tests from the command line type:
-* mvn -Dspring.profiles.active=true test
+To run all the tests from the command line type
+* mvn test
 
-Setting the **spring.profiles.active=true** results in creating an H2 database and runs the statements in the *create_toc_schema.sql* file.
+The cucumber tests in the integration module run with
+* @ActiveProfiles("test")
+
+
+Setting **spring.profiles.active=true** results in creating an H2 database and runs the statements in the *create_toc_schema.sql* file for the tests are run.
 
 
 # Run Server with H2 database

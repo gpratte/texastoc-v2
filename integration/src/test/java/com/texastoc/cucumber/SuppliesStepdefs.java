@@ -21,6 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.List;
 
+// Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
 public class SuppliesStepdefs extends SpringBootBaseIntegrationTest {
 

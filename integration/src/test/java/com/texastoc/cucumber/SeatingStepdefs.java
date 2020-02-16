@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 import java.util.List;
 
+// Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
 public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
