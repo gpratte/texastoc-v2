@@ -44,10 +44,8 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 39-housekeeping
+## Current Branch: 40-spring-boot-version-2.2.4
 
-It's been months since this project has seen any action while I've been learning react/redux.
+Upgraded the Spring Boot version to 2.2.4.
 
-This branch does a couple of things
-* set the active profile to "test" when running the integration tests
-* use Travis CI for continuous integration
+Verified that I could still get to the console for the embedded H2 database.
