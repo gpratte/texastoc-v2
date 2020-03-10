@@ -3,7 +3,6 @@ package com.texastoc.cucumber;
 import com.texastoc.model.supply.Supply;
 import com.texastoc.model.supply.SupplyType;
 import com.texastoc.model.user.Player;
-import cucumber.api.PendingException;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;

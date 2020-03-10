@@ -111,6 +111,7 @@ public class GameServiceTest implements TestConstants {
                 .id(1)
                 .quarter(Quarter.FIRST)
                 .seasonId(1)
+                .numGamesPlayed(7)
                 .build());
 
         Mockito.when(seasonRepository.getCurrent())
@@ -126,6 +127,7 @@ public class GameServiceTest implements TestConstants {
                 .doubleBuyInCost(GAME_DOUBLE_BUY_IN)
                 .doubleRebuyAddOnCost(GAME_DOUBLE_REBUY)
                 .doubleRebuyAddOnTocDebit(GAME_DOUBLE_REBUY_TOC_DEBIT)
+                .numGamesPlayed(20)
                 .build());
 
         // Act
@@ -175,6 +177,8 @@ public class GameServiceTest implements TestConstants {
         Assert.assertEquals("No quarterly toc collected", 0, (int)actual.getQuarterlyTocCollected());
         Assert.assertEquals("total collected", 0, (int)actual.getTotalCollected());
 
+        Assert.assertEquals("Season game number should be one more than the number of season games played", 21, actual.getSeasonGameNum());
+        Assert.assertEquals("Quarterly season game number should be one more than the number of quarterly season games played", 8, actual.getQuarterlyGameNum());
 
         Assert.assertEquals("no annualTocFromRebuyAddOnCalculated", 0, (int)actual.getAnnualTocFromRebuyAddOnCalculated());
         Assert.assertEquals("no rebuyAddOnLessAnnualTocCalculated", 0, (int)actual.getRebuyAddOnLessAnnualTocCalculated());

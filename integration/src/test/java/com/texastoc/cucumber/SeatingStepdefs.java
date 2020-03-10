@@ -135,7 +135,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     public void thirteen_seats_have_been_assigned() throws Exception {
         Assert.assertNotNull("game should not be null", game);
 
-        tables = game.getTables();
+        tables = game.getSeating().getTables();
         Assert.assertNotNull("tables should not be null", tables);
         Assert.assertEquals("2 tables", 2, tables.size());
 

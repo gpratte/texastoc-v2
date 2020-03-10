@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class TableRequest {
 
     private int gamePlayerId;
+    private String playerName;
     private int tableNum;
 }

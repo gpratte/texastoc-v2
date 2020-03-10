@@ -117,13 +117,34 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         UpdateGamePlayerRequest updateGamePlayerRequest = UpdateGamePlayerRequest.builder()
             .playerId(ANDY_THOMAS_PLAYER_ID)
             .place(10)
-            .knockedOut(true)
+            .knockedOut(false)
             .roundUpdates(true)
             .buyInCollected(GAME_BUY_IN)
             .rebuyAddOnCollected(GAME_REBUY)
             .annualTocCollected(TOC_PER_GAME)
             .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
             .build();
+
+        String token = login(USER_EMAIL, USER_PASSWORD);
+
+        GamePlayer gamePlayer = gamePlayers.get(0);
+        updatePlayerInGame(gamePlayer.getId(), updateGamePlayerRequest, token);
+        gamePlayersUpdated.add(updateGamePlayerRequest);
+    }
+
+    @And("^the player is knocked out")
+    public void knockedOut() throws Exception {
+
+        UpdateGamePlayerRequest updateGamePlayerRequest = UpdateGamePlayerRequest.builder()
+                .playerId(ANDY_THOMAS_PLAYER_ID)
+                .place(10)
+                .knockedOut(true)
+                .roundUpdates(true)
+                .buyInCollected(GAME_BUY_IN)
+                .rebuyAddOnCollected(GAME_REBUY)
+                .annualTocCollected(TOC_PER_GAME)
+                .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+                .build();
 
         String token = login(USER_EMAIL, USER_PASSWORD);
 
@@ -374,6 +395,16 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertNull("the game player finish should be null", actual.getPlace());
         Assert.assertNull("the game player knockedOut should be null", actual.getKnockedOut());
         Assert.assertNull("the game player roundUpdates should be null", actual.getRoundUpdates());
+    }
+
+    @And("^paid players is (\\d+)$")
+    public void paidPlayers(int numPaidPlayers) throws Exception {
+        Assert.assertEquals("number of paid players should be " + numPaidPlayers, numPaidPlayers, gameRetrieved.getNumPaidPlayers());
+    }
+
+    @And("^paid players remaining is (\\d+)$")
+    public void paidPlayersRemaining(int numPaidPlayersRemaining) throws Exception {
+        Assert.assertEquals("number of paid players remaining should be " + numPaidPlayersRemaining, numPaidPlayersRemaining, gameRetrieved.getNumPaidPlayersRemaining());
     }
 
 }

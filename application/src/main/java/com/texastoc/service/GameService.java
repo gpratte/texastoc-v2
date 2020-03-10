@@ -7,6 +7,7 @@ import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
+import com.texastoc.model.game.Seating;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.user.Player;
@@ -80,6 +81,7 @@ public class GameService {
         gameToCreate.setSeasonId(currentQSeason.getSeasonId());
         gameToCreate.setQSeasonId(currentQSeason.getId());
         gameToCreate.setQuarter(currentQSeason.getQuarter());
+        gameToCreate.setQuarterlyGameNum(currentQSeason.getNumGamesPlayed() + 1);
 
         Player player = playerRepository.get(game.getHostId());
         gameToCreate.setHostId(game.getHostId());
@@ -96,6 +98,7 @@ public class GameService {
         gameToCreate.setRebuyAddOnTocDebit(currentSeason.getRebuyAddOnTocDebit());
         gameToCreate.setAnnualTocCost(currentSeason.getTocPerGame());
         gameToCreate.setQuarterlyTocCost(currentSeason.getQuarterlyTocPerGame());
+        gameToCreate.setSeasonGameNum(currentSeason.getNumGamesPlayed() + 1);
 
         if (game.isDoubleBuyIn()) {
             gameToCreate.setBuyInCost(currentSeason.getDoubleBuyInCost());
@@ -116,9 +119,28 @@ public class GameService {
     @Transactional(readOnly = true)
     public Game getGame(int id) {
         Game game = gameRepository.getById(id);
-        game.setPlayers(gamePlayerRepository.selectByGameId(id));
+
+        List<GamePlayer> players = gamePlayerRepository.selectByGameId(id);
+        game.setPlayers(players);
+        int numPaidPlayers = 0;
+        int numPaidPlayersRemaining = 0;
+        for (GamePlayer player : players) {
+            if (player.getBuyInCollected() != null && player.getBuyInCollected() > 0) {
+                ++numPaidPlayers;
+                if (player.getKnockedOut() == null || player.getKnockedOut() == false) {
+                    ++numPaidPlayersRemaining;
+                }
+            }
+        }
+        game.setNumPaidPlayers(numPaidPlayers);
+        game.setNumPaidPlayersRemaining(numPaidPlayersRemaining);
+
         game.setPayouts(gamePayoutRepository.getByGameId(id));
-        game.setTables(seatingRepository.getTables(id));
+        Seating seating = new Seating();
+        seating.setGameId(id);
+        seating.setTables(seatingRepository.getTables(id));
+        game.setSeating(seating);
+
         return game;
     }
 

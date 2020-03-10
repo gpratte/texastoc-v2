@@ -31,8 +31,8 @@ Set the following to run the server with an H2 database with all tables created:
 
 Setting the **spring.profiles.active=true** results in creating an H2 database and runs the statements in the *create_toc_schema.sql* file.
 
-To connect to the H2 server 
-* open `http://localhost:8080/h2-console` url. 
+To connect to the H2 server
+* open `http://localhost:8080/h2-console` url.
 * set the JDBC URL to `jdbc:h2:mem:testdb`
 * User Name `sa`
 * Leave the password empty
@@ -44,8 +44,11 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 40-spring-boot-version-2.2.4
+## Current Branch: 41-update-model-for-frontend
 
-Upgraded the Spring Boot version to 2.2.4.
+Changed the class model to match what the frontend wants.
 
-Verified that I could still get to the console for the embedded H2 database.
+For example
+* added number of paid players to the game
+* added the number of remaining paid players to the game
+* changed the seating SeatRequest to TableRequest
