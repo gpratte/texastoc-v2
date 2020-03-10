@@ -17,9 +17,9 @@ public class GamePlayer {
     private int seasonId;
     private int gameId;
     private String name;
-    // TODO private String firstName;
-    // TODO private String lastName;
     private Integer points;
+    // TODO
+    private Integer place;
     private Integer finish;
     private Boolean knockedOut;
     private Boolean roundUpdates;

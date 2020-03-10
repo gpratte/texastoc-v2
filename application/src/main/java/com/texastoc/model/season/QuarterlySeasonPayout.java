@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QuarterlySeasonPayout {
 
+    private int id;
     private int seasonId;
     private int qSeasonId;
     private int place;

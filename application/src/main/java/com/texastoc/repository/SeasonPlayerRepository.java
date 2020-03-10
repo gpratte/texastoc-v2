@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -49,7 +51,9 @@ public class SeasonPlayerRepository {
             + " (:playerId, :seasonId, :name, :entries, :points, :place)";
 
     @SuppressWarnings("Duplicates")
-    public void save(SeasonPlayer seasonPlayer) {
+    public int save(SeasonPlayer seasonPlayer) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("playerId", seasonPlayer.getPlayerId());
         params.addValue("seasonId", seasonPlayer.getSeasonId());
@@ -59,7 +63,9 @@ public class SeasonPlayerRepository {
         params.addValue("place", seasonPlayer.getPlace());
         params.addValue("forfeit", seasonPlayer.isForfeit());
 
-        jdbcTemplate.update(INSERT_SQL, params);
+        String [] keys = {"id"};
+        jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
+        return keyHolder.getKey().intValue();
     }
 
     private static final class SeasonPlayerMapper implements RowMapper<SeasonPlayer> {
@@ -68,6 +74,7 @@ public class SeasonPlayerRepository {
             SeasonPlayer seasonPlayer = new SeasonPlayer();
 
             try {
+                seasonPlayer.setId(rs.getInt("id"));
                 seasonPlayer.setPlayerId(rs.getInt("playerId"));
                 seasonPlayer.setSeasonId(rs.getInt("seasonId"));
                 seasonPlayer.setEntries(rs.getInt("entries"));

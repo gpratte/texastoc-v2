@@ -8,9 +8,13 @@ create table if not exists season (id INT auto_increment, startDate DATE, endDat
 
 create table if not exists quarterlyseason (id INT auto_increment, seasonId INT NOT NULL, startDate DATE, endDate DATE, finalized BOOLEAN, quarter INT NOT NULL, numGames INT, numGamesPlayed INT, qTocCollected INT, qTocPerGame INT, numPayouts INT NOT NULL, lastCalculated DATE, primary key(id))
 
-create table if not exists seasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT DEFAULT 0, forfeit BOOLEAN DEFAULT false)
+create table if not exists seasonplayer (id INT auto_increment, playerId INT NOT NULL, seasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT DEFAULT 0, forfeit BOOLEAN DEFAULT false, primary key(id))
 
-create table if not exists quarterlyseasonplayer (playerId INT NOT NULL, seasonId INT NOT NULL, qSeasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT)
+ALTER TABLE seasonplayer ADD CONSTRAINT SPlayer_Unique UNIQUE (playerId, seasonId)
+
+create table if not exists quarterlyseasonplayer (id INT auto_increment, playerId INT NOT NULL, seasonId INT NOT NULL, qSeasonId INT NOT NULL, name varchar(64) DEFAULT NULL, entries INT DEFAULT 0, points INT DEFAULT 0, place INT, primary key(id))
+
+ALTER TABLE quarterlyseasonplayer ADD CONSTRAINT QSPlayer_Unique UNIQUE (playerId, seasonId, qSeasonId)
 
 create table if not exists supply (id INT auto_increment, amount INT NOT NULL, date DATE NOT NULL, type varchar(16) NOT NULL, description varchar(64), primary key(id))
 
@@ -28,9 +32,13 @@ create table if not exists gameplayer (id INT auto_increment, playerId INT NOT N
 
 create table if not exists gamepayout (gameId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, chopAmount INT DEFAULT NULL, chopPercent DOUBLE DEFAULT NULL, PRIMARY KEY (gameId, place))
 
-create table if not exists seasonpayout (seasonId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, PRIMARY KEY (seasonId, place))
+create table if not exists seasonpayout (id INT auto_increment, seasonId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, PRIMARY KEY (id))
 
-create table if not exists quarterlyseasonpayout (seasonId INT NOT NULL, qSeasonId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, PRIMARY KEY (seasonId, qSeasonId, place))
+ALTER TABLE seasonpayout ADD CONSTRAINT SPayout_Unique UNIQUE (seasonId, place)
+
+create table if not exists quarterlyseasonpayout (id INT auto_increment, seasonId INT NOT NULL, qSeasonId INT NOT NULL, place INT NOT NULL, amount INT DEFAULT NULL, PRIMARY KEY (id))
+
+ALTER TABLE quarterlyseasonpayout ADD CONSTRAINT QSPayout_Unique UNIQUE (seasonId, qSeasonId, place)
 
 create table if not exists gameseat (gameId INT NOT NULL, seatNumber INT NOT NULL, tableNumber INT NOT NULL, gamePlayerId INT, gamePlayerName varchar(64), PRIMARY KEY (gameId, seatNumber, tableNumber))
 

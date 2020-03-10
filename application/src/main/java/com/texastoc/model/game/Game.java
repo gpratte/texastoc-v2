@@ -63,9 +63,17 @@ public class Game {
     private int kittyCalculated;
     // total collected minus total combined toc collected minus kitty
     private int prizePotCalculated;
-    // TODO averageStack
-    // TODO paidPlayers
-    // TODO paidPlayersRemaining
+    // TODO
+    private int averageStack;
+    // TODO
+    private int paidPlayers;
+    // TODO
+    private int paidPlayersRemaining;
+    // TODO
+    private int seasonGame;
+    // TODO
+    private int quarterlyGame;
+
 
     // Other game time variables
     private int payoutDelta;

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -49,7 +51,9 @@ public class QuarterlySeasonPlayerRepository {
             + " (:playerId, :seasonId, :qSeasonId, :name, :entries, :points, :place)";
 
     @SuppressWarnings("Duplicates")
-    public void save(QuarterlySeasonPlayer qSeasonPlayer) {
+    public int save(QuarterlySeasonPlayer qSeasonPlayer) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("playerId", qSeasonPlayer.getPlayerId());
         params.addValue("seasonId", qSeasonPlayer.getSeasonId());
@@ -59,7 +63,9 @@ public class QuarterlySeasonPlayerRepository {
         params.addValue("points", qSeasonPlayer.getPoints());
         params.addValue("place", qSeasonPlayer.getPlace());
 
-        jdbcTemplate.update(INSERT_SQL, params);
+        String [] keys = {"id"};
+        jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
+        return keyHolder.getKey().intValue();
     }
 
     private static final class QuarterlySeasonPlayerMapper implements RowMapper<QuarterlySeasonPlayer> {
@@ -68,6 +74,7 @@ public class QuarterlySeasonPlayerRepository {
             QuarterlySeasonPlayer qSeasonPlayer = new QuarterlySeasonPlayer();
 
             try {
+                qSeasonPlayer.setId(rs.getInt("id"));
                 qSeasonPlayer.setPlayerId(rs.getInt("playerId"));
                 qSeasonPlayer.setSeasonId(rs.getInt("seasonId"));
                 qSeasonPlayer.setQSeasonId(rs.getInt("qSeasonId"));

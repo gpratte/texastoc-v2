@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -37,7 +39,8 @@ public class QuarterlySeasonPayoutRepository {
             + "(seasonId, qSeasonId, place, amount) "
             + " VALUES "
             + " (:seasonId, :qSeasonId, :place, :amount)";
-    public void save(final QuarterlySeasonPayout payout) {
+    public int save(final QuarterlySeasonPayout payout) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("seasonId", payout.getSeasonId());
@@ -45,7 +48,9 @@ public class QuarterlySeasonPayoutRepository {
         params.addValue("place", payout.getPlace());
         params.addValue("amount", payout.getAmount());
 
-        jdbcTemplate.update(INSERT_SQL, params);
+        String [] keys = {"id"};
+        jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
+        return keyHolder.getKey().intValue();
     }
 
     public void deleteByQSeasonId(int qSeasonId) {
@@ -58,6 +63,7 @@ public class QuarterlySeasonPayoutRepository {
         public QuarterlySeasonPayout mapRow(ResultSet rs, int rowNum) {
             QuarterlySeasonPayout qSeasonPayout = new QuarterlySeasonPayout();
             try {
+                qSeasonPayout.setId(rs.getInt("id"));
                 qSeasonPayout.setSeasonId(rs.getInt("seasonId"));
                 qSeasonPayout.setQSeasonId(rs.getInt("qSeasonId"));
                 qSeasonPayout.setPlace(rs.getInt("place"));

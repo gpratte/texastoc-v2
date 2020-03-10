@@ -20,7 +20,7 @@ import java.util.Objects;
 public class GamePayout {
 
     // TODO primary key
-    // private int id;
+    private int id;
     private int gameId;
     private int place;
     private int amount;

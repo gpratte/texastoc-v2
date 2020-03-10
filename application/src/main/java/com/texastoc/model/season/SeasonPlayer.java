@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SeasonPlayer {
 
+    private int id;
     private int playerId;
     private int seasonId;
     private String name;
