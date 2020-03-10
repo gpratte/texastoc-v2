@@ -84,9 +84,9 @@ public class GamePlayerRepository {
 
     private static final String INSERT_SQL =
         "INSERT INTO gameplayer "
-            + "(playerId, gameId, qSeasonId, seasonId, name, points, finish, knockedOut, roundUpdates, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, chop) "
+            + "(playerId, gameId, qSeasonId, seasonId, name, points, place, knockedOut, roundUpdates, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, chop) "
             + " VALUES "
-            + " (:playerId, :gameId, :qSeasonId, :seasonId, :name, :points, :finish, :knockedOut, :roundUpdates, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :chop)";
+            + " (:playerId, :gameId, :qSeasonId, :seasonId, :name, :points, :place, :knockedOut, :roundUpdates, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :chop)";
 
     public int save(final GamePlayer gamePlayer) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -98,7 +98,7 @@ public class GamePlayerRepository {
         params.addValue("seasonId", gamePlayer.getSeasonId());
         params.addValue("name", gamePlayer.getName());
         params.addValue("points", gamePlayer.getPoints());
-        params.addValue("finish", gamePlayer.getFinish());
+        params.addValue("place", gamePlayer.getPlace());
         params.addValue("knockedOut", gamePlayer.getKnockedOut());
         params.addValue("roundUpdates", gamePlayer.getRoundUpdates());
         params.addValue("buyInCollected", gamePlayer.getBuyInCollected());
@@ -118,7 +118,7 @@ public class GamePlayerRepository {
 
     private static final String UPDATE_SQL = "UPDATE gameplayer set " +
         "playerId=:playerId, gameId=:gameId, qSeasonId=:qSeasonId, seasonId=seasonId, " +
-        "name=:name, points=:points, finish=:finish, knockedOut=:knockedOut, " +
+        "name=:name, points=:points, place=:place, knockedOut=:knockedOut, " +
         "roundUpdates=:roundUpdates, buyInCollected=:buyInCollected, " +
         "rebuyAddOnCollected=:rebuyAddOnCollected, annualTocCollected=:annualTocCollected, " +
         "quarterlyTocCollected=:quarterlyTocCollected, chop=:chop " +
@@ -133,7 +133,7 @@ public class GamePlayerRepository {
         params.addValue("seasonId", player.getSeasonId());
         params.addValue("name", player.getName());
         params.addValue("points", player.getPoints());
-        params.addValue("finish", player.getFinish());
+        params.addValue("place", player.getPlace());
         params.addValue("knockedOut", player.getKnockedOut());
         params.addValue("roundUpdates", player.getRoundUpdates());
         params.addValue("buyInCollected", player.getBuyInCollected());
@@ -169,11 +169,6 @@ public class GamePlayerRepository {
                     gamePlayer.setRebuyAddOnCollected(Integer.parseInt(value));
                 }
 
-                value = rs.getString("finish");
-                if (value != null) {
-                    gamePlayer.setFinish(Integer.parseInt(value));
-                }
-
                 value = rs.getString("chop");
                 if (value != null) {
                     gamePlayer.setChop(Integer.parseInt(value));
@@ -182,6 +177,11 @@ public class GamePlayerRepository {
                 value = rs.getString("points");
                 if (value != null) {
                     gamePlayer.setPoints(Integer.parseInt(value));
+                }
+
+                value = rs.getString("place");
+                if (value != null) {
+                    gamePlayer.setPlace(Integer.parseInt(value));
                 }
 
                 value = rs.getString("annualTocCollected");

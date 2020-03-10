@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -37,7 +39,8 @@ public class GamePayoutRepository {
             + "(gameId, place, amount, chopAmount, chopPercent) "
             + " VALUES "
             + " (:gameId, :place, :amount, :chopAmount, :chopPercent)";
-    public void save(final GamePayout gamePayout) {
+    public int save(final GamePayout gamePayout) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("gameId", gamePayout.getGameId());
@@ -46,7 +49,9 @@ public class GamePayoutRepository {
         params.addValue("chopAmount", gamePayout.getChopAmount());
         params.addValue("chopPercent", gamePayout.getChopPercent());
 
-        jdbcTemplate.update(INSERT_SQL, params);
+        String [] keys = {"id"};
+        jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
+        return keyHolder.getKey().intValue();
     }
 
 
@@ -61,6 +66,7 @@ public class GamePayoutRepository {
         public GamePayout mapRow(ResultSet rs, int rowNum) {
             GamePayout gamePayout = new GamePayout();
             try {
+                gamePayout.setId(rs.getInt("id"));
                 gamePayout.setGameId(rs.getInt("gameId"));
                 gamePayout.setPlace(rs.getInt("place"));
 

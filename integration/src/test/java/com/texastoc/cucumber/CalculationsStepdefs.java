@@ -78,7 +78,7 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
             GamePlayer gamePlayer = gamePlayers.get(i);
             UpdateGamePlayerRequest ugpr = UpdateGamePlayerRequest.builder()
                 .playerId(gamePlayer.getPlayerId())
-                .finish(i+1)
+                .place(i+1)
                 .buyInCollected(GAME_BUY_IN)
                 .rebuyAddOnCollected(GAME_REBUY)
                 .annualTocCollected(TOC_PER_GAME)

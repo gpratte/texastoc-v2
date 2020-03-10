@@ -99,7 +99,7 @@ public class GameRestController {
         GamePlayer gamePlayer = gameService.getGamePlayer(id);
 
         gamePlayer.setPlayerId(ugpr.getPlayerId());
-        gamePlayer.setFinish(ugpr.getFinish());
+        gamePlayer.setPlace(ugpr.getPlace());
         gamePlayer.setKnockedOut(ugpr.getKnockedOut());
         gamePlayer.setRoundUpdates(ugpr.getRoundUpdates());
         gamePlayer.setBuyInCollected(ugpr.getBuyInCollected());

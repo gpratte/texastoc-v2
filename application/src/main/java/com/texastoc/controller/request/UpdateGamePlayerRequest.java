@@ -9,7 +9,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateGamePlayerRequest {
     private int playerId;
-    private Integer finish;
+    private Integer place;
     private Boolean knockedOut;
     private Boolean roundUpdates;
     private Integer buyInCollected;

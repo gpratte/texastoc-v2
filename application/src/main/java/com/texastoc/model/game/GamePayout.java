@@ -19,7 +19,6 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GamePayout {
 
-    // TODO primary key
     private int id;
     private int gameId;
     private int place;

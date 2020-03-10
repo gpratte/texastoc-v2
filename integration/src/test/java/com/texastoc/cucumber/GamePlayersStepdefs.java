@@ -116,7 +116,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
 
         UpdateGamePlayerRequest updateGamePlayerRequest = UpdateGamePlayerRequest.builder()
             .playerId(ANDY_THOMAS_PLAYER_ID)
-            .finish(10)
+            .place(10)
             .knockedOut(true)
             .roundUpdates(true)
             .buyInCollected(GAME_BUY_IN)
@@ -183,7 +183,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertNull("the game player annualTocCollected should be null", actual.getAnnualTocCollected());
         Assert.assertNull("the game player quarterlyTocCollected should be null", actual.getQuarterlyTocCollected());
         Assert.assertNull("the game player chop should be null", actual.getChop());
-        Assert.assertNull("the game player finish should be null", actual.getFinish());
+        Assert.assertNull("the game player finish should be null", actual.getPlace());
         Assert.assertNull("the game player knockedOut should be null", actual.getKnockedOut());
         Assert.assertNull("the game player roundUpdates should be null", actual.getRoundUpdates());
     }
@@ -326,7 +326,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
 
         Assert.assertTrue("the game player points should be null or 0", actual.getPoints() == null || actual.getPoints() < 1);
 
-        Assert.assertEquals("the game player finish should be " + expected.getFinish(), (int)expected.getFinish(), (int)actual.getFinish());
+        Assert.assertEquals("the game player finish should be " + expected.getPlace(), (int)expected.getPlace(), (int)actual.getPlace());
         Assert.assertEquals("the game player knockedOut should be " + expected.getKnockedOut(), expected.getKnockedOut(), actual.getKnockedOut());
         Assert.assertEquals("the game player roundUpdates should be " + expected.getRoundUpdates(), expected.getRoundUpdates(), actual.getRoundUpdates());
         Assert.assertEquals("the game player buyInCollected should be " + expected.getBuyInCollected(), (int)expected.getBuyInCollected(), (int)actual.getBuyInCollected());
@@ -371,7 +371,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertEquals("the game player annual toc should be " + TOC_PER_GAME, TOC_PER_GAME, (int)actual.getAnnualTocCollected());
         Assert.assertEquals("the game player quarterly toc should be " + QUARTERLY_TOC_PER_GAME, QUARTERLY_TOC_PER_GAME, (int)actual.getQuarterlyTocCollected());
         Assert.assertNull("the game player chop should be null", actual.getChop());
-        Assert.assertNull("the game player finish should be null", actual.getFinish());
+        Assert.assertNull("the game player finish should be null", actual.getPlace());
         Assert.assertNull("the game player knockedOut should be null", actual.getKnockedOut());
         Assert.assertNull("the game player roundUpdates should be null", actual.getRoundUpdates());
     }

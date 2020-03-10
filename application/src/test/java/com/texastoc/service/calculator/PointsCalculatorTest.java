@@ -85,7 +85,7 @@ public class PointsCalculatorTest implements TestConstants {
                 .build());
         }
         int pickOnePlayer = random.nextInt(numPlayers);
-        gamePlayers.get(pickOnePlayer).setFinish(numPlayers);
+        gamePlayers.get(pickOnePlayer).setPlace(numPlayers);
 
         // Needed in the persistPoints method
         Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
@@ -132,8 +132,8 @@ public class PointsCalculatorTest implements TestConstants {
             gamePlayers.add(GamePlayer.builder()
                 .build());
         }
-        gamePlayers.get(1).setFinish(10);
-        gamePlayers.get(4).setFinish(9);
+        gamePlayers.get(1).setPlace(10);
+        gamePlayers.get(4).setPlace(9);
 
         // Needed in the persistPoints method
         Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
@@ -182,16 +182,16 @@ public class PointsCalculatorTest implements TestConstants {
             gamePlayers.add(GamePlayer.builder()
                 .build());
         }
-        gamePlayers.get(0).setFinish(4);
-        gamePlayers.get(1).setFinish(6);
-        gamePlayers.get(2).setFinish(7);
-        gamePlayers.get(3).setFinish(10);
-        gamePlayers.get(5).setFinish(9);
-        gamePlayers.get(8).setFinish(8);
-        gamePlayers.get(13).setFinish(5);
-        gamePlayers.get(16).setFinish(3);
-        gamePlayers.get(7).setFinish(2);
-        gamePlayers.get(15).setFinish(1);
+        gamePlayers.get(0).setPlace(4);
+        gamePlayers.get(1).setPlace(6);
+        gamePlayers.get(2).setPlace(7);
+        gamePlayers.get(3).setPlace(10);
+        gamePlayers.get(5).setPlace(9);
+        gamePlayers.get(8).setPlace(8);
+        gamePlayers.get(13).setPlace(5);
+        gamePlayers.get(16).setPlace(3);
+        gamePlayers.get(7).setPlace(2);
+        gamePlayers.get(15).setPlace(1);
 
         // Needed in the persistPoints method
         Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
@@ -249,19 +249,19 @@ public class PointsCalculatorTest implements TestConstants {
             gamePlayers.add(GamePlayer.builder()
                 .build());
         }
-        gamePlayers.get(0).setFinish(4);
-        gamePlayers.get(1).setFinish(6);
-        gamePlayers.get(2).setFinish(7);
-        gamePlayers.get(3).setFinish(10);
-        gamePlayers.get(5).setFinish(9);
-        gamePlayers.get(8).setFinish(8);
-        gamePlayers.get(13).setFinish(5);
-        gamePlayers.get(16).setFinish(3);
+        gamePlayers.get(0).setPlace(4);
+        gamePlayers.get(1).setPlace(6);
+        gamePlayers.get(2).setPlace(7);
+        gamePlayers.get(3).setPlace(10);
+        gamePlayers.get(5).setPlace(9);
+        gamePlayers.get(8).setPlace(8);
+        gamePlayers.get(13).setPlace(5);
+        gamePlayers.get(16).setPlace(3);
 
-        gamePlayers.get(7).setFinish(2);
+        gamePlayers.get(7).setPlace(2);
         gamePlayers.get(7).setChop(30000);
 
-        gamePlayers.get(15).setFinish(1);
+        gamePlayers.get(15).setPlace(1);
         gamePlayers.get(15).setChop(60000);
 
         // Needed in the persistPoints method
@@ -312,22 +312,22 @@ public class PointsCalculatorTest implements TestConstants {
             gamePlayers.add(GamePlayer.builder()
                 .build());
         }
-        gamePlayers.get(0).setFinish(4);
-        gamePlayers.get(1).setFinish(6);
-        gamePlayers.get(2).setFinish(7);
-        gamePlayers.get(3).setFinish(10);
-        gamePlayers.get(5).setFinish(9);
-        gamePlayers.get(8).setFinish(8);
-        gamePlayers.get(13).setFinish(5);
-        gamePlayers.get(16).setFinish(3);
+        gamePlayers.get(0).setPlace(4);
+        gamePlayers.get(1).setPlace(6);
+        gamePlayers.get(2).setPlace(7);
+        gamePlayers.get(3).setPlace(10);
+        gamePlayers.get(5).setPlace(9);
+        gamePlayers.get(8).setPlace(8);
+        gamePlayers.get(13).setPlace(5);
+        gamePlayers.get(16).setPlace(3);
 
-        gamePlayers.get(16).setFinish(3);
+        gamePlayers.get(16).setPlace(3);
         gamePlayers.get(16).setChop(25000);
 
-        gamePlayers.get(7).setFinish(2);
+        gamePlayers.get(7).setPlace(2);
         gamePlayers.get(7).setChop(75000);
 
-        gamePlayers.get(15).setFinish(1);
+        gamePlayers.get(15).setPlace(1);
         gamePlayers.get(15).setChop(100000);
 
         // Needed in the persistPoints method

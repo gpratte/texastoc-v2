@@ -66,13 +66,13 @@ public class Game {
     // TODO
     private int averageStack;
     // TODO
-    private int paidPlayers;
+    private int numPaidPlayers;
     // TODO
-    private int paidPlayersRemaining;
+    private int numPaidPlayersRemaining;
     // TODO
-    private int seasonGame;
+    private int seasonGameNum;
     // TODO
-    private int quarterlyGame;
+    private int quarterlyGameNum;
 
 
     // Other game time variables

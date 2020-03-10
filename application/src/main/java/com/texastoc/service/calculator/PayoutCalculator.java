@@ -110,7 +110,7 @@ public class PayoutCalculator {
                     chips.add(gamePlayer.getChop());
                     amounts = new ArrayList<>();
                     for (GamePayout gamePayout : gamePayouts) {
-                        if (gamePayout.getPlace() == gamePlayer.getFinish()) {
+                        if (gamePayout.getPlace() == gamePlayer.getPlace()) {
                             amounts.add(gamePayout.getAmount());
                             break;
                         }
@@ -121,7 +121,7 @@ public class PayoutCalculator {
                         if (gamePlayer.getChop() >= chips.get(i)) {
                             chips.add(i, gamePlayer.getChop());
                             for (GamePayout gamePayout : gamePayouts) {
-                                if (gamePayout.getPlace() == gamePlayer.getFinish()) {
+                                if (gamePayout.getPlace() == gamePlayer.getPlace()) {
                                     amounts.add(i, gamePayout.getAmount());
                                     inserted = true;
                                     break;
@@ -132,7 +132,7 @@ public class PayoutCalculator {
                     if (!inserted) {
                         chips.add(gamePlayer.getChop());
                         for (GamePayout gamePayout : gamePayouts) {
-                            if (gamePayout != null && gamePayout.getPlace() == gamePlayer.getFinish()) {
+                            if (gamePayout != null && gamePayout.getPlace() == gamePlayer.getPlace()) {
                                 amounts.add(gamePayout.getAmount());
                                 break;
                             }

@@ -371,7 +371,7 @@ public class GameServiceTest implements TestConstants {
 
         Assert.assertNull("game player points should be null", gamePlayerCreated.getPoints());
 
-        Assert.assertNull("game player finish should be null", gamePlayerCreated.getFinish());
+        Assert.assertNull("game player finish should be null", gamePlayerCreated.getPlace());
         Assert.assertNull("game player knocked out should be null", gamePlayerCreated.getKnockedOut());
         Assert.assertNull("game player round updates should be null", gamePlayerCreated.getRoundUpdates());
         Assert.assertNull("game player buy-in collected should be null", gamePlayerCreated.getBuyInCollected());
@@ -457,7 +457,7 @@ public class GameServiceTest implements TestConstants {
             .annualTocCollected(TOC_PER_GAME)
             .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
             .roundUpdates(true)
-            .finish(10)
+            .place(10)
             .knockedOut(true)
             .chop(500)
             .build();

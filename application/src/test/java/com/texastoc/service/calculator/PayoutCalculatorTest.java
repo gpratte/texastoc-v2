@@ -753,10 +753,10 @@ public class PayoutCalculatorTest implements TestConstants {
         List<GamePlayer> gamePlayers = new ArrayList<>(8);
         gamePlayers.add(GamePlayer.builder()
             .chop(100000)
-            .finish(1)
+            .place(1)
             .build());
         gamePlayers.add(GamePlayer.builder()
-            .finish(2)
+            .place(2)
             .build());
 
         List<GamePayout> gamePayouts = payoutCalculator.calculate(game, gamePlayers);
@@ -794,11 +794,11 @@ public class PayoutCalculatorTest implements TestConstants {
         List<GamePlayer> gamePlayers = new ArrayList<>(8);
         gamePlayers.add(GamePlayer.builder()
             .chop(100000)
-            .finish(1)
+            .place(1)
             .build());
         gamePlayers.add(GamePlayer.builder()
             .chop(50000)
-            .finish(2)
+            .place(2)
             .build());
 
         List<GamePayout> gamePayouts = payoutCalculator.calculate(game, gamePlayers);

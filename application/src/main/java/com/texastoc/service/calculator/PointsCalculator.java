@@ -32,7 +32,7 @@ public class PointsCalculator {
 
         boolean calculationRequired = false;
         for (GamePlayer gamePlayer : gamePlayers) {
-            if (gamePlayer.getFinish() != null && gamePlayer.getFinish() < 11) {
+            if (gamePlayer.getPlace() != null && gamePlayer.getPlace() < 11) {
                 calculationRequired = true;
                 break;
             }
@@ -46,10 +46,10 @@ public class PointsCalculator {
 
         boolean pointsChanged = false;
         for (GamePlayer gamePlayer : gamePlayers) {
-            if (gamePlayer.getFinish() != null && gamePlayer.getFinish() < 11) {
-                if (gamePlayer.getPoints() == null || gamePlayer.getPoints().intValue() != placePoints.get(gamePlayer.getFinish())) {
+            if (gamePlayer.getPlace() != null && gamePlayer.getPlace() < 11) {
+                if (gamePlayer.getPoints() == null || gamePlayer.getPoints().intValue() != placePoints.get(gamePlayer.getPlace())) {
                     pointsChanged = true;
-                    gamePlayer.setPoints(placePoints.get(gamePlayer.getFinish()));
+                    gamePlayer.setPoints(placePoints.get(gamePlayer.getPlace()));
                 }
             }
         }
