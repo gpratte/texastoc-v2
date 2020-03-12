@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class SeasonStepdefs extends SpringBootBaseIntegrationTest {
     @Given("^season starts now$")
     public void season_starts_now() throws Exception {
         // Arrange
-        start = LocalDate.now();
+        start = getSeasonStart();
     }
 
     @When("^the season is created$")

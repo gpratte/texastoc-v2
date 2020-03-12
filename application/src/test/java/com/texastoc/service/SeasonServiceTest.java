@@ -28,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,7 +70,8 @@ public class SeasonServiceTest implements TestConstants {
     public void testCreateSeason() {
 
         // Arrange
-        LocalDate start = LocalDate.now();
+        LocalDate now = LocalDate.now();
+        LocalDate start = LocalDate.of(now.getYear(), Month.MAY, 1);
 
         Mockito.when(seasonRepository.save((Season) notNull())).thenReturn(1);
         Mockito.when(qSeasonRepository.save((QuarterlySeason) notNull())).thenReturn(1);

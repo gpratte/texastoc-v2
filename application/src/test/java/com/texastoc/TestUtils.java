@@ -49,13 +49,8 @@ public class TestUtils implements TestConstants {
 
             Assert.assertTrue(qSeason.getQTocCollected() == 0);
 
-            LocalDate qSeasonExpectedEnd = LocalDate.now().plusWeeks(13 * (i + 1)).minusDays(1);
-
-            Assert.assertEquals(start.plusWeeks(13 * (i)), qSeason.getStart());
-            Assert.assertEquals(qSeasonExpectedEnd, qSeason.getEnd());
-
             Assert.assertTrue(qSeason.getNumGamesPlayed() == 0);
-            Assert.assertTrue(qSeason.getNumGames() == 13 || qSeason.getNumGames() == 14);
+            Assert.assertTrue(qSeason.getNumGames() == 12 || qSeason.getNumGames() == 13 || qSeason.getNumGames() == 14);
 
             Assert.assertTrue(qSeason.getPlayers() == null || qSeason.getPlayers().size() == 0);
             Assert.assertTrue(qSeason.getPayouts() == null || qSeason.getPayouts().size() == 0);

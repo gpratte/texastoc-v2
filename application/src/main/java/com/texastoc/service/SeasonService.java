@@ -19,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,41 +67,15 @@ public class SeasonService {
 
         TocConfig tocConfig = configRepository.get();
 
-        // Count the number of Thursdays between the start and end
+        // Count the number of Thursdays between the start and end inclusive
         int numThursdays = 0;
-        LocalDate currentWeek = start;
-        while (currentWeek.isBefore(end)) {
+        LocalDate thursday = findNextThursday(start);
+        while (thursday.isBefore(end) || thursday.isEqual(end)) {
             ++numThursdays;
-            currentWeek = currentWeek.plusDays(7);
+            thursday = thursday.plusWeeks(1);
         }
 
-        List<QuarterlySeason> qSeasons = new ArrayList<>();
-        for (int i = 1; i <= 4; ++i) {
-            LocalDate qStart = start.plusWeeks(13 * (i - 1));
-
-            LocalDate qEnd = start.plusWeeks(13 * i).minusDays(1);
-
-            // Count the number of Thursdays between the start and end
-            int qNumThursdays = 0;
-            currentWeek = qStart;
-            while (currentWeek.isBefore(qEnd)) {
-                ++qNumThursdays;
-                currentWeek = currentWeek.plusDays(7);
-            }
-
-            QuarterlySeason qSeason = QuarterlySeason.builder()
-                .quarter(Quarter.fromInt(i))
-                .start(qStart)
-                .end(qEnd)
-                .finalized(false)
-                .numGames(qNumThursdays)
-                .numGamesPlayed(0)
-                .qTocCollected(0)
-                .qTocPerGame(tocConfig.getQuarterlyTocCost())
-                .numPayouts(tocConfig.getQuarterlyNumPayouts())
-                .build();
-            qSeasons.add(qSeason);
-        }
+        List<QuarterlySeason> qSeasons = createQuarterlySeasons(start, end, tocConfig);
 
         Season newSeason = Season.builder()
             .start(start)
@@ -173,5 +149,73 @@ public class SeasonService {
         season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(season.getId()));
         season.setGames(gameRepository.getBySeasonId(season.getId()));
         return season;
+    }
+
+    private List<QuarterlySeason> createQuarterlySeasons(LocalDate seasonStart, LocalDate seasonEnd, TocConfig tocConfig) {
+        List<QuarterlySeason> qSeasons = new ArrayList<>(4);
+        for (int i = 1; i <= 4; ++i) {
+            LocalDate qStart = null;
+            LocalDate qEnd = null;
+            switch (i) {
+                case 1:
+                    // Season start
+                    qStart = seasonStart;
+                    // Last day in July
+                    qEnd = LocalDate.of(seasonStart.getYear(), Month.AUGUST, 1);
+                    qEnd = qEnd.minusDays(1);
+                    break;
+                case 2:
+                    // First day in August
+                    qStart = LocalDate.of(seasonStart.getYear(), Month.AUGUST, 1);
+                    // Last day in October
+                    qEnd = LocalDate.of(seasonStart.getYear(), Month.NOVEMBER, 1);
+                    qEnd = qEnd.minusDays(1);
+                    break;
+                case 3:
+                    // First day in November
+                    qStart = LocalDate.of(seasonStart.getYear(), Month.NOVEMBER, 1);
+                    // Last day in January
+                    qEnd = LocalDate.of(seasonStart.getYear()+1, Month.FEBRUARY, 1);
+                    qEnd = qEnd.minusDays(1);
+                    break;
+                case 4:
+                    // First day in February
+                    qStart = LocalDate.of(seasonStart.getYear()+1, Month.FEBRUARY, 1);
+                    // End of season
+                    qEnd = seasonEnd;
+                    break;
+            }
+
+            // Count the number of Thursdays between the start and end inclusive
+            int qNumThursdays = 0;
+            LocalDate thursday = findNextThursday(qStart);
+            while (thursday.isBefore(qEnd) || thursday.isEqual(qEnd)) {
+                ++qNumThursdays;
+                thursday = thursday.plusWeeks(1);
+            }
+
+            QuarterlySeason qSeason = QuarterlySeason.builder()
+                    .quarter(Quarter.fromInt(i))
+                    .start(qStart)
+                    .end(qEnd)
+                    .finalized(false)
+                    .numGames(qNumThursdays)
+                    .numGamesPlayed(0)
+                    .qTocCollected(0)
+                    .qTocPerGame(tocConfig.getQuarterlyTocCost())
+                    .numPayouts(tocConfig.getQuarterlyNumPayouts())
+                    .build();
+            qSeasons.add(qSeason);
+        }
+        return qSeasons;
+    }
+
+    private LocalDate findNextThursday(LocalDate day) {
+        while(true) {
+            if (day.getDayOfWeek() == DayOfWeek.THURSDAY) {
+                return day;
+            }
+            day = day.plusDays(1);
+        }
     }
 }
