@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TableRequest {
 
-    private int gamePlayerId;
-    private String playerName;
-    private int tableNum;
+  private int gamePlayerId;
+  private String playerName;
+  private int tableNum;
 }

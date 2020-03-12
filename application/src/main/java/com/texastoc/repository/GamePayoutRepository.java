@@ -17,79 +17,80 @@ import java.util.List;
 @Repository
 public class GamePayoutRepository {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+  private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public GamePayoutRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-
-    public List<GamePayout> getByGameId(int id) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("id", id);
-
-        return jdbcTemplate
-            .query("select * from gamepayout where gameId = :id order by amount desc",
-                params,
-                new GamePayoutMapper());
-    }
-
-    private static final String INSERT_SQL =
-        "INSERT INTO gamepayout "
-            + "(gameId, place, amount, chopAmount, chopPercent) "
-            + " VALUES "
-            + " (:gameId, :place, :amount, :chopAmount, :chopPercent)";
-    public int save(final GamePayout gamePayout) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("gameId", gamePayout.getGameId());
-        params.addValue("place", gamePayout.getPlace());
-        params.addValue("amount", gamePayout.getAmount());
-        params.addValue("chopAmount", gamePayout.getChopAmount());
-        params.addValue("chopPercent", gamePayout.getChopPercent());
-
-        String [] keys = {"id"};
-        jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
-        return keyHolder.getKey().intValue();
-    }
+  public GamePayoutRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
 
 
-    public void deleteByGameId(int id) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("id", id);
+  public List<GamePayout> getByGameId(int id) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("id", id);
 
-        jdbcTemplate.update("delete from gamepayout where gameId = :id", params);
-    }
+    return jdbcTemplate
+      .query("select * from gamepayout where gameId = :id order by amount desc",
+        params,
+        new GamePayoutMapper());
+  }
 
-    private static final class GamePayoutMapper implements RowMapper<GamePayout> {
-        public GamePayout mapRow(ResultSet rs, int rowNum) {
-            GamePayout gamePayout = new GamePayout();
-            try {
-                gamePayout.setId(rs.getInt("id"));
-                gamePayout.setGameId(rs.getInt("gameId"));
-                gamePayout.setPlace(rs.getInt("place"));
+  private static final String INSERT_SQL =
+    "INSERT INTO gamepayout "
+      + "(gameId, place, amount, chopAmount, chopPercent) "
+      + " VALUES "
+      + " (:gameId, :place, :amount, :chopAmount, :chopPercent)";
 
-                String temp = rs.getString("amount");
-                if (temp != null) {
-                    gamePayout.setAmount(Integer.valueOf(temp));
-                }
+  public int save(final GamePayout gamePayout) {
+    KeyHolder keyHolder = new GeneratedKeyHolder();
 
-                temp = rs.getString("chopAmount");
-                if (temp != null) {
-                    gamePayout.setChopAmount(Integer.valueOf(temp));
-                }
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("gameId", gamePayout.getGameId());
+    params.addValue("place", gamePayout.getPlace());
+    params.addValue("amount", gamePayout.getAmount());
+    params.addValue("chopAmount", gamePayout.getChopAmount());
+    params.addValue("chopPercent", gamePayout.getChopPercent());
 
-                temp = rs.getString("chopPercent");
-                if (temp != null) {
-                    gamePayout.setChopPercent(Double.valueOf(temp));
-                }
-            } catch (SQLException e) {
-                log.error("Problem mapping GamePayout", e);
-            }
+    String[] keys = {"id"};
+    jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
+    return keyHolder.getKey().intValue();
+  }
 
-            return gamePayout;
+
+  public void deleteByGameId(int id) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("id", id);
+
+    jdbcTemplate.update("delete from gamepayout where gameId = :id", params);
+  }
+
+  private static final class GamePayoutMapper implements RowMapper<GamePayout> {
+    public GamePayout mapRow(ResultSet rs, int rowNum) {
+      GamePayout gamePayout = new GamePayout();
+      try {
+        gamePayout.setId(rs.getInt("id"));
+        gamePayout.setGameId(rs.getInt("gameId"));
+        gamePayout.setPlace(rs.getInt("place"));
+
+        String temp = rs.getString("amount");
+        if (temp != null) {
+          gamePayout.setAmount(Integer.valueOf(temp));
         }
+
+        temp = rs.getString("chopAmount");
+        if (temp != null) {
+          gamePayout.setChopAmount(Integer.valueOf(temp));
+        }
+
+        temp = rs.getString("chopPercent");
+        if (temp != null) {
+          gamePayout.setChopPercent(Double.valueOf(temp));
+        }
+      } catch (SQLException e) {
+        log.error("Problem mapping GamePayout", e);
+      }
+
+      return gamePayout;
     }
+  }
 
 }

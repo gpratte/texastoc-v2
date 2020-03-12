@@ -14,21 +14,21 @@ import java.util.List;
 @RestController
 public class SupplyRestController {
 
-    private final SupplyService supplyService;
+  private final SupplyService supplyService;
 
-    public SupplyRestController(SupplyService supplyService) {
-        this.supplyService = supplyService;
-    }
+  public SupplyRestController(SupplyService supplyService) {
+    this.supplyService = supplyService;
+  }
 
-    @GetMapping("/api/v2/supplies")
-    public List<Supply> getSupplies() {
-        return supplyService.get();
-    }
+  @GetMapping("/api/v2/supplies")
+  public List<Supply> getSupplies() {
+    return supplyService.get();
+  }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/api/v2/supplies")
-    public Supply createSupply(@RequestBody Supply supply) {
-        return supplyService.create(supply);
-    }
+  @PreAuthorize("hasRole('ADMIN')")
+  @PostMapping("/api/v2/supplies")
+  public Supply createSupply(@RequestBody Supply supply) {
+    return supplyService.create(supply);
+  }
 
 }

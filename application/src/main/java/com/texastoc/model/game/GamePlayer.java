@@ -11,20 +11,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GamePlayer {
 
-    private int id;
-    private int playerId;
-    private int qSeasonId;
-    private int seasonId;
-    private int gameId;
-    private String name;
-    private Integer points;
-    private Integer place;
-    private Boolean knockedOut;
-    private Boolean roundUpdates;
-    private Integer buyInCollected;
-    private Integer rebuyAddOnCollected;
-    private Integer annualTocCollected;
-    private Integer quarterlyTocCollected;
-    private Integer chop;
+  private int id;
+  private int playerId;
+  private int qSeasonId;
+  private int seasonId;
+  private int gameId;
+  private String name;
+  private Integer points;
+  private Integer place;
+  private Boolean knockedOut;
+  private Boolean roundUpdates;
+  private Integer buyInCollected;
+  private Integer rebuyAddOnCollected;
+  private Integer annualTocCollected;
+  private Integer quarterlyTocCollected;
+  private Integer chop;
 
 }

@@ -14,14 +14,14 @@ import java.util.List;
 @AllArgsConstructor
 public class Table {
 
-    private int gameId;
-    private int number;
-    private List<Seat> seats;
+  private int gameId;
+  private int number;
+  private List<Seat> seats;
 
-    public void addSeat(Seat seat) {
-        if (seats == null) {
-            seats = new ArrayList<>();
-        }
-        seats.add(seat);
+  public void addSeat(Seat seat) {
+    if (seats == null) {
+      seats = new ArrayList<>();
     }
+    seats.add(seat);
+  }
 }

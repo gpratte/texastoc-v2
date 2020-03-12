@@ -10,21 +10,21 @@ import java.util.List;
 @Service
 public class SupplyService {
 
-    private final SupplyRepository supplyRepository;
+  private final SupplyRepository supplyRepository;
 
-    public SupplyService(SupplyRepository supplyRepository) {
-        this.supplyRepository = supplyRepository;
-    }
+  public SupplyService(SupplyRepository supplyRepository) {
+    this.supplyRepository = supplyRepository;
+  }
 
-    public List<Supply> get() {
-        return supplyRepository.get();
-    }
+  public List<Supply> get() {
+    return supplyRepository.get();
+  }
 
-    public Supply create(Supply supply) {
-        Assert.notNull(supply.getDate(), "Date is required");
-        Assert.isTrue(supply.getAmount() > 0, "Amount must be greater than zero");
-        Assert.notNull(supply.getType(), "Type is required");
-        supplyRepository.save(supply);
-        return supply;
-    }
+  public Supply create(Supply supply) {
+    Assert.notNull(supply.getDate(), "Date is required");
+    Assert.isTrue(supply.getAmount() > 0, "Amount must be greater than zero");
+    Assert.notNull(supply.getType(), "Type is required");
+    supplyRepository.save(supply);
+    return supply;
+  }
 }

@@ -1,8 +1,5 @@
 package com.texastoc.config;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -10,9 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Only run if the spring profile is "test"
@@ -35,9 +34,9 @@ public class SetupDatabase {
   CommandLineRunner init(JdbcTemplate jdbcTemplate) {
     return args -> {
       InputStream resource = new ClassPathResource(
-          "create_toc_schema.sql").getInputStream();
+        "create_toc_schema.sql").getInputStream();
       try (BufferedReader reader = new BufferedReader(
-          new InputStreamReader(resource))) {
+        new InputStreamReader(resource))) {
         String line;
         while ((line = reader.readLine()) != null) {
           jdbcTemplate.execute(line);

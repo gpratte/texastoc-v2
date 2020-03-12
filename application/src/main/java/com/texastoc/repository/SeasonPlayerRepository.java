@@ -18,77 +18,77 @@ import java.util.List;
 @Repository
 public class SeasonPlayerRepository {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+  private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public SeasonPlayerRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+  @Autowired
+  public SeasonPlayerRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
 
-    public List<SeasonPlayer> getBySeasonId(int id) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("seasonId", id);
-        return jdbcTemplate
-            .query("select * from seasonplayer"
-                    + " where seasonId = :seasonId"
-                    + " order by name",
-                params,
-                new SeasonPlayerMapper());
-    }
+  public List<SeasonPlayer> getBySeasonId(int id) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("seasonId", id);
+    return jdbcTemplate
+      .query("select * from seasonplayer"
+          + " where seasonId = :seasonId"
+          + " order by name",
+        params,
+        new SeasonPlayerMapper());
+  }
 
-    public void deleteBySeasonId(int seasonId) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("seasonId", seasonId);
+  public void deleteBySeasonId(int seasonId) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("seasonId", seasonId);
 
-        jdbcTemplate
-            .update("delete from seasonplayer where seasonId = :seasonId", params);
-    }
+    jdbcTemplate
+      .update("delete from seasonplayer where seasonId = :seasonId", params);
+  }
 
-    private static final String INSERT_SQL =
-        "INSERT INTO seasonplayer "
-            + "(playerId, seasonId, name, entries, points, place) "
-            + " VALUES "
-            + " (:playerId, :seasonId, :name, :entries, :points, :place)";
+  private static final String INSERT_SQL =
+    "INSERT INTO seasonplayer "
+      + "(playerId, seasonId, name, entries, points, place) "
+      + " VALUES "
+      + " (:playerId, :seasonId, :name, :entries, :points, :place)";
 
+  @SuppressWarnings("Duplicates")
+  public int save(SeasonPlayer seasonPlayer) {
+    KeyHolder keyHolder = new GeneratedKeyHolder();
+
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("playerId", seasonPlayer.getPlayerId());
+    params.addValue("seasonId", seasonPlayer.getSeasonId());
+    params.addValue("name", seasonPlayer.getName());
+    params.addValue("entries", seasonPlayer.getEntries());
+    params.addValue("points", seasonPlayer.getPoints());
+    params.addValue("place", seasonPlayer.getPlace());
+    params.addValue("forfeit", seasonPlayer.isForfeit());
+
+    String[] keys = {"id"};
+    jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
+    return keyHolder.getKey().intValue();
+  }
+
+  private static final class SeasonPlayerMapper implements RowMapper<SeasonPlayer> {
     @SuppressWarnings("Duplicates")
-    public int save(SeasonPlayer seasonPlayer) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+    public SeasonPlayer mapRow(ResultSet rs, int rowNum) {
+      SeasonPlayer seasonPlayer = new SeasonPlayer();
 
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("playerId", seasonPlayer.getPlayerId());
-        params.addValue("seasonId", seasonPlayer.getSeasonId());
-        params.addValue("name", seasonPlayer.getName());
-        params.addValue("entries", seasonPlayer.getEntries());
-        params.addValue("points", seasonPlayer.getPoints());
-        params.addValue("place", seasonPlayer.getPlace());
-        params.addValue("forfeit", seasonPlayer.isForfeit());
+      try {
+        seasonPlayer.setId(rs.getInt("id"));
+        seasonPlayer.setPlayerId(rs.getInt("playerId"));
+        seasonPlayer.setSeasonId(rs.getInt("seasonId"));
+        seasonPlayer.setEntries(rs.getInt("entries"));
+        seasonPlayer.setPoints(rs.getInt("points"));
+        seasonPlayer.setPlace(rs.getInt("place"));
+        seasonPlayer.setName(rs.getString("name"));
+        seasonPlayer.setForfeit(rs.getBoolean("forfeit"));
 
-        String [] keys = {"id"};
-        jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
-        return keyHolder.getKey().intValue();
+      } catch (SQLException e) {
+        log.error("problem mapping season player", e);
+      }
+
+      return seasonPlayer;
     }
-
-    private static final class SeasonPlayerMapper implements RowMapper<SeasonPlayer> {
-        @SuppressWarnings("Duplicates")
-        public SeasonPlayer mapRow(ResultSet rs, int rowNum) {
-            SeasonPlayer seasonPlayer = new SeasonPlayer();
-
-            try {
-                seasonPlayer.setId(rs.getInt("id"));
-                seasonPlayer.setPlayerId(rs.getInt("playerId"));
-                seasonPlayer.setSeasonId(rs.getInt("seasonId"));
-                seasonPlayer.setEntries(rs.getInt("entries"));
-                seasonPlayer.setPoints(rs.getInt("points"));
-                seasonPlayer.setPlace(rs.getInt("place"));
-                seasonPlayer.setName(rs.getString("name"));
-                seasonPlayer.setForfeit(rs.getBoolean("forfeit"));
-
-            } catch (SQLException e) {
-                log.error("problem mapping season player", e);
-            }
-
-            return seasonPlayer;
-        }
-    }
+  }
 
 }

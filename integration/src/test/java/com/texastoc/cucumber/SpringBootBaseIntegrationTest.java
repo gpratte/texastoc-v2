@@ -4,16 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.texastoc.TestConstants;
-import com.texastoc.controller.request.CreateGamePlayerRequest;
-import com.texastoc.controller.request.CreateGameRequest;
-import com.texastoc.controller.request.SeatingRequest;
-import com.texastoc.controller.request.UpdateGamePlayerRequest;
-import com.texastoc.controller.request.UpdateGameRequest;
-import com.texastoc.model.game.FirstTimeGamePlayer;
-import com.texastoc.model.game.Game;
-import com.texastoc.model.game.GamePlayer;
-import com.texastoc.model.game.Table;
-import com.texastoc.model.game.TableRequest;
+import com.texastoc.controller.request.*;
+import com.texastoc.model.game.*;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.supply.Supply;
 import com.texastoc.model.user.Player;
@@ -23,11 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
@@ -41,311 +29,313 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class SpringBootBaseIntegrationTest implements TestConstants {
 
-    private final String SERVER_URL = "http://localhost";
-    private String V2_ENDPOINT;
+  private final String SERVER_URL = "http://localhost";
+  private String V2_ENDPOINT;
 
-    @LocalServerPort
-    private int port;
+  @LocalServerPort
+  private int port;
 
-    protected RestTemplate restTemplate;
+  protected RestTemplate restTemplate;
 
-    public SpringBootBaseIntegrationTest() {
-        restTemplate = new RestTemplate();
+  public SpringBootBaseIntegrationTest() {
+    restTemplate = new RestTemplate();
+  }
+
+  protected String endpoint() {
+    if (V2_ENDPOINT == null) {
+      V2_ENDPOINT = SERVER_URL + ":" + port + "/api/v2";
     }
+    return V2_ENDPOINT;
+  }
 
-    protected String endpoint() {
-        if (V2_ENDPOINT == null) {
-            V2_ENDPOINT = SERVER_URL + ":" + port + "/api/v2";
-        }
-        return V2_ENDPOINT;
+  protected String endpointRoot() {
+    return SERVER_URL + ":" + port;
+  }
+
+  protected LocalDate getSeasonStart() {
+    LocalDate now = LocalDate.now();
+    LocalDate start = null;
+    if (now.getMonthValue() < 5) {
+      start = LocalDate.of(now.getYear() - 1, Month.MAY, 1);
+    } else {
+      start = LocalDate.of(now.getYear(), Month.MAY, 1);
     }
+    return start;
+  }
 
-    protected String endpointRoot() {
-        return SERVER_URL + ":" + port;
-    }
+  protected Season createSeason(String token) throws Exception {
+    return createSeason(getSeasonStart(), token);
+  }
 
-    protected LocalDate getSeasonStart() {
-        LocalDate now = LocalDate.now();
-        LocalDate start = null;
-        if (now.getMonthValue() < 5) {
-            start = LocalDate.of(now.getYear() -1, Month.MAY, 1);
-        } else {
-            start = LocalDate.of(now.getYear(), Month.MAY, 1);
-        }
-        return start;
-    }
+  protected Season createSeason(LocalDate start, String token) throws Exception {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
-    protected Season createSeason(String token) throws Exception {
-        return createSeason(getSeasonStart(), token);
-    }
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    String seasonAsJson = mapper.writeValueAsString(start);
+    HttpEntity<String> entity = new HttpEntity<>(seasonAsJson, headers);
 
-    protected Season createSeason(LocalDate start, String token) throws Exception {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
+    return restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
+  }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String seasonAsJson = mapper.writeValueAsString(start);
-        HttpEntity<String> entity = new HttpEntity<>(seasonAsJson, headers);
+  protected Game createGame(CreateGameRequest createGameRequest, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
-        return restTemplate.postForObject(endpoint() + "/seasons", entity, Season.class);
-    }
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
 
-    protected Game createGame(CreateGameRequest createGameRequest, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
+    String createGameRequestAsJson = mapper.writeValueAsString(createGameRequest);
+    HttpEntity<String> entity = new HttpEntity<>(createGameRequestAsJson, headers);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
+    return restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
+  }
 
-        String createGameRequestAsJson = mapper.writeValueAsString(createGameRequest);
-        HttpEntity<String> entity = new HttpEntity<>(createGameRequestAsJson ,headers);
+  protected void updateGame(int gameId, UpdateGameRequest updateGameRequest, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
-        return restTemplate.postForObject(endpoint() + "/games", entity, Game.class);
-    }
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    String updateGameRequestAsJson = mapper.writeValueAsString(updateGameRequest);
+    HttpEntity<String> entity = new HttpEntity<>(updateGameRequestAsJson, headers);
 
-    protected void updateGame(int gameId, UpdateGameRequest updateGameRequest, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
+    restTemplate.put(endpoint() + "/games/" + gameId, entity);
+  }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String updateGameRequestAsJson = mapper.writeValueAsString(updateGameRequest);
-        HttpEntity<String> entity = new HttpEntity<>(updateGameRequestAsJson ,headers);
+  protected GamePlayer addPlayerToGame(CreateGamePlayerRequest cgpr, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
-        restTemplate.put(endpoint() + "/games/" + gameId, entity);
-    }
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    String createGamePlayerRequestAsJson = mapper.writeValueAsString(cgpr);
+    HttpEntity<String> entity = new HttpEntity<>(createGamePlayerRequestAsJson, headers);
 
-    protected GamePlayer addPlayerToGame(CreateGamePlayerRequest cgpr, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
+    return restTemplate.postForObject(endpoint() + "/games/players", entity, GamePlayer.class);
+  }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String createGamePlayerRequestAsJson = mapper.writeValueAsString(cgpr);
-        HttpEntity<String> entity = new HttpEntity<>(createGamePlayerRequestAsJson ,headers);
+  protected GamePlayer addFirstTimePlayerToGame(FirstTimeGamePlayer firstTimeGamePlayer, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
-        return restTemplate.postForObject(endpoint() + "/games/players", entity, GamePlayer.class);
-    }
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    String firstTimeGamePlayerRequestAsJson = mapper.writeValueAsString(firstTimeGamePlayer);
+    HttpEntity<String> entity = new HttpEntity<>(firstTimeGamePlayerRequestAsJson, headers);
 
-    protected GamePlayer addFirstTimePlayerToGame(FirstTimeGamePlayer firstTimeGamePlayer, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
+    return restTemplate.postForObject(endpoint() + "/games/players/first", entity, GamePlayer.class);
+  }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String firstTimeGamePlayerRequestAsJson = mapper.writeValueAsString(firstTimeGamePlayer);
-        HttpEntity<String> entity = new HttpEntity<>(firstTimeGamePlayerRequestAsJson ,headers);
+  protected void updatePlayerInGame(int gamePlayerId, UpdateGamePlayerRequest ugpr, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
-        return restTemplate.postForObject(endpoint() + "/games/players/first", entity, GamePlayer.class);
-    }
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    String updateGamePlayerRequestAsJson = mapper.writeValueAsString(ugpr);
+    HttpEntity<String> entity = new HttpEntity<>(updateGamePlayerRequestAsJson, headers);
 
-    protected void updatePlayerInGame(int gamePlayerId, UpdateGamePlayerRequest ugpr, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
+    restTemplate.put(endpoint() + "/games/players/" + gamePlayerId, entity);
+  }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String updateGamePlayerRequestAsJson = mapper.writeValueAsString(ugpr);
-        HttpEntity<String> entity = new HttpEntity<>(updateGamePlayerRequestAsJson ,headers);
-
-        restTemplate.put(endpoint() + "/games/players/" + gamePlayerId, entity);
-    }
-
-    protected void deletePlayerFromGame(int gamePlayerId, String token) throws JsonProcessingException {
+  protected void deletePlayerFromGame(int gamePlayerId, String token) throws JsonProcessingException {
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.set("Authorization", "Bearer "+ token);
 //
 //        HttpEntity<String> entity = new HttpEntity<>(headers);
 //        restTemplate.delete(endpoint() + "/games/players/" + gamePlayerId, entity);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer "+ token);
-        HttpEntity<String> entity = new HttpEntity<>("", headers);
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "Bearer " + token);
+    HttpEntity<String> entity = new HttpEntity<>("", headers);
 
-        ResponseEntity<Void> response = restTemplate.exchange(
-            endpoint() + "/games/players/" + gamePlayerId,
-            HttpMethod.DELETE,
-            entity,
-            Void.class);
-    }
+    ResponseEntity<Void> response = restTemplate.exchange(
+      endpoint() + "/games/players/" + gamePlayerId,
+      HttpMethod.DELETE,
+      entity,
+      Void.class);
+  }
 
-    protected void finalizeGame(int gameId, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer "+ token);
+  protected void finalizeGame(int gameId, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "Bearer " + token);
 
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        restTemplate.put(endpoint() + "/games/" + gameId + "/finalize", entity);
-    }
+    HttpEntity<String> entity = new HttpEntity<>(headers);
+    restTemplate.put(endpoint() + "/games/" + gameId + "/finalize", entity);
+  }
 
-    protected void createSupply(Supply supply, String token) throws Exception {
+  protected void createSupply(Supply supply, String token) throws Exception {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
 
-        String supplyAsJson = mapper.writeValueAsString(supply);
-        HttpEntity<String> entity = new HttpEntity<>(supplyAsJson, headers);
+    String supplyAsJson = mapper.writeValueAsString(supply);
+    HttpEntity<String> entity = new HttpEntity<>(supplyAsJson, headers);
 
-        restTemplate.postForObject(endpoint() + "/supplies", entity, String.class);
-    }
+    restTemplate.postForObject(endpoint() + "/supplies", entity, String.class);
+  }
 
-    protected List<Supply> getSupplies(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+  protected List<Supply> getSupplies(String token) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
+    HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<List<Supply>> response = restTemplate.exchange(
-            endpoint() + "/supplies",
-            HttpMethod.GET,
-            entity,
-            new ParameterizedTypeReference<List<Supply>>(){});
-        return response.getBody();
+    ResponseEntity<List<Supply>> response = restTemplate.exchange(
+      endpoint() + "/supplies",
+      HttpMethod.GET,
+      entity,
+      new ParameterizedTypeReference<List<Supply>>() {
+      });
+    return response.getBody();
 
-    }
+  }
 
-    protected List<Table> seatPlayers(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests, String token) throws Exception {
+  protected List<Table> seatPlayers(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests, String token) throws Exception {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
 
-        SeatingRequest seatingRequest = SeatingRequest.builder()
-            .gameId(gameId)
-            .numDeadStacks(numDeadStacks)
-            .tableRequests(tableRequests)
-            .build();
-        String seatingRequestAsJson = mapper.writeValueAsString(seatingRequest);
-        HttpEntity<String> entity = new HttpEntity<>(seatingRequestAsJson, headers);
+    SeatingRequest seatingRequest = SeatingRequest.builder()
+      .gameId(gameId)
+      .numDeadStacks(numDeadStacks)
+      .tableRequests(tableRequests)
+      .build();
+    String seatingRequestAsJson = mapper.writeValueAsString(seatingRequest);
+    HttpEntity<String> entity = new HttpEntity<>(seatingRequestAsJson, headers);
 
-        ResponseEntity<List<Table>> response = restTemplate.exchange(
-            endpoint() + "/games/seats",
-            HttpMethod.POST,
-            entity,
-            new ParameterizedTypeReference<List<Table>>(){});
-        return response.getBody();
-    }
+    ResponseEntity<List<Table>> response = restTemplate.exchange(
+      endpoint() + "/games/seats",
+      HttpMethod.POST,
+      entity,
+      new ParameterizedTypeReference<List<Table>>() {
+      });
+    return response.getBody();
+  }
 
-    protected Player createPlayer(Player player) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+  protected Player createPlayer(Player player) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String playerRequestAsJson = mapper.writeValueAsString(player);
-        HttpEntity<String> entity = new HttpEntity<>(playerRequestAsJson ,headers);
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    String playerRequestAsJson = mapper.writeValueAsString(player);
+    HttpEntity<String> entity = new HttpEntity<>(playerRequestAsJson, headers);
 
-        return restTemplate.postForObject(endpoint() + "/players", entity, Player.class);
-    }
+    return restTemplate.postForObject(endpoint() + "/players", entity, Player.class);
+  }
 
-    protected void updatePlayer(Player player, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer "+ token);
+  protected void updatePlayer(Player player, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String playerRequestAsJson = mapper.writeValueAsString(player);
-        HttpEntity<String> entity = new HttpEntity<>(playerRequestAsJson ,headers);
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    String playerRequestAsJson = mapper.writeValueAsString(player);
+    HttpEntity<String> entity = new HttpEntity<>(playerRequestAsJson, headers);
 
-        restTemplate.put(endpoint() + "/players/" + player.getId(), entity);
-    }
+    restTemplate.put(endpoint() + "/players/" + player.getId(), entity);
+  }
 
-    protected Player getPlayer(int id, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer "+ token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+  protected Player getPlayer(int id, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "Bearer " + token);
+    HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<Player> response = restTemplate.exchange(
-            endpoint() + "/players/" + id,
-            HttpMethod.GET,
-            entity,
-            Player.class);
-        return response.getBody();
-    }
+    ResponseEntity<Player> response = restTemplate.exchange(
+      endpoint() + "/players/" + id,
+      HttpMethod.GET,
+      entity,
+      Player.class);
+    return response.getBody();
+  }
 
-    protected Game getGame(int id, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer "+ token);
-        HttpEntity<String> entity = new HttpEntity<>("", headers);
+  protected Game getGame(int id, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "Bearer " + token);
+    HttpEntity<String> entity = new HttpEntity<>("", headers);
 
-        ResponseEntity<Game> response = restTemplate.exchange(
-            endpoint() + "/games/" + id,
-            HttpMethod.GET,
-            entity,
-            Game.class);
-        return response.getBody();
-    }
+    ResponseEntity<Game> response = restTemplate.exchange(
+      endpoint() + "/games/" + id,
+      HttpMethod.GET,
+      entity,
+      Game.class);
+    return response.getBody();
+  }
 
-    protected Season getSeason(int id, String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer "+ token);
-        HttpEntity<String> entity = new HttpEntity<>("", headers);
+  protected Season getSeason(int id, String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "Bearer " + token);
+    HttpEntity<String> entity = new HttpEntity<>("", headers);
 
-        ResponseEntity<Season> response = restTemplate.exchange(
-            endpoint() + "/seasons/" + id,
-            HttpMethod.GET,
-            entity,
-            Season.class);
-        return response.getBody();
-    }
+    ResponseEntity<Season> response = restTemplate.exchange(
+      endpoint() + "/seasons/" + id,
+      HttpMethod.GET,
+      entity,
+      Season.class);
+    return response.getBody();
+  }
 
-    protected Season getCurrentSeason(String token) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer "+ token);
-        HttpEntity<String> entity = new HttpEntity<>("", headers);
+  protected Season getCurrentSeason(String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "Bearer " + token);
+    HttpEntity<String> entity = new HttpEntity<>("", headers);
 
-        ResponseEntity<Season> response = restTemplate.exchange(
-            endpoint() + "/seasons/current",
-            HttpMethod.GET,
-            entity,
-            Season.class);
-        return response.getBody();
-    }
+    ResponseEntity<Season> response = restTemplate.exchange(
+      endpoint() + "/seasons/current",
+      HttpMethod.GET,
+      entity,
+      Season.class);
+    return response.getBody();
+  }
 
-    protected String login(String email, String password) throws JsonProcessingException {
+  protected String login(String email, String password) throws JsonProcessingException {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
 
-        LoginParameters loginParameters = new LoginParameters();
-        loginParameters.email = email;
-        loginParameters.password = password;
-        String loginParametersAsJson = mapper.writeValueAsString(loginParameters);
-        HttpEntity<String> entity = new HttpEntity<>(loginParametersAsJson, headers);
+    LoginParameters loginParameters = new LoginParameters();
+    loginParameters.email = email;
+    loginParameters.password = password;
+    String loginParametersAsJson = mapper.writeValueAsString(loginParameters);
+    HttpEntity<String> entity = new HttpEntity<>(loginParametersAsJson, headers);
 
-        String url = endpointRoot() + "/login";
-        return restTemplate.postForObject(url, entity, Token.class).getToken();
-    }
+    String url = endpointRoot() + "/login";
+    return restTemplate.postForObject(url, entity, Token.class).getToken();
+  }
 
 
-    @Getter
-    @Setter
-    private static class LoginParameters {
-        String email;
-        String password;
-    }
+  @Getter
+  @Setter
+  private static class LoginParameters {
+    String email;
+    String password;
+  }
 
-    @Getter
-    @Setter
-    private static class Token {
-        String token;
-    }
+  @Getter
+  @Setter
+  private static class Token {
+    String token;
+  }
 
 }

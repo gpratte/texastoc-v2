@@ -44,10 +44,7 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 42-quarterly-start-end-dates
+## Current Branch: 43-format-code-imports
+Reformatted the Java code to indent 2 spaces.
 
-Standardize the quarterly dates
-* 1st: May 1st to the last day of July
-* 2nd: August 1st to the last day of October
-* 3rd: November 1st to the last day of January
-* 4th: February 1st to the last day of April 
+Also added IntelliJ Auto Save plugin which will format any file when it is saved.

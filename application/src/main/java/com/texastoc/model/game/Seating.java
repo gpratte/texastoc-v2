@@ -14,10 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Seating {
-    private int id;
-    private int gameId;
-    private int numTables;
-    private int numSeatPerTable;
-    private List<TableRequest> tableRequests;
-    private List<Table> tables;
+  private int id;
+  private int gameId;
+  private int numTables;
+  private int numSeatPerTable;
+  private List<TableRequest> tableRequests;
+  private List<Table> tables;
 }

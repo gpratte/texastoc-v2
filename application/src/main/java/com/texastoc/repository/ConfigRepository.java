@@ -14,38 +14,38 @@ import java.sql.SQLException;
 @Repository
 public class ConfigRepository {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+  private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public ConfigRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+  public ConfigRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
+
+
+  public TocConfig get() {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    return jdbcTemplate.queryForObject("select * from tocconfig", params, new TocConfigMapper());
+  }
+
+  private static final class TocConfigMapper implements RowMapper<TocConfig> {
+    public TocConfig mapRow(ResultSet rs, int rowNum) {
+      TocConfig tocConfig = null;
+      try {
+        tocConfig = TocConfig.builder()
+          .kittyDebit(rs.getInt("kittyDebit"))
+          .annualTocCost(rs.getInt("annualTocCost"))
+          .quarterlyTocCost(rs.getInt("quarterlyTocCost"))
+          .quarterlyNumPayouts(rs.getInt("quarterlyNumPayouts"))
+          .regularBuyInCost(rs.getInt("regularBuyInCost"))
+          .regularRebuyCost(rs.getInt("regularRebuyCost"))
+          .regularRebuyTocDebit(rs.getInt("regularRebuyTocDebit"))
+          .doubleBuyInCost(rs.getInt("doubleBuyInCost"))
+          .doubleRebuyCost(rs.getInt("doubleRebuyCost"))
+          .doubleRebuyTocDebit(rs.getInt("doubleRebuyTocDebit"))
+          .build();
+      } catch (SQLException e) {
+        log.error("Problem mapping TocConfig", e);
+      }
+      return tocConfig;
     }
-
-
-    public TocConfig get() {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        return jdbcTemplate.queryForObject("select * from tocconfig", params, new TocConfigMapper());
-    }
-
-    private static final class TocConfigMapper implements RowMapper<TocConfig> {
-        public TocConfig mapRow(ResultSet rs, int rowNum) {
-            TocConfig tocConfig = null;
-            try {
-                tocConfig = TocConfig.builder()
-                    .kittyDebit(rs.getInt("kittyDebit"))
-                    .annualTocCost(rs.getInt("annualTocCost"))
-                    .quarterlyTocCost(rs.getInt("quarterlyTocCost"))
-                    .quarterlyNumPayouts(rs.getInt("quarterlyNumPayouts"))
-                    .regularBuyInCost(rs.getInt("regularBuyInCost"))
-                    .regularRebuyCost(rs.getInt("regularRebuyCost"))
-                    .regularRebuyTocDebit(rs.getInt("regularRebuyTocDebit"))
-                    .doubleBuyInCost(rs.getInt("doubleBuyInCost"))
-                    .doubleRebuyCost(rs.getInt("doubleRebuyCost"))
-                    .doubleRebuyTocDebit(rs.getInt("doubleRebuyTocDebit"))
-                    .build();
-            } catch (SQLException e) {
-                log.error("Problem mapping TocConfig", e);
-            }
-            return tocConfig;
-        }
-    }
+  }
 }

@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QuarterlySeasonPlayer {
 
-    private int id;
-    private int playerId;
-    private int seasonId;
-    private int qSeasonId;
-    private String name;
-    private int entries;
-    private int points;
-    private Integer place;
+  private int id;
+  private int playerId;
+  private int seasonId;
+  private int qSeasonId;
+  private String name;
+  private int entries;
+  private int points;
+  private Integer place;
 
 }
