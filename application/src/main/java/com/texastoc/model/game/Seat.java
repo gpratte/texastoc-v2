@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Seat {
 
-    private int gameId;
-    private int seatNumber;
-    private int tableNumber;
-    private Integer gamePlayerId;
-    private String gamePlayerName;
+  private int gameId;
+  private int seatNumber;
+  private int tableNumber;
+  private Integer gamePlayerId;
+  private String gamePlayerName;
 }

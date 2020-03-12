@@ -7,15 +7,15 @@ import lombok.Getter;
 @Getter
 public class TocConfig {
 
-    private int kittyDebit;
-    private int annualTocCost;
-    private int quarterlyTocCost;
-    private int quarterlyNumPayouts;
-    private int regularBuyInCost;
-    private int regularRebuyCost;
-    private int regularRebuyTocDebit;
-    private int doubleBuyInCost;
-    private int doubleRebuyCost;
-    private int doubleRebuyTocDebit;
+  private int kittyDebit;
+  private int annualTocCost;
+  private int quarterlyTocCost;
+  private int quarterlyNumPayouts;
+  private int regularBuyInCost;
+  private int regularRebuyCost;
+  private int regularRebuyTocDebit;
+  private int doubleBuyInCost;
+  private int doubleRebuyCost;
+  private int doubleRebuyTocDebit;
 
 }

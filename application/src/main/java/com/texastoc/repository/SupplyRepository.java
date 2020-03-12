@@ -16,50 +16,50 @@ import java.util.List;
 @Repository
 public class SupplyRepository {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+  private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public SupplyRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+  public SupplyRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
+
+  public List<Supply> get() {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    return jdbcTemplate
+        .query("select * from supply",
+            params,
+            new SupplyMapper());
+  }
+
+  private static final String INSERT_SQL = "INSERT INTO supply "
+      + " (date, type, amount, description) "
+      + " VALUES "
+      + " (:date, :type, :amount, :description)";
+
+  public void save(Supply supply) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("date", supply.getDate());
+    params.addValue("type", supply.getType().name());
+    params.addValue("amount", supply.getAmount());
+    params.addValue("description", supply.getDescription());
+
+    jdbcTemplate.update(INSERT_SQL, params);
+  }
+
+  private static final class SupplyMapper implements RowMapper<Supply> {
+    public Supply mapRow(ResultSet rs, int rowNum) {
+      Supply supply = new Supply();
+      try {
+        supply.setId(rs.getInt("id"));
+        supply.setAmount(rs.getInt("amount"));
+        supply.setDate(rs.getDate("date").toLocalDate());
+        supply.setDescription(rs.getString("description"));
+        supply.setType(SupplyType.valueOf(rs.getString("type")));
+      } catch (SQLException e) {
+        log.error("Problem mapping Supply", e);
+      }
+
+      return supply;
     }
-
-    public List<Supply> get() {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        return jdbcTemplate
-            .query("select * from supply",
-                params,
-                new SupplyMapper());
-    }
-
-    private static final String INSERT_SQL = "INSERT INTO supply "
-        + " (date, type, amount, description) "
-        + " VALUES "
-        + " (:date, :type, :amount, :description)";
-
-    public void save(Supply supply) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("date", supply.getDate());
-        params.addValue("type", supply.getType().name());
-        params.addValue("amount", supply.getAmount());
-        params.addValue("description", supply.getDescription());
-
-        jdbcTemplate.update(INSERT_SQL, params);
-    }
-
-    private static final class SupplyMapper implements RowMapper<Supply> {
-        public Supply mapRow(ResultSet rs, int rowNum) {
-            Supply supply = new Supply();
-            try {
-                supply.setId(rs.getInt("id"));
-                supply.setAmount(rs.getInt("amount"));
-                supply.setDate(rs.getDate("date").toLocalDate());
-                supply.setDescription(rs.getString("description"));
-                supply.setType(SupplyType.valueOf(rs.getString("type")));
-            } catch (SQLException e) {
-                log.error("Problem mapping Supply", e);
-            }
-
-            return supply;
-        }
-    }
+  }
 
 }

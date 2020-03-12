@@ -9,26 +9,27 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RoleRepository {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+  private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    private static final int USER_ROLE = 2;
+  private static final int USER_ROLE = 2;
 
-    public RoleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+  public RoleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
 
-    private static final String INSERT_SQL = "INSERT INTO player_roles "
-        + " (playerId, roleId) "
-        + " VALUES "
-        + " (:playerId, :roleId) ";
-    public void save(int playerId) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("playerId", playerId);
+  private static final String INSERT_SQL = "INSERT INTO player_roles "
+      + " (playerId, roleId) "
+      + " VALUES "
+      + " (:playerId, :roleId) ";
 
-        // Hardcoded to USER ROLE
-        params.addValue("roleId", USER_ROLE);
+  public void save(int playerId) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("playerId", playerId);
 
-        jdbcTemplate.update(INSERT_SQL, params);
-    }
+    // Hardcoded to USER ROLE
+    params.addValue("roleId", USER_ROLE);
+
+    jdbcTemplate.update(INSERT_SQL, params);
+  }
 
 }

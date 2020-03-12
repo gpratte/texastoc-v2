@@ -17,44 +17,44 @@ import java.util.ArrayList;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider JwtTokenProvider;
+  private final AuthenticationManager authenticationManager;
+  private final JwtTokenProvider JwtTokenProvider;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenProvider JwtTokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.JwtTokenProvider = JwtTokenProvider;
+  public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenProvider JwtTokenProvider) {
+    this.authenticationManager = authenticationManager;
+    this.JwtTokenProvider = JwtTokenProvider;
+  }
+
+  @Override
+  public Authentication attemptAuthentication(HttpServletRequest req,
+                                              HttpServletResponse res) throws AuthenticationException {
+    try {
+      Player player = new ObjectMapper()
+          .readValue(req.getInputStream(), Player.class);
+
+      return authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(
+              player.getEmail(),
+              player.getPassword(),
+              new ArrayList<>())
+      );
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest req,
-                                                HttpServletResponse res) throws AuthenticationException {
-        try {
-            Player player = new ObjectMapper()
-                .readValue(req.getInputStream(), Player.class);
+  @Override
+  protected void successfulAuthentication(HttpServletRequest req,
+                                          HttpServletResponse res,
+                                          FilterChain chain,
+                                          Authentication auth) throws IOException, ServletException {
+    final String token = JwtTokenProvider.generateToken(auth);
 
-            return authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    player.getEmail(),
-                    player.getPassword(),
-                    new ArrayList<>())
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest req,
-                                            HttpServletResponse res,
-                                            FilterChain chain,
-                                            Authentication auth) throws IOException, ServletException {
-        final String token = JwtTokenProvider.generateToken(auth);
-
-        // return token in body as json
-        res.setContentType("application/json");
-        res.setCharacterEncoding("UTF-8");
-        res.getWriter().write("{\"token\":\"" + token + "\"}"
-        );
-    }
+    // return token in body as json
+    res.setContentType("application/json");
+    res.setCharacterEncoding("UTF-8");
+    res.getWriter().write("{\"token\":\"" + token + "\"}"
+    );
+  }
 
 }

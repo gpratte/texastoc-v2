@@ -9,10 +9,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Clock {
 
-    private int clockId;
-    private int minutes;
-    private int seconds;
-    private boolean playing;
-    private Round thisRound;
-    private Round nextRound;
+  private int clockId;
+  private int minutes;
+  private int seconds;
+  private boolean playing;
+  private Round thisRound;
+  private Round nextRound;
 }

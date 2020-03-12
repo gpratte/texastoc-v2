@@ -10,10 +10,10 @@ import java.util.List;
 @Data
 @Builder
 public class SeatingRequest {
-    @NotNull(message = "game id is required")
-    private Integer gameId;
+  @NotNull(message = "game id is required")
+  private Integer gameId;
 
-    private Integer numDeadStacks;
+  private Integer numDeadStacks;
 
-    private List<TableRequest> tableRequests;
+  private List<TableRequest> tableRequests;
 }

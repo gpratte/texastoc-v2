@@ -8,9 +8,9 @@ import lombok.Data;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateGamePlayerRequest {
-    private int playerId;
-    private int gameId;
-    private Integer buyInCollected;
-    private Integer annualTocCollected;
-    private Integer quarterlyTocCollected;
+  private int playerId;
+  private int gameId;
+  private Integer buyInCollected;
+  private Integer annualTocCollected;
+  private Integer quarterlyTocCollected;
 }

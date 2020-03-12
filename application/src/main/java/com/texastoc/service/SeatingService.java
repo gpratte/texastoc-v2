@@ -16,167 +16,168 @@ import java.util.Random;
 @Service
 public class SeatingService {
 
-    private final SeatingRepository seatingRepository;
-    private final GamePlayerRepository gamePlayerRepository;
+  private final SeatingRepository seatingRepository;
+  private final GamePlayerRepository gamePlayerRepository;
 
-    private final Random random = new Random(System.currentTimeMillis());
+  private final Random random = new Random(System.currentTimeMillis());
 
-    public SeatingService(SeatingRepository seatingRepository, GamePlayerRepository gamePlayerRepository) {
-        this.seatingRepository = seatingRepository;
-        this.gamePlayerRepository = gamePlayerRepository;
+  public SeatingService(SeatingRepository seatingRepository, GamePlayerRepository gamePlayerRepository) {
+    this.seatingRepository = seatingRepository;
+    this.gamePlayerRepository = gamePlayerRepository;
+  }
+
+  public List<Table> get(int gameId) {
+    return seatingRepository.getTables(gameId);
+  }
+
+  public List<Table> seat(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests) {
+
+    List<GamePlayer> currentPlayers = gamePlayerRepository.selectByGameId(gameId);
+
+    List<GamePlayer> playersToRandomize = new ArrayList<>();
+
+    // Add players that are in the game and have a buy in
+    for (GamePlayer gamePlayer : currentPlayers) {
+      if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0) {
+        playersToRandomize.add(gamePlayer);
+      }
     }
 
-    public List<Table> get(int gameId) {
-        return seatingRepository.getTables(gameId);
+    if (playersToRandomize.size() > 2) {
+      // Randomize the list quit a bit
+      for (int loop = 0; loop < 100; ++loop) {
+        // Swap two players
+        int index1 = random.nextInt(playersToRandomize.size());
+        int index2 = random.nextInt(playersToRandomize.size());
+        GamePlayer gamePlayer = playersToRandomize.get(index1);
+        playersToRandomize.set(index1, playersToRandomize.get(index2));
+        playersToRandomize.set(index2, gamePlayer);
+      }
     }
 
-    public List<Table> seat(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests) {
+    numDeadStacks = numDeadStacks == null ? 0 : numDeadStacks;
 
-        List<GamePlayer> currentPlayers = gamePlayerRepository.selectByGameId(gameId);
+    // Create tables max 10 players
+    int numTables = (int) Math.ceil((playersToRandomize.size() + numDeadStacks) / (double) 10);
+    List<Table> tables = new ArrayList<>(numTables);
 
-        List<GamePlayer> playersToRandomize = new ArrayList<>();
+    if (numTables < 1) {
+      return tables;
+    }
 
-        // Add players that are in the game and have a buy in
-        for (GamePlayer gamePlayer : currentPlayers) {
-            if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0) {
-                playersToRandomize.add(gamePlayer);
-            }
+    int totalPlayersRemaining = playersToRandomize.size();
+    int totalDeadStacksRemaining = numDeadStacks;
+
+    // Create the seats for the tables (1's based)
+    for (int i = 0; i < numTables; i++) {
+      Table table = Table.builder()
+          .number(i + 1)
+          .gameId(gameId)
+          .build();
+      tables.add(table);
+      List<Seat> seats = new LinkedList<>();
+      table.setSeats(seats);
+    }
+
+    while ((totalPlayersRemaining + totalDeadStacksRemaining) > 0) {
+
+      // Add players in order
+      for (Table table : tables) {
+        if (totalPlayersRemaining > 0) {
+
+          // Get a player
+          GamePlayer gamePlayer = playersToRandomize.get(totalPlayersRemaining - 1);
+          totalPlayersRemaining -= 1;
+
+          // Add a seat
+          List<Seat> seats = table.getSeats();
+          seats.add(Seat.builder()
+              .gameId(gameId)
+              .seatNumber(seats.size() + 1)
+              .tableNumber(table.getNumber())
+              .gamePlayerId(gamePlayer.getId())
+              .gamePlayerName(gamePlayer.getName())
+              .build());
         }
+      }
 
-        if (playersToRandomize.size() > 2) {
-            // Randomize the list quit a bit
-            for (int loop = 0; loop < 100; ++loop) {
-                // Swap two players
-                int index1 = random.nextInt(playersToRandomize.size());
-                int index2 = random.nextInt(playersToRandomize.size());
-                GamePlayer gamePlayer = playersToRandomize.get(index1);
-                playersToRandomize.set(index1, playersToRandomize.get(index2));
-                playersToRandomize.set(index2, gamePlayer);
-            }
+      // Add dead stack in reverse order
+      for (int i = tables.size() - 1; i >= 0; i--) {
+        if (totalDeadStacksRemaining > 0) {
+          Table table = tables.get(i);
+          totalDeadStacksRemaining -= 1;
+
+          // Add a seat
+          List<Seat> seats = table.getSeats();
+          seats.add(Seat.builder()
+              .gameId(gameId)
+              .seatNumber(seats.size() + 1)
+              .tableNumber(table.getNumber())
+              .gamePlayerName("Dead Stack")
+              .build());
         }
+      }
+    }
 
-        numDeadStacks = numDeadStacks == null ? 0 : numDeadStacks;
+    if (tableRequests != null) {
 
-        // Create tables max 10 players
-        int numTables = (int)Math.ceil((playersToRandomize.size() + numDeadStacks) / (double)10);
-        List<Table> tables = new ArrayList<>(numTables);
+      // Go through the requests
+      for (TableRequest tableRequest : tableRequests) {
 
-        if (numTables < 1) {
-            return tables;
-        }
-
-        int totalPlayersRemaining = playersToRandomize.size();
-        int totalDeadStacksRemaining = numDeadStacks;
-
-        // Create the seats for the tables (1's based)
-        for (int i = 0; i < numTables; i++) {
-            Table table = Table.builder()
-                .number(i+1)
-                .gameId(gameId)
-                .build();
-            tables.add(table);
-            List<Seat> seats = new LinkedList<>();
-            table.setSeats(seats);
-        }
-
-        while ( (totalPlayersRemaining + totalDeadStacksRemaining) > 0 ) {
-
-            // Add players in order
-            for (Table table : tables) {
-                if (totalPlayersRemaining > 0) {
-
-                    // Get a player
-                    GamePlayer gamePlayer = playersToRandomize.get(totalPlayersRemaining - 1);
-                    totalPlayersRemaining -= 1;
-
-                    // Add a seat
-                    List<Seat> seats = table.getSeats();
-                    seats.add(Seat.builder()
-                        .gameId(gameId)
-                        .seatNumber(seats.size() + 1)
-                        .tableNumber(table.getNumber())
-                        .gamePlayerId(gamePlayer.getId())
-                        .gamePlayerName(gamePlayer.getName())
-                        .build());
-                }
-            }
-
-            // Add dead stack in reverse order
-            for (int i = tables.size() - 1; i >= 0; i--) {
-                if (totalDeadStacksRemaining > 0) {
-                    Table table = tables.get(i);
-                    totalDeadStacksRemaining -= 1;
-
-                    // Add a seat
-                    List<Seat> seats = table.getSeats();
-                    seats.add(Seat.builder()
-                        .gameId(gameId)
-                        .seatNumber(seats.size() + 1)
-                        .tableNumber(table.getNumber())
-                        .gamePlayerName("Dead Stack")
-                        .build());
-                }
-            }
-        }
-
-        if (tableRequests != null) {
-
-            // Go through the requests
-            for (TableRequest tableRequest : tableRequests) {
-
-                // Find the seat of the player that wants to swap
-                Seat playerThatWantsToSwapSeat = null;
-                tableLoop: for (Table table : tables) {
-                    for (Seat seat : table.getSeats()) {
-                        if (seat.getGamePlayerId() != null && seat.getGamePlayerId() == tableRequest.getGamePlayerId()) {
-                            playerThatWantsToSwapSeat = seat;
-                            break tableLoop;
-                        }
-                    }
-                }
-
-                if (playerThatWantsToSwapSeat == null) {
-                    // Should never happen
-                    throw new RuntimeException("Cannot find the seat of the player that want to swap");
-                }
-
-                Table tableToMoveTo = tables.get(tableRequest.getTableNum() - 1);
-
-                // See if player is already at that table
-                if (playerThatWantsToSwapSeat.getTableNumber() != tableToMoveTo.getNumber()) {
-                    for (Seat seatAtTableToMoveTo : tableToMoveTo.getSeats()) {
-                        // Find a seat to swap - avoid seats that are dead stacks and avoid seats of players that have already been swapped
-                        if (seatAtTableToMoveTo.getGamePlayerId() != null && !seatBelongsToPlayerThatRequestedTheTable(seatAtTableToMoveTo.getGamePlayerId(), tableRequests)) {
-                            // Swap
-                            int saveGamePlayerId = seatAtTableToMoveTo.getGamePlayerId();
-                            String saveGamePlayerName = seatAtTableToMoveTo.getGamePlayerName();
-
-                            seatAtTableToMoveTo.setGamePlayerId(playerThatWantsToSwapSeat.getGamePlayerId());
-                            seatAtTableToMoveTo.setGamePlayerName(playerThatWantsToSwapSeat.getGamePlayerName());
-
-                            playerThatWantsToSwapSeat.setGamePlayerId(saveGamePlayerId);
-                            playerThatWantsToSwapSeat.setGamePlayerName(saveGamePlayerName);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        seatingRepository.deleteByGameId(gameId);
+        // Find the seat of the player that wants to swap
+        Seat playerThatWantsToSwapSeat = null;
+        tableLoop:
         for (Table table : tables) {
-            seatingRepository.saveTable(table);
-        }
-
-        return tables;
-    }
-
-    private boolean seatBelongsToPlayerThatRequestedTheTable(int gamePlayerId, List<TableRequest> tableRequests) {
-        for (TableRequest tableRequest : tableRequests) {
-            if (tableRequest.getGamePlayerId() == gamePlayerId) {
-                return true;
+          for (Seat seat : table.getSeats()) {
+            if (seat.getGamePlayerId() != null && seat.getGamePlayerId() == tableRequest.getGamePlayerId()) {
+              playerThatWantsToSwapSeat = seat;
+              break tableLoop;
             }
+          }
         }
-        return false;
+
+        if (playerThatWantsToSwapSeat == null) {
+          // Should never happen
+          throw new RuntimeException("Cannot find the seat of the player that want to swap");
+        }
+
+        Table tableToMoveTo = tables.get(tableRequest.getTableNum() - 1);
+
+        // See if player is already at that table
+        if (playerThatWantsToSwapSeat.getTableNumber() != tableToMoveTo.getNumber()) {
+          for (Seat seatAtTableToMoveTo : tableToMoveTo.getSeats()) {
+            // Find a seat to swap - avoid seats that are dead stacks and avoid seats of players that have already been swapped
+            if (seatAtTableToMoveTo.getGamePlayerId() != null && !seatBelongsToPlayerThatRequestedTheTable(seatAtTableToMoveTo.getGamePlayerId(), tableRequests)) {
+              // Swap
+              int saveGamePlayerId = seatAtTableToMoveTo.getGamePlayerId();
+              String saveGamePlayerName = seatAtTableToMoveTo.getGamePlayerName();
+
+              seatAtTableToMoveTo.setGamePlayerId(playerThatWantsToSwapSeat.getGamePlayerId());
+              seatAtTableToMoveTo.setGamePlayerName(playerThatWantsToSwapSeat.getGamePlayerName());
+
+              playerThatWantsToSwapSeat.setGamePlayerId(saveGamePlayerId);
+              playerThatWantsToSwapSeat.setGamePlayerName(saveGamePlayerName);
+              break;
+            }
+          }
+        }
+      }
     }
+
+    seatingRepository.deleteByGameId(gameId);
+    for (Table table : tables) {
+      seatingRepository.saveTable(table);
+    }
+
+    return tables;
+  }
+
+  private boolean seatBelongsToPlayerThatRequestedTheTable(int gamePlayerId, List<TableRequest> tableRequests) {
+    for (TableRequest tableRequest : tableRequests) {
+      if (tableRequest.getGamePlayerId() == gamePlayerId) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

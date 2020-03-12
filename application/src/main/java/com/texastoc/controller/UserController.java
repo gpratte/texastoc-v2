@@ -8,11 +8,11 @@ import java.security.Principal;
 
 @SuppressWarnings("unused")
 @RestController
-@CrossOrigin(origins="*", maxAge=3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
 
-    @RequestMapping("/user")
-    public Principal user(Principal user) {
-        return user;
-    }
+  @RequestMapping("/user")
+  public Principal user(Principal user) {
+    return user;
+  }
 }

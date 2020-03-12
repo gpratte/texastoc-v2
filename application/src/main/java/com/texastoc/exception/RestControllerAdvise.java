@@ -20,30 +20,30 @@ import java.util.Date;
 @ControllerAdvice
 public class RestControllerAdvise extends ResponseEntityExceptionHandler {
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(
-            new Date(), "Validation Failed",
-            ex.getBindingResult().toString());
-        return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
-    }
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(), "Validation Failed",
+        ex.getBindingResult().toString());
+    return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler(value = { AccessDeniedException.class })
-    protected void handleAccessDenied(IncorrectResultSizeDataAccessException ex, HttpServletResponse response) throws IOException {
-        log.info(ex.getMessage(), ex);
-        response.sendError(HttpStatus.UNAUTHORIZED.value());
-    }
+  @ExceptionHandler(value = {AccessDeniedException.class})
+  protected void handleAccessDenied(IncorrectResultSizeDataAccessException ex, HttpServletResponse response) throws IOException {
+    log.info(ex.getMessage(), ex);
+    response.sendError(HttpStatus.UNAUTHORIZED.value());
+  }
 
-    @ExceptionHandler(value = { IncorrectResultSizeDataAccessException.class })
-    protected void handleConflict(IncorrectResultSizeDataAccessException ex, HttpServletResponse response) throws IOException {
-        log.info(ex.getMessage(), ex);
-        response.sendError(HttpStatus.NOT_FOUND.value());
-    }
+  @ExceptionHandler(value = {IncorrectResultSizeDataAccessException.class})
+  protected void handleConflict(IncorrectResultSizeDataAccessException ex, HttpServletResponse response) throws IOException {
+    log.info(ex.getMessage(), ex);
+    response.sendError(HttpStatus.NOT_FOUND.value());
+  }
 
-    @ExceptionHandler(value = { RuntimeException.class })
-    protected void handleRuntimeException(RuntimeException ex, HttpServletResponse response) throws IOException {
-        log.error(ex.getMessage(), ex);
-        response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
+  @ExceptionHandler(value = {RuntimeException.class})
+  protected void handleRuntimeException(RuntimeException ex, HttpServletResponse response) throws IOException {
+    log.error(ex.getMessage(), ex);
+    response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
+  }
 
 }

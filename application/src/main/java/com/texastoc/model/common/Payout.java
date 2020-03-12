@@ -6,7 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public final class Payout {
-    private int numPayouts;
-    private int place;
-    private double percent;
+  private int numPayouts;
+  private int place;
+  private double percent;
 }

@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Round {
-    private int round;
-    private int smallBlind;
-    private int bigBlind;
-    private int ante;
+  private int round;
+  private int smallBlind;
+  private int bigBlind;
+  private int ante;
 }

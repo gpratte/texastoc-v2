@@ -12,9 +12,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Supply {
-    private int id;
-    private LocalDate date;
-    private SupplyType type;
-    private int amount;
-    private String description;
+  private int id;
+  private LocalDate date;
+  private SupplyType type;
+  private int amount;
+  private String description;
 }
