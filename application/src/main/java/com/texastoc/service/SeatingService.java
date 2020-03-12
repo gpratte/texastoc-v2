@@ -71,9 +71,9 @@ public class SeatingService {
     // Create the seats for the tables (1's based)
     for (int i = 0; i < numTables; i++) {
       Table table = Table.builder()
-          .number(i + 1)
-          .gameId(gameId)
-          .build();
+        .number(i + 1)
+        .gameId(gameId)
+        .build();
       tables.add(table);
       List<Seat> seats = new LinkedList<>();
       table.setSeats(seats);
@@ -92,12 +92,12 @@ public class SeatingService {
           // Add a seat
           List<Seat> seats = table.getSeats();
           seats.add(Seat.builder()
-              .gameId(gameId)
-              .seatNumber(seats.size() + 1)
-              .tableNumber(table.getNumber())
-              .gamePlayerId(gamePlayer.getId())
-              .gamePlayerName(gamePlayer.getName())
-              .build());
+            .gameId(gameId)
+            .seatNumber(seats.size() + 1)
+            .tableNumber(table.getNumber())
+            .gamePlayerId(gamePlayer.getId())
+            .gamePlayerName(gamePlayer.getName())
+            .build());
         }
       }
 
@@ -110,11 +110,11 @@ public class SeatingService {
           // Add a seat
           List<Seat> seats = table.getSeats();
           seats.add(Seat.builder()
-              .gameId(gameId)
-              .seatNumber(seats.size() + 1)
-              .tableNumber(table.getNumber())
-              .gamePlayerName("Dead Stack")
-              .build());
+            .gameId(gameId)
+            .seatNumber(seats.size() + 1)
+            .tableNumber(table.getNumber())
+            .gamePlayerName("Dead Stack")
+            .build());
         }
       }
     }

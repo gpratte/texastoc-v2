@@ -95,18 +95,18 @@ public class SeasonServiceTest implements TestConstants {
 
     // Arrange
     Season expectedSeason = Season.builder()
-        // @formatter:off
-        .id(1)
-        .build();
+      // @formatter:off
+      .id(1)
+      .build();
     // @formatter:on
 
     List<QuarterlySeason> qSeasons = new ArrayList<>(4);
     for (int i = 1; i <= 4; i++) {
       // @formatter:off
       QuarterlySeason qSeason = QuarterlySeason.builder()
-          .id(i)
-          .quarter(Quarter.fromInt(i))
-          .build();
+        .id(i)
+        .quarter(Quarter.fromInt(i))
+        .build();
       // @formatter:on
       qSeasons.add(qSeason);
     }
@@ -114,16 +114,16 @@ public class SeasonServiceTest implements TestConstants {
     List<Game> games = new LinkedList<>();
     // @formatter:off
     Game game = Game.builder()
-        .id(1)
-        .build();
+      .id(1)
+      .build();
     // @formatter:on
     games.add(game);
     expectedSeason.setGames(games);
 
     Mockito.when(seasonRepository.get(1))
-        .thenReturn(Season.builder()
-            .id(1)
-            .build());
+      .thenReturn(Season.builder()
+        .id(1)
+        .build());
 
     Mockito.when(qSeasonRepository.getBySeasonId(1)).thenReturn(qSeasons);
 
@@ -167,9 +167,9 @@ public class SeasonServiceTest implements TestConstants {
     // If the cached season last calculated date is equal to the current
     // season's last calcuated date then return the cached value
     Season season1 = Season.builder()
-        .id(1)
-        .buyInCost(100)
-        .build();
+      .id(1)
+      .buyInCost(100)
+      .build();
 
     Mockito.when(seasonRepository.get(1)).thenReturn(season1);
 
@@ -203,10 +203,10 @@ public class SeasonServiceTest implements TestConstants {
     Mockito.when(seasonRepository.getLastCalculated(1)).thenReturn(now);
 
     Season season2 = Season.builder()
-        .id(1)
-        .buyInCost(200)
-        .lastCalculated(now)
-        .build();
+      .id(1)
+      .buyInCost(200)
+      .lastCalculated(now)
+      .build();
 
     Mockito.when(seasonRepository.get(1)).thenReturn(season2);
 
@@ -240,10 +240,10 @@ public class SeasonServiceTest implements TestConstants {
     Mockito.when(seasonRepository.getLastCalculated(1)).thenReturn(later);
 
     Season season3 = Season.builder()
-        .id(1)
-        .buyInCost(300)
-        .lastCalculated(later)
-        .build();
+      .id(1)
+      .buyInCost(300)
+      .lastCalculated(later)
+      .build();
 
     Mockito.when(seasonRepository.get(1)).thenReturn(season3);
 

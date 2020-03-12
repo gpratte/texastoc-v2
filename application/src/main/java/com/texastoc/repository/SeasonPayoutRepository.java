@@ -29,16 +29,16 @@ public class SeasonPayoutRepository {
     params.addValue("id", id);
 
     return jdbcTemplate
-        .query("select * from seasonpayout where seasonId = :id order by amount desc",
-            params,
-            new SeasonPayoutMapper());
+      .query("select * from seasonpayout where seasonId = :id order by amount desc",
+        params,
+        new SeasonPayoutMapper());
   }
 
   private static final String INSERT_SQL =
-      "INSERT INTO seasonpayout "
-          + "(seasonId, place, amount) "
-          + " VALUES "
-          + " (:seasonId, :place, :amount)";
+    "INSERT INTO seasonpayout "
+      + "(seasonId, place, amount) "
+      + " VALUES "
+      + " (:seasonId, :place, :amount)";
 
   @SuppressWarnings("Duplicates")
   public int save(final SeasonPayout payout) {

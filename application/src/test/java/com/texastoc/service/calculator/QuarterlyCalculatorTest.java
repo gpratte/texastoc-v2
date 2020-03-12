@@ -48,8 +48,8 @@ public class QuarterlyCalculatorTest implements TestConstants {
   public void testNoGames() {
 
     QuarterlySeason currentSeason = QuarterlySeason.builder()
-        .id(1)
-        .build();
+      .id(1)
+      .build();
     Mockito.when(qSeasonRepository.getById(1)).thenReturn(currentSeason);
 
     Mockito.when(gamePlayerRepository.selectQuarterlyTocPlayersByQuarterlySeasonId(1)).thenReturn(Collections.emptyList());
@@ -73,8 +73,8 @@ public class QuarterlyCalculatorTest implements TestConstants {
   public void test1Games() {
 
     QuarterlySeason currentSeason = QuarterlySeason.builder()
-        .id(1)
-        .build();
+      .id(1)
+      .build();
     Mockito.when(qSeasonRepository.getById(1)).thenReturn(currentSeason);
 
     List<GamePlayer> gameQSeasonPlayers = new ArrayList<>(10);
@@ -87,27 +87,27 @@ public class QuarterlyCalculatorTest implements TestConstants {
       }
 
       GamePlayer gamePlayer = GamePlayer.builder()
-          .id(i)
-          .playerId(i)
-          .gameId(1)
-          .buyInCollected(GAME_DOUBLE_BUY_IN)
-          .rebuyAddOnCollected(GAME_DOUBLE_REBUY)
-          .annualTocCollected(TOC_PER_GAME)
-          .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-          .points(points)
-          .build();
+        .id(i)
+        .playerId(i)
+        .gameId(1)
+        .buyInCollected(GAME_DOUBLE_BUY_IN)
+        .rebuyAddOnCollected(GAME_DOUBLE_REBUY)
+        .annualTocCollected(TOC_PER_GAME)
+        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+        .points(points)
+        .build();
       gameQSeasonPlayers.add(gamePlayer);
     }
 
     List<GamePlayer> gameNonSeasonPlayers = new ArrayList<>(5);
     for (int i = 0; i < 5; ++i) {
       GamePlayer gamePlayer = GamePlayer.builder()
-          .id(i)
-          .playerId(i)
-          .buyInCollected(GAME_DOUBLE_BUY_IN)
-          .rebuyAddOnCollected(GAME_DOUBLE_REBUY)
-          .gameId(1)
-          .build();
+        .id(i)
+        .playerId(i)
+        .buyInCollected(GAME_DOUBLE_BUY_IN)
+        .rebuyAddOnCollected(GAME_DOUBLE_REBUY)
+        .gameId(1)
+        .build();
       gameNonSeasonPlayers.add(gamePlayer);
     }
 
@@ -119,8 +119,8 @@ public class QuarterlyCalculatorTest implements TestConstants {
 
     Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
     Game currentGame = Game.builder()
-        .doubleBuyIn(true)
-        .build();
+      .doubleBuyIn(true)
+      .build();
     Game calculatedGame = gameCalculator.calculate(currentGame, gameCombinedPlayers);
     List<Game> calculatedGames = new LinkedList<>();
     calculatedGames.add(calculatedGame);

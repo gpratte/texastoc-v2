@@ -29,9 +29,9 @@ public class SeasonRepository {
   }
 
   private static final String INSERT_SQL = "INSERT INTO season "
-      + " (startDate, endDate, finalized, numGames, numGamesPlayed, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, doubleBuyInCost, doubleRebuyAddOnCost, doubleRebuyAddOnTocDebit, tocPerGame, kittyPerGame, quarterlyTocPerGame, quarterlyTocPayouts) "
-      + " VALUES "
-      + " (:startDate, :endDate, :finalized, :numGames, :numGamesPlayed, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :doubleBuyInCost, :doubleRebuyAddOnCost, :doubleRebuyAddOnTocDebit, :tocPerGame, :kittyPerGame, :quarterlyTocPerGame, :quarterlyTocPayouts)";
+    + " (startDate, endDate, finalized, numGames, numGamesPlayed, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, doubleBuyInCost, doubleRebuyAddOnCost, doubleRebuyAddOnTocDebit, tocPerGame, kittyPerGame, quarterlyTocPerGame, quarterlyTocPayouts) "
+    + " VALUES "
+    + " (:startDate, :endDate, :finalized, :numGames, :numGamesPlayed, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :doubleBuyInCost, :doubleRebuyAddOnCost, :doubleRebuyAddOnTocDebit, :tocPerGame, :kittyPerGame, :quarterlyTocPerGame, :quarterlyTocPayouts)";
 
   @SuppressWarnings("Duplicates")
   public int save(Season season) {
@@ -63,15 +63,15 @@ public class SeasonRepository {
   }
 
   private static final String UPDATE_SQL = "UPDATE season set " +
-      "buyInCollected=:buyInCollected, rebuyAddOnCollected=:rebuyAddOnCollected, " +
-      "annualTocCollected=:annualTocCollected, totalCollected=:totalCollected, " +
-      "annualTocFromRebuyAddOnCalculated=:annualTocFromRebuyAddOnCalculated, " +
-      "rebuyAddOnLessAnnualTocCalculated=:rebuyAddOnLessAnnualTocCalculated, " +
-      "totalCombinedAnnualTocCalculated=:totalCombinedAnnualTocCalculated, " +
-      "kittyCalculated=:kittyCalculated, prizePotCalculated=:prizePotCalculated, " +
-      "numGamesPlayed=:numGamesPlayed, lastCalculated=:lastCalculated, " +
-      "finalized=:finalized " +
-      " where id=:id";
+    "buyInCollected=:buyInCollected, rebuyAddOnCollected=:rebuyAddOnCollected, " +
+    "annualTocCollected=:annualTocCollected, totalCollected=:totalCollected, " +
+    "annualTocFromRebuyAddOnCalculated=:annualTocFromRebuyAddOnCalculated, " +
+    "rebuyAddOnLessAnnualTocCalculated=:rebuyAddOnLessAnnualTocCalculated, " +
+    "totalCombinedAnnualTocCalculated=:totalCombinedAnnualTocCalculated, " +
+    "kittyCalculated=:kittyCalculated, prizePotCalculated=:prizePotCalculated, " +
+    "numGamesPlayed=:numGamesPlayed, lastCalculated=:lastCalculated, " +
+    "finalized=:finalized " +
+    " where id=:id";
 
   public void update(final Season season) {
 
@@ -99,7 +99,7 @@ public class SeasonRepository {
 
     try {
       return jdbcTemplate
-          .queryForObject("select * from season where id = :id", params, new SeasonMapper());
+        .queryForObject("select * from season where id = :id", params, new SeasonMapper());
     } catch (Exception e) {
       return null;
     }
@@ -111,7 +111,7 @@ public class SeasonRepository {
 
     try {
       return jdbcTemplate
-          .queryForObject("select lastCalculated from season where id = :id", params, LocalDateTime.class);
+        .queryForObject("select lastCalculated from season where id = :id", params, LocalDateTime.class);
     } catch (Exception e) {
       return null;
     }

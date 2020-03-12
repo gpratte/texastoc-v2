@@ -34,9 +34,9 @@ public class SetupDatabase {
   CommandLineRunner init(JdbcTemplate jdbcTemplate) {
     return args -> {
       InputStream resource = new ClassPathResource(
-          "create_toc_schema.sql").getInputStream();
+        "create_toc_schema.sql").getInputStream();
       try (BufferedReader reader = new BufferedReader(
-          new InputStreamReader(resource))) {
+        new InputStreamReader(resource))) {
         String line;
         while ((line = reader.readLine()) != null) {
           jdbcTemplate.execute(line);

@@ -29,16 +29,16 @@ public class QuarterlySeasonPayoutRepository {
     params.addValue("qSeasonId", qSeasonId);
 
     return jdbcTemplate
-        .query("select * from quarterlyseasonpayout where qSeasonId = :qSeasonId order by amount desc",
-            params,
-            new QuarterlySeasonPayoutMapper());
+      .query("select * from quarterlyseasonpayout where qSeasonId = :qSeasonId order by amount desc",
+        params,
+        new QuarterlySeasonPayoutMapper());
   }
 
   private static final String INSERT_SQL =
-      "INSERT INTO quarterlyseasonpayout "
-          + "(seasonId, qSeasonId, place, amount) "
-          + " VALUES "
-          + " (:seasonId, :qSeasonId, :place, :amount)";
+    "INSERT INTO quarterlyseasonpayout "
+      + "(seasonId, qSeasonId, place, amount) "
+      + " VALUES "
+      + " (:seasonId, :qSeasonId, :place, :amount)";
 
   public int save(final QuarterlySeasonPayout payout) {
     KeyHolder keyHolder = new GeneratedKeyHolder();

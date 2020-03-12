@@ -68,21 +68,21 @@ public class SeasonService {
     List<QuarterlySeason> qSeasons = createQuarterlySeasons(start, end, tocConfig);
 
     Season newSeason = Season.builder()
-        .start(start)
-        .end(end)
-        .kittyPerGame(tocConfig.getKittyDebit())
-        .tocPerGame(tocConfig.getAnnualTocCost())
-        .quarterlyTocPerGame(tocConfig.getQuarterlyTocCost())
-        .quarterlyNumPayouts(tocConfig.getQuarterlyNumPayouts())
-        .buyInCost(tocConfig.getRegularBuyInCost())
-        .rebuyAddOnCost(tocConfig.getRegularRebuyCost())
-        .rebuyAddOnTocDebit(tocConfig.getRegularRebuyTocDebit())
-        .doubleBuyInCost(tocConfig.getDoubleBuyInCost())
-        .doubleRebuyAddOnCost(tocConfig.getDoubleRebuyCost())
-        .doubleRebuyAddOnTocDebit(tocConfig.getDoubleRebuyTocDebit())
-        .numGames(numThursdays)
-        .quarterlySeasons(qSeasons)
-        .build();
+      .start(start)
+      .end(end)
+      .kittyPerGame(tocConfig.getKittyDebit())
+      .tocPerGame(tocConfig.getAnnualTocCost())
+      .quarterlyTocPerGame(tocConfig.getQuarterlyTocCost())
+      .quarterlyNumPayouts(tocConfig.getQuarterlyNumPayouts())
+      .buyInCost(tocConfig.getRegularBuyInCost())
+      .rebuyAddOnCost(tocConfig.getRegularRebuyCost())
+      .rebuyAddOnTocDebit(tocConfig.getRegularRebuyTocDebit())
+      .doubleBuyInCost(tocConfig.getDoubleBuyInCost())
+      .doubleRebuyAddOnCost(tocConfig.getDoubleRebuyCost())
+      .doubleRebuyAddOnTocDebit(tocConfig.getDoubleRebuyTocDebit())
+      .numGames(numThursdays)
+      .quarterlySeasons(qSeasons)
+      .build();
 
     int seasonId = seasonRepository.save(newSeason);
     newSeason.setId(seasonId);
@@ -185,16 +185,16 @@ public class SeasonService {
       }
 
       QuarterlySeason qSeason = QuarterlySeason.builder()
-          .quarter(Quarter.fromInt(i))
-          .start(qStart)
-          .end(qEnd)
-          .finalized(false)
-          .numGames(qNumThursdays)
-          .numGamesPlayed(0)
-          .qTocCollected(0)
-          .qTocPerGame(tocConfig.getQuarterlyTocCost())
-          .numPayouts(tocConfig.getQuarterlyNumPayouts())
-          .build();
+        .quarter(Quarter.fromInt(i))
+        .start(qStart)
+        .end(qEnd)
+        .finalized(false)
+        .numGames(qNumThursdays)
+        .numGamesPlayed(0)
+        .qTocCollected(0)
+        .qTocPerGame(tocConfig.getQuarterlyTocCost())
+        .numPayouts(tocConfig.getQuarterlyNumPayouts())
+        .build();
       qSeasons.add(qSeason);
     }
     return qSeasons;

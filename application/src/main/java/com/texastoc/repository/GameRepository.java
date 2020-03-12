@@ -28,10 +28,10 @@ public class GameRepository {
   }
 
   private static final String INSERT_SQL =
-      "INSERT INTO game "
-          + "(seasonId, qSeasonId, gameDate, hostId, hostName, quarter, doubleBuyIn, transportRequired, kittyCost, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, annualTocCost, quarterlyTocCost, numPlayers, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, totalCollected, kittyCalculated, annualTocFromRebuyAddOnCalculated, rebuyAddOnLessAnnualTocCalculated, totalCombinedTocCalculated, prizePotCalculated, finalized, lastCalculated, started) "
-          + " VALUES "
-          + " (:seasonId, :qSeasonId, :gameDate, :hostId, :hostName, :quarter, :doubleBuyIn, :transportRequired, :kittyCost, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :annualTocCost, :quarterlyTocCost, :numPlayers, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :totalCollected, :kittyCalculated, :annualTocFromRebuyAddOnCalculated, :rebuyAddOnLessAnnualTocCalculated, :totalCombinedTocCalculated, :prizePotCalculated, :finalized, :lastCalculated, :started)";
+    "INSERT INTO game "
+      + "(seasonId, qSeasonId, gameDate, hostId, hostName, quarter, doubleBuyIn, transportRequired, kittyCost, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, annualTocCost, quarterlyTocCost, numPlayers, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, totalCollected, kittyCalculated, annualTocFromRebuyAddOnCalculated, rebuyAddOnLessAnnualTocCalculated, totalCombinedTocCalculated, prizePotCalculated, finalized, lastCalculated, started) "
+      + " VALUES "
+      + " (:seasonId, :qSeasonId, :gameDate, :hostId, :hostName, :quarter, :doubleBuyIn, :transportRequired, :kittyCost, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :annualTocCost, :quarterlyTocCost, :numPlayers, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :totalCollected, :kittyCalculated, :annualTocFromRebuyAddOnCalculated, :rebuyAddOnLessAnnualTocCalculated, :totalCombinedTocCalculated, :prizePotCalculated, :finalized, :lastCalculated, :started)";
 
   public int save(final Game game) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -74,22 +74,22 @@ public class GameRepository {
   }
 
   private static final String UPDATE_SQL = "UPDATE game set " +
-      "seasonId=:seasonId, qSeasonId=:qSeasonId, hostId=:hostId, " +
-      "hostName=:hostName, gameDate=:gameDate, quarter=:quarter, " +
-      "doubleBuyIn=:doubleBuyIn, transportRequired=:transportRequired, " +
-      "kittyCost=:kittyCost, buyInCost=:buyInCost, rebuyAddOnCost=:rebuyAddOnCost, " +
-      "rebuyAddOnTocDebit=:rebuyAddOnTocDebit, annualTocCost=:annualTocCost, " +
-      "quarterlyTocCost=:quarterlyTocCost, started=:started, numPlayers=:numPlayers, " +
-      "buyInCollected=:buyInCollected, rebuyAddOnCollected=:rebuyAddOnCollected, " +
-      "annualTocCollected=:annualTocCollected, " +
-      "quarterlyTocCollected=:quarterlyTocCollected, " +
-      "totalCollected=:totalCollected, kittyCalculated=:kittyCalculated, " +
-      "annualTocFromRebuyAddOnCalculated=:annualTocFromRebuyAddOnCalculated, " +
-      "rebuyAddOnLessAnnualTocCalculated=:rebuyAddOnLessAnnualTocCalculated, " +
-      "totalCombinedTocCalculated=:totalCombinedTocCalculated, " +
-      "prizePotCalculated=:prizePotCalculated, finalized=:finalized, " +
-      "payoutDelta=:payoutDelta, lastCalculated=:lastCalculated " +
-      " where id=:id";
+    "seasonId=:seasonId, qSeasonId=:qSeasonId, hostId=:hostId, " +
+    "hostName=:hostName, gameDate=:gameDate, quarter=:quarter, " +
+    "doubleBuyIn=:doubleBuyIn, transportRequired=:transportRequired, " +
+    "kittyCost=:kittyCost, buyInCost=:buyInCost, rebuyAddOnCost=:rebuyAddOnCost, " +
+    "rebuyAddOnTocDebit=:rebuyAddOnTocDebit, annualTocCost=:annualTocCost, " +
+    "quarterlyTocCost=:quarterlyTocCost, started=:started, numPlayers=:numPlayers, " +
+    "buyInCollected=:buyInCollected, rebuyAddOnCollected=:rebuyAddOnCollected, " +
+    "annualTocCollected=:annualTocCollected, " +
+    "quarterlyTocCollected=:quarterlyTocCollected, " +
+    "totalCollected=:totalCollected, kittyCalculated=:kittyCalculated, " +
+    "annualTocFromRebuyAddOnCalculated=:annualTocFromRebuyAddOnCalculated, " +
+    "rebuyAddOnLessAnnualTocCalculated=:rebuyAddOnLessAnnualTocCalculated, " +
+    "totalCombinedTocCalculated=:totalCombinedTocCalculated, " +
+    "prizePotCalculated=:prizePotCalculated, finalized=:finalized, " +
+    "payoutDelta=:payoutDelta, lastCalculated=:lastCalculated " +
+    " where id=:id";
 
   public void update(final Game game) {
 
@@ -136,7 +136,7 @@ public class GameRepository {
     Game game;
     try {
       game = jdbcTemplate
-          .queryForObject("select * from game where id = :id", params, new GameMapper());
+        .queryForObject("select * from game where id = :id", params, new GameMapper());
     } catch (Exception e) {
       e.printStackTrace();
       return null;
@@ -152,7 +152,7 @@ public class GameRepository {
     List<Game> games = Collections.emptyList();
     try {
       games = jdbcTemplate
-          .query("select * from game where seasonId = :seasonId", params, new GameMapper());
+        .query("select * from game where seasonId = :seasonId", params, new GameMapper());
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -167,7 +167,7 @@ public class GameRepository {
     List<Game> games = Collections.emptyList();
     try {
       games = jdbcTemplate
-          .query("select * from game where qSeasonId = :qSeasonId", params, new GameMapper());
+        .query("select * from game where qSeasonId = :qSeasonId", params, new GameMapper());
     } catch (Exception e) {
       e.printStackTrace();
     }

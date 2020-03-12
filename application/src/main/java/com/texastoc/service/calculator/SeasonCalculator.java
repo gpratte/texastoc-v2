@@ -116,10 +116,10 @@ public class SeasonCalculator {
       if (seasonPlayer == null) {
 
         seasonPlayer = SeasonPlayer.builder()
-            .playerId(gamePlayer.getPlayerId())
-            .seasonId(id)
-            .name(gamePlayer.getName())
-            .build();
+          .playerId(gamePlayer.getPlayerId())
+          .seasonId(id)
+          .name(gamePlayer.getName())
+          .build();
 
         seasonPlayerMap.put(gamePlayer.getId(), seasonPlayer);
       }

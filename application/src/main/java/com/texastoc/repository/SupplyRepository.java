@@ -25,15 +25,15 @@ public class SupplyRepository {
   public List<Supply> get() {
     MapSqlParameterSource params = new MapSqlParameterSource();
     return jdbcTemplate
-        .query("select * from supply",
-            params,
-            new SupplyMapper());
+      .query("select * from supply",
+        params,
+        new SupplyMapper());
   }
 
   private static final String INSERT_SQL = "INSERT INTO supply "
-      + " (date, type, amount, description) "
-      + " VALUES "
-      + " (:date, :type, :amount, :description)";
+    + " (date, type, amount, description) "
+    + " VALUES "
+    + " (:date, :type, :amount, :description)";
 
   public void save(Supply supply) {
     MapSqlParameterSource params = new MapSqlParameterSource();

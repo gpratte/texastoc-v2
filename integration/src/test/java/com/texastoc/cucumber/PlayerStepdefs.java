@@ -30,9 +30,9 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
   @Given("^a new player$")
   public void a_new_player() throws Exception {
     playerToCreate = Player.builder()
-        .firstName("John")
-        .lastName("Luther")
-        .build();
+      .firstName("John")
+      .lastName("Luther")
+      .build();
 
     playerCreated = createPlayer(playerToCreate);
   }
@@ -40,11 +40,11 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
   @Given("^a new player with email and password$")
   public void a_new_player_with_email_and_password() throws Exception {
     playerToCreate = Player.builder()
-        .firstName("John")
-        .lastName("Luther")
-        .email("john.luther@example.com")
-        .password("jacket")
-        .build();
+      .firstName("John")
+      .lastName("Luther")
+      .email("john.luther@example.com")
+      .password("jacket")
+      .build();
 
     playerCreated = createPlayer(playerToCreate);
   }
@@ -52,13 +52,13 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
   @When("^the player password is updated$")
   public void the_player_password_is_updated() throws Exception {
     updatePlayer = Player.builder()
-        .id(playerCreated.getId())
-        .firstName(playerCreated.getFirstName())
-        .lastName(playerCreated.getLastName())
-        .email("abc@rst.com")
-        .phone("2344322345")
-        .password("password")
-        .build();
+      .id(playerCreated.getId())
+      .firstName(playerCreated.getFirstName())
+      .lastName(playerCreated.getLastName())
+      .email("abc@rst.com")
+      .phone("2344322345")
+      .password("password")
+      .build();
 
     String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
     updatePlayer(updatePlayer, token);

@@ -29,11 +29,11 @@ public class SeasonPlayerRepository {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("seasonId", id);
     return jdbcTemplate
-        .query("select * from seasonplayer"
-                + " where seasonId = :seasonId"
-                + " order by name",
-            params,
-            new SeasonPlayerMapper());
+      .query("select * from seasonplayer"
+          + " where seasonId = :seasonId"
+          + " order by name",
+        params,
+        new SeasonPlayerMapper());
   }
 
   public void deleteBySeasonId(int seasonId) {
@@ -41,14 +41,14 @@ public class SeasonPlayerRepository {
     params.addValue("seasonId", seasonId);
 
     jdbcTemplate
-        .update("delete from seasonplayer where seasonId = :seasonId", params);
+      .update("delete from seasonplayer where seasonId = :seasonId", params);
   }
 
   private static final String INSERT_SQL =
-      "INSERT INTO seasonplayer "
-          + "(playerId, seasonId, name, entries, points, place) "
-          + " VALUES "
-          + " (:playerId, :seasonId, :name, :entries, :points, :place)";
+    "INSERT INTO seasonplayer "
+      + "(playerId, seasonId, name, entries, points, place) "
+      + " VALUES "
+      + " (:playerId, :seasonId, :name, :entries, :points, :place)";
 
   @SuppressWarnings("Duplicates")
   public int save(SeasonPlayer seasonPlayer) {

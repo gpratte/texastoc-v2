@@ -28,11 +28,11 @@ public class PlayerRepository {
   }
 
   private static final String GET_SQL = "select pl.*, " +
-      "r.name, r.description, r.id as roleId " +
-      "from player pl " +
-      "left join player_roles on pl.id = player_roles.playerId " +
-      "left join role r on r.id = player_roles.roleId " +
-      "where pl.id = :id";
+    "r.name, r.description, r.id as roleId " +
+    "from player pl " +
+    "left join player_roles on pl.id = player_roles.playerId " +
+    "left join role r on r.id = player_roles.roleId " +
+    "where pl.id = :id";
 
   public Player get(int id) {
     MapSqlParameterSource params = new MapSqlParameterSource();
@@ -42,11 +42,11 @@ public class PlayerRepository {
   }
 
   private static final String GET_BY_EMAIL_SQL = "select pl.*, " +
-      "r.name, r.description, r.id as roleId " +
-      "from player pl " +
-      "left join player_roles on pl.id = player_roles.playerId " +
-      "left join role r on r.id = player_roles.roleId " +
-      "where pl.email = :email";
+    "r.name, r.description, r.id as roleId " +
+    "from player pl " +
+    "left join player_roles on pl.id = player_roles.playerId " +
+    "left join role r on r.id = player_roles.roleId " +
+    "where pl.email = :email";
 
   public Player getByEmail(String email) {
     MapSqlParameterSource params = new MapSqlParameterSource();
@@ -56,8 +56,8 @@ public class PlayerRepository {
   }
 
   private static final String UPDATE_SQL = "UPDATE player set " +
-      "firstName=:firstName, lastName=:lastName, phone=:phone, " +
-      "email=:email, password=:password where id=:id";
+    "firstName=:firstName, lastName=:lastName, phone=:phone, " +
+    "email=:email, password=:password where id=:id";
 
   public void update(Player player) {
     MapSqlParameterSource params = new MapSqlParameterSource();
@@ -72,9 +72,9 @@ public class PlayerRepository {
   }
 
   private static final String INSERT_SQL = "INSERT INTO player "
-      + " (firstName, lastName, phone, email, password) "
-      + " VALUES "
-      + " (:firstName, :lastName, :phone, :email, :password) ";
+    + " (firstName, lastName, phone, email, password) "
+    + " VALUES "
+    + " (:firstName, :lastName, :phone, :email, :password) ";
 
   public int save(final Player player) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -131,10 +131,10 @@ public class PlayerRepository {
         String roleName = rs.getString("name");
         if (roleName != null) {
           Role role = Role.builder()
-              .id(rs.getLong("roleId"))
-              .description(rs.getString("description"))
-              .name(rs.getString("name"))
-              .build();
+            .id(rs.getLong("roleId"))
+            .description(rs.getString("description"))
+            .name(rs.getString("name"))
+            .build();
           roles.add(role);
         }
       }

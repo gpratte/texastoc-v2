@@ -42,24 +42,24 @@ public class GameCalculatorTest implements TestConstants {
   public void testNoGamePlayers() {
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(Integer.MAX_VALUE)
+      .id(1)
+      .numPlayers(Integer.MAX_VALUE)
 
-        .buyInCollected(Integer.MAX_VALUE)
-        .rebuyAddOnCollected(Integer.MAX_VALUE)
-        .annualTocCollected(Integer.MAX_VALUE)
-        .quarterlyTocCollected(Integer.MAX_VALUE)
-        .totalCollected(Integer.MAX_VALUE)
+      .buyInCollected(Integer.MAX_VALUE)
+      .rebuyAddOnCollected(Integer.MAX_VALUE)
+      .annualTocCollected(Integer.MAX_VALUE)
+      .quarterlyTocCollected(Integer.MAX_VALUE)
+      .totalCollected(Integer.MAX_VALUE)
 
-        .kittyCalculated(Integer.MAX_VALUE)
-        .annualTocFromRebuyAddOnCalculated(Integer.MAX_VALUE)
-        .rebuyAddOnLessAnnualTocCalculated(Integer.MAX_VALUE)
-        .totalCombinedTocCalculated(Integer.MAX_VALUE)
-        .prizePotCalculated(Integer.MAX_VALUE)
+      .kittyCalculated(Integer.MAX_VALUE)
+      .annualTocFromRebuyAddOnCalculated(Integer.MAX_VALUE)
+      .rebuyAddOnLessAnnualTocCalculated(Integer.MAX_VALUE)
+      .totalCombinedTocCalculated(Integer.MAX_VALUE)
+      .prizePotCalculated(Integer.MAX_VALUE)
 
-        .finalized(false)
-        .lastCalculated(LocalDateTime.now().minusHours(1))
-        .build();
+      .finalized(false)
+      .lastCalculated(LocalDateTime.now().minusHours(1))
+      .build();
 
     Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
@@ -99,33 +99,33 @@ public class GameCalculatorTest implements TestConstants {
   public void testGamePlayersNoBuyIns() {
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(Integer.MAX_VALUE)
+      .id(1)
+      .numPlayers(Integer.MAX_VALUE)
 
-        .buyInCollected(Integer.MAX_VALUE)
-        .rebuyAddOnCollected(Integer.MAX_VALUE)
-        .annualTocCollected(Integer.MAX_VALUE)
-        .quarterlyTocCollected(Integer.MAX_VALUE)
-        .totalCollected(Integer.MAX_VALUE)
+      .buyInCollected(Integer.MAX_VALUE)
+      .rebuyAddOnCollected(Integer.MAX_VALUE)
+      .annualTocCollected(Integer.MAX_VALUE)
+      .quarterlyTocCollected(Integer.MAX_VALUE)
+      .totalCollected(Integer.MAX_VALUE)
 
-        .kittyCalculated(Integer.MAX_VALUE)
-        .annualTocFromRebuyAddOnCalculated(Integer.MAX_VALUE)
-        .rebuyAddOnLessAnnualTocCalculated(Integer.MAX_VALUE)
-        .totalCombinedTocCalculated(Integer.MAX_VALUE)
-        .prizePotCalculated(Integer.MAX_VALUE)
+      .kittyCalculated(Integer.MAX_VALUE)
+      .annualTocFromRebuyAddOnCalculated(Integer.MAX_VALUE)
+      .rebuyAddOnLessAnnualTocCalculated(Integer.MAX_VALUE)
+      .totalCombinedTocCalculated(Integer.MAX_VALUE)
+      .prizePotCalculated(Integer.MAX_VALUE)
 
-        .finalized(false)
-        .lastCalculated(LocalDateTime.now().minusHours(1))
-        .build();
+      .finalized(false)
+      .lastCalculated(LocalDateTime.now().minusHours(1))
+      .build();
 
     List<GamePlayer> gamePlayers = new ArrayList<>();
     int playersToCreate = random.nextInt(10);
     for (int i = 0; i < playersToCreate; ++i) {
       GamePlayer gamePlayer = GamePlayer.builder()
-          .id(i)
-          .playerId(i)
-          .gameId(1)
-          .build();
+        .id(i)
+        .playerId(i)
+        .gameId(1)
+        .build();
       gamePlayers.add(gamePlayer);
     }
 
@@ -243,101 +243,101 @@ public class GameCalculatorTest implements TestConstants {
   public void testGamePlayerOneOfEach() {
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(Integer.MAX_VALUE)
+      .id(1)
+      .numPlayers(Integer.MAX_VALUE)
 
-        .buyInCollected(Integer.MAX_VALUE)
-        .rebuyAddOnCollected(Integer.MAX_VALUE)
-        .annualTocCollected(Integer.MAX_VALUE)
-        .quarterlyTocCollected(Integer.MAX_VALUE)
-        .totalCollected(Integer.MAX_VALUE)
+      .buyInCollected(Integer.MAX_VALUE)
+      .rebuyAddOnCollected(Integer.MAX_VALUE)
+      .annualTocCollected(Integer.MAX_VALUE)
+      .quarterlyTocCollected(Integer.MAX_VALUE)
+      .totalCollected(Integer.MAX_VALUE)
 
-        .kittyCalculated(Integer.MAX_VALUE)
-        .annualTocFromRebuyAddOnCalculated(Integer.MAX_VALUE)
-        .rebuyAddOnLessAnnualTocCalculated(Integer.MAX_VALUE)
-        .totalCombinedTocCalculated(Integer.MAX_VALUE)
-        .prizePotCalculated(Integer.MAX_VALUE)
+      .kittyCalculated(Integer.MAX_VALUE)
+      .annualTocFromRebuyAddOnCalculated(Integer.MAX_VALUE)
+      .rebuyAddOnLessAnnualTocCalculated(Integer.MAX_VALUE)
+      .totalCombinedTocCalculated(Integer.MAX_VALUE)
+      .prizePotCalculated(Integer.MAX_VALUE)
 
-        .doubleBuyIn(false)
-        .finalized(false)
-        .lastCalculated(LocalDateTime.now())
-        .build();
+      .doubleBuyIn(false)
+      .finalized(false)
+      .lastCalculated(LocalDateTime.now())
+      .build();
 
     List<GamePlayer> gamePlayers = new ArrayList<>();
     GamePlayer gamePlayer = GamePlayer.builder()
-        .id(1)
-        .playerId(1)
-        .gameId(1)
-        .buyInCollected(GAME_BUY_IN)
-        .build();
+      .id(1)
+      .playerId(1)
+      .gameId(1)
+      .buyInCollected(GAME_BUY_IN)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(2)
-        .playerId(2)
-        .gameId(1)
-        .buyInCollected(GAME_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .build();
+      .id(2)
+      .playerId(2)
+      .gameId(1)
+      .buyInCollected(GAME_BUY_IN)
+      .annualTocCollected(TOC_PER_GAME)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(3)
-        .playerId(3)
-        .gameId(1)
-        .buyInCollected(GAME_BUY_IN)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .build();
+      .id(3)
+      .playerId(3)
+      .gameId(1)
+      .buyInCollected(GAME_BUY_IN)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(4)
-        .playerId(4)
-        .gameId(1)
-        .buyInCollected(GAME_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .build();
+      .id(4)
+      .playerId(4)
+      .gameId(1)
+      .buyInCollected(GAME_BUY_IN)
+      .annualTocCollected(TOC_PER_GAME)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(5)
-        .playerId(5)
-        .gameId(1)
-        .buyInCollected(GAME_BUY_IN)
-        .rebuyAddOnCollected(TestConstants.GAME_REBUY)
-        .build();
+      .id(5)
+      .playerId(5)
+      .gameId(1)
+      .buyInCollected(GAME_BUY_IN)
+      .rebuyAddOnCollected(TestConstants.GAME_REBUY)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(6)
-        .playerId(6)
-        .gameId(1)
-        .buyInCollected(GAME_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .rebuyAddOnCollected(TestConstants.GAME_REBUY)
-        .build();
+      .id(6)
+      .playerId(6)
+      .gameId(1)
+      .buyInCollected(GAME_BUY_IN)
+      .annualTocCollected(TOC_PER_GAME)
+      .rebuyAddOnCollected(TestConstants.GAME_REBUY)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(7)
-        .playerId(7)
-        .gameId(1)
-        .buyInCollected(GAME_BUY_IN)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .rebuyAddOnCollected(TestConstants.GAME_REBUY)
-        .build();
+      .id(7)
+      .playerId(7)
+      .gameId(1)
+      .buyInCollected(GAME_BUY_IN)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .rebuyAddOnCollected(TestConstants.GAME_REBUY)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(8)
-        .playerId(8)
-        .gameId(1)
-        .buyInCollected(GAME_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .rebuyAddOnCollected(TestConstants.GAME_REBUY)
-        .build();
+      .id(8)
+      .playerId(8)
+      .gameId(1)
+      .buyInCollected(GAME_BUY_IN)
+      .annualTocCollected(TOC_PER_GAME)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .rebuyAddOnCollected(TestConstants.GAME_REBUY)
+      .build();
     gamePlayers.add(gamePlayer);
 
 
@@ -454,101 +454,101 @@ public class GameCalculatorTest implements TestConstants {
   public void testGamePlayerOneOfEachDoubleBuyIn() {
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(Integer.MAX_VALUE)
+      .id(1)
+      .numPlayers(Integer.MAX_VALUE)
 
-        .buyInCollected(Integer.MAX_VALUE)
-        .rebuyAddOnCollected(Integer.MAX_VALUE)
-        .annualTocCollected(Integer.MAX_VALUE)
-        .quarterlyTocCollected(Integer.MAX_VALUE)
-        .totalCollected(Integer.MAX_VALUE)
+      .buyInCollected(Integer.MAX_VALUE)
+      .rebuyAddOnCollected(Integer.MAX_VALUE)
+      .annualTocCollected(Integer.MAX_VALUE)
+      .quarterlyTocCollected(Integer.MAX_VALUE)
+      .totalCollected(Integer.MAX_VALUE)
 
-        .kittyCalculated(Integer.MAX_VALUE)
-        .annualTocFromRebuyAddOnCalculated(Integer.MAX_VALUE)
-        .rebuyAddOnLessAnnualTocCalculated(Integer.MAX_VALUE)
-        .totalCombinedTocCalculated(Integer.MAX_VALUE)
-        .prizePotCalculated(Integer.MAX_VALUE)
+      .kittyCalculated(Integer.MAX_VALUE)
+      .annualTocFromRebuyAddOnCalculated(Integer.MAX_VALUE)
+      .rebuyAddOnLessAnnualTocCalculated(Integer.MAX_VALUE)
+      .totalCombinedTocCalculated(Integer.MAX_VALUE)
+      .prizePotCalculated(Integer.MAX_VALUE)
 
-        .doubleBuyIn(true)
-        .finalized(false)
-        .lastCalculated(LocalDateTime.now())
-        .build();
+      .doubleBuyIn(true)
+      .finalized(false)
+      .lastCalculated(LocalDateTime.now())
+      .build();
 
     List<GamePlayer> gamePlayers = new ArrayList<>();
     GamePlayer gamePlayer = GamePlayer.builder()
-        .id(1)
-        .playerId(1)
-        .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .build();
+      .id(1)
+      .playerId(1)
+      .gameId(1)
+      .buyInCollected(GAME_DOUBLE_BUY_IN)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(2)
-        .playerId(2)
-        .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .build();
+      .id(2)
+      .playerId(2)
+      .gameId(1)
+      .buyInCollected(GAME_DOUBLE_BUY_IN)
+      .annualTocCollected(TOC_PER_GAME)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(3)
-        .playerId(3)
-        .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .build();
+      .id(3)
+      .playerId(3)
+      .gameId(1)
+      .buyInCollected(GAME_DOUBLE_BUY_IN)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(4)
-        .playerId(4)
-        .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .build();
+      .id(4)
+      .playerId(4)
+      .gameId(1)
+      .buyInCollected(GAME_DOUBLE_BUY_IN)
+      .annualTocCollected(TOC_PER_GAME)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(5)
-        .playerId(5)
-        .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .rebuyAddOnCollected(TestConstants.GAME_DOUBLE_REBUY)
-        .build();
+      .id(5)
+      .playerId(5)
+      .gameId(1)
+      .buyInCollected(GAME_DOUBLE_BUY_IN)
+      .rebuyAddOnCollected(TestConstants.GAME_DOUBLE_REBUY)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(6)
-        .playerId(6)
-        .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .rebuyAddOnCollected(TestConstants.GAME_DOUBLE_REBUY)
-        .build();
+      .id(6)
+      .playerId(6)
+      .gameId(1)
+      .buyInCollected(GAME_DOUBLE_BUY_IN)
+      .annualTocCollected(TOC_PER_GAME)
+      .rebuyAddOnCollected(TestConstants.GAME_DOUBLE_REBUY)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(7)
-        .playerId(7)
-        .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .rebuyAddOnCollected(TestConstants.GAME_DOUBLE_REBUY)
-        .build();
+      .id(7)
+      .playerId(7)
+      .gameId(1)
+      .buyInCollected(GAME_DOUBLE_BUY_IN)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .rebuyAddOnCollected(TestConstants.GAME_DOUBLE_REBUY)
+      .build();
     gamePlayers.add(gamePlayer);
 
     gamePlayer = GamePlayer.builder()
-        .id(8)
-        .playerId(8)
-        .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .rebuyAddOnCollected(TestConstants.GAME_DOUBLE_REBUY)
-        .build();
+      .id(8)
+      .playerId(8)
+      .gameId(1)
+      .buyInCollected(GAME_DOUBLE_BUY_IN)
+      .annualTocCollected(TOC_PER_GAME)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .rebuyAddOnCollected(TestConstants.GAME_DOUBLE_REBUY)
+      .build();
     gamePlayers.add(gamePlayer);
 
 

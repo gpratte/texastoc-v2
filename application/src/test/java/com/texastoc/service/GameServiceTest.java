@@ -79,44 +79,44 @@ public class GameServiceTest implements TestConstants {
     // Arrange
     LocalDate start = LocalDate.now();
     Game expected = Game.builder()
-        .date(start)
-        .hostId(1)
-        .transportRequired(true)
-        .doubleBuyIn(doubleBuyIn)
-        .build();
+      .date(start)
+      .hostId(1)
+      .transportRequired(true)
+      .doubleBuyIn(doubleBuyIn)
+      .build();
 
     Mockito.when(gameRepository.save((Game) notNull())).thenReturn(1);
 
     Mockito.when(playerRepository.get(ArgumentMatchers.eq(1)))
-        .thenReturn(Player.builder()
-            .id(1)
-            .firstName("Brian")
-            .lastName("Baker")
-            .build());
+      .thenReturn(Player.builder()
+        .id(1)
+        .firstName("Brian")
+        .lastName("Baker")
+        .build());
 
     Mockito.when(qSeasonRepository.getCurrent())
-        .thenReturn(QuarterlySeason.builder()
-            .id(1)
-            .quarter(Quarter.FIRST)
-            .seasonId(1)
-            .numGamesPlayed(7)
-            .build());
+      .thenReturn(QuarterlySeason.builder()
+        .id(1)
+        .quarter(Quarter.FIRST)
+        .seasonId(1)
+        .numGamesPlayed(7)
+        .build());
 
     Mockito.when(seasonRepository.getCurrent())
-        .thenReturn(Season.builder()
-            .id(1)
-            .kittyPerGame(KITTY_PER_GAME)
-            .tocPerGame(TOC_PER_GAME)
-            .quarterlyTocPerGame(QUARTERLY_TOC_PER_GAME)
-            .quarterlyNumPayouts(QUARTERLY_NUM_PAYOUTS)
-            .buyInCost(GAME_BUY_IN)
-            .rebuyAddOnCost(GAME_REBUY)
-            .rebuyAddOnTocDebit(GAME_REBUY_TOC_DEBIT)
-            .doubleBuyInCost(GAME_DOUBLE_BUY_IN)
-            .doubleRebuyAddOnCost(GAME_DOUBLE_REBUY)
-            .doubleRebuyAddOnTocDebit(GAME_DOUBLE_REBUY_TOC_DEBIT)
-            .numGamesPlayed(20)
-            .build());
+      .thenReturn(Season.builder()
+        .id(1)
+        .kittyPerGame(KITTY_PER_GAME)
+        .tocPerGame(TOC_PER_GAME)
+        .quarterlyTocPerGame(QUARTERLY_TOC_PER_GAME)
+        .quarterlyNumPayouts(QUARTERLY_NUM_PAYOUTS)
+        .buyInCost(GAME_BUY_IN)
+        .rebuyAddOnCost(GAME_REBUY)
+        .rebuyAddOnTocDebit(GAME_REBUY_TOC_DEBIT)
+        .doubleBuyInCost(GAME_DOUBLE_BUY_IN)
+        .doubleRebuyAddOnCost(GAME_DOUBLE_REBUY)
+        .doubleRebuyAddOnTocDebit(GAME_DOUBLE_REBUY_TOC_DEBIT)
+        .numGamesPlayed(20)
+        .build());
 
     // Act
     Game actual = gameService.createGame(expected);
@@ -195,15 +195,15 @@ public class GameServiceTest implements TestConstants {
   public void getGameNoPlayers() {
 
     Mockito.when(gameRepository.getById(1))
-        .thenReturn(Game.builder()
-            .id(1)
-            .build());
+      .thenReturn(Game.builder()
+        .id(1)
+        .build());
 
     Mockito.when(gamePlayerRepository.selectByGameId(1))
-        .thenReturn(Collections.emptyList());
+      .thenReturn(Collections.emptyList());
 
     Mockito.when(gamePayoutRepository.getByGameId(1))
-        .thenReturn(Collections.emptyList());
+      .thenReturn(Collections.emptyList());
 
     Game game = gameService.getGame(1);
 
@@ -227,15 +227,15 @@ public class GameServiceTest implements TestConstants {
   public void testUpdateGame() {
 
     Mockito.when(gameRepository.getById(1)).thenReturn(Game.builder()
-        .id(1)
-        .finalized(false)
-        .build());
+      .id(1)
+      .finalized(false)
+      .build());
 
     Mockito.doNothing().when(gameRepository).update((Game) notNull());
 
     Game game = Game.builder()
-        .id(1)
-        .build();
+      .id(1)
+      .build();
     gameService.updateGame(game);
 
     Mockito.verify(gameRepository, Mockito.times(1)).update(Mockito.any(Game.class));
@@ -252,16 +252,16 @@ public class GameServiceTest implements TestConstants {
     boolean doubleBuyIn = random.nextBoolean();
 
     Game currentGame = Game.builder()
-        .numPlayers(0)
-        .doubleBuyIn(doubleBuyIn)
-        .build();
+      .numPlayers(0)
+      .doubleBuyIn(doubleBuyIn)
+      .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
     GamePlayer gamePlayerToCreate = GamePlayer.builder()
-        .gameId(1)
-        .playerId(1)
-        .buyInCollected(doubleBuyIn ? GAME_BUY_IN : GAME_DOUBLE_BUY_IN)
-        .build();
+      .gameId(1)
+      .playerId(1)
+      .buyInCollected(doubleBuyIn ? GAME_BUY_IN : GAME_DOUBLE_BUY_IN)
+      .build();
 
     gameService.createGamePlayer(gamePlayerToCreate);
 
@@ -277,16 +277,16 @@ public class GameServiceTest implements TestConstants {
     Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
     Game currentGame = Game.builder()
-        .numPlayers(0)
-        .doubleBuyIn(false)
-        .build();
+      .numPlayers(0)
+      .doubleBuyIn(false)
+      .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
     GamePlayer gamePlayerToCreate = GamePlayer.builder()
-        .gameId(1)
-        .playerId(1)
-        .annualTocCollected(TOC_PER_GAME + 1)
-        .build();
+      .gameId(1)
+      .playerId(1)
+      .annualTocCollected(TOC_PER_GAME + 1)
+      .build();
 
     gameService.createGamePlayer(gamePlayerToCreate);
 
@@ -308,37 +308,37 @@ public class GameServiceTest implements TestConstants {
     Mockito.when(gamePlayerRepository.save((GamePlayer) notNull())).thenReturn(1);
 
     Game currentGame = Game.builder()
-        .id(1)
-        .numPlayers(0)
-        .doubleBuyIn(false)
-        .finalized(false)
-        .build();
+      .id(1)
+      .numPlayers(0)
+      .doubleBuyIn(false)
+      .finalized(false)
+      .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
     String playerName = Long.toString(System.currentTimeMillis());
     GamePlayer gamePlayerToCreated = GamePlayer.builder()
-        .gameId(1)
-        .playerId(1)
-        .name(playerName)
-        .build();
+      .gameId(1)
+      .playerId(1)
+      .name(playerName)
+      .build();
     List<GamePlayer> gamePlayersCreated = new LinkedList<>();
     gamePlayersCreated.add(gamePlayerToCreated);
     Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayersCreated);
 
     Game calculatedGame = Game.builder()
-        .numPlayers(1)
-        .prizePotCalculated(0)
-        .build();
+      .numPlayers(1)
+      .prizePotCalculated(0)
+      .build();
 
     Mockito.when(gameCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(calculatedGame);
     Mockito.when(payoutCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
     Mockito.when(pointsCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
 
     GamePlayer gamePlayerToCreate = GamePlayer.builder()
-        .gameId(1)
-        .playerId(1)
-        .name(playerName)
-        .build();
+      .gameId(1)
+      .playerId(1)
+      .name(playerName)
+      .build();
 
     GamePlayer gamePlayerCreated = gameService.createGamePlayer(gamePlayerToCreate);
 
@@ -384,19 +384,19 @@ public class GameServiceTest implements TestConstants {
     boolean doubleBuyIn = random.nextBoolean();
 
     Game currentGame = Game.builder()
-        .numPlayers(0)
-        .doubleBuyIn(doubleBuyIn)
-        .build();
+      .numPlayers(0)
+      .doubleBuyIn(doubleBuyIn)
+      .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
     Mockito.doNothing().when(gamePlayerRepository).update((GamePlayer) notNull());
 
     GamePlayer gamePlayerToCreate = GamePlayer.builder()
-        .gameId(1)
-        .playerId(1)
-        .buyInCollected(doubleBuyIn ? GAME_DOUBLE_BUY_IN : GAME_BUY_IN)
-        .rebuyAddOnCollected(doubleBuyIn ? GAME_REBUY : GAME_DOUBLE_REBUY)
-        .build();
+      .gameId(1)
+      .playerId(1)
+      .buyInCollected(doubleBuyIn ? GAME_DOUBLE_BUY_IN : GAME_BUY_IN)
+      .rebuyAddOnCollected(doubleBuyIn ? GAME_REBUY : GAME_DOUBLE_REBUY)
+      .build();
 
     gameService.createGamePlayer(gamePlayerToCreate);
 
@@ -412,16 +412,16 @@ public class GameServiceTest implements TestConstants {
     Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
     Game currentGame = Game.builder()
-        .numPlayers(0)
-        .doubleBuyIn(false)
-        .build();
+      .numPlayers(0)
+      .doubleBuyIn(false)
+      .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
     GamePlayer gamePlayerToCreate = GamePlayer.builder()
-        .gameId(1)
-        .playerId(1)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME - 1)
-        .build();
+      .gameId(1)
+      .playerId(1)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME - 1)
+      .build();
 
     gameService.createGamePlayer(gamePlayerToCreate);
 
@@ -434,34 +434,34 @@ public class GameServiceTest implements TestConstants {
     Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
     Game currentGame = Game.builder()
-        .id(1)
-        .numPlayers(1)
-        .finalized(false)
-        .doubleBuyIn(false)
-        .build();
+      .id(1)
+      .numPlayers(1)
+      .finalized(false)
+      .doubleBuyIn(false)
+      .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
     GamePlayer gamePlayer = GamePlayer.builder()
-        .id(1)
-        .gameId(1)
-        .buyInCollected(GAME_BUY_IN)
-        .rebuyAddOnCollected(GAME_REBUY)
-        .annualTocCollected(TOC_PER_GAME)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .roundUpdates(true)
-        .place(10)
-        .knockedOut(true)
-        .chop(500)
-        .build();
+      .id(1)
+      .gameId(1)
+      .buyInCollected(GAME_BUY_IN)
+      .rebuyAddOnCollected(GAME_REBUY)
+      .annualTocCollected(TOC_PER_GAME)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .roundUpdates(true)
+      .place(10)
+      .knockedOut(true)
+      .chop(500)
+      .build();
 
     List<GamePlayer> gamePlayersCreated = new LinkedList<>();
     gamePlayersCreated.add(gamePlayer);
     Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayersCreated);
 
     Game calculatedGame = Game.builder()
-        .numPlayers(1)
-        .prizePotCalculated(0)
-        .build();
+      .numPlayers(1)
+      .prizePotCalculated(0)
+      .build();
     Mockito.when(gameCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(calculatedGame);
     Mockito.when(payoutCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
     Mockito.when(pointsCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
@@ -480,18 +480,18 @@ public class GameServiceTest implements TestConstants {
   public void testDeleteGamePlayer() {
 
     GamePlayer gamePlayer = GamePlayer.builder()
-        .id(1)
-        .gameId(1)
-        .build();
+      .id(1)
+      .gameId(1)
+      .build();
     Mockito.when(gamePlayerRepository.selectById(1)).thenReturn(gamePlayer);
 
     Mockito.doNothing().when(gamePlayerRepository).deleteById(1);
 
     Game currentGame = Game.builder()
-        .id(1)
-        .numPlayers(0)
-        .doubleBuyIn(false)
-        .build();
+      .id(1)
+      .numPlayers(0)
+      .doubleBuyIn(false)
+      .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
     gameService.deleteGamePlayer(1);
@@ -509,19 +509,19 @@ public class GameServiceTest implements TestConstants {
     Mockito.when(gamePlayerRepository.save((GamePlayer) notNull())).thenReturn(1);
 
     Game currentGame = Game.builder()
-        .id(1)
-        .numPlayers(0)
-        .doubleBuyIn(false)
-        .finalized(false)
-        .build();
+      .id(1)
+      .numPlayers(0)
+      .doubleBuyIn(false)
+      .finalized(false)
+      .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
     FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
-        .firstName("John")
-        .lastName("Doe")
-        .email("johndoe@texastoc.com")
-        .gameId(1)
-        .build();
+      .firstName("John")
+      .lastName("Doe")
+      .email("johndoe@texastoc.com")
+      .gameId(1)
+      .build();
     GamePlayer gamePlayer = gameService.createFirstTimeGamePlayer(firstTimeGamePlayer);
 
     Assert.assertNotNull(gamePlayer);
@@ -533,11 +533,11 @@ public class GameServiceTest implements TestConstants {
   @Test
   public void testFinalize() {
     Mockito.when(gameRepository.getById(1))
-        .thenReturn(Game.builder()
-            .id(1)
-            .qSeasonId(1)
-            .seasonId(1)
-            .build());
+      .thenReturn(Game.builder()
+        .id(1)
+        .qSeasonId(1)
+        .seasonId(1)
+        .build());
 
     Mockito.doNothing().when(gameRepository).update((Game) notNull());
 
@@ -553,15 +553,15 @@ public class GameServiceTest implements TestConstants {
   @Test
   public void testFinalizeNoChanges() {
     Mockito.when(gameRepository.getById(1))
-        .thenReturn(Game.builder()
-            .id(1)
-            .finalized(true)
-            .build());
+      .thenReturn(Game.builder()
+        .id(1)
+        .finalized(true)
+        .build());
 
     try {
       gameService.updateGame(Game.builder()
-          .id(1)
-          .build());
+        .id(1)
+        .build());
       Assert.fail("should not be able to update a finalized game");
     } catch (FinalizedException e) {
       // all good
@@ -569,8 +569,8 @@ public class GameServiceTest implements TestConstants {
 
     try {
       gameService.createGamePlayer(GamePlayer.builder()
-          .gameId(1)
-          .build());
+        .gameId(1)
+        .build());
       Assert.fail("should not be able to update a finalized game");
     } catch (FinalizedException e) {
       // all good
@@ -578,17 +578,17 @@ public class GameServiceTest implements TestConstants {
 
     try {
       gameService.updateGamePlayer(GamePlayer.builder()
-          .gameId(1)
-          .build());
+        .gameId(1)
+        .build());
       Assert.fail("should not be able to update a finalized game");
     } catch (FinalizedException e) {
       // all good
     }
 
     Mockito.when(gamePlayerRepository.selectById(1)).thenReturn(GamePlayer.builder()
-        .id(1)
-        .gameId(1)
-        .build());
+      .id(1)
+      .gameId(1)
+      .build());
 
     try {
       gameService.deleteGamePlayer(1);
@@ -599,8 +599,8 @@ public class GameServiceTest implements TestConstants {
 
     try {
       gameService.createFirstTimeGamePlayer(FirstTimeGamePlayer.builder()
-          .gameId(1)
-          .build());
+        .gameId(1)
+        .build());
       Assert.fail("should not be able to update a finalized game");
     } catch (FinalizedException e) {
       // all good
@@ -614,23 +614,23 @@ public class GameServiceTest implements TestConstants {
     // Do not allow game double buy in to change if any players have bought in.
 
     Mockito.when(gameRepository.getById(1)).thenReturn(Game.builder()
-        .id(1)
-        .finalized(false)
-        .doubleBuyIn(true)
-        .build());
+      .id(1)
+      .finalized(false)
+      .doubleBuyIn(true)
+      .build());
 
     List<GamePlayer> gamePlayers = new LinkedList<>();
     gamePlayers.add(GamePlayer.builder()
-        .id(1)
-        .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .build());
+      .id(1)
+      .gameId(1)
+      .buyInCollected(GAME_DOUBLE_BUY_IN)
+      .build());
     Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayers);
 
     Game game = Game.builder()
-        .id(1)
-        .doubleBuyIn(false)
-        .build();
+      .id(1)
+      .doubleBuyIn(false)
+      .build();
     gameService.updateGame(game);
   }
 

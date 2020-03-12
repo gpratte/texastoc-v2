@@ -53,69 +53,69 @@ public class SeatingServiceTest implements TestConstants {
     List<Table> currentTables = new ArrayList<>(2);
     List<Seat> currentSeats = new ArrayList<>(4);
     currentSeats.add(Seat.builder()
-        .gameId(1)
-        .gamePlayerId(1)
-        .gamePlayerName("One")
-        .seatNumber(1)
-        .tableNumber(1)
-        .build());
+      .gameId(1)
+      .gamePlayerId(1)
+      .gamePlayerName("One")
+      .seatNumber(1)
+      .tableNumber(1)
+      .build());
     currentSeats.add(Seat.builder()
-        .gameId(1)
-        .gamePlayerId(2)
-        .gamePlayerName("Two")
-        .seatNumber(2)
-        .tableNumber(1)
-        .build());
+      .gameId(1)
+      .gamePlayerId(2)
+      .gamePlayerName("Two")
+      .seatNumber(2)
+      .tableNumber(1)
+      .build());
     currentSeats.add(Seat.builder()
-        .gameId(1)
-        .gamePlayerId(3)
-        .gamePlayerName("Three")
-        .seatNumber(3)
-        .tableNumber(1)
-        .build());
+      .gameId(1)
+      .gamePlayerId(3)
+      .gamePlayerName("Three")
+      .seatNumber(3)
+      .tableNumber(1)
+      .build());
     currentSeats.add(Seat.builder()
-        .gameId(1)
-        .gamePlayerId(4)
-        .gamePlayerName("Four")
-        .seatNumber(4)
-        .tableNumber(1)
-        .build());
+      .gameId(1)
+      .gamePlayerId(4)
+      .gamePlayerName("Four")
+      .seatNumber(4)
+      .tableNumber(1)
+      .build());
 
     Table table = Table.builder()
-        .gameId(1)
-        .number(1)
-        .seats(currentSeats)
-        .build();
+      .gameId(1)
+      .number(1)
+      .seats(currentSeats)
+      .build();
     currentTables.add(table);
 
     currentSeats = new ArrayList<>(4);
     currentSeats.add(Seat.builder()
-        .gameId(1)
-        .gamePlayerId(5)
-        .gamePlayerName("Five")
-        .seatNumber(1)
-        .tableNumber(2)
-        .build());
+      .gameId(1)
+      .gamePlayerId(5)
+      .gamePlayerName("Five")
+      .seatNumber(1)
+      .tableNumber(2)
+      .build());
     currentSeats.add(Seat.builder()
-        .gameId(1)
-        .gamePlayerId(6)
-        .gamePlayerName("Six")
-        .seatNumber(2)
-        .tableNumber(2)
-        .build());
+      .gameId(1)
+      .gamePlayerId(6)
+      .gamePlayerName("Six")
+      .seatNumber(2)
+      .tableNumber(2)
+      .build());
     currentSeats.add(Seat.builder()
-        .gameId(1)
-        .gamePlayerId(7)
-        .gamePlayerName("Seven")
-        .seatNumber(3)
-        .tableNumber(2)
-        .build());
+      .gameId(1)
+      .gamePlayerId(7)
+      .gamePlayerName("Seven")
+      .seatNumber(3)
+      .tableNumber(2)
+      .build());
 
     table = Table.builder()
-        .gameId(1)
-        .number(2)
-        .seats(currentSeats)
-        .build();
+      .gameId(1)
+      .number(2)
+      .seats(currentSeats)
+      .build();
     currentTables.add(table);
 
     Mockito.when(seatingRepository.getTables(1)).thenReturn(currentTables);
@@ -155,15 +155,15 @@ public class SeatingServiceTest implements TestConstants {
 
     List<GamePlayer> gamePlayers = new ArrayList<>(2);
     gamePlayers.add(GamePlayer.builder()
-        .id(1)
-        .name("one")
-        .buyInCollected(10)
-        .build());
+      .id(1)
+      .name("one")
+      .buyInCollected(10)
+      .build());
     gamePlayers.add(GamePlayer.builder()
-        .id(2)
-        .name("two")
-        .buyInCollected(10)
-        .build());
+      .id(2)
+      .name("two")
+      .buyInCollected(10)
+      .build());
 
     Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayers);
 
@@ -189,10 +189,10 @@ public class SeatingServiceTest implements TestConstants {
     List<GamePlayer> gamePlayers = new ArrayList<>(2);
     for (int i = 0; i < 9; i++) {
       gamePlayers.add(GamePlayer.builder()
-          .id(i)
-          .name("name" + i)
-          .buyInCollected(10)
-          .build());
+        .id(i)
+        .name("name" + i)
+        .buyInCollected(10)
+        .build());
     }
 
     Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayers);
@@ -239,10 +239,10 @@ public class SeatingServiceTest implements TestConstants {
     List<GamePlayer> gamePlayers = new ArrayList<>(2);
     for (int i = 0; i < 11; i++) {
       gamePlayers.add(GamePlayer.builder()
-          .id(i)
-          .name("name" + i)
-          .buyInCollected(10)
-          .build());
+        .id(i)
+        .name("name" + i)
+        .buyInCollected(10)
+        .build());
     }
 
     Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayers);
@@ -250,9 +250,9 @@ public class SeatingServiceTest implements TestConstants {
     List<TableRequest> tableRequests = new ArrayList<>(6);
     for (int i = 0; i < 6; i++) {
       tableRequests.add(TableRequest.builder()
-          .gamePlayerId(i)
-          .tableNum(1)
-          .build());
+        .gamePlayerId(i)
+        .tableNum(1)
+        .build());
     }
 
     List<Table> tables = seatingService.seat(1, 0, tableRequests);

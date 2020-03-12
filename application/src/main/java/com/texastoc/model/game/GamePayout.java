@@ -27,10 +27,10 @@ public class GamePayout {
     if (o == null || getClass() != o.getClass()) return false;
     GamePayout that = (GamePayout) o;
     return gameId == that.gameId &&
-        place == that.place &&
-        amount == that.amount &&
-        Objects.equals(chopAmount, that.chopAmount) &&
-        Objects.equals(chopPercent, that.chopPercent);
+      place == that.place &&
+      amount == that.amount &&
+      Objects.equals(chopAmount, that.chopAmount) &&
+      Objects.equals(chopPercent, that.chopPercent);
   }
 
   @Override

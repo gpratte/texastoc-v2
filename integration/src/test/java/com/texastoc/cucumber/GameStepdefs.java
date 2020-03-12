@@ -43,31 +43,31 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
   public void the_game_starts_now() throws Exception {
     // Arrange
     createGameRequest = CreateGameRequest.builder()
-        .date(LocalDate.now())
-        .hostId(1)
-        .doubleBuyIn(false)
-        .transportRequired(false)
-        .build();
+      .date(LocalDate.now())
+      .hostId(1)
+      .doubleBuyIn(false)
+      .transportRequired(false)
+      .build();
   }
 
   @Given("^the double buy in game starts now$")
   public void the_double_buy_in_game_starts_now() throws Exception {
     createGameRequest = CreateGameRequest.builder()
-        .date(LocalDate.now())
-        .hostId(1)
-        .doubleBuyIn(true)
-        .transportRequired(false)
-        .build();
+      .date(LocalDate.now())
+      .hostId(1)
+      .doubleBuyIn(true)
+      .transportRequired(false)
+      .build();
   }
 
   @Given("^the game supplies need to be moved$")
   public void the_game_supplies_need_to_be_moved() throws Exception {
     createGameRequest = CreateGameRequest.builder()
-        .date(LocalDate.now())
-        .hostId(1)
-        .doubleBuyIn(false)
-        .transportRequired(true)
-        .build();
+      .date(LocalDate.now())
+      .hostId(1)
+      .doubleBuyIn(false)
+      .transportRequired(true)
+      .build();
   }
 
   @When("^the game is created$")
@@ -80,12 +80,12 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
   public void the_retrieved_game_is_updated_and_retrieved() throws Exception {
 
     UpdateGameRequest updateGameRequest = UpdateGameRequest.builder()
-        .hostId(gameRetrieved.getHostId())
-        .date(gameRetrieved.getDate())
-        .doubleBuyIn(true)
-        .transportRequired(true)
-        .payoutDelta(1)
-        .build();
+      .hostId(gameRetrieved.getHostId())
+      .date(gameRetrieved.getDate())
+      .doubleBuyIn(true)
+      .transportRequired(true)
+      .payoutDelta(1)
+      .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
     updateGame(gameRetrieved.getId(), updateGameRequest, token);

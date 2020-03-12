@@ -18,9 +18,9 @@ public class RoleRepository {
   }
 
   private static final String INSERT_SQL = "INSERT INTO player_roles "
-      + " (playerId, roleId) "
-      + " VALUES "
-      + " (:playerId, :roleId) ";
+    + " (playerId, roleId) "
+    + " VALUES "
+    + " (:playerId, :roleId) ";
 
   public void save(int playerId) {
     MapSqlParameterSource params = new MapSqlParameterSource();

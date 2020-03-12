@@ -158,10 +158,10 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     HttpEntity<String> entity = new HttpEntity<>("", headers);
 
     ResponseEntity<Void> response = restTemplate.exchange(
-        endpoint() + "/games/players/" + gamePlayerId,
-        HttpMethod.DELETE,
-        entity,
-        Void.class);
+      endpoint() + "/games/players/" + gamePlayerId,
+      HttpMethod.DELETE,
+      entity,
+      Void.class);
   }
 
   protected void finalizeGame(int gameId, String token) throws JsonProcessingException {
@@ -194,11 +194,11 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     HttpEntity<String> entity = new HttpEntity<>(headers);
 
     ResponseEntity<List<Supply>> response = restTemplate.exchange(
-        endpoint() + "/supplies",
-        HttpMethod.GET,
-        entity,
-        new ParameterizedTypeReference<List<Supply>>() {
-        });
+      endpoint() + "/supplies",
+      HttpMethod.GET,
+      entity,
+      new ParameterizedTypeReference<List<Supply>>() {
+      });
     return response.getBody();
 
   }
@@ -213,19 +213,19 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     mapper.registerModule(new JavaTimeModule());
 
     SeatingRequest seatingRequest = SeatingRequest.builder()
-        .gameId(gameId)
-        .numDeadStacks(numDeadStacks)
-        .tableRequests(tableRequests)
-        .build();
+      .gameId(gameId)
+      .numDeadStacks(numDeadStacks)
+      .tableRequests(tableRequests)
+      .build();
     String seatingRequestAsJson = mapper.writeValueAsString(seatingRequest);
     HttpEntity<String> entity = new HttpEntity<>(seatingRequestAsJson, headers);
 
     ResponseEntity<List<Table>> response = restTemplate.exchange(
-        endpoint() + "/games/seats",
-        HttpMethod.POST,
-        entity,
-        new ParameterizedTypeReference<List<Table>>() {
-        });
+      endpoint() + "/games/seats",
+      HttpMethod.POST,
+      entity,
+      new ParameterizedTypeReference<List<Table>>() {
+      });
     return response.getBody();
   }
 
@@ -260,10 +260,10 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     HttpEntity<String> entity = new HttpEntity<>(headers);
 
     ResponseEntity<Player> response = restTemplate.exchange(
-        endpoint() + "/players/" + id,
-        HttpMethod.GET,
-        entity,
-        Player.class);
+      endpoint() + "/players/" + id,
+      HttpMethod.GET,
+      entity,
+      Player.class);
     return response.getBody();
   }
 
@@ -273,10 +273,10 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     HttpEntity<String> entity = new HttpEntity<>("", headers);
 
     ResponseEntity<Game> response = restTemplate.exchange(
-        endpoint() + "/games/" + id,
-        HttpMethod.GET,
-        entity,
-        Game.class);
+      endpoint() + "/games/" + id,
+      HttpMethod.GET,
+      entity,
+      Game.class);
     return response.getBody();
   }
 
@@ -286,10 +286,10 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     HttpEntity<String> entity = new HttpEntity<>("", headers);
 
     ResponseEntity<Season> response = restTemplate.exchange(
-        endpoint() + "/seasons/" + id,
-        HttpMethod.GET,
-        entity,
-        Season.class);
+      endpoint() + "/seasons/" + id,
+      HttpMethod.GET,
+      entity,
+      Season.class);
     return response.getBody();
   }
 
@@ -299,10 +299,10 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     HttpEntity<String> entity = new HttpEntity<>("", headers);
 
     ResponseEntity<Season> response = restTemplate.exchange(
-        endpoint() + "/seasons/current",
-        HttpMethod.GET,
-        entity,
-        Season.class);
+      endpoint() + "/seasons/current",
+      HttpMethod.GET,
+      entity,
+      Season.class);
     return response.getBody();
   }
 

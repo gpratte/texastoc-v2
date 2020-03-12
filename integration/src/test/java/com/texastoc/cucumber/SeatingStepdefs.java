@@ -41,11 +41,11 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     createSeason(getSeasonStart(), token);
 
     Game game = createGame(CreateGameRequest.builder()
-        .date(LocalDate.now())
-        .hostId(1)
-        .doubleBuyIn(false)
-        .transportRequired(false)
-        .build(), token);
+      .date(LocalDate.now())
+      .hostId(1)
+      .doubleBuyIn(false)
+      .transportRequired(false)
+      .build(), token);
 
     gameId = game.getId();
 
@@ -54,12 +54,12 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     numPlayers = 9;
     for (int i = 0; i < numPlayers; i++) {
       FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
-          .firstName("Joe" + i)
-          .lastName("Schmoe")
-          .email("joe" + i + ".schmoe@texastoc.com")
-          .gameId(gameId)
-          .buyInCollected(GAME_BUY_IN)
-          .build();
+        .firstName("Joe" + i)
+        .lastName("Schmoe")
+        .email("joe" + i + ".schmoe@texastoc.com")
+        .gameId(gameId)
+        .buyInCollected(GAME_BUY_IN)
+        .build();
       addFirstTimePlayerToGame(firstTimeGamePlayer, token);
     }
   }
@@ -69,11 +69,11 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
     createSeason(getSeasonStart(), token);
     Game game = createGame(CreateGameRequest.builder()
-        .date(LocalDate.now())
-        .hostId(1)
-        .doubleBuyIn(false)
-        .transportRequired(false)
-        .build(), token);
+      .date(LocalDate.now())
+      .hostId(1)
+      .doubleBuyIn(false)
+      .transportRequired(false)
+      .build(), token);
 
     gameId = game.getId();
 
@@ -82,12 +82,12 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     numPlayers = 11;
     for (int i = 0; i < numPlayers; i++) {
       FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
-          .firstName("Joe" + i)
-          .lastName("Schmoe")
-          .email("joe" + i + ".schmoe@texastoc.com")
-          .gameId(gameId)
-          .buyInCollected(GAME_BUY_IN)
-          .build();
+        .firstName("Joe" + i)
+        .lastName("Schmoe")
+        .email("joe" + i + ".schmoe@texastoc.com")
+        .gameId(gameId)
+        .buyInCollected(GAME_BUY_IN)
+        .build();
       addFirstTimePlayerToGame(firstTimeGamePlayer, token);
     }
   }

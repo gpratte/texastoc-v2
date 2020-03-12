@@ -29,9 +29,9 @@ public class QuarterlySeasonRepository {
   }
 
   private static final String INSERT_SQL = "INSERT INTO quarterlyseason "
-      + " (seasonId, startDate, endDate, finalized, quarter, numGames, numGamesPlayed, qTocCollected, qTocPerGame, numPayouts) "
-      + " VALUES "
-      + " (:seasonId, :startDate, :endDate, :finalized, :quarter, :numGames, :numGamesPlayed, :qTocCollected, :qTocPerGame, :numPayouts)";
+    + " (seasonId, startDate, endDate, finalized, quarter, numGames, numGamesPlayed, qTocCollected, qTocPerGame, numPayouts) "
+    + " VALUES "
+    + " (:seasonId, :startDate, :endDate, :finalized, :quarter, :numGames, :numGamesPlayed, :qTocCollected, :qTocPerGame, :numPayouts)";
 
   @SuppressWarnings("Duplicates")
   public int save(QuarterlySeason quarterlySeason) {
@@ -58,12 +58,12 @@ public class QuarterlySeasonRepository {
   }
 
   private static final String UPDATE_SQL = "UPDATE quarterlyseason set " +
-      "seasonId=:seasonId, startDate=:startDate, endDate=:endDate, " +
-      "finalized=:finalized, quarter=:quarter, numGames=:numGames, " +
-      "numGamesPlayed=:numGamesPlayed, qTocCollected=:qTocCollected, " +
-      "qTocPerGame=:qTocPerGame, numPayouts=:numPayouts, " +
-      "lastCalculated=:lastCalculated " +
-      " where id=:id";
+    "seasonId=:seasonId, startDate=:startDate, endDate=:endDate, " +
+    "finalized=:finalized, quarter=:quarter, numGames=:numGames, " +
+    "numGamesPlayed=:numGamesPlayed, qTocCollected=:qTocCollected, " +
+    "qTocPerGame=:qTocPerGame, numPayouts=:numPayouts, " +
+    "lastCalculated=:lastCalculated " +
+    " where id=:id";
 
   @SuppressWarnings("Duplicates")
   public void update(final QuarterlySeason qSeason) {
@@ -91,7 +91,7 @@ public class QuarterlySeasonRepository {
 
     try {
       return jdbcTemplate
-          .queryForObject("select * from quarterlyseason where id = :id", params, new QuarterlySeasonMapper());
+        .queryForObject("select * from quarterlyseason where id = :id", params, new QuarterlySeasonMapper());
     } catch (Exception e) {
       return null;
     }
@@ -99,8 +99,8 @@ public class QuarterlySeasonRepository {
 
   public List<QuarterlySeason> getBySeasonId(int seasonId) {
     return jdbcTemplate.query("select * from quarterlyseason "
-            + " where seasonId=" + seasonId + " order by quarter",
-        new QuarterlySeasonMapper());
+        + " where seasonId=" + seasonId + " order by quarter",
+      new QuarterlySeasonMapper());
   }
 
   public QuarterlySeason getCurrent() {

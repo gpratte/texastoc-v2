@@ -29,33 +29,33 @@ public class GamePlayerRepository {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("gameId", gameId);
     return jdbcTemplate
-        .query("select * from gameplayer"
-                + " where gameId = :gameId"
-                + " order by name",
-            params,
-            new GamePlayerMapper());
+      .query("select * from gameplayer"
+          + " where gameId = :gameId"
+          + " order by name",
+        params,
+        new GamePlayerMapper());
   }
 
   public List<GamePlayer> selectAnnualTocPlayersBySeasonId(int seasonId) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("seasonId", seasonId);
     return jdbcTemplate
-        .query("select * from gameplayer "
-                + " where seasonId = :seasonId "
-                + " and annualTocCollected IS NOT NULL ",
-            params,
-            new GamePlayerMapper());
+      .query("select * from gameplayer "
+          + " where seasonId = :seasonId "
+          + " and annualTocCollected IS NOT NULL ",
+        params,
+        new GamePlayerMapper());
   }
 
   public List<GamePlayer> selectQuarterlyTocPlayersByQuarterlySeasonId(int qSeasonId) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("qSeasonId", qSeasonId);
     return jdbcTemplate
-        .query("select * from gameplayer "
-                + " where qSeasonId = :qSeasonId "
-                + " and quarterlyTocCollected IS NOT NULL ",
-            params,
-            new GamePlayerMapper());
+      .query("select * from gameplayer "
+          + " where qSeasonId = :qSeasonId "
+          + " and quarterlyTocCollected IS NOT NULL ",
+        params,
+        new GamePlayerMapper());
   }
 
   public GamePlayer selectById(int id) {
@@ -65,7 +65,7 @@ public class GamePlayerRepository {
     GamePlayer gamePlayer;
     try {
       gamePlayer = jdbcTemplate
-          .queryForObject("select * from gameplayer where id = :id", params, new GamePlayerMapper());
+        .queryForObject("select * from gameplayer where id = :id", params, new GamePlayerMapper());
     } catch (Exception e) {
       e.printStackTrace();
       return null;
@@ -79,14 +79,14 @@ public class GamePlayerRepository {
     params.addValue("id", id);
 
     jdbcTemplate
-        .update("delete from gameplayer where id = :id", params);
+      .update("delete from gameplayer where id = :id", params);
   }
 
   private static final String INSERT_SQL =
-      "INSERT INTO gameplayer "
-          + "(playerId, gameId, qSeasonId, seasonId, name, points, place, knockedOut, roundUpdates, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, chop) "
-          + " VALUES "
-          + " (:playerId, :gameId, :qSeasonId, :seasonId, :name, :points, :place, :knockedOut, :roundUpdates, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :chop)";
+    "INSERT INTO gameplayer "
+      + "(playerId, gameId, qSeasonId, seasonId, name, points, place, knockedOut, roundUpdates, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, chop) "
+      + " VALUES "
+      + " (:playerId, :gameId, :qSeasonId, :seasonId, :name, :points, :place, :knockedOut, :roundUpdates, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :chop)";
 
   public int save(final GamePlayer gamePlayer) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -117,12 +117,12 @@ public class GamePlayerRepository {
 
 
   private static final String UPDATE_SQL = "UPDATE gameplayer set " +
-      "playerId=:playerId, gameId=:gameId, qSeasonId=:qSeasonId, seasonId=seasonId, " +
-      "name=:name, points=:points, place=:place, knockedOut=:knockedOut, " +
-      "roundUpdates=:roundUpdates, buyInCollected=:buyInCollected, " +
-      "rebuyAddOnCollected=:rebuyAddOnCollected, annualTocCollected=:annualTocCollected, " +
-      "quarterlyTocCollected=:quarterlyTocCollected, chop=:chop " +
-      " where id=:id";
+    "playerId=:playerId, gameId=:gameId, qSeasonId=:qSeasonId, seasonId=seasonId, " +
+    "name=:name, points=:points, place=:place, knockedOut=:knockedOut, " +
+    "roundUpdates=:roundUpdates, buyInCollected=:buyInCollected, " +
+    "rebuyAddOnCollected=:rebuyAddOnCollected, annualTocCollected=:annualTocCollected, " +
+    "quarterlyTocCollected=:quarterlyTocCollected, chop=:chop " +
+    " where id=:id";
 
   public void update(final GamePlayer player) {
 

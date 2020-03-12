@@ -29,16 +29,16 @@ public class GamePayoutRepository {
     params.addValue("id", id);
 
     return jdbcTemplate
-        .query("select * from gamepayout where gameId = :id order by amount desc",
-            params,
-            new GamePayoutMapper());
+      .query("select * from gamepayout where gameId = :id order by amount desc",
+        params,
+        new GamePayoutMapper());
   }
 
   private static final String INSERT_SQL =
-      "INSERT INTO gamepayout "
-          + "(gameId, place, amount, chopAmount, chopPercent) "
-          + " VALUES "
-          + " (:gameId, :place, :amount, :chopAmount, :chopPercent)";
+    "INSERT INTO gamepayout "
+      + "(gameId, place, amount, chopAmount, chopPercent) "
+      + " VALUES "
+      + " (:gameId, :place, :amount, :chopAmount, :chopPercent)";
 
   public int save(final GamePayout gamePayout) {
     KeyHolder keyHolder = new GeneratedKeyHolder();

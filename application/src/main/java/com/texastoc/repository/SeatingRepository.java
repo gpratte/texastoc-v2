@@ -29,9 +29,9 @@ public class SeatingRepository {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("gameId", gameId);
     return jdbcTemplate
-        .query("select * from gameseat where gameId = :gameId order by tableNumber, seatNumber",
-            params,
-            new SeatMapper());
+      .query("select * from gameseat where gameId = :gameId order by tableNumber, seatNumber",
+        params,
+        new SeatMapper());
   }
 
 
@@ -57,13 +57,13 @@ public class SeatingRepository {
     params.addValue("gameId", gameId);
 
     jdbcTemplate
-        .update("delete from gameseat where gameId = :gameId", params);
+      .update("delete from gameseat where gameId = :gameId", params);
   }
 
   private static final String INSERT_SEAT_SQL = "INSERT INTO gameseat "
-      + " (gameId, seatNumber, tableNumber, gamePlayerId, gamePlayerName) "
-      + " VALUES "
-      + " (:gameId, :seatNumber, :tableNumber, :gamePlayerId, :gamePlayerName)";
+    + " (gameId, seatNumber, tableNumber, gamePlayerId, gamePlayerName) "
+    + " VALUES "
+    + " (:gameId, :seatNumber, :tableNumber, :gamePlayerId, :gamePlayerName)";
 
   private void save(List<Seat> seats) {
 

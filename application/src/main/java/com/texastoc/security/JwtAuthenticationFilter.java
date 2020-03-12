@@ -30,13 +30,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                               HttpServletResponse res) throws AuthenticationException {
     try {
       Player player = new ObjectMapper()
-          .readValue(req.getInputStream(), Player.class);
+        .readValue(req.getInputStream(), Player.class);
 
       return authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(
-              player.getEmail(),
-              player.getPassword(),
-              new ArrayList<>())
+        new UsernamePasswordAuthenticationToken(
+          player.getEmail(),
+          player.getPassword(),
+          new ArrayList<>())
       );
     } catch (IOException e) {
       throw new RuntimeException(e);

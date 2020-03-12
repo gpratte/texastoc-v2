@@ -35,9 +35,9 @@ public class PointsCalculatorTest implements TestConstants {
   public void testNoPlayersNoPoints() {
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(0)
-        .build();
+      .id(1)
+      .numPlayers(0)
+      .build();
 
     List<GamePlayer> gamePlayers = pointsCalculator.calculate(game, Collections.EMPTY_LIST);
 
@@ -49,13 +49,13 @@ public class PointsCalculatorTest implements TestConstants {
   public void test1PlayersNoPoints() {
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(1)
-        .build();
+      .id(1)
+      .numPlayers(1)
+      .build();
 
     List<GamePlayer> gamePlayers = new ArrayList<>(1);
     gamePlayers.add(GamePlayer.builder()
-        .build());
+      .build());
 
     gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 
@@ -75,23 +75,23 @@ public class PointsCalculatorTest implements TestConstants {
     }
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .build();
 
     List<GamePlayer> gamePlayers = new ArrayList<>(numPlayers);
     for (int i = 0; i < numPlayers; i++) {
       gamePlayers.add(GamePlayer.builder()
-          .build());
+        .build());
     }
     int pickOnePlayer = random.nextInt(numPlayers);
     gamePlayers.get(pickOnePlayer).setPlace(numPlayers);
 
     // Needed in the persistPoints method
     Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
-        .thenReturn(GamePlayer.builder()
-            .points(1)
-            .build());
+      .thenReturn(GamePlayer.builder()
+        .points(1)
+        .build());
 
 
     gamePlayers = pointsCalculator.calculate(game, gamePlayers);
@@ -123,23 +123,23 @@ public class PointsCalculatorTest implements TestConstants {
     int numPlayers = 10;
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .build();
 
     List<GamePlayer> gamePlayers = new ArrayList<>(numPlayers);
     for (int i = 0; i < numPlayers; i++) {
       gamePlayers.add(GamePlayer.builder()
-          .build());
+        .build());
     }
     gamePlayers.get(1).setPlace(10);
     gamePlayers.get(4).setPlace(9);
 
     // Needed in the persistPoints method
     Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
-        .thenReturn(GamePlayer.builder()
-            .points(1)
-            .build());
+      .thenReturn(GamePlayer.builder()
+        .points(1)
+        .build());
 
     gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 
@@ -173,14 +173,14 @@ public class PointsCalculatorTest implements TestConstants {
     int numPlayers = 17;
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .build();
 
     List<GamePlayer> gamePlayers = new ArrayList<>(numPlayers);
     for (int i = 0; i < numPlayers; i++) {
       gamePlayers.add(GamePlayer.builder()
-          .build());
+        .build());
     }
     gamePlayers.get(0).setPlace(4);
     gamePlayers.get(1).setPlace(6);
@@ -195,9 +195,9 @@ public class PointsCalculatorTest implements TestConstants {
 
     // Needed in the persistPoints method
     Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
-        .thenReturn(GamePlayer.builder()
-            .points(1)
-            .build());
+      .thenReturn(GamePlayer.builder()
+        .points(1)
+        .build());
 
     gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 
@@ -240,14 +240,14 @@ public class PointsCalculatorTest implements TestConstants {
     int numPlayers = 17;
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .build();
 
     List<GamePlayer> gamePlayers = new ArrayList<>(numPlayers);
     for (int i = 0; i < numPlayers; i++) {
       gamePlayers.add(GamePlayer.builder()
-          .build());
+        .build());
     }
     gamePlayers.get(0).setPlace(4);
     gamePlayers.get(1).setPlace(6);
@@ -266,9 +266,9 @@ public class PointsCalculatorTest implements TestConstants {
 
     // Needed in the persistPoints method
     Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
-        .thenReturn(GamePlayer.builder()
-            .points(1)
-            .build());
+      .thenReturn(GamePlayer.builder()
+        .points(1)
+        .build());
 
     gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 
@@ -303,14 +303,14 @@ public class PointsCalculatorTest implements TestConstants {
     int numPlayers = 17;
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .build();
 
     List<GamePlayer> gamePlayers = new ArrayList<>(numPlayers);
     for (int i = 0; i < numPlayers; i++) {
       gamePlayers.add(GamePlayer.builder()
-          .build());
+        .build());
     }
     gamePlayers.get(0).setPlace(4);
     gamePlayers.get(1).setPlace(6);
@@ -332,9 +332,9 @@ public class PointsCalculatorTest implements TestConstants {
 
     // Needed in the persistPoints method
     Mockito.when(gamePlayerRepository.selectById(Mockito.anyInt()))
-        .thenReturn(GamePlayer.builder()
-            .points(1)
-            .build());
+      .thenReturn(GamePlayer.builder()
+        .points(1)
+        .build());
 
     gamePlayers = pointsCalculator.calculate(game, gamePlayers);
 

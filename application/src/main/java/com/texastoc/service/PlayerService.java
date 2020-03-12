@@ -23,12 +23,12 @@ public class PlayerService {
   @Transactional
   public Player create(Player player) {
     Player playerToCreate = Player.builder()
-        .firstName(player.getFirstName())
-        .lastName(player.getLastName())
-        .email(player.getEmail())
-        .phone(player.getPhone())
-        .password(player.getPassword() == null ? null : bCryptPasswordEncoder.encode(player.getPassword()))
-        .build();
+      .firstName(player.getFirstName())
+      .lastName(player.getLastName())
+      .email(player.getEmail())
+      .phone(player.getPhone())
+      .password(player.getPassword() == null ? null : bCryptPasswordEncoder.encode(player.getPassword()))
+      .build();
 
     int id = playerRepository.save(playerToCreate);
 

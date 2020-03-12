@@ -48,14 +48,14 @@ public class SupplyServiceTest implements TestConstants {
 
     List<Supply> currentSupplies = new LinkedList<>();
     currentSupplies.add(0, Supply.builder()
-        .id(1)
-        .build());
+      .id(1)
+      .build());
     currentSupplies.add(0, Supply.builder()
-        .id(2)
-        .build());
+      .id(2)
+      .build());
     currentSupplies.add(0, Supply.builder()
-        .id(3)
-        .build());
+      .id(3)
+      .build());
     Mockito.when(supplyRepository.get()).thenReturn(currentSupplies);
 
     List<Supply> supplies = supplyService.get();
@@ -73,11 +73,11 @@ public class SupplyServiceTest implements TestConstants {
   @Test
   public void testCreateSupply() {
     supplyService.create(Supply.builder()
-        .amount(10)
-        .date(LocalDate.now())
-        .type(SupplyType.CARDS)
-        .description("new cards")
-        .build());
+      .amount(10)
+      .date(LocalDate.now())
+      .type(SupplyType.CARDS)
+      .description("new cards")
+      .build());
 
     Mockito.verify(supplyRepository, Mockito.times(1)).save(Mockito.any(Supply.class));
   }
@@ -85,28 +85,28 @@ public class SupplyServiceTest implements TestConstants {
   @Test(expected = IllegalArgumentException.class)
   public void testMissingDateCreateSupply() {
     supplyService.create(Supply.builder()
-        .amount(10)
-        .type(SupplyType.CARDS)
-        .build());
+      .amount(10)
+      .type(SupplyType.CARDS)
+      .build());
 
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidAmountCreateSupply() {
     supplyService.create(Supply.builder()
-        .date(LocalDate.now())
-        .amount(0)
-        .type(SupplyType.CARDS)
-        .build());
+      .date(LocalDate.now())
+      .amount(0)
+      .type(SupplyType.CARDS)
+      .build());
 
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMissingTypeCreateSupply() {
     supplyService.create(Supply.builder()
-        .date(LocalDate.now())
-        .amount(10)
-        .build());
+      .date(LocalDate.now())
+      .amount(10)
+      .build());
   }
 
 }

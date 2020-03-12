@@ -40,10 +40,10 @@ public class PayoutCalculatorTest implements TestConstants {
   public void testNoPlayersNoPayouts() {
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(0)
-        .prizePotCalculated(0)
-        .build();
+      .id(1)
+      .numPlayers(0)
+      .prizePotCalculated(0)
+      .build();
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
@@ -55,10 +55,10 @@ public class PayoutCalculatorTest implements TestConstants {
   public void test1PlayersNoPayouts() {
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(1)
-        .prizePotCalculated(0)
-        .build();
+      .id(1)
+      .numPlayers(1)
+      .prizePotCalculated(0)
+      .build();
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
@@ -70,10 +70,10 @@ public class PayoutCalculatorTest implements TestConstants {
   public void test1Players1Payout() {
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(1)
-        .prizePotCalculated(GAME_BUY_IN)
-        .build();
+      .id(1)
+      .numPlayers(1)
+      .prizePotCalculated(GAME_BUY_IN)
+      .build();
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
@@ -97,10 +97,10 @@ public class PayoutCalculatorTest implements TestConstants {
     }
 
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(GAME_BUY_IN * numPlayers)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(GAME_BUY_IN * numPlayers)
+      .build();
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
 
@@ -126,10 +126,10 @@ public class PayoutCalculatorTest implements TestConstants {
 
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
 
     Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
 
@@ -176,10 +176,10 @@ public class PayoutCalculatorTest implements TestConstants {
 
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
 
     Mockito.when(payoutRepository.get(3)).thenReturn(TestConstants.getPayouts(3));
 
@@ -228,10 +228,10 @@ public class PayoutCalculatorTest implements TestConstants {
 
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
 
     Mockito.when(payoutRepository.get(4)).thenReturn(TestConstants.getPayouts(4));
 
@@ -280,10 +280,10 @@ public class PayoutCalculatorTest implements TestConstants {
     numPlayers += 22;
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
     Mockito.when(payoutRepository.get(5)).thenReturn(TestConstants.getPayouts(5));
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
@@ -334,10 +334,10 @@ public class PayoutCalculatorTest implements TestConstants {
     numPlayers += 27;
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
     Mockito.when(payoutRepository.get(6)).thenReturn(TestConstants.getPayouts(6));
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
@@ -390,10 +390,10 @@ public class PayoutCalculatorTest implements TestConstants {
     numPlayers += 32;
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
     Mockito.when(payoutRepository.get(7)).thenReturn(TestConstants.getPayouts(7));
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
@@ -448,10 +448,10 @@ public class PayoutCalculatorTest implements TestConstants {
     numPlayers += 37;
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
     Mockito.when(payoutRepository.get(8)).thenReturn(TestConstants.getPayouts(8));
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
@@ -508,10 +508,10 @@ public class PayoutCalculatorTest implements TestConstants {
     numPlayers += 42;
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
     Mockito.when(payoutRepository.get(9)).thenReturn(TestConstants.getPayouts(9));
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
@@ -570,10 +570,10 @@ public class PayoutCalculatorTest implements TestConstants {
     numPlayers += 47;
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
     Mockito.when(payoutRepository.get(10)).thenReturn(TestConstants.getPayouts(10));
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, Collections.EMPTY_LIST);
@@ -638,11 +638,11 @@ public class PayoutCalculatorTest implements TestConstants {
 
     // Add a payout
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .payoutDelta(1)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .payoutDelta(1)
+      .build();
 
     Mockito.when(payoutRepository.get(4)).thenReturn(TestConstants.getPayouts(4));
 
@@ -694,11 +694,11 @@ public class PayoutCalculatorTest implements TestConstants {
 
     // Remove a payout
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .payoutDelta(-1)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .payoutDelta(-1)
+      .build();
 
     Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
 
@@ -743,21 +743,21 @@ public class PayoutCalculatorTest implements TestConstants {
 
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
 
     Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
 
     List<GamePlayer> gamePlayers = new ArrayList<>(8);
     gamePlayers.add(GamePlayer.builder()
-        .chop(100000)
-        .place(1)
-        .build());
+      .chop(100000)
+      .place(1)
+      .build());
     gamePlayers.add(GamePlayer.builder()
-        .place(2)
-        .build());
+      .place(2)
+      .build());
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, gamePlayers);
 
@@ -784,22 +784,22 @@ public class PayoutCalculatorTest implements TestConstants {
 
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
 
     Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
 
     List<GamePlayer> gamePlayers = new ArrayList<>(8);
     gamePlayers.add(GamePlayer.builder()
-        .chop(100000)
-        .place(1)
-        .build());
+      .chop(100000)
+      .place(1)
+      .build());
     gamePlayers.add(GamePlayer.builder()
-        .chop(50000)
-        .place(2)
-        .build());
+      .chop(50000)
+      .place(2)
+      .build());
 
     List<GamePayout> gamePayouts = payoutCalculator.calculate(game, gamePlayers);
 
@@ -829,10 +829,10 @@ public class PayoutCalculatorTest implements TestConstants {
     int numPlayers = 10;
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
 
     Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
 
@@ -857,25 +857,25 @@ public class PayoutCalculatorTest implements TestConstants {
     int numPlayers = 10;
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
 
     Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
 
     // Set the current payouts such that at least one will be different from the new payouts
     List<GamePayout> currentGamePayouts = new ArrayList<>(2);
     currentGamePayouts.add(GamePayout.builder()
-        .gameId(1)
-        .place(1)
-        .amount(1000)
-        .build());
+      .gameId(1)
+      .place(1)
+      .amount(1000)
+      .build());
     currentGamePayouts.add(GamePayout.builder()
-        .gameId(1)
-        .place(2)
-        .amount(999)
-        .build());
+      .gameId(1)
+      .place(2)
+      .amount(999)
+      .build());
 
     // Currently no payouts
     Mockito.when(gamePayoutRepository.getByGameId(1)).thenReturn(currentGamePayouts);
@@ -898,25 +898,25 @@ public class PayoutCalculatorTest implements TestConstants {
     int numPlayers = 10;
     int prizePot = GAME_BUY_IN * numPlayers;
     Game game = Game.builder()
-        .id(1)
-        .numPlayers(numPlayers)
-        .prizePotCalculated(prizePot)
-        .build();
+      .id(1)
+      .numPlayers(numPlayers)
+      .prizePotCalculated(prizePot)
+      .build();
 
     Mockito.when(payoutRepository.get(2)).thenReturn(TestConstants.getPayouts(2));
 
     // Set the current payouts to be the same as the new payouts
     List<GamePayout> currentGamePayouts = new ArrayList<>(2);
     currentGamePayouts.add(GamePayout.builder()
-        .gameId(1)
-        .place(1)
-        .amount(39)
-        .build());
+      .gameId(1)
+      .place(1)
+      .amount(39)
+      .build());
     currentGamePayouts.add(GamePayout.builder()
-        .gameId(1)
-        .place(2)
-        .amount(21)
-        .build());
+      .gameId(1)
+      .place(2)
+      .amount(21)
+      .build());
 
     // Currently no payouts
     Mockito.when(gamePayoutRepository.getByGameId(1)).thenReturn(currentGamePayouts);

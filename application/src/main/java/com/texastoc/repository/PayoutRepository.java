@@ -24,7 +24,7 @@ public class PayoutRepository {
   }
 
   private static final HashMap<Integer, List<Payout>> PAYOUTS =
-      new HashMap<>();
+    new HashMap<>();
 
 
   public List<Payout> get(int num) {
@@ -57,10 +57,10 @@ public class PayoutRepository {
       Payout payout = null;
       try {
         payout = Payout.builder()
-            .numPayouts(rs.getInt("numPayouts"))
-            .place(rs.getInt("place"))
-            .percent(rs.getDouble("percent"))
-            .build();
+          .numPayouts(rs.getInt("numPayouts"))
+          .place(rs.getInt("place"))
+          .percent(rs.getDouble("percent"))
+          .build();
       } catch (SQLException e) {
         log.error("Problem mapping TocConfig", e);
       }

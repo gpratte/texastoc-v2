@@ -32,10 +32,10 @@ public class SuppliesStepdefs extends SpringBootBaseIntegrationTest {
   @Given("^chairs have been bought$")
   public void chairs_have_been_bought() throws Exception {
     supplyToCreate = Supply.builder()
-        .amount(11)
-        .type(SupplyType.CHAIRS)
-        .date(LocalDate.now())
-        .build();
+      .amount(11)
+      .type(SupplyType.CHAIRS)
+      .date(LocalDate.now())
+      .build();
   }
 
   @When("^the supply is created$")

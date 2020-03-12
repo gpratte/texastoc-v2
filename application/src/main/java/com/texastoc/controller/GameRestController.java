@@ -28,11 +28,11 @@ public class GameRestController {
   @PostMapping("/api/v2/games")
   public Game createGame(@RequestBody @Valid CreateGameRequest createGameRequest) {
     return gameService.createGame(Game.builder()
-        .hostId(createGameRequest.getHostId())
-        .date(createGameRequest.getDate())
-        .doubleBuyIn(createGameRequest.getDoubleBuyIn())
-        .transportRequired(createGameRequest.getTransportRequired())
-        .build());
+      .hostId(createGameRequest.getHostId())
+      .date(createGameRequest.getDate())
+      .doubleBuyIn(createGameRequest.getDoubleBuyIn())
+      .transportRequired(createGameRequest.getTransportRequired())
+      .build());
   }
 
   @PutMapping("/api/v2/games/{id}")
@@ -68,12 +68,12 @@ public class GameRestController {
   @PostMapping("/api/v2/games/players")
   public GamePlayer createGamePlayer(@RequestBody @Valid CreateGamePlayerRequest cgpr) {
     GamePlayer gamePlayer = GamePlayer.builder()
-        .playerId(cgpr.getPlayerId())
-        .gameId(cgpr.getGameId())
-        .buyInCollected(cgpr.getBuyInCollected())
-        .annualTocCollected(cgpr.getAnnualTocCollected())
-        .quarterlyTocCollected(cgpr.getQuarterlyTocCollected())
-        .build();
+      .playerId(cgpr.getPlayerId())
+      .gameId(cgpr.getGameId())
+      .buyInCollected(cgpr.getBuyInCollected())
+      .annualTocCollected(cgpr.getAnnualTocCollected())
+      .quarterlyTocCollected(cgpr.getQuarterlyTocCollected())
+      .build();
     return gameService.createGamePlayer(gamePlayer);
   }
 

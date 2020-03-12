@@ -49,11 +49,11 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     createSeason(token);
 
     CreateGameRequest createGameRequest = CreateGameRequest.builder()
-        .date(LocalDate.now())
-        .hostId(1)
-        .doubleBuyIn(false)
-        .transportRequired(false)
-        .build();
+      .date(LocalDate.now())
+      .hostId(1)
+      .doubleBuyIn(false)
+      .transportRequired(false)
+      .build();
 
     gameId = createGame(createGameRequest, token).getId();
   }
@@ -63,9 +63,9 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
   public void a_player_is_added_without_buy_in() throws Exception {
 
     CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
-        .playerId(BRIAN_BAKER_PLAYER_ID)
-        .gameId(gameId)
-        .build();
+      .playerId(BRIAN_BAKER_PLAYER_ID)
+      .gameId(gameId)
+      .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
     gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
@@ -75,10 +75,10 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
   public void a_player_is_added_with_buy_in() throws Exception {
 
     CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
-        .playerId(BRIAN_BAKER_PLAYER_ID)
-        .gameId(gameId)
-        .buyInCollected(GAME_BUY_IN)
-        .build();
+      .playerId(BRIAN_BAKER_PLAYER_ID)
+      .gameId(gameId)
+      .buyInCollected(GAME_BUY_IN)
+      .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
     gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
@@ -88,19 +88,19 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
   public void two_players_are_added_with_buy_in() throws Exception {
 
     CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
-        .playerId(BRIAN_BAKER_PLAYER_ID)
-        .gameId(gameId)
-        .buyInCollected(GAME_BUY_IN)
-        .build();
+      .playerId(BRIAN_BAKER_PLAYER_ID)
+      .gameId(gameId)
+      .buyInCollected(GAME_BUY_IN)
+      .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
     gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
 
     createGamePlayerRequest = CreateGamePlayerRequest.builder()
-        .playerId(ANDY_THOMAS_PLAYER_ID)
-        .gameId(gameId)
-        .buyInCollected(GAME_BUY_IN)
-        .build();
+      .playerId(ANDY_THOMAS_PLAYER_ID)
+      .gameId(gameId)
+      .buyInCollected(GAME_BUY_IN)
+      .build();
     gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
   }
 
@@ -114,15 +114,15 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
   public void the_player_is_updated() throws Exception {
 
     UpdateGamePlayerRequest updateGamePlayerRequest = UpdateGamePlayerRequest.builder()
-        .playerId(ANDY_THOMAS_PLAYER_ID)
-        .place(10)
-        .knockedOut(false)
-        .roundUpdates(true)
-        .buyInCollected(GAME_BUY_IN)
-        .rebuyAddOnCollected(GAME_REBUY)
-        .annualTocCollected(TOC_PER_GAME)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .build();
+      .playerId(ANDY_THOMAS_PLAYER_ID)
+      .place(10)
+      .knockedOut(false)
+      .roundUpdates(true)
+      .buyInCollected(GAME_BUY_IN)
+      .rebuyAddOnCollected(GAME_REBUY)
+      .annualTocCollected(TOC_PER_GAME)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
 
@@ -135,15 +135,15 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
   public void knockedOut() throws Exception {
 
     UpdateGamePlayerRequest updateGamePlayerRequest = UpdateGamePlayerRequest.builder()
-        .playerId(ANDY_THOMAS_PLAYER_ID)
-        .place(10)
-        .knockedOut(true)
-        .roundUpdates(true)
-        .buyInCollected(GAME_BUY_IN)
-        .rebuyAddOnCollected(GAME_REBUY)
-        .annualTocCollected(TOC_PER_GAME)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .build();
+      .playerId(ANDY_THOMAS_PLAYER_ID)
+      .place(10)
+      .knockedOut(true)
+      .roundUpdates(true)
+      .buyInCollected(GAME_BUY_IN)
+      .rebuyAddOnCollected(GAME_REBUY)
+      .annualTocCollected(TOC_PER_GAME)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
 
@@ -163,14 +163,14 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
   public void a_first_time_player_is_added() throws Exception {
 
     FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
-        .firstName("Joe")
-        .lastName("Schmoe")
-        .email("joe.schmoe@texastoc.com")
-        .gameId(gameId)
-        .buyInCollected(GAME_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-        .build();
+      .firstName("Joe")
+      .lastName("Schmoe")
+      .email("joe.schmoe@texastoc.com")
+      .gameId(gameId)
+      .buyInCollected(GAME_BUY_IN)
+      .annualTocCollected(TOC_PER_GAME)
+      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
 
@@ -272,12 +272,12 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
 
     for (int i = 0; i < numPlayers; i++) {
       CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
-          .playerId(1)
-          .gameId(gameId)
-          .buyInCollected(GAME_BUY_IN)
-          .annualTocCollected(random.nextBoolean() ? TOC_PER_GAME : null)
-          .quarterlyTocCollected(random.nextBoolean() ? QUARTERLY_TOC_PER_GAME : null)
-          .build();
+        .playerId(1)
+        .gameId(gameId)
+        .buyInCollected(GAME_BUY_IN)
+        .annualTocCollected(random.nextBoolean() ? TOC_PER_GAME : null)
+        .quarterlyTocCollected(random.nextBoolean() ? QUARTERLY_TOC_PER_GAME : null)
+        .build();
 
       gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
     }

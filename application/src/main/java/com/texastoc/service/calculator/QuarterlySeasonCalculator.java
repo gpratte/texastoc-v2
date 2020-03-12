@@ -85,11 +85,11 @@ public class QuarterlySeasonCalculator {
       if (player == null) {
 
         player = QuarterlySeasonPlayer.builder()
-            .playerId(gamePlayer.getPlayerId())
-            .seasonId(seasonId)
-            .qSeasonId(qSeasonId)
-            .name(gamePlayer.getName())
-            .build();
+          .playerId(gamePlayer.getPlayerId())
+          .seasonId(seasonId)
+          .qSeasonId(qSeasonId)
+          .name(gamePlayer.getName())
+          .build();
 
         seasonPlayerMap.put(gamePlayer.getId(), player);
       }
@@ -128,23 +128,23 @@ public class QuarterlySeasonCalculator {
     int thirdPlace = pot - firstPlace - secondPlace;
 
     payouts.add(QuarterlySeasonPayout.builder()
-        .seasonId(seasonId)
-        .qSeasonId(qSeasonId)
-        .place(1)
-        .amount(firstPlace)
-        .build());
+      .seasonId(seasonId)
+      .qSeasonId(qSeasonId)
+      .place(1)
+      .amount(firstPlace)
+      .build());
     payouts.add(QuarterlySeasonPayout.builder()
-        .seasonId(seasonId)
-        .qSeasonId(qSeasonId)
-        .place(2)
-        .amount(secondPlace)
-        .build());
+      .seasonId(seasonId)
+      .qSeasonId(qSeasonId)
+      .place(2)
+      .amount(secondPlace)
+      .build());
     payouts.add(QuarterlySeasonPayout.builder()
-        .seasonId(seasonId)
-        .qSeasonId(qSeasonId)
-        .place(3)
-        .amount(thirdPlace)
-        .build());
+      .seasonId(seasonId)
+      .qSeasonId(qSeasonId)
+      .place(3)
+      .amount(thirdPlace)
+      .build());
 
     return payouts;
   }

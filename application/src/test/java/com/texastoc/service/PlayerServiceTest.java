@@ -43,11 +43,11 @@ public class PlayerServiceTest implements TestConstants {
 
     // Arrange
     Player expected = Player.builder()
-        .firstName("bob")
-        .lastName("yoursuncle")
-        .phone("1234567890")
-        .email("abc@xyz.com")
-        .build();
+      .firstName("bob")
+      .lastName("yoursuncle")
+      .phone("1234567890")
+      .email("abc@xyz.com")
+      .build();
 
     Mockito.when(playerRepository.save((Player) notNull())).thenReturn(1);
 
@@ -73,15 +73,15 @@ public class PlayerServiceTest implements TestConstants {
 
     // Arrange
     Player player = Player.builder()
-        .id(1)
-        .email("abc@xyz.com")
-        .password("newpassword")
-        .build();
+      .id(1)
+      .email("abc@xyz.com")
+      .password("newpassword")
+      .build();
 
     Mockito.when(playerRepository.get(ArgumentMatchers.eq(1)))
-        .thenReturn(Player.builder()
-            .password(newPasswordEncoded)
-            .build());
+      .thenReturn(Player.builder()
+        .password(newPasswordEncoded)
+        .build());
 
     // Act
     playerService.update(player);

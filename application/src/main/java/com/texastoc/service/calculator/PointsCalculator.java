@@ -109,7 +109,7 @@ public class PointsCalculator {
         for (Chop chop : chops) {
           for (GamePlayer gamePlayer : gamePlayers) {
             if (gamePlayer.getPoints() != null &&
-                gamePlayer.getPoints() == chop.getOrgAmount()) {
+              gamePlayer.getPoints() == chop.getOrgAmount()) {
               gamePlayer.setPoints(chop.getChopAmount());
               break;
             }
@@ -152,7 +152,7 @@ public class PointsCalculator {
       value *= multiplier;
       if (players >= i) {
         placePoints.put(i, Long.valueOf(Math.round(value))
-            .intValue());
+          .intValue());
       } else {
         placePoints.put(i, 0);
       }

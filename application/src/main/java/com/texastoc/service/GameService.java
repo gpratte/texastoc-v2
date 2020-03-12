@@ -194,10 +194,10 @@ public class GameService {
     String firstName = firstTimeGamePlayer.getFirstName();
     String lastName = firstTimeGamePlayer.getLastName();
     Player player = Player.builder()
-        .firstName(firstName)
-        .lastName(lastName)
-        .email(firstTimeGamePlayer.getEmail())
-        .build();
+      .firstName(firstName)
+      .lastName(lastName)
+      .email(firstTimeGamePlayer.getEmail())
+      .build();
     int playerId = playerRepository.save(player);
     roleRepository.save(playerId);
 
@@ -207,13 +207,13 @@ public class GameService {
     name.append(!Objects.isNull(lastName) ? lastName : "");
 
     GamePlayer gamePlayer = GamePlayer.builder()
-        .gameId(firstTimeGamePlayer.getGameId())
-        .playerId(playerId)
-        .name(name.toString())
-        .buyInCollected(firstTimeGamePlayer.getBuyInCollected())
-        .annualTocCollected(firstTimeGamePlayer.getAnnualTocCollected())
-        .quarterlyTocCollected(firstTimeGamePlayer.getQuarterlyTocCollected())
-        .build();
+      .gameId(firstTimeGamePlayer.getGameId())
+      .playerId(playerId)
+      .name(name.toString())
+      .buyInCollected(firstTimeGamePlayer.getBuyInCollected())
+      .annualTocCollected(firstTimeGamePlayer.getAnnualTocCollected())
+      .quarterlyTocCollected(firstTimeGamePlayer.getQuarterlyTocCollected())
+      .build();
 
     return this.createGamePlayerWorker(gamePlayer);
   }

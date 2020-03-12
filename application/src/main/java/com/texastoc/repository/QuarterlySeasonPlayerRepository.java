@@ -29,11 +29,11 @@ public class QuarterlySeasonPlayerRepository {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("qSeasonId", qSeasonId);
     return jdbcTemplate
-        .query("select * from quarterlyseasonplayer"
-                + " where qSeasonId = :qSeasonId"
-                + " order by name",
-            params,
-            new QuarterlySeasonPlayerMapper());
+      .query("select * from quarterlyseasonplayer"
+          + " where qSeasonId = :qSeasonId"
+          + " order by name",
+        params,
+        new QuarterlySeasonPlayerMapper());
   }
 
   public void deleteByQSeasonId(int qSeasonId) {
@@ -41,14 +41,14 @@ public class QuarterlySeasonPlayerRepository {
     params.addValue("qSeasonId", qSeasonId);
 
     jdbcTemplate
-        .update("delete from quarterlyseasonplayer where qSeasonId = :qSeasonId", params);
+      .update("delete from quarterlyseasonplayer where qSeasonId = :qSeasonId", params);
   }
 
   private static final String INSERT_SQL =
-      "INSERT INTO quarterlyseasonplayer "
-          + "(playerId, seasonId, qSeasonId, name, entries, points, place) "
-          + " VALUES "
-          + " (:playerId, :seasonId, :qSeasonId, :name, :entries, :points, :place)";
+    "INSERT INTO quarterlyseasonplayer "
+      + "(playerId, seasonId, qSeasonId, name, entries, points, place) "
+      + " VALUES "
+      + " (:playerId, :seasonId, :qSeasonId, :name, :entries, :points, :place)";
 
   @SuppressWarnings("Duplicates")
   public int save(QuarterlySeasonPlayer qSeasonPlayer) {

@@ -42,25 +42,25 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
     createSeason(token);
 
     CreateGameRequest createGameRequest = CreateGameRequest.builder()
-        .date(LocalDate.now())
-        .hostId(1)
-        .doubleBuyIn(false)
-        .transportRequired(false)
-        .build();
+      .date(LocalDate.now())
+      .hostId(1)
+      .doubleBuyIn(false)
+      .transportRequired(false)
+      .build();
 
     gameId = createGame(createGameRequest, token).getId();
 
     List<GamePlayer> gamePlayers = new ArrayList<>(NUM_PLAYERS);
     for (int i = 0; i < NUM_PLAYERS; i++) {
       FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
-          .firstName("Joe" + i)
-          .lastName("Schmoe")
-          .email("joe" + i + "schmoe@texastoc.com")
-          .gameId(gameId)
-          .buyInCollected(GAME_BUY_IN)
-          .annualTocCollected(TOC_PER_GAME)
-          .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-          .build();
+        .firstName("Joe" + i)
+        .lastName("Schmoe")
+        .email("joe" + i + "schmoe@texastoc.com")
+        .gameId(gameId)
+        .buyInCollected(GAME_BUY_IN)
+        .annualTocCollected(TOC_PER_GAME)
+        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+        .build();
 
       gamePlayers.add(addFirstTimePlayerToGame(firstTimeGamePlayer, token));
     }
@@ -68,13 +68,13 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
     for (int i = 0; i < NUM_PLAYERS; i++) {
       GamePlayer gamePlayer = gamePlayers.get(i);
       UpdateGamePlayerRequest ugpr = UpdateGamePlayerRequest.builder()
-          .playerId(gamePlayer.getPlayerId())
-          .place(i + 1)
-          .buyInCollected(GAME_BUY_IN)
-          .rebuyAddOnCollected(GAME_REBUY)
-          .annualTocCollected(TOC_PER_GAME)
-          .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
-          .build();
+        .playerId(gamePlayer.getPlayerId())
+        .place(i + 1)
+        .buyInCollected(GAME_BUY_IN)
+        .rebuyAddOnCollected(GAME_REBUY)
+        .annualTocCollected(TOC_PER_GAME)
+        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+        .build();
 
       updatePlayerInGame(gamePlayer.getId(), ugpr, token);
     }
@@ -119,9 +119,9 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
     // Find the current quarter
     LocalDate now = LocalDate.now();
     QuarterlySeason currentQSeason = season.getQuarterlySeasons().stream()
-        .filter(qS -> (now.equals(qS.getStart()) || now.isAfter(qS.getStart())) && (now.equals(qS.getEnd()) || now.isBefore(qS.getEnd())))
-        .findFirst()
-        .get();
+      .filter(qS -> (now.equals(qS.getStart()) || now.isAfter(qS.getStart())) && (now.equals(qS.getEnd()) || now.isBefore(qS.getEnd())))
+      .findFirst()
+      .get();
 
     Assert.assertNotNull("quarterly season not null", currentQSeason);
     Assert.assertTrue("quarter has 12 or 13 or 14 games", currentQSeason.getNumGames() == 12 || currentQSeason.getNumGames() == 13 || currentQSeason.getNumGames() == 14);
@@ -175,7 +175,7 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
     Assert.assertNotNull("season should not be null", season);
 
     Assert.assertTrue("season has 52 or 53 games ",
-        season.getNumGames() == 52 || season.getNumGames() == 53);
+      season.getNumGames() == 52 || season.getNumGames() == 53);
     Assert.assertEquals("season has 1 game played", 1, season.getNumGamesPlayed());
     Assert.assertEquals("annualTocCollected is " + (TOC_PER_GAME * NUM_PLAYERS), TOC_PER_GAME * NUM_PLAYERS, season.getAnnualTocCollected());
 

@@ -53,10 +53,10 @@ public class PayoutCalculator {
     // If only one player then he gets it all
     if (numToPay == 1) {
       gamePayouts.add(GamePayout.builder()
-          .gameId(game.getId())
-          .place(1)
-          .amount(game.getPrizePotCalculated())
-          .build());
+        .gameId(game.getId())
+        .place(1)
+        .amount(game.getPrizePotCalculated())
+        .build());
       persistPayouts(gamePayouts, game.getId());
       return gamePayouts;
     }
@@ -148,8 +148,8 @@ public class PayoutCalculator {
       // payouts less than that gets paid.
       int numChopThatGetPaid = Math.min(chips.size(), payouts.size());
       List<Chop> chops = ChopCalculator.calculate(
-          chips.subList(0, numChopThatGetPaid),
-          amounts.subList(0, numChopThatGetPaid));
+        chips.subList(0, numChopThatGetPaid),
+        amounts.subList(0, numChopThatGetPaid));
       if (chops != null && chops.size() > 1) {
         for (Chop chop : chops) {
           outer:
