@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 // Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
@@ -125,22 +126,27 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
         Assert.assertNotNull("quarterly seasions of the season should not be null", season.getQuarterlySeasons());
         Assert.assertEquals("quarterly seasions size should be 4", 4, season.getQuarterlySeasons().size());
 
-        // First quarter has the game
-        QuarterlySeason qSeason = season.getQuarterlySeasons().get(0);
-        Assert.assertNotNull("quarterly season not null", qSeason);
-        Assert.assertEquals("quarter has 13 games", 13, qSeason.getNumGames());
-        Assert.assertEquals("quarter has 1 game played", 1, qSeason.getNumGamesPlayed());
-        Assert.assertEquals("qTocCollected is " + (QUARTERLY_TOC_PER_GAME * NUM_PLAYERS), QUARTERLY_TOC_PER_GAME * NUM_PLAYERS, qSeason.getQTocCollected());
+        // Find the current quarter
+        LocalDate now = LocalDate.now();
+        QuarterlySeason currentQSeason = season.getQuarterlySeasons().stream()
+                .filter(qS -> (now.equals(qS.getStart()) || now.isAfter(qS.getStart())) && (now.equals(qS.getEnd()) || now.isBefore(qS.getEnd())))
+                .findFirst()
+                .get();
 
-        Assert.assertEquals("players 10", 10, qSeason.getPlayers().size());
-        checkQuarterlySeasonPoints(qSeason.getPlayers());
+        Assert.assertNotNull("quarterly season not null", currentQSeason);
+        Assert.assertTrue("quarter has 12 or 13 or 14 games", currentQSeason.getNumGames() == 12 || currentQSeason.getNumGames() == 13 || currentQSeason.getNumGames() == 14);
+        Assert.assertEquals("quarter has 1 game played", 1, currentQSeason.getNumGamesPlayed());
+        Assert.assertEquals("qTocCollected is " + (QUARTERLY_TOC_PER_GAME * NUM_PLAYERS), QUARTERLY_TOC_PER_GAME * NUM_PLAYERS, currentQSeason.getQTocCollected());
 
-        List<QuarterlySeasonPayout> payouts = qSeason.getPayouts();
+        Assert.assertEquals("players 10", 10, currentQSeason.getPlayers().size());
+        checkQuarterlySeasonPoints(currentQSeason.getPlayers());
+
+        List<QuarterlySeasonPayout> payouts = currentQSeason.getPayouts();
         Assert.assertEquals("payouts " + QUARTERLY_NUM_PAYOUTS, QUARTERLY_NUM_PAYOUTS, payouts.size());
 
-        int firstPlace = (int) Math.round(qSeason.getQTocCollected() * 0.5d);
-        int secondPlace = (int) Math.round(qSeason.getQTocCollected() * 0.3d);
-        int thirdPlace = qSeason.getQTocCollected() - firstPlace - secondPlace;
+        int firstPlace = (int) Math.round(currentQSeason.getQTocCollected() * 0.5d);
+        int secondPlace = (int) Math.round(currentQSeason.getQTocCollected() * 0.3d);
+        int thirdPlace = currentQSeason.getQTocCollected() - firstPlace - secondPlace;
         int amounts[] = {firstPlace, secondPlace, thirdPlace};
 
         for (int i = 0; i < 3; i++) {
@@ -156,10 +162,13 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
         }
 
         // Other three quarters have no games
-        for (int i = 1; i < 4; i++) {
-            qSeason = season.getQuarterlySeasons().get(i);
+        for (QuarterlySeason qSeason : season.getQuarterlySeasons()) {
+            if (qSeason.getId() == currentQSeason.getId()) {
+                // Skip current quarter
+                continue;
+            }
             Assert.assertNotNull("quarterly season not null", qSeason);
-            Assert.assertEquals("quarter has 13 games", 13, qSeason.getNumGames());
+            Assert.assertTrue("quarter has 12, 13 or 14 games", qSeason.getNumGames() == 12 || qSeason.getNumGames() == 13 || qSeason.getNumGames() == 14);
             Assert.assertEquals("quarter has no games played", 0, qSeason.getNumGamesPlayed());
             Assert.assertEquals("qTocCollected is 0", 0, qSeason.getQTocCollected());
 

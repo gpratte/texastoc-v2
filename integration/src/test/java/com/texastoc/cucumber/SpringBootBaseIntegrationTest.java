@@ -33,6 +33,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 @ActiveProfiles("test")
@@ -63,8 +64,19 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
         return SERVER_URL + ":" + port;
     }
 
+    protected LocalDate getSeasonStart() {
+        LocalDate now = LocalDate.now();
+        LocalDate start = null;
+        if (now.getMonthValue() < 5) {
+            start = LocalDate.of(now.getYear() -1, Month.MAY, 1);
+        } else {
+            start = LocalDate.of(now.getYear(), Month.MAY, 1);
+        }
+        return start;
+    }
+
     protected Season createSeason(String token) throws Exception {
-        return createSeason(LocalDate.now(), token);
+        return createSeason(getSeasonStart(), token);
     }
 
     protected Season createSeason(LocalDate start, String token) throws Exception {

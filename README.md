@@ -44,11 +44,10 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 41-update-model-for-frontend
+## Current Branch: 42-quarterly-start-end-dates
 
-Changed the class model to match what the frontend wants.
-
-For example
-* added number of paid players to the game
-* added the number of remaining paid players to the game
-* changed the seating SeatRequest to TableRequest
+Standardize the quarterly dates
+* 1st: May 1st to the last day of July
+* 2nd: August 1st to the last day of October
+* 3rd: November 1st to the last day of January
+* 4th: February 1st to the last day of April 

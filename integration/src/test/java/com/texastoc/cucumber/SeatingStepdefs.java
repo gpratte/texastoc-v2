@@ -44,7 +44,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     @Given("^a game has 9 players$")
     public void a_game_has_9_players() throws Exception {
         String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
-        createSeason(LocalDate.now(), token);
+        createSeason(getSeasonStart(), token);
 
         Game game = createGame(CreateGameRequest.builder()
             .date(LocalDate.now())
@@ -73,7 +73,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     @Given("^a game has 11 players$")
     public void a_game_has_11_players() throws Exception {
         String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
-        createSeason(LocalDate.now(), token);
+        createSeason(getSeasonStart(), token);
         Game game = createGame(CreateGameRequest.builder()
             .date(LocalDate.now())
             .hostId(1)
