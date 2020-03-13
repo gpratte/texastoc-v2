@@ -7,6 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class PlayerService {
 
@@ -52,6 +54,11 @@ public class PlayerService {
     }
 
     playerRepository.update(playerToUpdate);
+  }
+
+  @Transactional(readOnly = true)
+  public List<Player> get() {
+    return playerRepository.get();
   }
 
   @Transactional(readOnly = true)

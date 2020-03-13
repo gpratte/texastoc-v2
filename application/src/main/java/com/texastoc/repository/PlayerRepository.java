@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -25,6 +26,11 @@ public class PlayerRepository {
 
   public PlayerRepository(NamedParameterJdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
+  }
+
+  // Does not include the players' roles or password
+  public List<Player> get() {
+    return jdbcTemplate.query("select id, firstName, lastName, phone, email from player", new PlayerMapper());
   }
 
   private static final String GET_SQL = "select pl.*, " +
@@ -98,11 +104,34 @@ public class PlayerRepository {
       Player player = new Player();
       try {
         player.setId(rs.getInt("id"));
-        player.setFirstName(rs.getString("firstName"));
-        player.setLastName(rs.getString("lastName"));
-        player.setPhone(rs.getString("phone"));
-        player.setEmail(rs.getString("email"));
-        player.setPassword(rs.getString("password"));
+        String value = rs.getString("firstName");
+        if (value != null) {
+          player.setFirstName(value);
+        }
+
+        value = rs.getString("lastName");
+        if (value != null) {
+          player.setLastName(value);
+        }
+
+        value = rs.getString("phone");
+        if (value != null) {
+          player.setPhone(value);
+        }
+
+        value = rs.getString("email");
+        if (value != null) {
+          player.setEmail(value);
+        }
+
+        try {
+          value = rs.getString("password");
+          if (value != null) {
+            player.setPassword(value);
+          }
+        } catch (SQLException e) {
+          // do nothing
+        }
       } catch (SQLException e) {
         log.error("Problem mapping player", e);
       }
