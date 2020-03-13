@@ -280,6 +280,19 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     return response.getBody();
   }
 
+  protected Game getCurrentGame(String token) throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "Bearer " + token);
+    HttpEntity<String> entity = new HttpEntity<>("", headers);
+
+    ResponseEntity<Game> response = restTemplate.exchange(
+      endpoint() + "/games/current",
+      HttpMethod.GET,
+      entity,
+      Game.class);
+    return response.getBody();
+  }
+
   protected Season getSeason(int id, String token) throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Bearer " + token);

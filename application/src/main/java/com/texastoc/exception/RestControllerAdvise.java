@@ -40,6 +40,11 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
     response.sendError(HttpStatus.NOT_FOUND.value());
   }
 
+  @ExceptionHandler(value = {NotFoundException.class})
+  protected void handleNotFoundException(NotFoundException ex, HttpServletResponse response) throws IOException {
+    response.sendError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+  }
+
   @ExceptionHandler(value = {RuntimeException.class})
   protected void handleRuntimeException(RuntimeException ex, HttpServletResponse response) throws IOException {
     log.error(ex.getMessage(), ex);

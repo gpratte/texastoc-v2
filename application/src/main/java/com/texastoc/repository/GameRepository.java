@@ -175,6 +175,11 @@ public class GameRepository {
     return games;
   }
 
+  public List<Game> getUnfinalized() {
+    return jdbcTemplate
+      .query("select * from game where finalized IS NULL OR finalized = false", new GameMapper());
+  }
+
   private static final class GameMapper implements RowMapper<Game> {
     public Game mapRow(ResultSet rs, int rowNum) {
       Game game = new Game();

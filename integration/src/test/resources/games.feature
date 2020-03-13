@@ -27,6 +27,13 @@ Feature: CRUD Games
     Then the retrieved game is normal
     Then the retrieved game has no players
 
+  Scenario: create and retrieve the current game
+    Given a season exists
+    Given the game starts now
+    When the game is created
+    When the current game is retrieved
+    Then the current game is found
+
   Scenario: create and update a simple game
     Given a season exists
     Given the game starts now

@@ -44,7 +44,5 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 43-format-code-imports
-Reformatted the Java code to indent 2 spaces.
-
-Also added IntelliJ Auto Save plugin which will format any file when it is saved.
+## Current Branch: 44-get-current-game
+New API to get the current game. The current game is the (only) game that has not been finalized.
