@@ -1,6 +1,7 @@
 package com.texastoc.controller;
 
 import com.texastoc.controller.request.*;
+import com.texastoc.exception.NotFoundException;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
@@ -50,6 +51,15 @@ public class GameRestController {
   @GetMapping("/api/v2/games/{id}")
   public Game getGame(@PathVariable("id") int id) {
     return gameService.getGame(id);
+  }
+
+  @GetMapping("/api/v2/games/current")
+  public Game getCurrentGame() {
+    Game game = gameService.getCurrentGame();
+    if (game != null) {
+      return game;
+    }
+    throw new NotFoundException("Current game not found");
   }
 
   @PutMapping("/api/v2/games/{id}/finalize")

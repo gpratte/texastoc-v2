@@ -107,8 +107,24 @@ public class GameService {
   @Transactional(readOnly = true)
   public Game getGame(int id) {
     Game game = gameRepository.getById(id);
+    populateGame(game);
+    return game;
+  }
 
-    List<GamePlayer> players = gamePlayerRepository.selectByGameId(id);
+  @Transactional(readOnly = true)
+  public Game getCurrentGame() {
+    List<Game> games = gameRepository.getUnfinalized();
+    if (games.size() == 0) {
+      return null;
+    }
+
+    Game game = games.get(0);
+    populateGame(game);
+    return game;
+  }
+
+  private void populateGame(Game game) {
+    List<GamePlayer> players = gamePlayerRepository.selectByGameId(game.getId());
     game.setPlayers(players);
     int numPaidPlayers = 0;
     int numPaidPlayersRemaining = 0;
@@ -123,13 +139,11 @@ public class GameService {
     game.setNumPaidPlayers(numPaidPlayers);
     game.setNumPaidPlayersRemaining(numPaidPlayersRemaining);
 
-    game.setPayouts(gamePayoutRepository.getByGameId(id));
+    game.setPayouts(gamePayoutRepository.getByGameId(game.getId()));
     Seating seating = new Seating();
-    seating.setGameId(id);
-    seating.setTables(seatingRepository.getTables(id));
+    seating.setGameId(game.getId());
+    seating.setTables(seatingRepository.getTables(game.getId()));
     game.setSeating(seating);
-
-    return game;
   }
 
   @Transactional

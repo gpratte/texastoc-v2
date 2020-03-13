@@ -31,7 +31,6 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     exception = null;
   }
 
-
   @Given("^a season exists$")
   public void a_season_exists() throws Exception {
     // Arrange
@@ -97,6 +96,17 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     String token = login(USER_EMAIL, USER_PASSWORD);
     gameCreated = createGame(createGameRequest, token);
     gameRetrieved = getGame(gameCreated.getId(), token);
+  }
+
+  @When("^the current game is retrieved$")
+  public void getCurrentGame() throws Exception {
+    String token = login(USER_EMAIL, USER_PASSWORD);
+    gameRetrieved = getCurrentGame(token);
+  }
+
+  @Then("^the current game is found$")
+  public void currentGameExists() throws Exception {
+    Assert.assertNotNull(gameRetrieved);
   }
 
   @Then("^the game is normal$")

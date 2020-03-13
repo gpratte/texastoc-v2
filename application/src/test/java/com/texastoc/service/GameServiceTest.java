@@ -223,6 +223,56 @@ public class GameServiceTest implements TestConstants {
     Assert.assertEquals("number of payouts should be 0", 0, game.getPayouts().size());
   }
 
+  /**
+   * The current game is the (only) game that is not finalized
+   */
+  @Test
+  public void getCurrentGame() {
+
+    List<Game> games = new LinkedList<>();
+    games.add(Game.builder()
+      .id(1)
+      .build());
+    Mockito.when(gameRepository.getUnfinalized())
+      .thenReturn(games);
+
+    Mockito.when(gamePlayerRepository.selectByGameId(1))
+      .thenReturn(Collections.emptyList());
+
+    Mockito.when(gamePayoutRepository.getByGameId(1))
+      .thenReturn(Collections.emptyList());
+
+    Game game = gameService.getCurrentGame();
+
+    // Game repository called once
+    Mockito.verify(gameRepository, Mockito.times(1)).getUnfinalized();
+    Assert.assertNotNull("Game returned should not be null", game);
+    Assert.assertEquals("Game id should be 1", 1, (int) game.getId());
+
+    // GamePlayer repository called once
+    Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
+    Assert.assertNotNull("GamePlayers returned should not be null", game.getPlayers());
+    Assert.assertEquals("number of players should be 0", 0, game.getPlayers().size());
+
+    // GamePayout repository called once
+    Mockito.verify(gamePayoutRepository, Mockito.times(1)).getByGameId(1);
+    Assert.assertNotNull("GamePayouts returned should not be null", game.getPayouts());
+    Assert.assertEquals("number of payouts should be 0", 0, game.getPayouts().size());
+  }
+
+  /**
+   * There is not current (no games that are not finalized) game
+   */
+  @Test
+  public void noCurrentGame() {
+
+    Mockito.when(gameRepository.getUnfinalized())
+      .thenReturn(Collections.emptyList());
+
+    Game game = gameService.getCurrentGame();
+    Assert.assertNull("Current game returned should be null", game);
+  }
+
   @Test
   public void testUpdateGame() {
 
