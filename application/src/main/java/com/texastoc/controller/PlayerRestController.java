@@ -5,6 +5,7 @@ import com.texastoc.service.PlayerService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @RestController
@@ -25,6 +26,11 @@ public class PlayerRestController {
   public void updatePlayer(@PathVariable("id") int id, @RequestBody @Valid Player player) {
     player.setId(id);
     playerService.update(player);
+  }
+
+  @GetMapping("/api/v2/players")
+  public List<Player> getPlayers() {
+    return playerService.get();
   }
 
   @GetMapping("/api/v2/players/{id}")

@@ -8,22 +8,30 @@ import cucumber.api.java.en.When;
 import org.junit.Assert;
 import org.junit.Ignore;
 
+import java.util.List;
+
 // Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
 public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
 
   Player playerToCreate;
+  Player anotherPlayerToCreate;
   Player playerCreated;
+  Player anotherPlayerCreated;
   Player updatePlayer;
   Player playerRetrieved;
+  List<Player> playersRetrieved;
   String token;
 
   @Before
   public void before() {
     playerToCreate = null;
+    anotherPlayerToCreate = null;
     playerCreated = null;
+    anotherPlayerCreated = null;
     updatePlayer = null;
     playerRetrieved = null;
+    playersRetrieved = null;
     token = null;
   }
 
@@ -33,8 +41,16 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
       .firstName("John")
       .lastName("Luther")
       .build();
-
     playerCreated = createPlayer(playerToCreate);
+  }
+
+  @Given("^another new player$")
+  public void anotherNewPlayer() throws Exception {
+    anotherPlayerToCreate = Player.builder()
+      .firstName("Jane")
+      .lastName("Rain")
+      .build();
+    anotherPlayerCreated = createPlayer(anotherPlayerToCreate);
   }
 
   @Given("^a new player with email and password$")
@@ -64,10 +80,22 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
     updatePlayer(updatePlayer, token);
   }
 
-  @When("^the player is retrieved$")
+  @When("^the player self retrieves$")
   public void the_player_is_retrieved() throws Exception {
     String token = login("abc@rst.com", "password");
     playerRetrieved = getPlayer(playerCreated.getId(), token);
+  }
+
+  @When("^the player is retrieved$")
+  public void getPlayer() throws Exception {
+    String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
+    playerRetrieved = getPlayer(playerCreated.getId(), token);
+  }
+
+  @When("^the players are retrieved$")
+  public void getPlayers() throws Exception {
+    String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
+    playersRetrieved = getPlayers(token);
   }
 
   @When("^the player logs in$")
@@ -78,6 +106,35 @@ public class PlayerStepdefs extends SpringBootBaseIntegrationTest {
   @Then("^a token is returned$")
   public void a_token_is_returned() throws Exception {
     Assert.assertNotNull("token not null", token);
+  }
+
+  @Then("^the player matches$")
+  public void thePlayerMatches() throws Exception {
+    Assert.assertEquals("first name should match", playerToCreate.getFirstName(), playerRetrieved.getFirstName());
+    Assert.assertEquals("last name should match", playerToCreate.getLastName(), playerRetrieved.getLastName());
+  }
+
+  @Then("^the players match$")
+  public void thePlayersMatch() throws Exception {
+    boolean firstMatch = false;
+    for (Player player : playersRetrieved) {
+      if (player.getId() == playerCreated.getId()) {
+        Assert.assertEquals("first name should match", playerToCreate.getFirstName(), player.getFirstName());
+        Assert.assertEquals("last name should match", playerToCreate.getLastName(), player.getLastName());
+        firstMatch = true;
+      }
+    }
+    Assert.assertTrue("should have returned the first player created", firstMatch);
+
+    boolean secondMatch = false;
+    for (Player player : playersRetrieved) {
+      if (player.getId() == anotherPlayerCreated.getId()) {
+        Assert.assertEquals("first name should match", anotherPlayerToCreate.getFirstName(), player.getFirstName());
+        Assert.assertEquals("last name should match", anotherPlayerToCreate.getLastName(), player.getLastName());
+        secondMatch = true;
+      }
+    }
+    Assert.assertTrue("should have returned the second player created", secondMatch);
   }
 
   @Then("^the player has the expected encoded password$")
