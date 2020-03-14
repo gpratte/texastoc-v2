@@ -29,9 +29,9 @@ public class GameRepository {
 
   private static final String INSERT_SQL =
     "INSERT INTO game "
-      + "(seasonId, qSeasonId, gameDate, hostId, hostName, quarter, doubleBuyIn, transportRequired, kittyCost, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, annualTocCost, quarterlyTocCost, numPlayers, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, totalCollected, kittyCalculated, annualTocFromRebuyAddOnCalculated, rebuyAddOnLessAnnualTocCalculated, totalCombinedTocCalculated, prizePotCalculated, finalized, lastCalculated, started) "
+      + "(seasonId, qSeasonId, gameDate, hostId, hostName, quarter, doubleBuyIn, transportRequired, kittyCost, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, annualTocCost, quarterlyTocCost, numPlayers, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, totalCollected, kittyCalculated, annualTocFromRebuyAddOnCalculated, rebuyAddOnLessAnnualTocCalculated, totalCombinedTocCalculated, prizePotCalculated, seasonGameNum, quarterlyGameNum, finalized, lastCalculated, started) "
       + " VALUES "
-      + " (:seasonId, :qSeasonId, :gameDate, :hostId, :hostName, :quarter, :doubleBuyIn, :transportRequired, :kittyCost, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :annualTocCost, :quarterlyTocCost, :numPlayers, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :totalCollected, :kittyCalculated, :annualTocFromRebuyAddOnCalculated, :rebuyAddOnLessAnnualTocCalculated, :totalCombinedTocCalculated, :prizePotCalculated, :finalized, :lastCalculated, :started)";
+      + " (:seasonId, :qSeasonId, :gameDate, :hostId, :hostName, :quarter, :doubleBuyIn, :transportRequired, :kittyCost, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :annualTocCost, :quarterlyTocCost, :numPlayers, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :totalCollected, :kittyCalculated, :annualTocFromRebuyAddOnCalculated, :rebuyAddOnLessAnnualTocCalculated, :totalCombinedTocCalculated, :prizePotCalculated, :seasonGameNum, :quarterlyGameNum, :finalized, :lastCalculated, :started)";
 
   public int save(final Game game) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -62,6 +62,8 @@ public class GameRepository {
     params.addValue("rebuyAddOnLessAnnualTocCalculated", game.getRebuyAddOnLessAnnualTocCalculated());
     params.addValue("totalCombinedTocCalculated", game.getTotalCombinedTocCalculated());
     params.addValue("prizePotCalculated", game.getPrizePotCalculated());
+    params.addValue("seasonGameNum", game.getSeasonGameNum());
+    params.addValue("quarterlyGameNum", game.getQuarterlyGameNum());
     params.addValue("finalized", game.isFinalized());
     params.addValue("lastCalculated", game.getLastCalculated());
     params.addValue("started", game.getStarted() == null ? null : Timestamp.valueOf(game.getStarted()));
@@ -211,6 +213,8 @@ public class GameRepository {
         game.setFinalized(rs.getBoolean("finalized"));
         game.setHostId(rs.getInt("hostId"));
         game.setPayoutDelta(rs.getInt("payoutDelta"));
+        game.setSeasonGameNum(rs.getInt("seasonGameNum"));
+        game.setQuarterlyGameNum(rs.getInt("quarterlyGameNum"));
 
         String value = rs.getString("hostName");
         if (value != null) {
