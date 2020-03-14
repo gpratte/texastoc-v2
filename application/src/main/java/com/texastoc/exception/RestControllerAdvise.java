@@ -36,7 +36,6 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(value = {IncorrectResultSizeDataAccessException.class})
   protected void handleConflict(IncorrectResultSizeDataAccessException ex, HttpServletResponse response) throws IOException {
-    log.info(ex.getMessage(), ex);
     response.sendError(HttpStatus.NOT_FOUND.value());
   }
 

@@ -17,7 +17,7 @@ public class Seating {
   private int id;
   private int gameId;
   private int numTables;
-  private int numSeatPerTable;
+  private List<Integer> numSeatPerTable;
   private List<TableRequest> tableRequests;
   private List<Table> tables;
 }
