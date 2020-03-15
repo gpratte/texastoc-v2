@@ -1,5 +1,6 @@
 package com.texastoc.service;
 
+import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.exception.DoubleBuyInChangeDisallowedException;
 import com.texastoc.exception.DoubleBuyInMismatchException;
 import com.texastoc.exception.FinalizedException;
@@ -168,7 +169,17 @@ public class GameService {
   }
 
   @Transactional
-  public GamePlayer createGamePlayer(GamePlayer gamePlayer) {
+  public GamePlayer createGamePlayer(CreateGamePlayerRequest cgpr) {
+    Game game = getGame(cgpr.getGameId());
+
+    GamePlayer gamePlayer = GamePlayer.builder()
+      .playerId(cgpr.getPlayerId())
+      .gameId(cgpr.getGameId())
+      .buyInCollected(cgpr.isBuyInCollected() ? game.getBuyInCost() : null)
+      .annualTocCollected(cgpr.isAnnualTocCollected() ? game.getAnnualTocCost() : null)
+      .quarterlyTocCollected(cgpr.isQuarterlyTocCollected() ? game.getQuarterlyTocCost() : null)
+      .build();
+
     checkFinalized(gamePlayer.getGameId());
     return createGamePlayerWorker(gamePlayer);
   }

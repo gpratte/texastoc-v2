@@ -10,7 +10,7 @@ import lombok.Data;
 public class CreateGamePlayerRequest {
   private int playerId;
   private int gameId;
-  private Integer buyInCollected;
-  private Integer annualTocCollected;
-  private Integer quarterlyTocCollected;
+  private boolean buyInCollected;
+  private boolean annualTocCollected;
+  private boolean quarterlyTocCollected;
 }

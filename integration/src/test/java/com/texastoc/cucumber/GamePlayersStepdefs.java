@@ -77,7 +77,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
       .playerId(BRIAN_BAKER_PLAYER_ID)
       .gameId(gameId)
-      .buyInCollected(GAME_BUY_IN)
+      .buyInCollected(true)
       .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
@@ -90,7 +90,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
       .playerId(BRIAN_BAKER_PLAYER_ID)
       .gameId(gameId)
-      .buyInCollected(GAME_BUY_IN)
+      .buyInCollected(true)
       .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
@@ -99,7 +99,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     createGamePlayerRequest = CreateGamePlayerRequest.builder()
       .playerId(ANDY_THOMAS_PLAYER_ID)
       .gameId(gameId)
-      .buyInCollected(GAME_BUY_IN)
+      .buyInCollected(true)
       .build();
     gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
   }
@@ -274,9 +274,9 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
       CreateGamePlayerRequest createGamePlayerRequest = CreateGamePlayerRequest.builder()
         .playerId(1)
         .gameId(gameId)
-        .buyInCollected(GAME_BUY_IN)
-        .annualTocCollected(random.nextBoolean() ? TOC_PER_GAME : null)
-        .quarterlyTocCollected(random.nextBoolean() ? QUARTERLY_TOC_PER_GAME : null)
+        .buyInCollected(true)
+        .annualTocCollected(random.nextBoolean() ? true : null)
+        .quarterlyTocCollected(random.nextBoolean() ? true : null)
         .build();
 
       gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
