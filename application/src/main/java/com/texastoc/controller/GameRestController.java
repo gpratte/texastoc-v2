@@ -77,14 +77,7 @@ public class GameRestController {
   // TODO api/v1/games/{id}/players
   @PostMapping("/api/v2/games/players")
   public GamePlayer createGamePlayer(@RequestBody @Valid CreateGamePlayerRequest cgpr) {
-    GamePlayer gamePlayer = GamePlayer.builder()
-      .playerId(cgpr.getPlayerId())
-      .gameId(cgpr.getGameId())
-      .buyInCollected(cgpr.getBuyInCollected())
-      .annualTocCollected(cgpr.getAnnualTocCollected())
-      .quarterlyTocCollected(cgpr.getQuarterlyTocCollected())
-      .build();
-    return gameService.createGamePlayer(gamePlayer);
+    return gameService.createGamePlayer(cgpr);
   }
 
   // TODO api/v1/games/{id}/players/first
