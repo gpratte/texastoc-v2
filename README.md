@@ -44,5 +44,5 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 44-get-current-game
-New API to get the current game. The current game is the (only) game that has not been finalized.
+## Current Branch: 45-get-players-api
+Need the players of the league to add to a game.
