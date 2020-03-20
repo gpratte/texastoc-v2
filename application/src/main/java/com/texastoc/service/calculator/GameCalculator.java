@@ -22,6 +22,9 @@ public class GameCalculator {
     this.configRepository = configRepository;
   }
 
+  // TODO
+  //public Game calculate(int gameId) {
+
   @SuppressWarnings("Duplicates")
   public Game calculate(Game game, List<GamePlayer> gamePlayers) {
 

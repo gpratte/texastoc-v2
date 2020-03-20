@@ -88,20 +88,8 @@ public class GameRestController {
 
   // TODO api/v1/games/{id}/players/{pid}
   @PutMapping("/api/v2/games/players/{id}")
-  public void updateGamePlayer(@PathVariable("id") int id, @RequestBody @Valid UpdateGamePlayerRequest ugpr) {
-    GamePlayer gamePlayer = gameService.getGamePlayer(id);
-
-    gamePlayer.setPlayerId(ugpr.getPlayerId());
-    gamePlayer.setPlace(ugpr.getPlace());
-    gamePlayer.setKnockedOut(ugpr.getKnockedOut());
-    gamePlayer.setRoundUpdates(ugpr.getRoundUpdates());
-    gamePlayer.setBuyInCollected(ugpr.getBuyInCollected());
-    gamePlayer.setRebuyAddOnCollected(ugpr.getRebuyAddOnCollected());
-    gamePlayer.setAnnualTocCollected(ugpr.getAnnualTocCollected());
-    gamePlayer.setQuarterlyTocCollected(ugpr.getQuarterlyTocCollected());
-    gamePlayer.setChop(ugpr.getChop());
-
-    gameService.updateGamePlayer(gamePlayer);
+  public GamePlayer updateGamePlayer(@PathVariable("id") int id, @RequestBody @Valid UpdateGamePlayerRequest ugpr) {
+    return gameService.updateGamePlayer(ugpr);
   }
 
   // TODO api/v1/games/{id}/players/{pid}
