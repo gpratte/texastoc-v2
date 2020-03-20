@@ -1,8 +1,8 @@
 package com.texastoc.service;
 
 import com.texastoc.controller.request.CreateGamePlayerRequest;
+import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.exception.DoubleBuyInChangeDisallowedException;
-import com.texastoc.exception.DoubleBuyInMismatchException;
 import com.texastoc.exception.FinalizedException;
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.FirstTimeGamePlayer;
@@ -103,14 +103,13 @@ public class GameService {
     int id = gameRepository.save(gameToCreate);
     gameToCreate.setId(id);
 
-    return getGame(id);
+    return populateGame(gameToCreate);
   }
 
   @Transactional(readOnly = true)
   public Game getGame(int id) {
     Game game = gameRepository.getById(id);
-    populateGame(game);
-    return game;
+    return populateGame(game);
   }
 
   @Transactional(readOnly = true)
@@ -125,7 +124,7 @@ public class GameService {
     return game;
   }
 
-  private void populateGame(Game game) {
+  private Game populateGame(Game game) {
     List<GamePlayer> players = gamePlayerRepository.selectByGameId(game.getId());
     game.setPlayers(players);
     int numPaidPlayers = 0;
@@ -148,6 +147,7 @@ public class GameService {
     seating.setNumSeatPerTable(Collections.singletonList(0));
     seating.setTables(seatingRepository.getTables(game.getId()));
     game.setSeating(seating);
+    return game;
   }
 
   @Transactional
@@ -170,7 +170,8 @@ public class GameService {
 
   @Transactional
   public GamePlayer createGamePlayer(CreateGamePlayerRequest cgpr) {
-    Game game = getGame(cgpr.getGameId());
+    Game game = gameRepository.getById(cgpr.getGameId());
+    checkFinalized(game);
 
     GamePlayer gamePlayer = GamePlayer.builder()
       .playerId(cgpr.getPlayerId())
@@ -180,23 +181,33 @@ public class GameService {
       .quarterlyTocCollected(cgpr.isQuarterlyTocCollected() ? game.getQuarterlyTocCost() : null)
       .build();
 
-    checkFinalized(gamePlayer.getGameId());
-    return createGamePlayerWorker(gamePlayer);
+    return createGamePlayerWorker(gamePlayer, game);
   }
 
   @Transactional
-  public void updateGamePlayer(GamePlayer gamePlayer) {
-    checkFinalized(gamePlayer.getGameId());
+  public GamePlayer updateGamePlayer(UpdateGamePlayerRequest ugpr) {
+    Game game = gameRepository.getById(ugpr.getGameId());
+    checkFinalized(game);
 
-    int gameId = gamePlayer.getGameId();
-    Game currentGame = gameRepository.getById(gameId);
+    GamePlayer gamePlayer = getGamePlayer(ugpr.getGamePlayerId());
+    gamePlayer.setPlace(ugpr.getPlace());
+    gamePlayer.setKnockedOut(ugpr.isKnockedOut());
+    gamePlayer.setRoundUpdates(ugpr.isRoundUpdates());
+    gamePlayer.setBuyInCollected(ugpr.isBuyInCollected() ? game.getBuyInCost() : null);
+    gamePlayer.setRebuyAddOnCollected(ugpr.isRebuyAddOnCollected() ? game.getRebuyAddOnCost() : null);
+    gamePlayer.setAnnualTocCollected(ugpr.isAnnualTocCollected() ? game.getAnnualTocCost() : null);
+    gamePlayer.setQuarterlyTocCollected(ugpr.isQuarterlyTocCollected() ? game.getQuarterlyTocCost() : null);
+    gamePlayer.setChop(ugpr.getChop());
 
+    // TODO no more double buy in
     // Make sure money is right
-    verifyGamePlayerMoney(currentGame.isDoubleBuyIn(), gamePlayer);
+    verifyGamePlayerMoney(game.isDoubleBuyIn(), gamePlayer);
 
     gamePlayerRepository.update(gamePlayer);
 
-    recalculate(currentGame);
+    recalculate(game);
+
+    return gamePlayer;
   }
 
   @Transactional
@@ -217,7 +228,8 @@ public class GameService {
 
   @Transactional
   public GamePlayer createFirstTimeGamePlayer(FirstTimeGamePlayer firstTimeGamePlayer) {
-    checkFinalized(firstTimeGamePlayer.getGameId());
+    Game game = gameRepository.getById(firstTimeGamePlayer.getGameId());
+    checkFinalized(game);
 
     String firstName = firstTimeGamePlayer.getFirstName();
     String lastName = firstTimeGamePlayer.getLastName();
@@ -243,7 +255,7 @@ public class GameService {
       .quarterlyTocCollected(firstTimeGamePlayer.getQuarterlyTocCollected())
       .build();
 
-    return this.createGamePlayerWorker(gamePlayer);
+    return createGamePlayerWorker(gamePlayer, game);
   }
 
   public void endGame(int id) {
@@ -270,29 +282,27 @@ public class GameService {
   }
 
   // Worker to avoid one @Transacation calling anther @Transactional
-  private GamePlayer createGamePlayerWorker(GamePlayer gamePlayer) {
-
-    int gameId = gamePlayer.getGameId();
-    Game currentGame = gameRepository.getById(gameId);
+  private GamePlayer createGamePlayerWorker(GamePlayer gamePlayer, Game game) {
 
     // Make sure money is right
-    verifyGamePlayerMoney(currentGame.isDoubleBuyIn(), gamePlayer);
+    verifyGamePlayerMoney(game.isDoubleBuyIn(), gamePlayer);
 
     if (gamePlayer.getName() == null) {
       Player player = playerRepository.get(gamePlayer.getPlayerId());
       gamePlayer.setName(player.getName());
     }
-    gamePlayer.setQSeasonId(currentGame.getQSeasonId());
-    gamePlayer.setSeasonId(currentGame.getSeasonId());
+    gamePlayer.setQSeasonId(game.getQSeasonId());
+    gamePlayer.setSeasonId(game.getSeasonId());
 
     int gamePlayerId = gamePlayerRepository.save(gamePlayer);
     gamePlayer.setId(gamePlayerId);
 
-    recalculate(currentGame);
+    recalculate(game);
 
     return gamePlayer;
   }
 
+  // TODO separate thread
   private void recalculate(Game game) {
     List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(game.getId());
     Game calculatedGame = gameCalculator.calculate(game, gamePlayers);
@@ -300,35 +310,36 @@ public class GameService {
     pointsCalculator.calculate(calculatedGame, gamePlayers);
   }
 
+  // TODO fix this now that there is no double buyin
   private void verifyGamePlayerMoney(boolean doubleBuyIn, GamePlayer gamePlayer) {
-    TocConfig tocConfig = getTocConfig();
-    Integer buyIn = gamePlayer.getBuyInCollected();
-    Integer rebuyAddOn = gamePlayer.getRebuyAddOnCollected();
-    Integer toc = gamePlayer.getAnnualTocCollected();
-    Integer qToc = gamePlayer.getQuarterlyTocCollected();
-
-    if (doubleBuyIn) {
-      if (buyIn != null && buyIn != tocConfig.getDoubleBuyInCost()) {
-        throw new DoubleBuyInMismatchException("Buy-in should be double");
-      }
-      if (rebuyAddOn != null && rebuyAddOn != tocConfig.getDoubleRebuyCost()) {
-        throw new DoubleBuyInMismatchException("Rebuy/AddOn should be double");
-      }
-    } else {
-      if (buyIn != null && buyIn == tocConfig.getDoubleBuyInCost()) {
-        throw new DoubleBuyInMismatchException("Buy-in should no be double");
-      }
-      if (rebuyAddOn != null && rebuyAddOn == tocConfig.getDoubleRebuyCost()) {
-        throw new DoubleBuyInMismatchException("Rebuy/AddOn should not be double");
-      }
-    }
-
-    if (toc != null && toc != tocConfig.getAnnualTocCost()) {
-      throw new DoubleBuyInMismatchException("Annual TOC incorrect");
-    }
-    if (qToc != null && qToc != tocConfig.getQuarterlyTocCost()) {
-      throw new DoubleBuyInMismatchException("Quarterly TOC incorrect");
-    }
+//    TocConfig tocConfig = getTocConfig();
+//    Integer buyIn = gamePlayer.getBuyInCollected();
+//    Integer rebuyAddOn = gamePlayer.getRebuyAddOnCollected();
+//    Integer toc = gamePlayer.getAnnualTocCollected();
+//    Integer qToc = gamePlayer.getQuarterlyTocCollected();
+//
+//    if (doubleBuyIn) {
+//      if (buyIn != null && buyIn != tocConfig.getDoubleBuyInCost()) {
+//        throw new DoubleBuyInMismatchException("Buy-in should be double");
+//      }
+//      if (rebuyAddOn != null && rebuyAddOn != tocConfig.getDoubleRebuyCost()) {
+//        throw new DoubleBuyInMismatchException("Rebuy/AddOn should be double");
+//      }
+//    } else {
+//      if (buyIn != null && buyIn == tocConfig.getDoubleBuyInCost()) {
+//        throw new DoubleBuyInMismatchException("Buy-in should no be double");
+//      }
+//      if (rebuyAddOn != null && rebuyAddOn == tocConfig.getDoubleRebuyCost()) {
+//        throw new DoubleBuyInMismatchException("Rebuy/AddOn should not be double");
+//      }
+//    }
+//
+//    if (toc != null && toc != tocConfig.getAnnualTocCost()) {
+//      throw new DoubleBuyInMismatchException("Annual TOC incorrect");
+//    }
+//    if (qToc != null && qToc != tocConfig.getQuarterlyTocCost()) {
+//      throw new DoubleBuyInMismatchException("Quarterly TOC incorrect");
+//    }
 
   }
 
@@ -349,5 +360,4 @@ public class GameService {
       throw new FinalizedException("Game is finalized");
     }
   }
-
 }

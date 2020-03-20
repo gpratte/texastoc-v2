@@ -2,6 +2,7 @@ package com.texastoc.service;
 
 import com.texastoc.TestConstants;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
+import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.exception.FinalizedException;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
@@ -14,7 +15,6 @@ import com.texastoc.repository.*;
 import com.texastoc.service.calculator.*;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.notNull;
 
@@ -72,8 +73,6 @@ public class GameServiceTest implements TestConstants {
     gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator, configRepository, seasonCalculator, qSeasonCalculator, seatingRepository, roleRepository);
   }
 
-  // TODO fix this
-  @Ignore
   @Test
   public void testCreateGame() {
 
@@ -87,6 +86,23 @@ public class GameServiceTest implements TestConstants {
       .transportRequired(true)
       .doubleBuyIn(doubleBuyIn)
       .build();
+
+    Mockito.when(gameRepository.getById((1))).thenReturn(Game.builder()
+      .id(1)
+      .date(start)
+      .hostId(1)
+      .transportRequired(true)
+      .doubleBuyIn(doubleBuyIn)
+      .seasonId(1)
+      .qSeasonId(1)
+      .hostName("Brian Baker")
+      .quarter(Quarter.FIRST)
+      .kittyCost(KITTY_PER_GAME)
+      .annualTocCost(TOC_PER_GAME)
+      .quarterlyTocCost(QUARTERLY_TOC_PER_GAME)
+      .seasonGameNum(21)
+      .quarterlyGameNum(8)
+      .build());
 
     Mockito.when(gameRepository.save((Game) notNull())).thenReturn(1);
 
@@ -130,63 +146,63 @@ public class GameServiceTest implements TestConstants {
     // Game argument match
     ArgumentCaptor<Game> gameArg = ArgumentCaptor.forClass(Game.class);
     Mockito.verify(gameRepository).save(gameArg.capture());
-    Assert.assertEquals(start, gameArg.getValue().getDate());
-    Assert.assertEquals(1, (int) gameArg.getValue().getHostId());
+    assertEquals(start, gameArg.getValue().getDate());
+    assertEquals(1, (int) gameArg.getValue().getHostId());
     Assert.assertTrue(gameArg.getValue().isTransportRequired());
-    Assert.assertEquals(doubleBuyIn, gameArg.getValue().isDoubleBuyIn());
+    assertEquals(doubleBuyIn, gameArg.getValue().isDoubleBuyIn());
 
 
     // Assert
-    Assert.assertNotNull("new game should not be null", actual);
-    Assert.assertEquals("new game id should be 1", 1, (int) actual.getId());
+    assertNotNull("new game should not be null", actual);
+    assertEquals("new game id should be 1", 1, (int) actual.getId());
 
-    Assert.assertEquals("SeasonId should be 1", 1, (int) actual.getSeasonId());
-    Assert.assertEquals("QuarterlySeasonId should be 1", 1, (int) actual.getQSeasonId());
-    Assert.assertEquals("Host id should be 1", expected.getHostId(), actual.getHostId());
-    Assert.assertEquals("date should be now", expected.getDate(), actual.getDate());
+    assertEquals("SeasonId should be 1", 1, (int) actual.getSeasonId());
+    assertEquals("QuarterlySeasonId should be 1", 1, (int) actual.getQSeasonId());
+    assertEquals("Host id should be 1", expected.getHostId(), actual.getHostId());
+    assertEquals("date should be now", expected.getDate(), actual.getDate());
 
     Assert.assertTrue("Host name should be Brian Baker", "Brian Baker".equals(actual.getHostName()));
-    Assert.assertEquals("Quarter should be first", Quarter.FIRST, actual.getQuarter());
+    assertEquals("Quarter should be first", Quarter.FIRST, actual.getQuarter());
 
-    Assert.assertNull("last calculated should be null", actual.getLastCalculated());
+    assertNull("last calculated should be null", actual.getLastCalculated());
 
 
     // Game setup variables
-    Assert.assertEquals("Double buy in", expected.isDoubleBuyIn(), actual.isDoubleBuyIn());
-    Assert.assertEquals("transport required", expected.isTransportRequired(), actual.isTransportRequired());
-    Assert.assertEquals("Kitty cost should be amount set for season", KITTY_PER_GAME, (int) actual.getKittyCost());
-    Assert.assertEquals("Annual TOC be amount set for season", TOC_PER_GAME, (int) actual.getAnnualTocCost());
-    Assert.assertEquals("Quarterly TOC be amount set for season", QUARTERLY_TOC_PER_GAME, (int) actual.getQuarterlyTocCost());
+    assertEquals("Double buy in", expected.isDoubleBuyIn(), actual.isDoubleBuyIn());
+    assertEquals("transport required", expected.isTransportRequired(), actual.isTransportRequired());
+    assertEquals("Kitty cost should be amount set for season", KITTY_PER_GAME, (int) actual.getKittyCost());
+    assertEquals("Annual TOC be amount set for season", TOC_PER_GAME, (int) actual.getAnnualTocCost());
+    assertEquals("Quarterly TOC be amount set for season", QUARTERLY_TOC_PER_GAME, (int) actual.getQuarterlyTocCost());
 
     // Game runtime variables
-    Assert.assertNull("not started", actual.getStarted());
+    assertNull("not started", actual.getStarted());
 
-    Assert.assertEquals("No players", 0, (int) actual.getNumPlayers());
-    Assert.assertEquals("No buy in collected", 0, (int) actual.getBuyInCollected());
-    Assert.assertEquals("No rebuy collected", 0, (int) actual.getRebuyAddOnCollected());
-    Assert.assertEquals("No annual toc collected", 0, (int) actual.getAnnualTocCollected());
-    Assert.assertEquals("No quarterly toc collected", 0, (int) actual.getQuarterlyTocCollected());
-    Assert.assertEquals("total collected", 0, (int) actual.getTotalCollected());
+    assertEquals("No players", 0, (int) actual.getNumPlayers());
+    assertEquals("No buy in collected", 0, (int) actual.getBuyInCollected());
+    assertEquals("No rebuy collected", 0, (int) actual.getRebuyAddOnCollected());
+    assertEquals("No annual toc collected", 0, (int) actual.getAnnualTocCollected());
+    assertEquals("No quarterly toc collected", 0, (int) actual.getQuarterlyTocCollected());
+    assertEquals("total collected", 0, (int) actual.getTotalCollected());
 
-    Assert.assertEquals("Season game number should be one more than the number of season games played", 21, actual.getSeasonGameNum());
-    Assert.assertEquals("Quarterly season game number should be one more than the number of quarterly season games played", 8, actual.getQuarterlyGameNum());
+    assertEquals("Season game number should be one more than the number of season games played", 21, actual.getSeasonGameNum());
+    assertEquals("Quarterly season game number should be one more than the number of quarterly season games played", 8, actual.getQuarterlyGameNum());
 
-    Assert.assertEquals("no annualTocFromRebuyAddOnCalculated", 0, (int) actual.getAnnualTocFromRebuyAddOnCalculated());
-    Assert.assertEquals("no rebuyAddOnLessAnnualTocCalculated", 0, (int) actual.getRebuyAddOnLessAnnualTocCalculated());
-    Assert.assertEquals("no totalCombinedTocCalculated", 0, (int) actual.getTotalCombinedTocCalculated());
-    Assert.assertEquals("No kitty calculated", 0, (int) actual.getKittyCalculated());
-    Assert.assertEquals("no prizePotCalculated", 0, (int) actual.getPrizePotCalculated());
+    assertEquals("no annualTocFromRebuyAddOnCalculated", 0, (int) actual.getAnnualTocFromRebuyAddOnCalculated());
+    assertEquals("no rebuyAddOnLessAnnualTocCalculated", 0, (int) actual.getRebuyAddOnLessAnnualTocCalculated());
+    assertEquals("no totalCombinedTocCalculated", 0, (int) actual.getTotalCombinedTocCalculated());
+    assertEquals("No kitty calculated", 0, (int) actual.getKittyCalculated());
+    assertEquals("no prizePotCalculated", 0, (int) actual.getPrizePotCalculated());
 
     Assert.assertFalse("not finalized", actual.isFinalized());
 
     if (expected.isDoubleBuyIn()) {
-      Assert.assertEquals("Buy in cost should be double the amount set for season", GAME_DOUBLE_BUY_IN, (int) actual.getBuyInCost());
-      Assert.assertEquals("Rebuy cost should be double the amount set for season", GAME_DOUBLE_REBUY, (int) actual.getRebuyAddOnCost());
-      Assert.assertEquals("Rebuy Toc debit cost should be double the amount set for season", GAME_DOUBLE_REBUY_TOC_DEBIT, (int) actual.getRebuyAddOnTocDebit());
+      assertEquals("Buy in cost should be double the amount set for season", GAME_DOUBLE_BUY_IN, (int) actual.getBuyInCost());
+      assertEquals("Rebuy cost should be double the amount set for season", GAME_DOUBLE_REBUY, (int) actual.getRebuyAddOnCost());
+      assertEquals("Rebuy Toc debit cost should be double the amount set for season", GAME_DOUBLE_REBUY_TOC_DEBIT, (int) actual.getRebuyAddOnTocDebit());
     } else {
-      Assert.assertEquals("Buy in cost should be amount set for season", GAME_BUY_IN, (int) actual.getBuyInCost());
-      Assert.assertEquals("Rebuy cost should be amount set for season", GAME_REBUY, (int) actual.getRebuyAddOnCost());
-      Assert.assertEquals("Rebuy Toc debit cost should be amount set for season", GAME_REBUY_TOC_DEBIT, (int) actual.getRebuyAddOnTocDebit());
+      assertEquals("Buy in cost should be amount set for season", GAME_BUY_IN, (int) actual.getBuyInCost());
+      assertEquals("Rebuy cost should be amount set for season", GAME_REBUY, (int) actual.getRebuyAddOnCost());
+      assertEquals("Rebuy Toc debit cost should be amount set for season", GAME_REBUY_TOC_DEBIT, (int) actual.getRebuyAddOnTocDebit());
     }
   }
 
@@ -212,18 +228,18 @@ public class GameServiceTest implements TestConstants {
 
     // Game repository called once
     Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
-    Assert.assertNotNull("Game returned should not be null", game);
-    Assert.assertEquals("Game id should be 1", 1, (int) game.getId());
+    assertNotNull("Game returned should not be null", game);
+    assertEquals("Game id should be 1", 1, (int) game.getId());
 
     // GamePlayer repository called once
     Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
-    Assert.assertNotNull("GamePlayers returned should not be null", game.getPlayers());
-    Assert.assertEquals("number of players should be 0", 0, game.getPlayers().size());
+    assertNotNull("GamePlayers returned should not be null", game.getPlayers());
+    assertEquals("number of players should be 0", 0, game.getPlayers().size());
 
     // GamePayout repository called once
     Mockito.verify(gamePayoutRepository, Mockito.times(1)).getByGameId(1);
-    Assert.assertNotNull("GamePayouts returned should not be null", game.getPayouts());
-    Assert.assertEquals("number of payouts should be 0", 0, game.getPayouts().size());
+    assertNotNull("GamePayouts returned should not be null", game.getPayouts());
+    assertEquals("number of payouts should be 0", 0, game.getPayouts().size());
   }
 
   /**
@@ -249,18 +265,18 @@ public class GameServiceTest implements TestConstants {
 
     // Game repository called once
     Mockito.verify(gameRepository, Mockito.times(1)).getUnfinalized();
-    Assert.assertNotNull("Game returned should not be null", game);
-    Assert.assertEquals("Game id should be 1", 1, (int) game.getId());
+    assertNotNull("Game returned should not be null", game);
+    assertEquals("Game id should be 1", 1, (int) game.getId());
 
     // GamePlayer repository called once
     Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
-    Assert.assertNotNull("GamePlayers returned should not be null", game.getPlayers());
-    Assert.assertEquals("number of players should be 0", 0, game.getPlayers().size());
+    assertNotNull("GamePlayers returned should not be null", game.getPlayers());
+    assertEquals("number of players should be 0", 0, game.getPlayers().size());
 
     // GamePayout repository called once
     Mockito.verify(gamePayoutRepository, Mockito.times(1)).getByGameId(1);
-    Assert.assertNotNull("GamePayouts returned should not be null", game.getPayouts());
-    Assert.assertEquals("number of payouts should be 0", 0, game.getPayouts().size());
+    assertNotNull("GamePayouts returned should not be null", game.getPayouts());
+    assertEquals("number of payouts should be 0", 0, game.getPayouts().size());
   }
 
   /**
@@ -273,7 +289,7 @@ public class GameServiceTest implements TestConstants {
       .thenReturn(Collections.emptyList());
 
     Game game = gameService.getCurrentGame();
-    Assert.assertNull("Current game returned should be null", game);
+    assertNull("Current game returned should be null", game);
   }
 
   @Test
@@ -294,18 +310,14 @@ public class GameServiceTest implements TestConstants {
     Mockito.verify(gameRepository, Mockito.times(1)).update(any(Game.class));
   }
 
-  // TODO now that messing with the game player returns the game need to fix this test
-  @Ignore
   @Test
   public void testCreateGamePlayer() {
 
     // GameService#createGamePlayers calls
-    // 1. gamePlayerRepository.save
-    // 2. gameRepository.getById
-    // 3. gamePlayerRepository.selectByGameId
-    // 4. gameCalculator.calculate
-    // 5. payoutCalculator.calculate
-    // 6. pointsCalculator.calculate
+    // 1. gameRepository.getById
+    // 2. playerRepository.get(id)
+    // 3. gamePlayerRepository.save
+    // Then calls recalculate on a separate thread
     // Not verifying the calculators because they have their own tests
 
     Mockito.when(gamePlayerRepository.save((GamePlayer) notNull())).thenReturn(1);
@@ -316,111 +328,121 @@ public class GameServiceTest implements TestConstants {
       .doubleBuyIn(false)
       .finalized(false)
       .build();
+    // 1. gameRepository.getById
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
+
+    Player player = Player.builder()
+      .id(1)
+      .firstName("bob")
+      .lastName("cob")
+      .build();
+    // 2. playerRepository.get(id)
+    Mockito.when(playerRepository.get(1)).thenReturn(player);
 
     String playerName = Long.toString(System.currentTimeMillis());
     GamePlayer gamePlayerToCreated = GamePlayer.builder()
       .gameId(1)
       .playerId(1)
-      .name(playerName)
-      .build();
-    List<GamePlayer> gamePlayersCreated = new LinkedList<>();
-    gamePlayersCreated.add(gamePlayerToCreated);
-    Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayersCreated);
-
-    Game calculatedGame = Game.builder()
-      .numPlayers(1)
-      .prizePotCalculated(0)
       .build();
 
-    Mockito.when(gameCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(calculatedGame);
-    Mockito.when(payoutCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
-    Mockito.when(pointsCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
+    // 3. gamePlayerRepository.save
+    Mockito.when(gamePlayerRepository.save(gamePlayerToCreated)).thenReturn(1);
 
     CreateGamePlayerRequest cgpr = CreateGamePlayerRequest.builder()
       .playerId(1)
       .gameId(1)
       .build();
-
     GamePlayer gamePlayerCreated = gameService.createGamePlayer(cgpr);
 
-    Mockito.verify(gamePlayerRepository, Mockito.times(1)).save(any(GamePlayer.class));
+    Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+    Mockito.verify(playerRepository, Mockito.times(1)).get(1);
+
     ArgumentCaptor<GamePlayer> gamePlayerArg = ArgumentCaptor.forClass(GamePlayer.class);
     Mockito.verify(gamePlayerRepository).save(gamePlayerArg.capture());
-    Assert.assertEquals(1, gamePlayerArg.getValue().getGameId());
-    Assert.assertEquals(1, gamePlayerArg.getValue().getPlayerId());
-    Assert.assertEquals(playerName, gamePlayerArg.getValue().getName());
+    assertEquals(1, gamePlayerArg.getValue().getGameId());
+    assertEquals(1, gamePlayerArg.getValue().getPlayerId());
+    assertEquals("bob cob", gamePlayerArg.getValue().getName());
 
-    Mockito.verify(gameRepository, Mockito.times(2)).getById(1);
-    Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
-    Mockito.verify(gameCalculator, Mockito.times(1)).calculate(any(Game.class), Mockito.anyList());
-    Mockito.verify(payoutCalculator, Mockito.times(1)).calculate(any(Game.class), Mockito.anyList());
-    Mockito.verify(pointsCalculator, Mockito.times(1)).calculate(any(Game.class), Mockito.anyList());
+    assertNotNull("game player created should not be null", gamePlayerCreated);
+    assertEquals("game player id should be 1", 1, gamePlayerCreated.getGameId());
+    assertEquals("game player id should be 1", 1, gamePlayerCreated.getPlayerId());
+    assertEquals("game player name should be " + "bob cob", "bob cob", gamePlayerCreated.getName());
 
+    assertNull("game player points should be null", gamePlayerCreated.getPoints());
 
-    Assert.assertNotNull("game player created should not be null", gamePlayerCreated);
-    Assert.assertEquals("game player id should be 1", 1, gamePlayerCreated.getGameId());
-    Assert.assertEquals("game player id should be 1", 1, gamePlayerCreated.getPlayerId());
-    Assert.assertEquals("game player name should be " + playerName, playerName, gamePlayerCreated.getName());
-
-    Assert.assertNull("game player points should be null", gamePlayerCreated.getPoints());
-
-    Assert.assertNull("game player finish should be null", gamePlayerCreated.getPlace());
-    Assert.assertNull("game player knocked out should be null", gamePlayerCreated.getKnockedOut());
-    Assert.assertNull("game player round updates should be null", gamePlayerCreated.getRoundUpdates());
-    Assert.assertNull("game player buy-in collected should be null", gamePlayerCreated.getBuyInCollected());
-    Assert.assertNull("game player rebuy add on collected should be null", gamePlayerCreated.getRebuyAddOnCollected());
-    Assert.assertNull("game player annual toc collected should be null", gamePlayerCreated.getAnnualTocCollected());
-    Assert.assertNull("game player quarterly toc collected should be null", gamePlayerCreated.getQuarterlyTocCollected());
-    Assert.assertNull("game player chop should be null", gamePlayerCreated.getChop());
+    assertNull("game player finish should be null", gamePlayerCreated.getPlace());
+    assertNull("game player knocked out should be null", gamePlayerCreated.getKnockedOut());
+    assertNull("game player round updates should be null", gamePlayerCreated.getRoundUpdates());
+    assertNull("game player buy-in collected should be null", gamePlayerCreated.getBuyInCollected());
+    assertNull("game player rebuy add on collected should be null", gamePlayerCreated.getRebuyAddOnCollected());
+    assertNull("game player annual toc collected should be null", gamePlayerCreated.getAnnualTocCollected());
+    assertNull("game player quarterly toc collected should be null", gamePlayerCreated.getQuarterlyTocCollected());
+    assertNull("game player chop should be null", gamePlayerCreated.getChop());
   }
 
   @Test
   public void testUpdateGamePlayer() {
-
-    Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
+    // GameService#updateGamePlayer calls
+    // 1. gameRepository.getById
+    // 2. gamePlayerRepository.selectById(id)
+    // 3. gamePlayerRepository.update
+    // Then calls recalculate on a separate thread
+    // Not verifying the calculators because they have their own tests
 
     Game currentGame = Game.builder()
       .id(1)
       .numPlayers(1)
+      .buyInCost(GAME_BUY_IN)
+      .annualTocCost(TOC_PER_GAME)
+      .quarterlyTocCost(QUARTERLY_TOC_PER_GAME)
+      .rebuyAddOnCost(GAME_REBUY)
       .finalized(false)
       .doubleBuyIn(false)
       .build();
+    // 1. gameRepository.getById
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
     GamePlayer gamePlayer = GamePlayer.builder()
       .id(1)
       .gameId(1)
-      .buyInCollected(GAME_BUY_IN)
-      .rebuyAddOnCollected(GAME_REBUY)
-      .annualTocCollected(TOC_PER_GAME)
-      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .build();
+    // 2. gamePlayerRepository.selectById(id)
+    Mockito.when(gamePlayerRepository.selectById(1)).thenReturn(gamePlayer);
+
+    // Same as game player
+    UpdateGamePlayerRequest ugpr = UpdateGamePlayerRequest.builder()
+      .gamePlayerId(1)
+      .gameId(1)
+      .buyInCollected(true)
+      .rebuyAddOnCollected(true)
+      .annualTocCollected(true)
+      .quarterlyTocCollected(true)
       .roundUpdates(true)
       .place(10)
       .knockedOut(true)
       .chop(500)
       .build();
 
-    List<GamePlayer> gamePlayersCreated = new LinkedList<>();
-    gamePlayersCreated.add(gamePlayer);
-    Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayersCreated);
+    GamePlayer gamePlayerUpdated = gameService.updateGamePlayer(ugpr);
 
-    Game calculatedGame = Game.builder()
-      .numPlayers(1)
-      .prizePotCalculated(0)
-      .build();
-    Mockito.when(gameCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(calculatedGame);
-    Mockito.when(payoutCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
-    Mockito.when(pointsCalculator.calculate((Game) notNull(), (List<GamePlayer>) notNull())).thenReturn(Collections.EMPTY_LIST);
-
-    gameService.updateGamePlayer(gamePlayer);
-
-    Mockito.verify(gameRepository, Mockito.times(2)).getById(1);
+    Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
+    Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectById(1);
     Mockito.verify(gamePlayerRepository, Mockito.times(1)).update(any(GamePlayer.class));
-    Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
-    Mockito.verify(gameCalculator, Mockito.times(1)).calculate(any(Game.class), Mockito.anyList());
-    Mockito.verify(payoutCalculator, Mockito.times(1)).calculate(any(Game.class), Mockito.anyList());
-    Mockito.verify(pointsCalculator, Mockito.times(1)).calculate(any(Game.class), Mockito.anyList());
+
+    assertNotNull("game player updated should not be null", gamePlayerUpdated);
+    assertEquals("game player id should be 1", 1, gamePlayerUpdated.getGameId());
+    assertEquals("game player id should be 1", 1, gamePlayerUpdated.getId());
+
+    assertNull("game player points should be null", gamePlayerUpdated.getPoints());
+
+    assertEquals("game player finish should be 10", 10, gamePlayerUpdated.getPlace().intValue());
+    assertTrue("game player knocked out should be true", gamePlayerUpdated.getKnockedOut());
+    assertTrue("game player round updates should be true", gamePlayerUpdated.getRoundUpdates());
+    assertEquals("game player buy-in collected should be " + GAME_BUY_IN, GAME_BUY_IN, gamePlayerUpdated.getBuyInCollected().intValue());
+    assertEquals("game player rebuy add on collected should be " + GAME_REBUY, GAME_REBUY, gamePlayerUpdated.getRebuyAddOnCollected().intValue());
+    assertEquals("game player annual toc collected should be " + TOC_PER_GAME, TOC_PER_GAME, gamePlayerUpdated.getAnnualTocCollected().intValue());
+    assertEquals("game player quarterly toc collected should be " + QUARTERLY_TOC_PER_GAME, QUARTERLY_TOC_PER_GAME, gamePlayerUpdated.getQuarterlyTocCollected().intValue());
+    assertEquals("game player chop should be 500", 500, gamePlayerUpdated.getChop().intValue());
   }
 
   @Test
@@ -451,7 +473,13 @@ public class GameServiceTest implements TestConstants {
   @Test
   public void testFirstTimeGamePlayer() {
 
-    Mockito.when(playerRepository.save((Player) notNull())).thenReturn(1);
+    // GameService#createFirstTimeGamePlayer calls
+    // 1. gameRepository.getById
+    // 2. playerRepository.save
+    // 3. roleRepository.save
+    // 4. gamePlayerRepository.save
+    // Then calls recalculate on a separate thread
+    // Not verifying the calculators because they have their own tests
 
     Mockito.when(gamePlayerRepository.save((GamePlayer) notNull())).thenReturn(1);
 
@@ -461,7 +489,16 @@ public class GameServiceTest implements TestConstants {
       .doubleBuyIn(false)
       .finalized(false)
       .build();
+    // 1. gameRepository.getById
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
+
+    // 2. playerRepository.save
+    Mockito.when(playerRepository.save((Player) notNull())).thenReturn(1);
+
+    // Not mocking 3. because it does not return anything and it is verified below
+
+    // 4. gamePlayerRepository.save
+    Mockito.when(gamePlayerRepository.save(any(GamePlayer.class))).thenReturn(1);
 
     FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
       .firstName("John")
@@ -469,12 +506,13 @@ public class GameServiceTest implements TestConstants {
       .email("johndoe@texastoc.com")
       .gameId(1)
       .build();
-    GamePlayer gamePlayer = gameService.createFirstTimeGamePlayer(firstTimeGamePlayer);
+    GamePlayer actualGamePlayer = gameService.createFirstTimeGamePlayer(firstTimeGamePlayer);
 
-    Assert.assertNotNull(gamePlayer);
+    assertNotNull(actualGamePlayer);
     Mockito.verify(playerRepository, Mockito.times(1)).save(any(Player.class));
+    Mockito.verify(roleRepository, Mockito.times(1)).save(1);
     Mockito.verify(gamePlayerRepository, Mockito.times(1)).save(any(GamePlayer.class));
-    Mockito.verify(gameRepository, Mockito.times(2)).getById(1);
+    Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
   }
 
   @Test
@@ -497,8 +535,6 @@ public class GameServiceTest implements TestConstants {
     Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
   }
 
-  // TODO now that messing with the game player returns the game need to fix this test
-  @Ignore
   @Test
   public void testFinalizeNoChanges() {
     Mockito.when(gameRepository.getById(1))
@@ -526,9 +562,7 @@ public class GameServiceTest implements TestConstants {
     }
 
     try {
-      gameService.updateGamePlayer(GamePlayer.builder()
-        .gameId(1)
-        .build());
+      gameService.updateGamePlayer(UpdateGamePlayerRequest.builder().gameId(1).build());
       Assert.fail("should not be able to update a finalized game");
     } catch (FinalizedException e) {
       // all good

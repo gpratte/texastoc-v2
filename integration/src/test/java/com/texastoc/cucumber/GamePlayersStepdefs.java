@@ -113,20 +113,22 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
   @And("^the player is updated$")
   public void the_player_is_updated() throws Exception {
 
+    GamePlayer gamePlayer = gamePlayers.get(0);
+
     UpdateGamePlayerRequest updateGamePlayerRequest = UpdateGamePlayerRequest.builder()
-      .playerId(ANDY_THOMAS_PLAYER_ID)
+      .gamePlayerId(gamePlayer.getId())
+      .gameId(gameId)
       .place(10)
       .knockedOut(false)
       .roundUpdates(true)
-      .buyInCollected(GAME_BUY_IN)
-      .rebuyAddOnCollected(GAME_REBUY)
-      .annualTocCollected(TOC_PER_GAME)
-      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .buyInCollected(true)
+      .rebuyAddOnCollected(true)
+      .annualTocCollected(true)
+      .quarterlyTocCollected(true)
       .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
 
-    GamePlayer gamePlayer = gamePlayers.get(0);
     updatePlayerInGame(gamePlayer.getId(), updateGamePlayerRequest, token);
     gamePlayersUpdated.add(updateGamePlayerRequest);
   }
@@ -134,20 +136,22 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
   @And("^the player is knocked out")
   public void knockedOut() throws Exception {
 
+    GamePlayer gamePlayer = gamePlayers.get(0);
+
     UpdateGamePlayerRequest updateGamePlayerRequest = UpdateGamePlayerRequest.builder()
-      .playerId(ANDY_THOMAS_PLAYER_ID)
+      .gamePlayerId(gamePlayer.getId())
+      .gameId(gameId)
       .place(10)
       .knockedOut(true)
       .roundUpdates(true)
-      .buyInCollected(GAME_BUY_IN)
-      .rebuyAddOnCollected(GAME_REBUY)
-      .annualTocCollected(TOC_PER_GAME)
-      .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+      .buyInCollected(true)
+      .rebuyAddOnCollected(true)
+      .annualTocCollected(true)
+      .quarterlyTocCollected(true)
       .build();
 
     String token = login(USER_EMAIL, USER_PASSWORD);
 
-    GamePlayer gamePlayer = gamePlayers.get(0);
     updatePlayerInGame(gamePlayer.getId(), updateGamePlayerRequest, token);
     gamePlayersUpdated.add(updateGamePlayerRequest);
   }
@@ -275,8 +279,8 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
         .playerId(1)
         .gameId(gameId)
         .buyInCollected(true)
-        .annualTocCollected(random.nextBoolean() ? true : null)
-        .quarterlyTocCollected(random.nextBoolean() ? true : null)
+        .annualTocCollected(random.nextBoolean())
+        .quarterlyTocCollected(random.nextBoolean())
         .build();
 
       gamePlayers.add(addPlayerToGame(createGamePlayerRequest, token));
@@ -347,12 +351,42 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     Assert.assertTrue("the game player points should be null or 0", actual.getPoints() == null || actual.getPoints() < 1);
 
     Assert.assertEquals("the game player finish should be " + expected.getPlace(), (int) expected.getPlace(), (int) actual.getPlace());
-    Assert.assertEquals("the game player knockedOut should be " + expected.getKnockedOut(), expected.getKnockedOut(), actual.getKnockedOut());
-    Assert.assertEquals("the game player roundUpdates should be " + expected.getRoundUpdates(), expected.getRoundUpdates(), actual.getRoundUpdates());
-    Assert.assertEquals("the game player buyInCollected should be " + expected.getBuyInCollected(), (int) expected.getBuyInCollected(), (int) actual.getBuyInCollected());
-    Assert.assertEquals("the game player rebuyAddOn should be " + expected.getRebuyAddOnCollected(), (int) expected.getRebuyAddOnCollected(), (int) actual.getRebuyAddOnCollected());
-    Assert.assertEquals("the game player annualTocCollected should be " + expected.getAnnualTocCollected(), (int) expected.getAnnualTocCollected(), (int) actual.getAnnualTocCollected());
-    Assert.assertEquals("the game player quarterlyTocCollected should be " + expected.getQuarterlyTocCollected(), (int) expected.getQuarterlyTocCollected(), (int) actual.getQuarterlyTocCollected());
+
+    if (expected.isKnockedOut()) {
+      Assert.assertTrue("the game player should be knockedOut", actual.getKnockedOut());
+    } else {
+      Assert.assertTrue("the game player should not be knockedOut", actual.getKnockedOut() == null || actual.getKnockedOut() == false);
+    }
+
+    if (expected.isRoundUpdates()) {
+      Assert.assertTrue("the game player should be in for round updates", actual.getRoundUpdates());
+    } else {
+      Assert.assertTrue("the game player should not be in for round updates", actual.getRoundUpdates() == null || actual.getRoundUpdates() == false);
+    }
+
+    if (expected.isBuyInCollected()) {
+      Assert.assertEquals("the game player buyInCollected should be " + gameRetrieved.getBuyInCost(), gameRetrieved.getBuyInCost(), (int) actual.getBuyInCollected());
+    } else {
+      Assert.assertNull("the game player should not be bought in", actual.getBuyInCollected());
+    }
+
+    if (expected.isRebuyAddOnCollected()) {
+      Assert.assertEquals("the game player rebuyAddOn should be " + gameRetrieved.getRebuyAddOnCost(), gameRetrieved.getRebuyAddOnCost(), (int) actual.getRebuyAddOnCollected());
+    } else {
+      Assert.assertNull("the game player should not have rebought", actual.getRebuyAddOnCollected());
+    }
+
+    if (expected.isAnnualTocCollected()) {
+      Assert.assertEquals("the game player annual toc should be " + gameRetrieved.getAnnualTocCost(), gameRetrieved.getAnnualTocCost(), (int) actual.getAnnualTocCollected());
+    } else {
+      Assert.assertNull("the game player should not have annual toc", actual.getAnnualTocCollected());
+    }
+
+    if (expected.isQuarterlyTocCollected()) {
+      Assert.assertEquals("the game player quarterly annual toc should be " + gameRetrieved.getQuarterlyTocCost(), gameRetrieved.getQuarterlyTocCost(), (int) actual.getQuarterlyTocCollected());
+    } else {
+      Assert.assertNull("the game player should not have quarterly annual toc", actual.getQuarterlyTocCollected());
+    }
 
     Assert.assertNull("the game player chop should be null", actual.getChop());
   }
