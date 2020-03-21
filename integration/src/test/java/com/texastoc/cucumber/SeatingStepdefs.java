@@ -58,7 +58,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
         .lastName("Schmoe")
         .email("joe" + i + ".schmoe@texastoc.com")
         .gameId(gameId)
-        .buyInCollected(GAME_BUY_IN)
+        .buyInCollected(true)
         .build();
       addFirstTimePlayerToGame(firstTimeGamePlayer, token);
     }
@@ -86,7 +86,7 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
         .lastName("Schmoe")
         .email("joe" + i + ".schmoe@texastoc.com")
         .gameId(gameId)
-        .buyInCollected(GAME_BUY_IN)
+        .buyInCollected(true)
         .build();
       addFirstTimePlayerToGame(firstTimeGamePlayer, token);
     }

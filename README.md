@@ -44,9 +44,8 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 47-update-game-player
-Fleshed out the ability to update a game player.
+## Current Branch: 48-add-first-time-player-to-game
+Fleshed out adding a first time player to a game. A first time player is someone that has never
+played in a league game.
 
-Changed create game player to return a game player (instead of the game as was done in the previous branch.)
-
-Also had to enhance the CORS configuration to allow the PUT methods.
+Also had to enhance the CORS configuration to allow the DELETE methods.

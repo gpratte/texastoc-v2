@@ -57,9 +57,9 @@ public class CalculationsStepdefs extends SpringBootBaseIntegrationTest {
         .lastName("Schmoe")
         .email("joe" + i + "schmoe@texastoc.com")
         .gameId(gameId)
-        .buyInCollected(GAME_BUY_IN)
-        .annualTocCollected(TOC_PER_GAME)
-        .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
+        .buyInCollected(true)
+        .annualTocCollected(true)
+        .quarterlyTocCollected(true)
         .build();
 
       gamePlayers.add(addFirstTimePlayerToGame(firstTimeGamePlayer, token));

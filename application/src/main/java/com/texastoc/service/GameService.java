@@ -189,15 +189,21 @@ public class GameService {
     Game game = gameRepository.getById(ugpr.getGameId());
     checkFinalized(game);
 
+    Integer place = ugpr.getPlace();
     GamePlayer gamePlayer = getGamePlayer(ugpr.getGamePlayerId());
-    gamePlayer.setPlace(ugpr.getPlace());
-    gamePlayer.setKnockedOut(ugpr.isKnockedOut());
+    gamePlayer.setPlace(place);
     gamePlayer.setRoundUpdates(ugpr.isRoundUpdates());
     gamePlayer.setBuyInCollected(ugpr.isBuyInCollected() ? game.getBuyInCost() : null);
     gamePlayer.setRebuyAddOnCollected(ugpr.isRebuyAddOnCollected() ? game.getRebuyAddOnCost() : null);
     gamePlayer.setAnnualTocCollected(ugpr.isAnnualTocCollected() ? game.getAnnualTocCost() : null);
     gamePlayer.setQuarterlyTocCollected(ugpr.isQuarterlyTocCollected() ? game.getQuarterlyTocCost() : null);
     gamePlayer.setChop(ugpr.getChop());
+
+    if (place != null && place <= 10) {
+      gamePlayer.setKnockedOut(true);
+    } else {
+      gamePlayer.setKnockedOut(ugpr.isKnockedOut());
+    }
 
     // TODO no more double buy in
     // Make sure money is right
@@ -250,9 +256,9 @@ public class GameService {
       .gameId(firstTimeGamePlayer.getGameId())
       .playerId(playerId)
       .name(name.toString())
-      .buyInCollected(firstTimeGamePlayer.getBuyInCollected())
-      .annualTocCollected(firstTimeGamePlayer.getAnnualTocCollected())
-      .quarterlyTocCollected(firstTimeGamePlayer.getQuarterlyTocCollected())
+      .buyInCollected(firstTimeGamePlayer.isBuyInCollected() ? game.getBuyInCost() : null)
+      .annualTocCollected(firstTimeGamePlayer.isAnnualTocCollected() ? game.getAnnualTocCost() : null)
+      .quarterlyTocCollected(firstTimeGamePlayer.isQuarterlyTocCollected() ? game.getQuarterlyTocCost() : null)
       .build();
 
     return createGamePlayerWorker(gamePlayer, game);
