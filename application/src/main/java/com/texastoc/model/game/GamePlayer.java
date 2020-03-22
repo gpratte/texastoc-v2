@@ -26,5 +26,4 @@ public class GamePlayer {
   private Integer annualTocCollected;
   private Integer quarterlyTocCollected;
   private Integer chop;
-
 }

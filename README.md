@@ -44,8 +44,7 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 48-add-first-time-player-to-game
-Fleshed out adding a first time player to a game. A first time player is someone that has never
-played in a league game.
+## Current Branch: 49-sort-players-and-game-players
+Sort the league players comparing their full name.
 
-Also had to enhance the CORS configuration to allow the DELETE methods.
+Sort the game players first by place (e.g. 1st, 2nd, ..., 10th). Sort the others by full name.

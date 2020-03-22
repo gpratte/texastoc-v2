@@ -28,12 +28,26 @@ public class GamePlayerRepository {
   public List<GamePlayer> selectByGameId(int gameId) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("gameId", gameId);
-    return jdbcTemplate
+    // Get the players that have placed
+    List<GamePlayer> gamePlayersSortedByPlace = jdbcTemplate
       .query("select * from gameplayer"
           + " where gameId = :gameId"
+          + " and place is not null "
+          + " order by place",
+        params,
+        new GamePlayerMapper());
+
+    // Get the other players that have not placed
+    List<GamePlayer> gamePlayersSortedByName = jdbcTemplate
+      .query("select * from gameplayer"
+          + " where gameId = :gameId "
+          + " and place is null "
           + " order by name",
         params,
         new GamePlayerMapper());
+
+    gamePlayersSortedByPlace.addAll(gamePlayersSortedByName);
+    return gamePlayersSortedByPlace;
   }
 
   public List<GamePlayer> selectAnnualTocPlayersBySeasonId(int seasonId) {

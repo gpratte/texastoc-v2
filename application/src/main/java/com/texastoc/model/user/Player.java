@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Player {
+public class Player implements Comparable<Player> {
 
   private int id;
   private String firstName;
@@ -34,5 +34,38 @@ public class Player {
     }
 
     return name == null ? "Unknown" : name;
+  }
+
+  @Override
+  public int compareTo(Player other) {
+
+    // If I don't have a first or a last
+    if (firstName == null && lastName == null) {
+      // then I come after other
+      return 1;
+    }
+
+    // If other doesn't have a first or a last
+    if (other.firstName == null && other.lastName == null) {
+      // then I come before other
+      return -1;
+    }
+
+    return makeFullName(this).compareTo(makeFullName(other));
+  }
+
+  private String makeFullName(Player player) {
+    // Combine the first and last into a full name
+    StringBuffer fullName = new StringBuffer();
+    if (player.firstName != null) {
+      fullName.append(player.firstName);
+    }
+    if (player.firstName != null && player.lastName != null) {
+      fullName.append(" ");
+    }
+    if (player.lastName != null) {
+      fullName.append(player.lastName);
+    }
+    return fullName.toString();
   }
 }

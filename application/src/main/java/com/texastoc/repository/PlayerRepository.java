@@ -30,7 +30,7 @@ public class PlayerRepository {
 
   // Does not include the players' roles or password
   public List<Player> get() {
-    return jdbcTemplate.query("select id, firstName, lastName, phone, email from player", new PlayerMapper());
+    return jdbcTemplate.query("select id, firstName, lastName, phone, email from player order by firstName, lastName", new PlayerMapper());
   }
 
   private static final String GET_SQL = "select pl.*, " +
