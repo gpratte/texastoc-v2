@@ -182,6 +182,11 @@ public class GameRepository {
       .query("select * from game where finalized IS NULL OR finalized = false", new GameMapper());
   }
 
+  public List<Game> getMostRecent() {
+    return jdbcTemplate
+      .query("select * from game order by gameDate limit 1", new GameMapper());
+  }
+
   private static final class GameMapper implements RowMapper<Game> {
     public Game mapRow(ResultSet rs, int rowNum) {
       Game game = new Game();

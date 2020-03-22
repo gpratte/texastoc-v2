@@ -44,7 +44,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 49-sort-players-and-game-players
-Sort the league players comparing their full name.
-
-Sort the game players first by place (e.g. 1st, 2nd, ..., 10th). Sort the others by full name.
+## Current Branch: 50-get-most-recent-game
+Change the behavior of getting the current game from finding open games (unfinalized) to
+getting the most recent game.

@@ -114,14 +114,14 @@ public class GameService {
 
   @Transactional(readOnly = true)
   public Game getCurrentGame() {
-    List<Game> games = gameRepository.getUnfinalized();
-    if (games.size() == 0) {
-      return null;
+    List<Game> games = gameRepository.getMostRecent();
+    if (games.size() > 0) {
+      Game game = games.get(0);
+      populateGame(game);
+      return game;
     }
 
-    Game game = games.get(0);
-    populateGame(game);
-    return game;
+    return null;
   }
 
   private Game populateGame(Game game) {
