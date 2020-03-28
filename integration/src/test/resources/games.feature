@@ -41,3 +41,11 @@ Feature: CRUD Games
     And the retrieved game is updated and retrieved
     Then the game is normal
     Then the game is double buy-in, transport and delta changed
+
+#  TODO flesh this out - need to handle a status besides 200 from the server
+#  Scenario: try to create a game when there is a game in progress
+#    Given a season exists
+#    Given the game starts now
+#    When the game is created
+#    When another game is created
+#    Then the new game is not allowed

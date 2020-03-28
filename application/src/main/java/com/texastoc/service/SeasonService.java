@@ -141,6 +141,11 @@ public class SeasonService {
     return season;
   }
 
+  @Transactional(readOnly = true)
+  public int getCurrentSeasonId() {
+    return seasonRepository.getCurrent().getId();
+  }
+
   private List<QuarterlySeason> createQuarterlySeasons(LocalDate seasonStart, LocalDate seasonEnd, TocConfig tocConfig) {
     List<QuarterlySeason> qSeasons = new ArrayList<>(4);
     for (int i = 1; i <= 4; ++i) {

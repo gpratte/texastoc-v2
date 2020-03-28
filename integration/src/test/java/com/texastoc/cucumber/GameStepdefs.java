@@ -75,6 +75,17 @@ public class GameStepdefs extends SpringBootBaseIntegrationTest {
     gameCreated = createGame(createGameRequest, token);
   }
 
+  @When("^another game is created$")
+  public void anotherGameIsCreated() throws Exception {
+    String token = login(USER_EMAIL, USER_PASSWORD);
+    createGame(CreateGameRequest.builder()
+      .date(LocalDate.now())
+      .hostId(1)
+      .doubleBuyIn(false)
+      .transportRequired(true)
+      .build(), token);
+  }
+
   @And("^the retrieved game is updated and retrieved$")
   public void the_retrieved_game_is_updated_and_retrieved() throws Exception {
 

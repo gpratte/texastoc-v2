@@ -3,7 +3,8 @@ package com.texastoc.service;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.exception.DoubleBuyInChangeDisallowedException;
-import com.texastoc.exception.FinalizedException;
+import com.texastoc.exception.GameInProgressException;
+import com.texastoc.exception.GameIsFinalizedException;
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
@@ -61,6 +62,12 @@ public class GameService {
 
   @Transactional
   public Game createGame(Game game) {
+    // Reject if there is a game in progress
+    Game currentGame = getCurrentGame();
+    if (currentGame != null && !currentGame.isFinalized()) {
+      throw new GameInProgressException("There is a game in progress.");
+    }
+
     Game gameToCreate = new Game();
 
     // TODO check that date is allowed - not before an existing game and not beyond the season.
@@ -114,7 +121,8 @@ public class GameService {
 
   @Transactional(readOnly = true)
   public Game getCurrentGame() {
-    List<Game> games = gameRepository.getMostRecent();
+    int seasonId = seasonRepository.getCurrent().getId();
+    List<Game> games = gameRepository.getMostRecent(seasonId);
     if (games.size() > 0) {
       Game game = games.get(0);
       populateGame(game);
@@ -132,7 +140,7 @@ public class GameService {
     for (GamePlayer player : players) {
       if (player.getBuyInCollected() != null && player.getBuyInCollected() > 0) {
         ++numPaidPlayers;
-        if (player.getKnockedOut() == null || player.getKnockedOut() == false) {
+        if (player.getKnockedOut() == null || !player.getKnockedOut()) {
           ++numPaidPlayersRemaining;
         }
       }
@@ -363,7 +371,7 @@ public class GameService {
 
   private void checkFinalized(Game game) {
     if (game.isFinalized()) {
-      throw new FinalizedException("Game is finalized");
+      throw new GameIsFinalizedException("Game is finalized");
     }
   }
 }

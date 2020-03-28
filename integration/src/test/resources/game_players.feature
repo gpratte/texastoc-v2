@@ -62,4 +62,3 @@ Feature: Add players to a game
     And a first time player is added
     And the game is retrieved
     Then the retrieved game has the first time player
-

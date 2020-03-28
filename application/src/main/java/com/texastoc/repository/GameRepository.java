@@ -182,9 +182,11 @@ public class GameRepository {
       .query("select * from game where finalized IS NULL OR finalized = false", new GameMapper());
   }
 
-  public List<Game> getMostRecent() {
+  public List<Game> getMostRecent(int seasonId) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("seasonId", seasonId);
     return jdbcTemplate
-      .query("select * from game order by gameDate limit 1", new GameMapper());
+      .query("select * from game where seasonId = :seasonId order by gameDate desc limit 1", params, new GameMapper());
   }
 
   private static final class GameMapper implements RowMapper<Game> {

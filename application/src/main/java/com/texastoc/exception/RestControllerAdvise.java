@@ -1,6 +1,7 @@
 package com.texastoc.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,11 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
     return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(value = {EmptyResultDataAccessException.class})
+  protected void handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, HttpServletResponse response) throws IOException {
+    response.sendError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+  }
+
   @ExceptionHandler(value = {AccessDeniedException.class})
   protected void handleAccessDenied(IncorrectResultSizeDataAccessException ex, HttpServletResponse response) throws IOException {
     log.info(ex.getMessage(), ex);
@@ -35,7 +41,7 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(value = {IncorrectResultSizeDataAccessException.class})
-  protected void handleConflict(IncorrectResultSizeDataAccessException ex, HttpServletResponse response) throws IOException {
+  protected void handleIncorrectSize(IncorrectResultSizeDataAccessException ex, HttpServletResponse response) throws IOException {
     response.sendError(HttpStatus.NOT_FOUND.value());
   }
 
@@ -44,8 +50,13 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
     response.sendError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
   }
 
-  @ExceptionHandler(value = {FinalizedException.class})
-  protected void handleFinalizedException(FinalizedException ex, HttpServletResponse response) throws IOException {
+  @ExceptionHandler(value = {GameIsFinalizedException.class})
+  protected void handleFinalizedException(GameIsFinalizedException ex, HttpServletResponse response) throws IOException {
+    response.sendError(HttpStatus.CONFLICT.value(), ex.getMessage());
+  }
+
+  @ExceptionHandler(value = {GameInProgressException.class})
+  protected void handleGameInProgressException(GameInProgressException ex, HttpServletResponse response) throws IOException {
     response.sendError(HttpStatus.CONFLICT.value(), ex.getMessage());
   }
 
