@@ -44,6 +44,6 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 50-get-most-recent-game
-Change the behavior of getting the current game from finding open games (unfinalized) to
-getting the most recent game.
+## Current Branch: 51-get-most-recent-game-for-a-season
+Getting the current game for the current season. So if the current season has no games
+then the current game does not exist.
