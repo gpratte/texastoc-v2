@@ -118,7 +118,6 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     UpdateGamePlayerRequest updateGamePlayerRequest = UpdateGamePlayerRequest.builder()
       .gamePlayerId(gamePlayer.getId())
       .gameId(gameId)
-      .place(10)
       .knockedOut(false)
       .roundUpdates(true)
       .buyInCollected(true)
@@ -350,18 +349,22 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
 
     Assert.assertTrue("the game player points should be null or 0", actual.getPoints() == null || actual.getPoints() < 1);
 
-    Assert.assertEquals("the game player finish should be " + expected.getPlace(), (int) expected.getPlace(), (int) actual.getPlace());
+    if (expected.getPlace() != null) {
+      Assert.assertEquals("the game player finish should be " + expected.getPlace(), (int) expected.getPlace(), (int) actual.getPlace());
+    } else {
+      Assert.assertNull("the game player finish should not be set", actual.getPlace());
+    }
 
-    if (expected.isKnockedOut()) {
+    if (expected.isKnockedOut() || (expected.getPlace() != null && expected.getPlace() < 11)) {
       Assert.assertTrue("the game player should be knockedOut", actual.getKnockedOut());
     } else {
-      Assert.assertTrue("the game player should not be knockedOut", actual.getKnockedOut() == null || actual.getKnockedOut() == false);
+      Assert.assertTrue("the game player should not be knockedOut", actual.getKnockedOut() == null || !actual.getKnockedOut());
     }
 
     if (expected.isRoundUpdates()) {
       Assert.assertTrue("the game player should be in for round updates", actual.getRoundUpdates());
     } else {
-      Assert.assertTrue("the game player should not be in for round updates", actual.getRoundUpdates() == null || actual.getRoundUpdates() == false);
+      Assert.assertTrue("the game player should not be in for round updates", actual.getRoundUpdates() == null || !actual.getRoundUpdates());
     }
 
     if (expected.isBuyInCollected()) {

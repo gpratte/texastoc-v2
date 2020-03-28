@@ -3,7 +3,8 @@ package com.texastoc.service;
 import com.texastoc.TestConstants;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
-import com.texastoc.exception.FinalizedException;
+import com.texastoc.exception.GameInProgressException;
+import com.texastoc.exception.GameIsFinalizedException;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
@@ -247,12 +248,17 @@ public class GameServiceTest implements TestConstants {
    */
   @Test
   public void getCurrentGame() {
+    Season season = Season.builder()
+      .id(1)
+      .build();
+    Mockito.when(seasonRepository.getCurrent())
+      .thenReturn(season);
 
     List<Game> games = new LinkedList<>();
     games.add(Game.builder()
       .id(1)
       .build());
-    Mockito.when(gameRepository.getUnfinalized())
+    Mockito.when(gameRepository.getMostRecent(1))
       .thenReturn(games);
 
     Mockito.when(gamePlayerRepository.selectByGameId(1))
@@ -263,8 +269,11 @@ public class GameServiceTest implements TestConstants {
 
     Game game = gameService.getCurrentGame();
 
+    // Season repository called once
+    Mockito.verify(seasonRepository, Mockito.times(1)).getCurrent();
+
     // Game repository called once
-    Mockito.verify(gameRepository, Mockito.times(1)).getUnfinalized();
+    Mockito.verify(gameRepository, Mockito.times(1)).getMostRecent(1);
     assertNotNull("Game returned should not be null", game);
     assertEquals("Game id should be 1", 1, (int) game.getId());
 
@@ -285,7 +294,13 @@ public class GameServiceTest implements TestConstants {
   @Test
   public void noCurrentGame() {
 
-    Mockito.when(gameRepository.getUnfinalized())
+    Season season = Season.builder()
+      .id(1)
+      .build();
+    Mockito.when(seasonRepository.getCurrent())
+      .thenReturn(season);
+
+    Mockito.when(gameRepository.getMostRecent(1))
       .thenReturn(Collections.emptyList());
 
     Game game = gameService.getCurrentGame();
@@ -548,7 +563,7 @@ public class GameServiceTest implements TestConstants {
         .id(1)
         .build());
       Assert.fail("should not be able to update a finalized game");
-    } catch (FinalizedException e) {
+    } catch (GameIsFinalizedException e) {
       // all good
     }
 
@@ -557,14 +572,14 @@ public class GameServiceTest implements TestConstants {
         .gameId(1)
         .build());
       Assert.fail("should not be able to update a finalized game");
-    } catch (FinalizedException e) {
+    } catch (GameIsFinalizedException e) {
       // all good
     }
 
     try {
       gameService.updateGamePlayer(UpdateGamePlayerRequest.builder().gameId(1).build());
       Assert.fail("should not be able to update a finalized game");
-    } catch (FinalizedException e) {
+    } catch (GameIsFinalizedException e) {
       // all good
     }
 
@@ -576,7 +591,7 @@ public class GameServiceTest implements TestConstants {
     try {
       gameService.deleteGamePlayer(1);
       Assert.fail("should not be able to update a finalized game");
-    } catch (FinalizedException e) {
+    } catch (GameIsFinalizedException e) {
       // all good
     }
 
@@ -585,7 +600,42 @@ public class GameServiceTest implements TestConstants {
         .gameId(1)
         .build());
       Assert.fail("should not be able to update a finalized game");
-    } catch (FinalizedException e) {
+    } catch (GameIsFinalizedException e) {
+      // all good
+    }
+  }
+
+  @Test
+  public void testUnFinalizeNoNewGame() {
+
+    // Mocking needed to get current game begin >>>
+    Season season = Season.builder()
+      .id(1)
+      .build();
+    Mockito.when(seasonRepository.getCurrent())
+      .thenReturn(season);
+
+    List<Game> games = new LinkedList<>();
+    games.add(Game.builder()
+      .id(1)
+      .finalized(false)
+      .build());
+    Mockito.when(gameRepository.getMostRecent(1))
+      .thenReturn(games);
+
+    Mockito.when(gamePlayerRepository.selectByGameId(1))
+      .thenReturn(Collections.emptyList());
+
+    Mockito.when(gamePayoutRepository.getByGameId(1))
+      .thenReturn(Collections.emptyList());
+    // <<< Mocking needed to get current game end
+
+    try {
+      gameService.createGame(Game.builder()
+        .id(1)
+        .build());
+      Assert.fail("should not be able to update a finalized game");
+    } catch (GameInProgressException e) {
       // all good
     }
 
