@@ -18,7 +18,6 @@ import com.texastoc.service.calculator.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -149,11 +148,14 @@ public class GameService {
     game.setNumPaidPlayersRemaining(numPaidPlayersRemaining);
 
     game.setPayouts(gamePayoutRepository.getByGameId(game.getId()));
+
+
     Seating seating = new Seating();
-    seating.setGameId(game.getId());
-    // TODO
-    seating.setNumSeatPerTable(Collections.singletonList(0));
-    seating.setTables(seatingRepository.getTables(game.getId()));
+    try {
+      seating = seatingRepository.get(game.getId());
+    } catch (Exception e) {
+      // do nothing
+    }
     game.setSeating(seating);
     return game;
   }

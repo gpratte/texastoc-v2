@@ -10,33 +10,30 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.junit.Assert;
 import org.junit.Ignore;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 // Tests are run from SpringBootBaseIntegrationTest so must Ignore here
 @Ignore
 public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
   Integer gameId;
-  List<Table> tables;
-  Integer numPlayers;
-  Integer numDeadStacks;
   Game game;
 
   @Before
   public void before() {
     gameId = null;
-    tables = null;
-    numPlayers = null;
-    numDeadStacks = null;
     game = null;
   }
 
-  @Given("^a game has 9 players$")
-  public void a_game_has_9_players() throws Exception {
+  @Given("^a game has (\\d+) players$")
+  public void aGameHasPlayers(int numPlayers) throws Exception {
     String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
     createSeason(getSeasonStart(), token);
 
@@ -51,7 +48,6 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
     token = login(USER_EMAIL, USER_PASSWORD);
 
-    numPlayers = 9;
     for (int i = 0; i < numPlayers; i++) {
       FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
         .firstName("Joe" + i)
@@ -64,89 +60,50 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     }
   }
 
-  @Given("^a game has 11 players$")
-  public void a_game_has_11_players() throws Exception {
-    String token = login(ADMIN_EMAIL, ADMIN_PASSWORD);
-    createSeason(getSeasonStart(), token);
-    Game game = createGame(CreateGameRequest.builder()
-      .date(LocalDate.now())
-      .hostId(1)
-      .doubleBuyIn(false)
-      .transportRequired(false)
-      .build(), token);
-
-    gameId = game.getId();
-
-    token = login(USER_EMAIL, USER_PASSWORD);
-
-    numPlayers = 11;
-    for (int i = 0; i < numPlayers; i++) {
-      FirstTimeGamePlayer firstTimeGamePlayer = FirstTimeGamePlayer.builder()
-        .firstName("Joe" + i)
-        .lastName("Schmoe")
-        .email("joe" + i + ".schmoe@texastoc.com")
-        .gameId(gameId)
-        .buyInCollected(true)
-        .build();
-      addFirstTimePlayerToGame(firstTimeGamePlayer, token);
+  @When("^seating is done with (\\d+) and (\\d+) seats$")
+  public void seatingIsDonwWithAndSeats(int seatsAtTable1, int seatsAtTable2) throws Exception {
+    String token = login(USER_EMAIL, USER_PASSWORD);
+    List<Integer> numSeatsPerTable = new LinkedList<>();
+    if (seatsAtTable1 > 0) {
+      numSeatsPerTable.add(seatsAtTable1);
     }
-  }
-
-  @When("^seating is done with 0 dead stacks$")
-  public void seating_is_done_with_0_dead_stacks() throws Exception {
-    String token = login(USER_EMAIL, USER_PASSWORD);
-    tables = seatPlayers(gameId, null, null, token);
-  }
-
-  @When("^seating is done with 2 dead stacks$")
-  public void seating_is_done_with_2_dead_stacks() throws Exception {
-    String token = login(USER_EMAIL, USER_PASSWORD);
-    numDeadStacks = 2;
-    tables = seatPlayers(gameId, numDeadStacks, null, token);
-  }
-
-  @Then("^9 seats have been assigned$")
-  public void nine_seats_have_been_assigned() throws Exception {
-    Assert.assertNotNull("tables should not be null", tables);
-    Assert.assertEquals("1 table", 1, tables.size());
-
-    Table table = tables.get(0);
-    Assert.assertEquals("table number should be 1", 1, table.getNumber());
-
-    Assert.assertNotNull("seats should not be null", table.getSeats());
-
-    List<Seat> seats = table.getSeats();
-    Assert.assertEquals("9 seats", 9, seats.size());
+    if (seatsAtTable2 > 0) {
+      numSeatsPerTable.add(seatsAtTable2);
+    }
+    seatPlayers(gameId, numSeatsPerTable, null, token);
   }
 
   @And("^the seated game is retrieved$")
-  public void the_seated_game_is_retrieved() throws Exception {
+  public void theSeatedGameIsRetrieved() throws Exception {
     String token = login(USER_EMAIL, USER_PASSWORD);
     game = getGame(gameId, token);
   }
 
-  @Then("^13 seats have been assigned$")
-  public void thirteen_seats_have_been_assigned() throws Exception {
-    Assert.assertNotNull("game should not be null", game);
 
-    tables = game.getSeating().getTables();
-    Assert.assertNotNull("tables should not be null", tables);
-    Assert.assertEquals("2 tables", 2, tables.size());
+  @Then("^(\\d+) players are seated at table (\\d+)$")
+  public void playersAreSeatedAtTable(int numPlayers, int tableNum) throws Exception {
+    List<Table> tables = game.getSeating().getTables();
+    assertNotNull("tables should not be null", tables);
 
-    Table table = tables.get(0);
-    Assert.assertEquals("table number should be 1", 1, table.getNumber());
-    Assert.assertNotNull("table 1 seats should not be null", table.getSeats());
+    Table table = tables.get(tableNum - 1);
+    assertNotNull("seats should not be null", table.getSeats());
 
     List<Seat> seats = table.getSeats();
-    Assert.assertEquals("table 1 has 7 seats", 7, seats.size());
-
-    table = tables.get(1);
-    Assert.assertEquals("table number should be 2", 2, table.getNumber());
-    Assert.assertNotNull("table 2 seats should not be null", table.getSeats());
-
-    seats = table.getSeats();
-    Assert.assertEquals("table 2 has 6 seats", 6, seats.size());
-
+    int numPlayersSeated = (int) seats.stream()
+      .filter((seat) -> seat != null)
+      .count();
+    assertEquals(numPlayers + " are seated", numPlayers, numPlayersSeated);
   }
 
+  @And("^table (\\d+) has (\\d+) dead stacks$")
+  public void tableHasDeadStacks(int tableNum, int numDeadStacks) throws Exception {
+    assertNotNull("game should not be null", game);
+    tables = game.getSeating().getTables();
+    Table table = tables.get(0);
+    List<Seat> seats = table.getSeats();
+    int numSeatsNoPlayer = (int) seats.stream()
+      .filter((seat) -> seat == null)
+      .count();
+    assertEquals("should have " + numDeadStacks + " dead stacks", numDeadStacks, numSeatsNoPlayer);
+  }
 }

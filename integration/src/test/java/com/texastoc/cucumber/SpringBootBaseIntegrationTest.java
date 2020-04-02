@@ -203,7 +203,7 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
 
   }
 
-  protected List<Table> seatPlayers(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests, String token) throws Exception {
+  protected void seatPlayers(int gameId, List<Integer> numSeatsPerTable, List<TableRequest> tableRequests, String token) throws Exception {
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -214,7 +214,7 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
 
     SeatingRequest seatingRequest = SeatingRequest.builder()
       .gameId(gameId)
-      .numDeadStacks(numDeadStacks)
+      .numSeatsPerTable(numSeatsPerTable)
       .tableRequests(tableRequests)
       .build();
     String seatingRequestAsJson = mapper.writeValueAsString(seatingRequest);

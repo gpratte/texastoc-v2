@@ -44,7 +44,7 @@ create table if not exists quarterlyseasonpayout (id INT auto_increment, seasonI
 
 ALTER TABLE quarterlyseasonpayout ADD CONSTRAINT QSPayout_Unique UNIQUE (seasonId, qSeasonId, place)
 
-create table if not exists gameseat (gameId INT NOT NULL, seatNumber INT NOT NULL, tableNumber INT NOT NULL, gamePlayerId INT, gamePlayerName varchar(64), PRIMARY KEY (gameId, seatNumber, tableNumber))
+create table if not exists seating (gameId INT NOT NULL, settings JSON NOT NULL, PRIMARY KEY (gameId));
 
 create table if not exists role (id int auto_increment, description varchar(255), name varchar(255), primary key (id));
 
