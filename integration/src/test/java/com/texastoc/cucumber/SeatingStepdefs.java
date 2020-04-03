@@ -1,10 +1,7 @@
 package com.texastoc.cucumber;
 
 import com.texastoc.controller.request.CreateGameRequest;
-import com.texastoc.model.game.FirstTimeGamePlayer;
-import com.texastoc.model.game.Game;
-import com.texastoc.model.game.Seat;
-import com.texastoc.model.game.Table;
+import com.texastoc.model.game.*;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -24,12 +21,12 @@ import static org.junit.Assert.assertNotNull;
 public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
   Integer gameId;
-  Game game;
+  Seating seating;
 
   @Before
   public void before() {
     gameId = null;
-    game = null;
+    seating = null;
   }
 
   @Given("^a game has (\\d+) players$")
@@ -70,19 +67,12 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     if (seatsAtTable2 > 0) {
       numSeatsPerTable.add(seatsAtTable2);
     }
-    seatPlayers(gameId, numSeatsPerTable, null, token);
+    seating = seatPlayers(gameId, numSeatsPerTable, null, token);
   }
-
-  @And("^the seated game is retrieved$")
-  public void theSeatedGameIsRetrieved() throws Exception {
-    String token = login(USER_EMAIL, USER_PASSWORD);
-    game = getGame(gameId, token);
-  }
-
 
   @Then("^(\\d+) players are seated at table (\\d+)$")
   public void playersAreSeatedAtTable(int numPlayers, int tableNum) throws Exception {
-    List<Table> tables = game.getSeating().getTables();
+    List<Table> tables = seating.getTables();
     assertNotNull("tables should not be null", tables);
 
     Table table = tables.get(tableNum - 1);
@@ -97,13 +87,12 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
 
   @And("^table (\\d+) has (\\d+) dead stacks$")
   public void tableHasDeadStacks(int tableNum, int numDeadStacks) throws Exception {
-    assertNotNull("game should not be null", game);
-    tables = game.getSeating().getTables();
-    Table table = tables.get(0);
+    List<Table> tables = seating.getTables();
+    Table table = tables.get(tableNum - 1);
     List<Seat> seats = table.getSeats();
-    int numSeatsNoPlayer = (int) seats.stream()
+    int numEmptySeats = (int) seats.stream()
       .filter((seat) -> seat == null)
       .count();
-    assertEquals("should have " + numDeadStacks + " dead stacks", numDeadStacks, numSeatsNoPlayer);
+    assertEquals("should have " + numDeadStacks + " dead stacks", numDeadStacks, numEmptySeats);
   }
 }
