@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -26,10 +27,14 @@ public class SeatingRepository {
   public Seating get(int gameId) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("gameId", gameId);
-    return (Seating) jdbcTemplate
+    List<Seating> seatings = jdbcTemplate
       .query("select * from seating where gameId = :gameId",
         params,
         new SeatingMapper());
+    if (seatings.size() == 1) {
+      return seatings.get(0);
+    }
+    return new Seating();
   }
 
   public void deleteByGameId(int gameId) {
@@ -47,6 +52,7 @@ public class SeatingRepository {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("gameId", seating.getGameId());
     try {
+      String seatingAsJson = OBJECT_MAPPER.writeValueAsString(seating);
       params.addValue("settings", OBJECT_MAPPER.writeValueAsString(seating));
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
@@ -72,8 +78,7 @@ public class SeatingRepository {
     public Seating mapRow(ResultSet rs, int rowNum) throws SQLException {
       String settings = rs.getString("settings");
       try {
-        Seating seating = OBJECT_MAPPER.readValue(settings, Seating.class);
-        return seating;
+        return OBJECT_MAPPER.readValue(settings, Seating.class);
       } catch (JsonProcessingException e) {
         throw new SQLException("Could not serialize the seating json", e);
       }

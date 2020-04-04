@@ -149,7 +149,6 @@ public class GameService {
 
     game.setPayouts(gamePayoutRepository.getByGameId(game.getId()));
 
-
     Seating seating = new Seating();
     try {
       seating = seatingRepository.get(game.getId());

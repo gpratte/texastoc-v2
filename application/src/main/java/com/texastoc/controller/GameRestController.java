@@ -99,7 +99,7 @@ public class GameRestController {
   }
 
   @PostMapping("/api/v2/games/seats")
-  public Seating seat(@RequestBody SeatingRequest seatingRequest) throws JsonProcessingException {
+  public Seating seats(@RequestBody SeatingRequest seatingRequest) throws JsonProcessingException {
     return seatingService.seat(seatingRequest.getGameId(), seatingRequest.getNumSeatsPerTable(), seatingRequest.getTableRequests());
   }
 
