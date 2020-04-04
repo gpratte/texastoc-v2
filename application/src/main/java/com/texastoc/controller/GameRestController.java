@@ -1,18 +1,18 @@
 package com.texastoc.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.texastoc.controller.request.*;
 import com.texastoc.exception.NotFoundException;
 import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
-import com.texastoc.model.game.Table;
+import com.texastoc.model.game.Seating;
 import com.texastoc.service.GameService;
 import com.texastoc.service.SeatingService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @SuppressWarnings("unused")
 @RestController
@@ -99,9 +99,8 @@ public class GameRestController {
   }
 
   @PostMapping("/api/v2/games/seats")
-  public List<Table> seat(@RequestBody @Valid SeatingRequest seatingRequest) {
-    int gameId = seatingRequest.getGameId();
-    return seatingService.seat(seatingRequest.getGameId(), seatingRequest.getNumDeadStacks(), seatingRequest.getTableRequests());
+  public Seating seats(@RequestBody SeatingRequest seatingRequest) throws JsonProcessingException {
+    return seatingService.seat(seatingRequest.getGameId(), seatingRequest.getNumSeatsPerTable(), seatingRequest.getTableRequests());
   }
 
 }

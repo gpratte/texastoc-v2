@@ -203,30 +203,24 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
 
   }
 
-  protected List<Table> seatPlayers(int gameId, Integer numDeadStacks, List<TableRequest> tableRequests, String token) throws Exception {
+  protected Seating seatPlayers(int gameId, List<Integer> numSeatsPerTable, List<TableRequest> tableRequests, String token) throws Exception {
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.set("Authorization", "Bearer " + token);
 
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.registerModule(new JavaTimeModule());
-
     SeatingRequest seatingRequest = SeatingRequest.builder()
       .gameId(gameId)
-      .numDeadStacks(numDeadStacks)
+      .numSeatsPerTable(numSeatsPerTable)
       .tableRequests(tableRequests)
       .build();
+
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
     String seatingRequestAsJson = mapper.writeValueAsString(seatingRequest);
     HttpEntity<String> entity = new HttpEntity<>(seatingRequestAsJson, headers);
 
-    ResponseEntity<List<Table>> response = restTemplate.exchange(
-      endpoint() + "/games/seats",
-      HttpMethod.POST,
-      entity,
-      new ParameterizedTypeReference<List<Table>>() {
-      });
-    return response.getBody();
+    return restTemplate.postForObject(endpoint() + "/games/seats", entity, Seating.class);
   }
 
   protected Player createPlayer(Player player) throws JsonProcessingException {

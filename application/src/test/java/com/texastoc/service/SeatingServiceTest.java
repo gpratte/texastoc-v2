@@ -1,10 +1,7 @@
 package com.texastoc.service;
 
 import com.texastoc.TestConstants;
-import com.texastoc.model.game.GamePlayer;
-import com.texastoc.model.game.Seat;
-import com.texastoc.model.game.Table;
-import com.texastoc.model.game.TableRequest;
+import com.texastoc.model.game.*;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.SeatingRepository;
 import org.junit.Assert;
@@ -15,9 +12,9 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
 public class SeatingServiceTest implements TestConstants {
@@ -37,122 +34,37 @@ public class SeatingServiceTest implements TestConstants {
   @Test
   public void testNotSeated() {
 
-    Mockito.when(seatingRepository.get(1)).thenReturn(Collections.emptyList());
-
-    List<Table> tables = seatingService.get(1);
-
-    Mockito.verify(seatingRepository, Mockito.times(1)).getTables(1);
-
-    Assert.assertNotNull("tables should not be null", tables);
-    Assert.assertEquals("number of tables 0", 0, tables.size());
-  }
-
-  @Test
-  public void test2TableSeated() {
-
-    List<Table> currentTables = new ArrayList<>(2);
-    List<Seat> currentSeats = new ArrayList<>(4);
-    currentSeats.add(Seat.builder()
+    Mockito.when(seatingRepository.get(1)).thenReturn(Seating.builder()
       .gameId(1)
-      .gamePlayerId(1)
-      .gamePlayerName("One")
-      .seatNumber(1)
-      .tableNumber(1)
-      .build());
-    currentSeats.add(Seat.builder()
-      .gameId(1)
-      .gamePlayerId(2)
-      .gamePlayerName("Two")
-      .seatNumber(2)
-      .tableNumber(1)
-      .build());
-    currentSeats.add(Seat.builder()
-      .gameId(1)
-      .gamePlayerId(3)
-      .gamePlayerName("Three")
-      .seatNumber(3)
-      .tableNumber(1)
-      .build());
-    currentSeats.add(Seat.builder()
-      .gameId(1)
-      .gamePlayerId(4)
-      .gamePlayerName("Four")
-      .seatNumber(4)
-      .tableNumber(1)
+      .numSeatsPerTable(Collections.emptyList())
+      .tableRequests(Collections.emptyList())
+      .tables(Collections.emptyList())
       .build());
 
-    Table table = Table.builder()
-      .gameId(1)
-      .number(1)
-      .seats(currentSeats)
-      .build();
-    currentTables.add(table);
+    Seating seating = seatingService.get(1);
 
-    currentSeats = new ArrayList<>(4);
-    currentSeats.add(Seat.builder()
-      .gameId(1)
-      .gamePlayerId(5)
-      .gamePlayerName("Five")
-      .seatNumber(1)
-      .tableNumber(2)
-      .build());
-    currentSeats.add(Seat.builder()
-      .gameId(1)
-      .gamePlayerId(6)
-      .gamePlayerName("Six")
-      .seatNumber(2)
-      .tableNumber(2)
-      .build());
-    currentSeats.add(Seat.builder()
-      .gameId(1)
-      .gamePlayerId(7)
-      .gamePlayerName("Seven")
-      .seatNumber(3)
-      .tableNumber(2)
-      .build());
-
-    table = Table.builder()
-      .gameId(1)
-      .number(2)
-      .seats(currentSeats)
-      .build();
-    currentTables.add(table);
-
-    Mockito.when(seatingRepository.getTables(1)).thenReturn(currentTables);
-
-    List<Table> tables = seatingService.get(1);
-
-    Mockito.verify(seatingRepository, Mockito.times(1)).getTables(1);
-
-    Assert.assertNotNull("tables should not be null", tables);
-    Assert.assertEquals("number of tables 2", 2, tables.size());
-
-    Table firstTable = tables.get(0);
-    Assert.assertNotNull("seats for table 1 should not be null", firstTable.getSeats());
-    Assert.assertNotNull("seats for table 1 should be 4", firstTable.getSeats().size());
-
-    Table secondTable = tables.get(1);
-    Assert.assertNotNull("seats for table 2 should not be null", secondTable.getSeats());
-    Assert.assertNotNull("seats for table 2 should be 3", secondTable.getSeats().size());
-
+    Mockito.verify(seatingRepository, Mockito.times(1)).get(1);
+    Assert.assertNotNull("seating should not be null", seating);
+    Assert.assertNotNull("tables should not be null", seating.getTables());
+    Assert.assertEquals("number of tables 0", 0, seating.getTables().size());
   }
 
   @Test
   public void testSeatNoPlayers() {
-
     Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(Collections.emptyList());
 
-    List<Table> tables = seatingService.seat(1, 0, null);
+    Seating seating = seatingService.seat(1, null, null);
 
-    Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
-
-    Assert.assertNotNull("tables should not be null", tables);
-    Assert.assertEquals("number of tables 0", 0, tables.size());
+    Mockito.verify(gamePlayerRepository, Mockito.times(0)).selectByGameId(1);
+    Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
+    Mockito.verify(seatingRepository, Mockito.times(1)).save(any(Seating.class));
+    Assert.assertNotNull("seating should not be null", seating);
+    Assert.assertNotNull("tables should not be null", seating.getTables());
+    Assert.assertEquals("number of tables 0", 0, seating.getTables().size());
   }
 
   @Test
   public void testSeat2PlayersNoDeadStacks() {
-
     List<GamePlayer> gamePlayers = new ArrayList<>(2);
     gamePlayers.add(GamePlayer.builder()
       .id(1)
@@ -164,29 +76,28 @@ public class SeatingServiceTest implements TestConstants {
       .name("two")
       .buyInCollected(10)
       .build());
-
     Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayers);
 
-    List<Table> tables = seatingService.seat(1, 0, null);
+    List<Integer> numSeatsPerTable = Arrays.asList(2);
+
+    Seating seating = seatingService.seat(1, numSeatsPerTable, null);
 
     Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
-
     Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
-    Mockito.verify(seatingRepository, Mockito.times(1)).saveTable(Mockito.any(Table.class));
+    Mockito.verify(seatingRepository, Mockito.times(1)).save(any(Seating.class));
 
-    Assert.assertNotNull("tables should not be null", tables);
-    Assert.assertEquals("number of tables 1", 1, tables.size());
+    Assert.assertNotNull("seating should not be null", seating);
+    Assert.assertNotNull("tables should not be null", seating.getTables());
+    Assert.assertEquals("number of tables 1", 1, seating.getTables().size());
 
-    Table firstTable = tables.get(0);
+    Table firstTable = seating.getTables().get(0);
     Assert.assertNotNull("seats for table 1 should not be null", firstTable.getSeats());
-    Assert.assertNotNull("seats for table 1 should be 2", firstTable.getSeats().size());
-
+    Assert.assertEquals("seats for table 1 should be 2", 2, firstTable.getSeats().size());
   }
 
   @Test
   public void testSeat9Players3DeadStacks() {
-
-    List<GamePlayer> gamePlayers = new ArrayList<>(2);
+    List<GamePlayer> gamePlayers = new LinkedList<>();
     for (int i = 0; i < 9; i++) {
       gamePlayers.add(GamePlayer.builder()
         .id(i)
@@ -197,40 +108,40 @@ public class SeatingServiceTest implements TestConstants {
 
     Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayers);
 
-    List<Table> tables = seatingService.seat(1, 3, null);
+    List<Integer> numSeatsPerTable = Arrays.asList(6, 6);
+    Seating seating = seatingService.seat(1, numSeatsPerTable, null);
 
     Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
 
     Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
-    Mockito.verify(seatingRepository, Mockito.times(2)).saveTable(Mockito.any(Table.class));
+    Mockito.verify(seatingRepository, Mockito.times(1)).save(any(Seating.class));
 
-    Assert.assertNotNull("tables should not be null", tables);
-    Assert.assertEquals("number of tables 2", 2, tables.size());
+    Assert.assertNotNull("tables should not be null", seating.getTables());
+    Assert.assertEquals("number of tables 2", 2, seating.getTables().size());
 
-    Table firstTable = tables.get(0);
+    Table firstTable = seating.getTables().get(0);
     Assert.assertNotNull("seats for table 1 should not be null", firstTable.getSeats());
-    Assert.assertNotNull("seats for table 1 should be 6", firstTable.getSeats().size());
+    Assert.assertEquals("seats for table 1 should be 6", 6, firstTable.getSeats().size());
 
     int countDeads = 0;
     for (Seat seat : firstTable.getSeats()) {
-      if ("Dead Stack".equals(seat.getGamePlayerName())) {
+      if (seat == null) {
         ++countDeads;
       }
     }
     Assert.assertEquals("table 1 should have 1 dead stack", 1, countDeads);
 
-    Table secondTable = tables.get(1);
+    Table secondTable = seating.getTables().get(1);
     Assert.assertNotNull("seats for table 2 should not be null", secondTable.getSeats());
-    Assert.assertNotNull("seats for table 2 should be 6", secondTable.getSeats().size());
+    Assert.assertEquals("seats for table 2 should be 6", 6, secondTable.getSeats().size());
 
     countDeads = 0;
     for (Seat seat : secondTable.getSeats()) {
-      if ("Dead Stack".equals(seat.getGamePlayerName())) {
+      if (seat == null) {
         ++countDeads;
       }
     }
-    Assert.assertEquals("table 2 should have 2 dead stack", 2, countDeads);
-
+    Assert.assertEquals("table 2 should have 2 dead stacks", 2, countDeads);
   }
 
   @Test
@@ -255,28 +166,92 @@ public class SeatingServiceTest implements TestConstants {
         .build());
     }
 
-    List<Table> tables = seatingService.seat(1, 0, tableRequests);
+    List<Integer> numSeatsPerTable = Arrays.asList(7, 7);
+    Seating seating = seatingService.seat(1, numSeatsPerTable, tableRequests);
 
     Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
 
     Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
-    Mockito.verify(seatingRepository, Mockito.times(2)).saveTable(Mockito.any(Table.class));
+    Mockito.verify(seatingRepository, Mockito.times(1)).save(Mockito.any(Seating.class));
 
-    Assert.assertNotNull("tables should not be null", tables);
-    Assert.assertEquals("number of tables 2", 2, tables.size());
+    Assert.assertNotNull("tables should not be null", seating.getTables());
+    Assert.assertEquals("number of tables 2", 2, seating.getTables().size());
 
-    Table firstTable = tables.get(0);
+    Table firstTable = seating.getTables().get(0);
     Assert.assertNotNull("seats for table 1 should not be null", firstTable.getSeats());
-    Assert.assertNotNull("seats for table 1 should be 6", firstTable.getSeats().size());
+    Assert.assertEquals("seats for table 1 should be 7", 7, firstTable.getSeats().size());
 
     for (int i = 0; i < 6; i++) {
       boolean found = false;
       for (Seat seat : firstTable.getSeats()) {
         if (seat.getGamePlayerId() == i) {
           found = true;
+          break;
         }
       }
       Assert.assertTrue("should have found game player " + i + " at table 1", found);
     }
+  }
+
+  @Test
+  public void testSeat17Players2DeadStacks() {
+    List<GamePlayer> gamePlayers = new LinkedList<>();
+    for (int i = 0; i < 17; i++) {
+      gamePlayers.add(GamePlayer.builder()
+        .id(i)
+        .name("name" + i)
+        .buyInCollected(10)
+        .build());
+    }
+
+    Mockito.when(gamePlayerRepository.selectByGameId(1)).thenReturn(gamePlayers);
+
+    List<Integer> numSeatsPerTable = Arrays.asList(7, 6, 6);
+    Seating seating = seatingService.seat(1, numSeatsPerTable, Collections.emptyList());
+
+    Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectByGameId(1);
+
+    Mockito.verify(seatingRepository, Mockito.times(1)).deleteByGameId(1);
+    Mockito.verify(seatingRepository, Mockito.times(1)).save(any(Seating.class));
+
+    Assert.assertNotNull("tables should not be null", seating.getTables());
+    Assert.assertEquals("number of tables 3", 3, seating.getTables().size());
+
+    Table firstTable = seating.getTables().get(0);
+    Assert.assertNotNull("seats for table 1 should not be null", firstTable.getSeats());
+    Assert.assertEquals("seats for table 1 should be 7", 7, firstTable.getSeats().size());
+
+    int countDeads = 0;
+    for (Seat seat : firstTable.getSeats()) {
+      if (seat == null) {
+        ++countDeads;
+      }
+    }
+    Assert.assertEquals("table 1 should have 1 dead stack", 1, countDeads);
+
+    Table secondTable = seating.getTables().get(1);
+    Assert.assertNotNull("seats for table 2 should not be null", secondTable.getSeats());
+    Assert.assertEquals("seats for table 2 should be 6", 6, secondTable.getSeats().size());
+
+    countDeads = 0;
+    for (Seat seat : secondTable.getSeats()) {
+      if (seat == null) {
+        ++countDeads;
+      }
+    }
+    Assert.assertEquals("table 2 should have 0 dead stacks", 0, countDeads);
+
+    Table thirdTable = seating.getTables().get(2);
+    Assert.assertNotNull("seats for table 3 should not be null", thirdTable.getSeats());
+    Assert.assertEquals("seats for table 3 should be 6", 6, thirdTable.getSeats().size());
+
+    countDeads = 0;
+    for (Seat seat : thirdTable.getSeats()) {
+      if (seat == null) {
+        ++countDeads;
+      }
+    }
+    Assert.assertEquals("table 3 should have 1 dead stack", 1, countDeads);
+
   }
 }

@@ -1,5 +1,6 @@
 package com.texastoc.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -58,6 +59,11 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = {GameInProgressException.class})
   protected void handleGameInProgressException(GameInProgressException ex, HttpServletResponse response) throws IOException {
     response.sendError(HttpStatus.CONFLICT.value(), ex.getMessage());
+  }
+
+  @ExceptionHandler(value = {JsonProcessingException.class})
+  protected void handleJsonProcessingException(JsonProcessingException ex, HttpServletResponse response) throws IOException {
+    response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
   }
 
   @ExceptionHandler(value = {RuntimeException.class})

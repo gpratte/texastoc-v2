@@ -14,10 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Seating {
-  private int id;
   private int gameId;
-  private int numTables;
-  private List<Integer> numSeatPerTable;
+  private List<Integer> numSeatsPerTable;
   private List<TableRequest> tableRequests;
   private List<Table> tables;
 }
