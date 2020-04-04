@@ -2,6 +2,7 @@ package com.texastoc.controller;
 
 import com.texastoc.model.user.Player;
 import com.texastoc.service.PlayerService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,8 @@ public class PlayerRestController {
     return playerService.create(player);
   }
 
+  // TODO 1. need to allow a user to change himself. 2. Changing email is rejected by AuthN
+  @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/api/v2/players/{id}")
   public void updatePlayer(@PathVariable("id") int id, @RequestBody @Valid Player player) {
     player.setId(id);

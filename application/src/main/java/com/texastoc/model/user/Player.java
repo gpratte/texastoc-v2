@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
 
@@ -57,13 +58,13 @@ public class Player implements Comparable<Player> {
   private String makeFullName(Player player) {
     // Combine the first and last into a full name
     StringBuffer fullName = new StringBuffer();
-    if (player.firstName != null) {
+    if (!StringUtils.isBlank(player.firstName)) {
       fullName.append(player.firstName);
     }
-    if (player.firstName != null && player.lastName != null) {
+    if (!StringUtils.isBlank(player.firstName) && !StringUtils.isBlank(player.lastName)) {
       fullName.append(" ");
     }
-    if (player.lastName != null) {
+    if (!StringUtils.isBlank(player.lastName)) {
       fullName.append(player.lastName);
     }
     return fullName.toString();
