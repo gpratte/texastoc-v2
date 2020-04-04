@@ -9,6 +9,7 @@ import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.game.Seating;
 import com.texastoc.service.GameService;
 import com.texastoc.service.SeatingService;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class GameRestController {
     this.seatingService = seatingService;
   }
 
-  @PostMapping("/api/v2/games")
+  @PostMapping(value = "/api/v2/games", consumes = MediaType.APPLICATION_JSON_VALUE)
   public Game createGame(@RequestBody @Valid CreateGameRequest createGameRequest) {
     return gameService.createGame(Game.builder()
       .hostId(createGameRequest.getHostId())
@@ -36,7 +37,7 @@ public class GameRestController {
       .build());
   }
 
-  @PutMapping("/api/v2/games/{id}")
+  @PutMapping(value = "/api/v2/games/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
   public void updateGame(@PathVariable("id") int id, @RequestBody @Valid UpdateGameRequest updateGameRequest) {
     Game game = gameService.getGame(id);
     game.setHostId(updateGameRequest.getHostId());
@@ -75,32 +76,43 @@ public class GameRestController {
 
 
   // TODO api/v1/games/{id}/players
-  @PostMapping("/api/v2/games/players")
-  public GamePlayer createGamePlayer(@RequestBody @Valid CreateGamePlayerRequest cgpr) {
+  @PostMapping(value = "/api/v2/games/{id}/players", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public GamePlayer createGamePlayer(@PathVariable("id") int id, @RequestBody @Valid CreateGamePlayerRequest cgpr) {
+    cgpr.setGameId(id);
     return gameService.createGamePlayer(cgpr);
   }
 
   // TODO api/v1/games/{id}/players/first
-  @PostMapping("/api/v2/games/players/first")
-  public GamePlayer createGamePlayer(@RequestBody @Valid FirstTimeGamePlayer firstTimeGamePlayer) {
+  @PostMapping(value = "/api/v2/games/{id}/players/first", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public GamePlayer createGamePlayer(@PathVariable("id") int id, @RequestBody @Valid FirstTimeGamePlayer firstTimeGamePlayer) {
+    firstTimeGamePlayer.setGameId(id);
     return gameService.createFirstTimeGamePlayer(firstTimeGamePlayer);
   }
 
   // TODO api/v1/games/{id}/players/{pid}
-  @PutMapping("/api/v2/games/players/{id}")
-  public GamePlayer updateGamePlayer(@PathVariable("id") int id, @RequestBody @Valid UpdateGamePlayerRequest ugpr) {
+  @PutMapping(value = "/api/v2/games/{id}/players/{playerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public GamePlayer updateGamePlayer(@PathVariable("id") int id, @PathVariable("playerId") int playerId, @RequestBody @Valid UpdateGamePlayerRequest ugpr) {
+    ugpr.setGameId(id);
+    ugpr.setGamePlayerId(playerId);
     return gameService.updateGamePlayer(ugpr);
   }
 
   // TODO api/v1/games/{id}/players/{pid}
-  @DeleteMapping("/api/v2/games/players/{id}")
-  public void deleteGamePlayer(@PathVariable("id") int id) {
-    gameService.deleteGamePlayer(id);
+  @DeleteMapping("/api/v2/games/{id}/players/{playerId}")
+  public void deleteGamePlayer(@PathVariable("id") int id, @PathVariable("playerId") int playerId) {
+    // TODO use the game id when deleting
+    gameService.deleteGamePlayer(playerId);
   }
 
-  @PostMapping("/api/v2/games/seats")
-  public Seating seats(@RequestBody SeatingRequest seatingRequest) throws JsonProcessingException {
+  @PostMapping(value = "/api/v2/games/{id}", consumes = "application/seating+json")
+  public Seating seats(@PathVariable("id") int id, @RequestBody SeatingRequest seatingRequest) throws JsonProcessingException {
+    seatingRequest.setGameId(id);
     return seatingService.seat(seatingRequest.getGameId(), seatingRequest.getNumSeatsPerTable(), seatingRequest.getTableRequests());
+  }
+
+  @PostMapping("/api/v2/games/{id}/seats/notify")
+  public void notifySeating(@PathVariable("id") int id) throws JsonProcessingException {
+    // TODO
   }
 
 }
