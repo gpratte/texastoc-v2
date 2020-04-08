@@ -1,15 +1,13 @@
 package com.texastoc.service;
 
+import com.texastoc.connector.SMSConnector;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.exception.DoubleBuyInChangeDisallowedException;
 import com.texastoc.exception.GameInProgressException;
 import com.texastoc.exception.GameIsFinalizedException;
 import com.texastoc.model.config.TocConfig;
-import com.texastoc.model.game.FirstTimeGamePlayer;
-import com.texastoc.model.game.Game;
-import com.texastoc.model.game.GamePlayer;
-import com.texastoc.model.game.Seating;
+import com.texastoc.model.game.*;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.model.user.Player;
@@ -40,9 +38,11 @@ public class GameService {
   private final SeasonCalculator seasonCalculator;
   private final QuarterlySeasonCalculator qSeasonCalculator;
 
+  private final SMSConnector smsConnector;
+
   private TocConfig tocConfig;
 
-  public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository, RoleRepository roleRepository) {
+  public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository, RoleRepository roleRepository, SMSConnector smsConnector) {
     this.gameRepository = gameRepository;
     this.playerRepository = playerRepository;
     this.gamePlayerRepository = gamePlayerRepository;
@@ -57,6 +57,7 @@ public class GameService {
     this.qSeasonCalculator = qSeasonCalculator;
     this.seatingRepository = seatingRepository;
     this.roleRepository = roleRepository;
+    this.smsConnector = smsConnector;
   }
 
   @Transactional
@@ -129,6 +130,29 @@ public class GameService {
     }
 
     return null;
+  }
+
+  public void notifySeating(int gameId) {
+    Seating seating = seatingRepository.get(gameId);
+    if (seating == null || seating.getTables() == null || seating.getTables().size() == 0) {
+      return;
+    }
+    for (Table table : seating.getTables()) {
+      if (table.getSeats() == null || table.getSeats().size() == 0) {
+        continue;
+      }
+      for (Seat seat : table.getSeats()) {
+        if (seat == null) {
+          continue;
+        }
+        GamePlayer gamePlayer = gamePlayerRepository.selectById(seat.getGamePlayerId());
+        Player player = playerRepository.get(gamePlayer.getPlayerId());
+        if (player.getPhone() != null) {
+          smsConnector.text(player.getPhone(), player.getName() + " table " +
+            table.getNumber() + " seat " + seat.getSeatNumber());
+        }
+      }
+    }
   }
 
   private Game populateGame(Game game) {

@@ -201,7 +201,7 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
   protected Seating seatPlayers(int gameId, List<Integer> numSeatsPerTable, List<TableRequest> tableRequests, String token) throws Exception {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Authorization", "Bearer " + token);
+    headers.set("Content-Type", "application/vnd.texastoc.assign-seats+json");
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     SeatingRequest seatingRequest = SeatingRequest.builder()
