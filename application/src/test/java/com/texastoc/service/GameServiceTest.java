@@ -1,6 +1,7 @@
 package com.texastoc.service;
 
 import com.texastoc.TestConstants;
+import com.texastoc.connector.SMSConnector;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.exception.GameInProgressException;
@@ -68,10 +69,12 @@ public class GameServiceTest implements TestConstants {
   private QuarterlySeasonCalculator qSeasonCalculator;
   @MockBean
   private RoleRepository roleRepository;
+  @MockBean
+  private SMSConnector smsConnector;
 
   @Before
   public void before() {
-    gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator, configRepository, seasonCalculator, qSeasonCalculator, seatingRepository, roleRepository);
+    gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, gameCalculator, payoutCalculator, pointsCalculator, configRepository, seasonCalculator, qSeasonCalculator, seatingRepository, roleRepository, smsConnector);
   }
 
   @Test

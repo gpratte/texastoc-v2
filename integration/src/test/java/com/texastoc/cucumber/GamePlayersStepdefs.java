@@ -159,7 +159,7 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
   public void the_player_is_deleted() throws Exception {
     String token = login(USER_EMAIL, USER_PASSWORD);
     GamePlayer gamePlayer = gamePlayers.get(0);
-    deletePlayerFromGame(gamePlayer.getId(), token);
+    deletePlayerFromGame(gameId, gamePlayer.getId(), token);
   }
 
   @And("^a first time player is added$")

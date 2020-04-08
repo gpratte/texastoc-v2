@@ -117,12 +117,12 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     String createGamePlayerRequestAsJson = mapper.writeValueAsString(cgpr);
     HttpEntity<String> entity = new HttpEntity<>(createGamePlayerRequestAsJson, headers);
 
-    return restTemplate.postForObject(endpoint() + "/games/players", entity, GamePlayer.class);
+    return restTemplate.postForObject(endpoint() + "/games/" + cgpr.getGameId() + "/players", entity, GamePlayer.class);
   }
 
   protected GamePlayer addFirstTimePlayerToGame(FirstTimeGamePlayer firstTimeGamePlayer, String token) throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Content-Type", "application/vnd.texastoc.new-player+json");
     headers.set("Authorization", "Bearer " + token);
 
     ObjectMapper mapper = new ObjectMapper();
@@ -130,7 +130,7 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     String firstTimeGamePlayerRequestAsJson = mapper.writeValueAsString(firstTimeGamePlayer);
     HttpEntity<String> entity = new HttpEntity<>(firstTimeGamePlayerRequestAsJson, headers);
 
-    return restTemplate.postForObject(endpoint() + "/games/players/first", entity, GamePlayer.class);
+    return restTemplate.postForObject(endpoint() + "/games/" + firstTimeGamePlayer.getGameId() + "/players", entity, GamePlayer.class);
   }
 
   protected void updatePlayerInGame(int gamePlayerId, UpdateGamePlayerRequest ugpr, String token) throws JsonProcessingException {
@@ -143,22 +143,16 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     String updateGamePlayerRequestAsJson = mapper.writeValueAsString(ugpr);
     HttpEntity<String> entity = new HttpEntity<>(updateGamePlayerRequestAsJson, headers);
 
-    restTemplate.put(endpoint() + "/games/players/" + gamePlayerId, entity);
+    restTemplate.put(endpoint() + "/games/" + ugpr.getGameId() + "/players/" + gamePlayerId, entity);
   }
 
-  protected void deletePlayerFromGame(int gamePlayerId, String token) throws JsonProcessingException {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("Authorization", "Bearer "+ token);
-//
-//        HttpEntity<String> entity = new HttpEntity<>(headers);
-//        restTemplate.delete(endpoint() + "/games/players/" + gamePlayerId, entity);
-
+  protected void deletePlayerFromGame(int gameId, int gamePlayerId, String token) throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Bearer " + token);
     HttpEntity<String> entity = new HttpEntity<>("", headers);
 
     ResponseEntity<Void> response = restTemplate.exchange(
-      endpoint() + "/games/players/" + gamePlayerId,
+      endpoint() + "/games/" + gameId + "/players/" + gamePlayerId,
       HttpMethod.DELETE,
       entity,
       Void.class);
@@ -167,9 +161,10 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
   protected void finalizeGame(int gameId, String token) throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Bearer " + token);
+    headers.set("Content-Type", "application/vnd.texastoc.finalize+json");
 
     HttpEntity<String> entity = new HttpEntity<>(headers);
-    restTemplate.put(endpoint() + "/games/" + gameId + "/finalize", entity);
+    restTemplate.put(endpoint() + "/games/" + gameId, entity);
   }
 
   protected void createSupply(Supply supply, String token) throws Exception {
@@ -206,8 +201,8 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
   protected Seating seatPlayers(int gameId, List<Integer> numSeatsPerTable, List<TableRequest> tableRequests, String token) throws Exception {
 
     HttpHeaders headers = new HttpHeaders();
+    headers.set("Content-Type", "application/vnd.texastoc.assign-seats+json");
     headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.set("Authorization", "Bearer " + token);
 
     SeatingRequest seatingRequest = SeatingRequest.builder()
       .gameId(gameId)
@@ -220,7 +215,7 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
     String seatingRequestAsJson = mapper.writeValueAsString(seatingRequest);
     HttpEntity<String> entity = new HttpEntity<>(seatingRequestAsJson, headers);
 
-    return restTemplate.postForObject(endpoint() + "/games/seats", entity, Seating.class);
+    return restTemplate.postForObject(endpoint() + "/games/" + gameId + "/seats", entity, Seating.class);
   }
 
   protected Player createPlayer(Player player) throws JsonProcessingException {
@@ -291,10 +286,11 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
   protected Game getCurrentGame(String token) throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Bearer " + token);
+    headers.set("Content-Type", "application/vnd.texastoc.current+json");
     HttpEntity<String> entity = new HttpEntity<>("", headers);
 
     ResponseEntity<Game> response = restTemplate.exchange(
-      endpoint() + "/games/current",
+      endpoint() + "/games",
       HttpMethod.GET,
       entity,
       Game.class);

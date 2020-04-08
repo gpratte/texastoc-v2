@@ -70,4 +70,11 @@ public class PlayerService {
     player.setPassword(null);
     return player;
   }
+
+  @Transactional(readOnly = true)
+  public Player getByEmail(String email) {
+    Player player = playerRepository.getByEmail(email);
+    player.setPassword(null);
+    return player;
+  }
 }
