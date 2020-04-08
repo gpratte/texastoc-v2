@@ -44,6 +44,5 @@ The branch labels are prefixed in the order they were developer (e.g. 01-, 02, .
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 52-seating
-Was taking the seating configuration as input and calculating the tables and seats and only persisting
-the tables and seats. Now persisting the configuration as well.
+## Current Branch: 53-sms-notifications
+Using Twilio's Java SDK to send text message when players are seated at tables.
