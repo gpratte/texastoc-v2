@@ -38,11 +38,21 @@ To connect to the H2 server
 * Leave the password empty
 * Click Connect
 
+# WebSocket
+On branch 54-clock-web-socket added a websocket to the server. In the future this websocket
+will be used to communicate a running clock to the client.
+
+The client is going to first use polling so the websocket requirement has be put on hold.
+
 # Branches
 
 The branch labels are prefixed in the order they were developer (e.g. 01-, 02, ...).
 
 Choose the branch from the github list of branches to see the readme for that branch.
 
-## Current Branch: 53-sms-notifications
-Using Twilio's Java SDK to send text message when players are seated at tables.
+To see the code for branch compare the branch to the previous branch.
+
+## Current Branch: 54-clock-web-socket
+There a couple of good tutorials I followed:
+* https://www.baeldung.com/websockets-spring
+* https://spring.io/guides/gs/messaging-stomp-websocket/

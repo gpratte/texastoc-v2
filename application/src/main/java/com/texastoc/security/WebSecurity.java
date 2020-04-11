@@ -40,7 +40,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
       .authorizeRequests()
       .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
       .antMatchers(HttpMethod.POST, "/login").permitAll()
-      .antMatchers("/h2-console").permitAll()
+      .antMatchers("/socket").permitAll()
+      .antMatchers("/socket/**").permitAll()
+      .antMatchers("/h2-console/*").permitAll()
       .antMatchers("/h2-console/*").permitAll()
       .antMatchers("/actuator/*").permitAll()
       .anyRequest().authenticated().and()
@@ -62,6 +64,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     CorsConfiguration corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
     corsConfiguration.addAllowedMethod(HttpMethod.PUT.name());
     corsConfiguration.addAllowedMethod(HttpMethod.DELETE.name());
+    corsConfiguration.setAllowCredentials(true);
     source.registerCorsConfiguration("/**", corsConfiguration);
     return source;
   }

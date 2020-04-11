@@ -202,7 +202,7 @@ public abstract class SpringBootBaseIntegrationTest implements TestConstants {
 
     HttpHeaders headers = new HttpHeaders();
     headers.set("Content-Type", "application/vnd.texastoc.assign-seats+json");
-    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("Authorization", "Bearer " + token);
 
     SeatingRequest seatingRequest = SeatingRequest.builder()
       .gameId(gameId)
