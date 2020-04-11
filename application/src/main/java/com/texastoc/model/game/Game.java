@@ -70,7 +70,6 @@ public class Game {
   private int seasonGameNum;
   private int quarterlyGameNum;
 
-
   // Other game time variables
   private int payoutDelta;
   private boolean finalized;
@@ -82,25 +81,4 @@ public class Game {
   private List<GamePayout> payouts;
 
   private Seating seating;
-
-  // TODO
-  private Integer clockId;
-
-// --Commented out by Inspection START (2019-01-06 09:21):
-//    public void addPlayer(GamePlayer player) {
-//        if (players == null) {
-//            players = new LinkedList<>();
-//        }
-//        players.add(player);
-//    }
-// --Commented out by Inspection STOP (2019-01-06 09:21)
-
-// --Commented out by Inspection START (2019-01-06 09:21):
-//    public void addPayout(GamePayout payout) {
-//        if (payouts == null) {
-//            payouts = new LinkedList<>();
-//        }
-//        payouts.add(payout);
-//    }
-// --Commented out by Inspection STOP (2019-01-06 09:21)
 }

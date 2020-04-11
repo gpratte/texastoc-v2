@@ -1,15 +1,14 @@
 package com.texastoc.model.game.clock;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Round {
-  private int round;
+  private String name;
   private int smallBlind;
   private int bigBlind;
   private int ante;
+  private int duration;
 }
