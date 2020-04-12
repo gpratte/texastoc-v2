@@ -223,7 +223,6 @@ public class ClockService {
               if (++lastRoundRepeated == 10) {
                 end = true;
               }
-              System.out.println("!!! last round repeated " + lastRoundRepeated);
             }
           }
         } else {
