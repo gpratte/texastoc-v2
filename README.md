@@ -52,7 +52,9 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 54-clock-web-socket
-There a couple of good tutorials I followed:
-* https://www.baeldung.com/websockets-spring
-* https://spring.io/guides/gs/messaging-stomp-websocket/
+## Current Branch: 55-clock-polling
+APIs to get the clock (so the client can poll), pause, resume, move forward and move back.
+
+Runs the clock on a thread.
+
+Notifies via SMS when the clock round changes.
