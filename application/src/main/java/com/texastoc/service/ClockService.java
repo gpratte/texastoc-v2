@@ -1,23 +1,35 @@
 package com.texastoc.service;
 
 import com.texastoc.config.RoundsConfig;
+import com.texastoc.connector.SMSConnector;
+import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.game.clock.Clock;
 import com.texastoc.model.game.clock.Round;
+import com.texastoc.model.user.Player;
+import com.texastoc.repository.GamePlayerRepository;
+import com.texastoc.repository.PlayerRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class ClockService {
 
+  private final GamePlayerRepository gamePlayerRepository;
+  private final PlayerRepository playerRepository;
+  private final SMSConnector smsConnector;
   private final SimpMessagingTemplate template;
   private final Map<Integer, Clock> clocks = new HashMap<>();
   private final Map<Integer, RunClock> threads = new HashMap<>();
   private final RoundsConfig roundsConfig;
 
-  public ClockService(SimpMessagingTemplate template, RoundsConfig roundsConfig) {
+  public ClockService(GamePlayerRepository gamePlayerRepository, PlayerRepository playerRepository, SMSConnector smsConnector, SimpMessagingTemplate template, RoundsConfig roundsConfig) {
+    this.gamePlayerRepository = gamePlayerRepository;
+    this.playerRepository = playerRepository;
+    this.smsConnector = smsConnector;
     this.template = template;
     this.roundsConfig = roundsConfig;
   }
@@ -37,7 +49,7 @@ public class ClockService {
     clock.setPlaying(true);
 
     if (!threads.containsKey(gameId)) {
-      RunClock runClock = new RunClock(clock);
+      RunClock runClock = new RunClock(gameId, clock);
       new Thread(runClock).start();
       threads.put(gameId, runClock);
     }
@@ -56,6 +68,7 @@ public class ClockService {
       clock.setThisRound(thisRound);
       clock.setNextRound(findNextRound(thisRound));
       clock.setMillisRemaining(thisRound.getDuration() * 60 * 1000);
+      notifyRoundChange(gameId);
       return;
     }
 
@@ -75,6 +88,7 @@ public class ClockService {
       clock.setThisRound(thisRound);
       clock.setNextRound(findNextRound(clock.getThisRound()));
       clock.setMillisRemaining(thisRound.getDuration() * 60 * 1000);
+      notifyRoundChange(gameId);
       return;
     }
 
@@ -146,6 +160,18 @@ public class ClockService {
     return null;
   }
 
+  private void notifyRoundChange(int gameId) {
+    Clock clock = clocks.get(gameId);
+    List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(gameId);
+    gamePlayers.forEach((gp) -> {
+      if (gp.getRoundUpdates() != null && gp.getRoundUpdates()) {
+        Player player = playerRepository.get(gp.getPlayerId());
+        if (player.getPhone() != null)
+          smsConnector.text(player.getPhone(), clock.getThisRound().getName());
+      }
+    });
+  }
+
   /**
    * Send a message on the websocket
    */
@@ -155,10 +181,13 @@ public class ClockService {
   }
 
   class RunClock implements Runnable {
-    private Clock clock;
+    private final int gameId;
+    private final Clock clock;
     private boolean end = false;
+    private int lastRoundRepeated = 0;
 
-    public RunClock(Clock clock) {
+    public RunClock(int gameId, Clock clock) {
+      this.gameId = gameId;
       this.clock = clock;
     }
 
@@ -187,6 +216,15 @@ public class ClockService {
             clock.setThisRound(thisRound);
             clock.setNextRound(findNextRound(clock.getThisRound()));
             clock.setMillisRemaining(thisRound.getDuration() * 60 * 1000);
+            notifyRoundChange(gameId);
+
+            // Check if the last round has been repeated 10 times. If so then end
+            if (clock.getThisRound().getName().equals(clock.getNextRound().getName())) {
+              if (++lastRoundRepeated == 10) {
+                end = true;
+              }
+              System.out.println("!!! last round repeated " + lastRoundRepeated);
+            }
           }
         } else {
           // Sleep while not playing
