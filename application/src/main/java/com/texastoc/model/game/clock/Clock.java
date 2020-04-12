@@ -1,18 +1,20 @@
 package com.texastoc.model.game.clock;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Clock {
-
-  private int clockId;
+  private int gameId;
   private int minutes;
   private int seconds;
   private boolean playing;
   private Round thisRound;
   private Round nextRound;
+  private long millisRemaining;
 }

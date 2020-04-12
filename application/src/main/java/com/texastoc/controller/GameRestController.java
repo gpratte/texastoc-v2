@@ -7,6 +7,7 @@ import com.texastoc.model.game.FirstTimeGamePlayer;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.game.Seating;
+import com.texastoc.service.ClockService;
 import com.texastoc.service.GameService;
 import com.texastoc.service.SeatingService;
 import org.springframework.http.MediaType;
@@ -21,10 +22,12 @@ public class GameRestController {
 
   private final GameService gameService;
   private final SeatingService seatingService;
+  private final ClockService clockService;
 
-  public GameRestController(GameService gameService, SeatingService seatingService) {
+  public GameRestController(GameService gameService, SeatingService seatingService, ClockService clockService) {
     this.gameService = gameService;
     this.seatingService = seatingService;
+    this.clockService = clockService;
   }
 
   @PostMapping(value = "/api/v2/games", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -65,6 +68,7 @@ public class GameRestController {
 
   @PutMapping(value = "/api/v2/games/{id}", consumes = "application/vnd.texastoc.finalize+json")
   public void finalizeGame(@PathVariable("id") int id) {
+    clockService.endClock(id);
     gameService.endGame(id);
   }
 
