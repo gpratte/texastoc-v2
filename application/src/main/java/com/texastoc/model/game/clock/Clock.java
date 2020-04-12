@@ -16,4 +16,5 @@ public class Clock {
   private boolean playing;
   private Round thisRound;
   private Round nextRound;
+  private long millisRemaining;
 }

@@ -30,4 +30,14 @@ public class ClockRestController {
   public void pause(@PathVariable("id") int id) {
     clockService.pause(id);
   }
+
+  @PostMapping(value = "/api/v2/games/{id}/clock", consumes = "application/vnd.texastoc.clock-back+json")
+  public void back(@PathVariable("id") int id) {
+    clockService.back(id);
+  }
+
+  @PostMapping(value = "/api/v2/games/{id}/clock", consumes = "application/vnd.texastoc.clock-forward+json")
+  public void forward(@PathVariable("id") int id) {
+    clockService.forward(id);
+  }
 }
