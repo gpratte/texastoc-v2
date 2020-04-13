@@ -52,9 +52,7 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 55-clock-polling
-APIs to get the clock (so the client can poll), pause, resume, move forward and move back.
+## Current Branch: 56-forgot-password
+API to take an email and sends a code to the email.
 
-Runs the clock on a thread.
-
-Notifies via SMS when the clock round changes.
+API that takes the code and new password and updates the player's password.
