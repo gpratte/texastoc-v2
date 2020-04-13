@@ -14,8 +14,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static com.texastoc.security.SecurityConstants.SIGN_UP_URL;
-
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurity extends WebSecurityConfigurerAdapter {
@@ -38,8 +36,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
       .csrf().disable()
       .headers().frameOptions().sameOrigin().and()
       .authorizeRequests()
-      .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
+      //.antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
       .antMatchers(HttpMethod.POST, "/login").permitAll()
+      .antMatchers(HttpMethod.POST, "/password/reset").permitAll()
       .antMatchers("/socket").permitAll()
       .antMatchers("/socket/**").permitAll()
       .antMatchers("/h2-console/*").permitAll()
