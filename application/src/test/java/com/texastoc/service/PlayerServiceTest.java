@@ -1,6 +1,7 @@
 package com.texastoc.service;
 
 import com.texastoc.TestConstants;
+import com.texastoc.connector.EmailConnector;
 import com.texastoc.model.user.Player;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.RoleRepository;
@@ -33,9 +34,12 @@ public class PlayerServiceTest implements TestConstants {
   @MockBean
   BCryptPasswordEncoder bCryptPasswordEncoder;
 
+  @MockBean
+  EmailConnector emailConnector;
+
   @Before
   public void before() {
-    playerService = new PlayerService(playerRepository, roleRepository, bCryptPasswordEncoder);
+    playerService = new PlayerService(playerRepository, roleRepository, bCryptPasswordEncoder, emailConnector);
   }
 
   @Test

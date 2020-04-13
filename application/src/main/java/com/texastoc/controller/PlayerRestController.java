@@ -54,7 +54,12 @@ public class PlayerRestController {
 
   @PostMapping(value = "/password/reset", consumes = "application/vnd.texastoc.password-forgot+json")
   public void forgot(@RequestBody Forgot forgot) {
-    // TODO send code via email
+    playerService.sendCode(forgot.getEmail());
+  }
+
+  @PostMapping(value = "/password/reset", consumes = "application/vnd.texastoc.password-reset+json")
+  public void reset(@RequestBody Reset reset) {
+    playerService.resetPassword(reset.getCode(), reset.getPassword());
   }
 
   @Data
@@ -64,4 +69,14 @@ public class PlayerRestController {
   static class Forgot {
     private String email;
   }
+
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  static class Reset {
+    private String code;
+    private String password;
+  }
+
 }
