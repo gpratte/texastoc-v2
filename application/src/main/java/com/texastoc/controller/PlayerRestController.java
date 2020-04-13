@@ -1,7 +1,11 @@
 package com.texastoc.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.texastoc.model.user.Player;
 import com.texastoc.service.PlayerService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +50,33 @@ public class PlayerRestController {
   @GetMapping("/api/v2/players/{id}")
   public Player getPlayer(@PathVariable("id") int id) {
     return playerService.get(id);
+  }
+
+  @PostMapping(value = "/password/reset", consumes = "application/vnd.texastoc.password-forgot+json")
+  public void forgot(@RequestBody Forgot forgot) {
+    playerService.sendCode(forgot.getEmail());
+  }
+
+  @PostMapping(value = "/password/reset", consumes = "application/vnd.texastoc.password-reset+json")
+  public void reset(@RequestBody Reset reset) {
+    playerService.resetPassword(reset.getCode(), reset.getPassword());
+  }
+
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  static class Forgot {
+    private String email;
+  }
+
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  static class Reset {
+    private String code;
+    private String password;
   }
 
 }

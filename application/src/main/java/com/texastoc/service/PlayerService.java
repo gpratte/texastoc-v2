@@ -1,14 +1,19 @@
 package com.texastoc.service;
 
+import com.texastoc.connector.EmailConnector;
+import com.texastoc.exception.NotFoundException;
 import com.texastoc.model.user.Player;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.RoleRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PlayerService {
@@ -16,11 +21,16 @@ public class PlayerService {
   private final PlayerRepository playerRepository;
   private final RoleRepository roleRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final EmailConnector emailConnector;
 
-  public PlayerService(PlayerRepository playerRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+  // Only one server so cache the forgot password codes here
+  private Map<String, String> forgotPasswordCodes = new HashMap<>();
+
+  public PlayerService(PlayerRepository playerRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EmailConnector emailConnector) {
     this.playerRepository = playerRepository;
     this.roleRepository = roleRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    this.emailConnector = emailConnector;
   }
 
   @Transactional
@@ -76,5 +86,32 @@ public class PlayerService {
     Player player = playerRepository.getByEmail(email);
     player.setPassword(null);
     return player;
+  }
+
+  public void sendCode(String email) {
+    String generatedString = RandomStringUtils.random(5, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+    forgotPasswordCodes.put(email, generatedString);
+    emailConnector.send(email, "Reset Code", generatedString);
+  }
+
+  public void resetPassword(String code, String password) {
+    String email = null;
+    for (Map.Entry<String, String> forgotCode : forgotPasswordCodes.entrySet()) {
+      if (forgotCode.getValue().equals(code)) {
+        email = forgotCode.getKey();
+        break;
+      }
+    }
+
+    if (email == null) {
+      throw new NotFoundException("No code found");
+    }
+
+    forgotPasswordCodes.remove(email);
+
+    Player playerToUpdate = playerRepository.getByEmail(email);
+    playerToUpdate.setPassword(bCryptPasswordEncoder.encode(password));
+
+    playerRepository.update(playerToUpdate);
   }
 }
