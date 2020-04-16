@@ -229,7 +229,6 @@ public class ClockService {
           // Sleep while not playing
           // TODO use thread notify instead
           try {
-            System.out.print(".. ");
             Thread.sleep(1000l);
           } catch (InterruptedException e) {
             // Do nothing

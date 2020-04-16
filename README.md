@@ -52,7 +52,5 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 56-forgot-password
-API to take an email and sends a code to the email.
-
-API that takes the code and new password and updates the player's password.
+## Current Branch: 57-clean-up
+This branch coincides with the front end clean up branch. Can now sort the game players by name (case insensitive).

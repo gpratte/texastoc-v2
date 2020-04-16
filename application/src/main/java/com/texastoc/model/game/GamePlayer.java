@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GamePlayer {
+public class GamePlayer implements Comparable<GamePlayer> {
 
   private int id;
   private int playerId;
@@ -26,4 +26,22 @@ public class GamePlayer {
   private Integer annualTocCollected;
   private Integer quarterlyTocCollected;
   private Integer chop;
+
+  @Override
+  public int compareTo(GamePlayer other) {
+
+    // If I don't have a name
+    if (name == null) {
+      // then I come after other
+      return 1;
+    }
+
+    // If other doesn't have a name
+    if (other.name == null) {
+      // then I come before other
+      return -1;
+    }
+
+    return name.toLowerCase().compareTo(other.name.toLowerCase());
+  }
 }

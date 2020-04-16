@@ -67,6 +67,6 @@ public class Player implements Comparable<Player> {
     if (!StringUtils.isBlank(player.lastName)) {
       fullName.append(player.lastName);
     }
-    return fullName.toString();
+    return fullName.toString().toLowerCase();
   }
 }
