@@ -1,7 +1,9 @@
 
 # All target directories
 target/
-logs/
+
+# Log files
+**/*.log
 
 # IntelliJ IDEA
 .idea

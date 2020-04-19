@@ -6,7 +6,7 @@
     <groupId>com.texastoc</groupId>
     <artifactId>texastoc-v2-application</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>texastoc v2 application</name>
     <description>Texas Tournament Of Champions</description>
@@ -18,6 +18,11 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
