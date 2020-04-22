@@ -27,15 +27,9 @@
     </appender>
 
     <!-- LOG everything at INFO level -->
-    <root level="debug" additivity="false">
+    <root level="info" additivity="false">
         <appender-ref ref="RollingFile"/>
         <appender-ref ref="Console"/>
     </root>
-
-    <!-- LOG "com.texastoc*" at TRACE level -->
-    <logger name="com.texastoc" level="trace" additivity="false">
-        <appender-ref ref="RollingFile"/>
-        <appender-ref ref="Console"/>
-    </logger>
 
 </configuration>

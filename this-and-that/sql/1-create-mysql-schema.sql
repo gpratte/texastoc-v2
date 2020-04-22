@@ -6,7 +6,7 @@
 --   log in as <user>
 --     CREATE DATABASE toc;
 -- Run this file from command line
---   mysql -u <user> -p < 1-create-mysql-schema.sql
+--   mysql -u <user> -p toc < 1-create-mysql-schema.sql
 
 create table if not exists tocconfig (kittyDebit INT NOT NULL, annualTocCost INT NOT NULL, quarterlyTocCost INT NOT NULL, quarterlyNumPayouts INT NOT NULL, regularBuyInCost INT NOT NULL, regularRebuyCost INT NOT NULL, regularRebuyTocDebit INT NOT NULL, doubleBuyInCost INT NOT NULL, doubleRebuyCost INT NOT NULL, doubleRebuyTocDebit INT NOT NULL);
 
