@@ -23,7 +23,7 @@ public class EmailConnector {
   private ExecutorService executorService;
   private final String apiKey;
 
-  public EmailConnector(@Value("${postmarkapp.key:#{null}}") String apiKey) {
+  public EmailConnector(@Value("${postmarkapp.key:POSTMARK_API_TEST}") String apiKey) {
     this.apiKey = apiKey;
     executorService = Executors.newCachedThreadPool();
   }

@@ -1,6 +1,8 @@
 package com.texastoc.security;
 
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,10 +16,15 @@ import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.texastoc.security.SecurityConstants.*;
+import static com.texastoc.security.SecurityConstants.ACCESS_TOKEN_VALIDITY_SECONDS;
+import static com.texastoc.security.SecurityConstants.AUTHORITIES_KEY;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
+
+  @Value("${jwt.signingkey:5Lmr5JwJP4CSU5Lmr5JwJP4CSU5Lmr5JwJP4CSU5Lmr5JwJP4CSU}")
+  private String signingKey;
 
   public String getUsernameFromToken(String token) {
     return getClaimFromToken(token, Claims::getSubject);
@@ -34,7 +41,7 @@ public class JwtTokenProvider {
 
   private Claims getAllClaimsFromToken(String token) {
     return Jwts.parser()
-      .setSigningKey(SIGNING_KEY)
+      .setSigningKey(signingKey)
       .parseClaimsJws(token)
       .getBody();
   }
@@ -51,7 +58,7 @@ public class JwtTokenProvider {
     return Jwts.builder()
       .setSubject(authentication.getName())
       .claim(AUTHORITIES_KEY, authorities)
-      .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
+      .signWith(SignatureAlgorithm.HS256, signingKey)
       .setIssuedAt(new Date(System.currentTimeMillis()))
       .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
       .compact();
@@ -64,7 +71,7 @@ public class JwtTokenProvider {
 
   UsernamePasswordAuthenticationToken getAuthentication(final String token, final UserDetails userDetails) {
 
-    final JwtParser jwtParser = Jwts.parser().setSigningKey(SIGNING_KEY);
+    final JwtParser jwtParser = Jwts.parser().setSigningKey(signingKey);
 
     final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
 
