@@ -186,10 +186,14 @@ public class SeatingService {
       // alternate player and dead stack
       List<Seat> newSeats = new ArrayList<>(numSeats);
       int numDeadStacksSeated = 0;
-      for (Seat seat : seats) {
+      int seatNumber = 1;
+      for (int i = 0; i < seats.size(); i++) {
+        Seat seat = seats.get(i);
         if (seat != null) {
+          seat.setSeatNumber(seatNumber);
           newSeats.add(seat);
           if (++numDeadStacksSeated <= numDeadStacks) {
+            ++seatNumber;
             newSeats.add(null);
           }
         }
@@ -199,15 +203,18 @@ public class SeatingService {
 
     int numDeadsBetween = numDeadStacks / numPlayers;
     List<Seat> newSeats = new ArrayList<>(numSeats);
-    seats.stream()
-      .forEach(seat -> {
-        if (seat != null) {
-          newSeats.add(seat);
-          for (int i = 0; i < numDeadsBetween; i++) {
-            newSeats.add(null);
-          }
+    int seatNumber = 1;
+    for (int i = 0; i < seats.size(); i++) {
+      Seat seat = seats.get(i);
+      if (seat != null) {
+        seat.setSeatNumber(seatNumber);
+        newSeats.add(seat);
+        for (int j = 0; j < numDeadsBetween; j++) {
+          ++seatNumber;
+          newSeats.add(null);
         }
-      });
+      }
+    }
     return newSeats;
   }
 
