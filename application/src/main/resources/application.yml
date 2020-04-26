@@ -2,8 +2,6 @@ spring:
   h2:
     console:
       enabled: true
-#  profiles:
-#    active: test
 
 points:
   numPlayers: 2

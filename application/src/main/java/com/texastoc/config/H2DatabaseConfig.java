@@ -1,5 +1,6 @@
 package com.texastoc.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ import java.io.InputStreamReader;
  */
 @Profile("test")
 @Configuration
-public class SetupDatabase {
+public class H2DatabaseConfig {
 
   @Bean
   public DataSource dataSource() {

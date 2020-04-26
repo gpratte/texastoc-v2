@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOGS" value="./logs"/>
-
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
@@ -12,14 +10,14 @@
     </appender>
 
     <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/texastoc.log</file>
+        <file>texastoc.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOGS}/texastoc.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <fileNamePattern>texastoc.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
 
@@ -29,15 +27,9 @@
     </appender>
 
     <!-- LOG everything at INFO level -->
-    <root level="info">
+    <root level="info" additivity="false">
         <appender-ref ref="RollingFile"/>
         <appender-ref ref="Console"/>
     </root>
-
-    <!-- LOG "com.texastoc*" at TRACE level -->
-    <logger name="com.texastoc" level="trace" additivity="false">
-        <appender-ref ref="RollingFile"/>
-        <appender-ref ref="Console"/>
-    </logger>
 
 </configuration>
