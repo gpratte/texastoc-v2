@@ -1,5 +1,6 @@
 package com.texastoc.service;
 
+import com.texastoc.connector.EmailConnector;
 import com.texastoc.connector.SMSConnector;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
@@ -9,17 +10,24 @@ import com.texastoc.exception.GameIsFinalizedException;
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.*;
 import com.texastoc.model.season.QuarterlySeason;
+import com.texastoc.model.season.QuarterlySeasonPlayer;
 import com.texastoc.model.season.Season;
+import com.texastoc.model.season.SeasonPlayer;
 import com.texastoc.model.user.Player;
+import com.texastoc.model.user.Role;
 import com.texastoc.repository.*;
 import com.texastoc.service.calculator.*;
+import io.micrometer.core.instrument.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class GameService {
 
@@ -31,6 +39,7 @@ public class GameService {
   private final GamePlayerRepository gamePlayerRepository;
   private final GamePayoutRepository gamePayoutRepository;
   private final QuarterlySeasonRepository qSeasonRepository;
+  private final SeasonService seasonService;
 
   private final GameCalculator gameCalculator;
   private final PayoutCalculator payoutCalculator;
@@ -40,16 +49,18 @@ public class GameService {
   private final QuarterlySeasonCalculator qSeasonCalculator;
 
   private final SMSConnector smsConnector;
+  private final EmailConnector emailConnector;
 
   private TocConfig tocConfig;
 
-  public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository, RoleRepository roleRepository, SMSConnector smsConnector) {
+  public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, SeasonService seasonService, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository, RoleRepository roleRepository, SMSConnector smsConnector, EmailConnector emailConnector) {
     this.gameRepository = gameRepository;
     this.playerRepository = playerRepository;
     this.gamePlayerRepository = gamePlayerRepository;
     this.gamePayoutRepository = gamePayoutRepository;
     this.seasonRepository = seasonRepository;
     this.qSeasonRepository = qSeasonRepository;
+    this.seasonService = seasonService;
     this.gameCalculator = gameCalculator;
     this.payoutCalculator = payoutCalculator;
     this.pointsCalculator = pointsCalculator;
@@ -59,6 +70,7 @@ public class GameService {
     this.seatingRepository = seatingRepository;
     this.roleRepository = roleRepository;
     this.smsConnector = smsConnector;
+    this.emailConnector = emailConnector;
   }
 
   @Transactional
@@ -307,6 +319,7 @@ public class GameService {
     qSeasonCalculator.calculate(game.getQSeasonId());
     seasonCalculator.calculate(game.getSeasonId());
     seatingRepository.deleteByGameId(id);
+    sendGameSummary(id);
   }
 
   public void openGame(int id) {
@@ -399,6 +412,346 @@ public class GameService {
   private void checkFinalized(Game game) {
     if (game.isFinalized()) {
       throw new GameIsFinalizedException("Game is finalized");
+    }
+  }
+
+  private void sendGameSummary(int id) {
+    SendGameSummary sgs = new SendGameSummary(id);
+    new Thread(sgs).start();
+  }
+
+  private String getGameSummary(Game game) {
+    Season season = seasonService.getSeason(game.getSeasonId());
+    QuarterlySeason qSeason = null;
+
+    LocalDate today = LocalDate.now();
+    for (QuarterlySeason qs : season.getQuarterlySeasons()) {
+      if (today.isEqual(qs.getStart())) {
+        qSeason = qs;
+        break;
+      }
+      if (today.isEqual(qs.getEnd())) {
+        qSeason = qs;
+        break;
+      }
+      if (today.isAfter(qs.getStart()) && today.isBefore(qs.getEnd())) {
+        qSeason = qs;
+        break;
+      }
+    }
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("<table>");
+    sb.append(" <tr>");
+    sb.append("  <td colspan=\"2\" align=\"center\">");
+    sb.append("   <h2 align=\"center\">Game</h2>");
+    sb.append("  </td>");
+    sb.append(" </tr>");
+    sb.append(" <tr>");
+    sb.append("  <table>");
+    sb.append("   <tr>");
+    sb.append("    <td colspan=\"2\">Season games " + game.getSeasonGameNum()
+      + "</td>");
+    sb.append("   </tr>");
+    sb.append("   <tr>");
+    sb.append("    <td colspan=\"2\">Quarterly games "
+      + game.getQuarterlyGameNum() + "</td>");
+    sb.append("   </tr>");
+    sb.append("   <tr>");
+    sb.append("    <td>Host:</td>");
+    Player host = playerRepository.get(game.getHostId());
+    sb.append("    <td>");
+    sb.append(host.getName());
+    sb.append("</td>");
+    sb.append("   <tr>");
+    sb.append("    <td>Date:</td>");
+    sb.append("    <td>" + game.getDate() + "</td>");
+    sb.append("   </tr>");
+    sb.append("   <tr>");
+    sb.append("    <td>Double buy in:</td>");
+    if (game.isDoubleBuyIn())
+      sb.append("<td>Yes</td>");
+    else
+      sb.append("<td>No</td>");
+    sb.append("   </tr>");
+    sb.append("   <tr>");
+    sb.append("    <td>Number of Players:</td>");
+    sb.append("    <td>" + game.getNumPlayers() + "</td>");
+    sb.append("   </tr>");
+    sb.append("   <tr>");
+    sb.append("    <td>Total buy in:</td>");
+    sb.append("    <td>$" + game.getBuyInCollected() + "</td>");
+    sb.append("   </tr>");
+    sb.append("   <tr>");
+    sb.append("    <td>Total Re-buy/Add-on:</td>");
+    sb.append("    <td>$" + game.getRebuyAddOnLessAnnualTocCalculated() + "</td>");
+    sb.append("   </tr>");
+    sb.append("   <tr>");
+    sb.append("    <td>Total Annual TOC:</td>");
+    sb.append("    <td>$" + (game.getAnnualTocCollected() + game.getAnnualTocFromRebuyAddOnCalculated()) + "</td>");
+    sb.append("   </tr>");
+    sb.append("   <tr>");
+    sb.append("    <td>Total Quarterly TOC:</td>");
+    sb.append("    <td>$" + game.getQuarterlyTocCollected() + "</td>");
+    sb.append("   </tr>");
+    sb.append("   <tr>");
+    sb.append("    <td>Kitty:</td>");
+    sb.append("    <td>$");
+    sb.append(game.getKittyCalculated());
+    sb.append("</td>");
+    sb.append("  </table>");
+    sb.append(" </tr>");
+
+    sb.append(" </tr>");
+    sb.append("  <td>");
+    sb.append("   <table>");
+    sb.append("    <tr>");
+    sb.append("     <th>Place</th>");
+    sb.append("     <th>Payout</th>");
+    sb.append("    </tr>");
+    for (GamePayout payout : game.getPayouts()) {
+      sb.append("    <td>" + payout.getPlace() + "<td>");
+      if (payout.getChopAmount() == null) {
+        sb.append("    <td>$" + payout.getAmount() + "<td>");
+      } else {
+        sb.append("    <td>$" + payout.getChopAmount() + "<td>");
+      }
+      sb.append("    </tr>");
+    }
+    sb.append("   </table>");
+    sb.append("  </td>");
+    sb.append(" </tr>");
+
+    sb.append(" <tr>");
+    sb.append("  <td>");
+    sb.append("   <table>");
+    sb.append("    <tr>");
+    sb.append("     <th>Fin</th>");
+    sb.append("     <th>Name</th>");
+    sb.append("     <th>Pts</th>");
+    sb.append("     <th>Chp</th>");
+    sb.append("     <th>TOC</th>");
+    sb.append("     <th>QTOC</th>");
+    sb.append("     <th>Buy<br/>In</th>");
+    sb.append("     <th>Re<br/>Buy</th>");
+    sb.append("    </tr>");
+
+    for (GamePlayer gamePlayer : game.getPlayers()) {
+      sb.append("    <tr>");
+      sb.append("     <td align=\"center\">"
+        + (gamePlayer.getPlace() == null ? "" : gamePlayer
+        .getPlace()) + "</td>");
+      sb.append("     <td>");
+      sb.append(gamePlayer.getName());
+      sb.append("     </td>");
+      sb.append("     <td align=\"center\">"
+        + (gamePlayer.getPoints() == null ? "" : gamePlayer
+        .getPoints()) + "</td>");
+
+      if (gamePlayer.getChop() != null && gamePlayer.getChop() > 0)
+        sb.append("     <td>" + gamePlayer.getChop() + "</td>");
+      else
+        sb.append("     <td></td>");
+      if (gamePlayer.getAnnualTocCollected() != null)
+        sb.append("     <td align=\"center\">Yes</td>");
+      else
+        sb.append("     <td></td>");
+      if (gamePlayer.getQuarterlyTocCollected() != null)
+        sb.append("     <td align=\"center\">Yes</td>");
+      else
+        sb.append("     <td></td>");
+      if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0)
+        sb.append("     <td align=\"center\">" + gamePlayer.getBuyInCollected()
+          + "</td>");
+      else
+        sb.append("     <td></td>");
+      if (gamePlayer.getRebuyAddOnCollected() != null && gamePlayer.getRebuyAddOnCollected() > 0)
+        sb.append("     <td align=\"center\">"
+          + gamePlayer.getRebuyAddOnCollected() + "</td>");
+      else
+        sb.append("     <td></td>");
+      sb.append("    </tr>");
+    }
+
+    sb.append("   </table>");
+    sb.append("  </td>");
+    sb.append(" </tr>");
+    sb.append("</table>");
+    sb.append("<p/>");
+
+    sb.append("<hr/>");
+    sb.append("<table>");
+    sb.append(" <tr>");
+    sb.append("  <td colspan=\"2\" align=\"center\">");
+    sb.append("   <h2 align=\"center\">Season</h2>");
+    sb.append("  </td>");
+    sb.append(" </tr>");
+    sb.append(" <tr>");
+    sb.append("  <td colspan=\"2\">Games played " + game.getSeasonGameNum()
+      + "  </td>");
+    sb.append(" </tr>");
+    sb.append(" <tr>");
+    sb.append("  <td>Start date:</td>");
+    sb.append("  <td>" + season.getStart() + "</td>");
+    sb.append(" </tr>");
+    sb.append(" <tr>");
+    sb.append("  <td>End date:</td>");
+    sb.append("  <td>" + season.getEnd() + "</td>");
+    sb.append(" </tr>");
+
+    sb.append(" <tr>");
+    sb.append("  <td>Total buy in:</td>");
+    sb.append("  <td>$" + season.getBuyInCollected() + "</td>");
+    sb.append(" </tr>");
+    sb.append(" <tr>");
+    sb.append("  <td>Total rebuy/add on:</td>");
+    sb.append("  <td>$" + season.getRebuyAddOnLessAnnualTocCalculated() + "</td>");
+    sb.append(" </tr>");
+    sb.append(" <tr>");
+    sb.append("  <td>Total Annual TOC:</td>");
+    sb.append("  <td>$" + season.getTotalCombinedAnnualTocCalculated() + "</td>");
+    sb.append(" </tr>");
+    sb.append("</table>");
+
+    sb.append("<p/>");
+
+    sb.append("<table>");
+    sb.append(" <tr>");
+    sb.append("  <th>Place</th>");
+    sb.append("  <th>Name</th>");
+    sb.append("  <th>Points</th>");
+    sb.append("  <th>Entries</th>");
+    sb.append(" </tr>");
+    for (SeasonPlayer seasonPlayer : season.getPlayers()) {
+      log.info(seasonPlayer.toString());
+      sb.append(" <tr>");
+      if (seasonPlayer.getPlace() > 0)
+        sb.append("  <td align=\"center\">" + seasonPlayer.getPlace()
+          + "</td>");
+      else
+        sb.append("  <td align=\"center\"></td>");
+
+      sb.append("  <td align=\"right\">"
+        + seasonPlayer.getName() + "</td>");
+
+      if (seasonPlayer.getPoints() > 0)
+        sb.append("  <td align=\"center\">" + seasonPlayer.getPoints()
+          + "</td>");
+      else
+        sb.append("  <td align=\"center\"></td>");
+
+      sb.append("  <td align=\"center\">" + seasonPlayer.getEntries()
+        + "</td>");
+      sb.append(" </tr>");
+    }
+
+    sb.append("</table>");
+
+    sb.append("<hr/>");
+    sb.append("<p/>");
+
+    sb.append("<table>");
+    sb.append(" <tr>");
+    sb.append("  <td colspan=\"2\" align=\"center\">");
+    sb.append("   <h2 align=\"center\">Quarterly Season</h2>");
+    sb.append("  </td>");
+    sb.append(" </tr>");
+    sb.append(" <tr>");
+    sb.append("  <td>");
+    sb.append("   <table>");
+    sb.append("    <tr>");
+    sb.append("     <td colspan=\"2\">Games played "
+      + game.getQuarterlyGameNum() + "</td>");
+    sb.append("    </tr>");
+
+    if (qSeason != null) {
+      sb.append("    <tr>");
+      sb.append("     <td>Quarter</td>");
+      sb.append("    <td>" + qSeason.getQuarter().getText() + "</td>");
+      sb.append("    </tr>");
+      sb.append("    <tr>");
+      sb.append("     <td>Start date</td>");
+      sb.append("     <td>" + qSeason.getStart() + "</td>");
+      sb.append("    </tr>");
+      sb.append("    <tr>");
+      sb.append("     <td>End date</td>");
+      sb.append("     <td>" + qSeason.getEnd() + "</td>");
+      sb.append("    </tr>");
+      sb.append("    <tr>");
+      sb.append("     <td>Total Quarterly TOC</td>");
+      sb.append("     <td>$" + qSeason.getQTocCollected() + "</td>");
+      sb.append("    </tr>");
+      sb.append("   </table>");
+      sb.append("  </td>");
+      sb.append(" </tr>");
+
+      sb.append(" <tr>");
+      sb.append("  <td>");
+      sb.append("   <table>");
+      sb.append("    <tr>");
+      sb.append("     <th>Place</th>");
+      sb.append("     <th>Name</th>");
+      sb.append("     <th>Points</th>");
+      sb.append("     <th>Entries</th>");
+      sb.append("    </tr>");
+      for (QuarterlySeasonPlayer qsPlayer : qSeason
+        .getPlayers()) {
+        sb.append("    <tr>");
+        if (qsPlayer.getPlace() > 0)
+          sb.append("     <td align=\"center\">" + qsPlayer.getPlace()
+            + "</td>");
+        else
+          sb.append("     <td align=\"center\"></td>");
+
+        sb.append("     <td align=\"right\">"
+          + qsPlayer.getName() + "</td>");
+        if (qsPlayer.getPoints() > 0)
+          sb.append("     <td align=\"center\">" + qsPlayer.getPoints()
+            + "</td>");
+        else
+          sb.append("     <td align=\"center\"></td>");
+
+        sb.append("     <td align=\"center\">" + qsPlayer.getEntries()
+          + "</td>");
+        sb.append("    </tr>");
+      }
+      sb.append("   </table>");
+      sb.append("  </td>");
+      sb.append(" </tr>");
+    }
+    sb.append("</table>");
+    return sb.toString();
+  }
+
+  private class SendGameSummary implements Runnable {
+    private int gameId;
+
+    public SendGameSummary(int gameId) {
+      this.gameId = gameId;
+    }
+
+    @Override
+    public void run() {
+      Game game = getGame(gameId);
+      String body = getGameSummary(game);
+      String subject = "Summary " + game.getDate();
+
+      List<Player> players = playerRepository.get();
+      for (Player player : players) {
+        Player playerWithRoles = playerRepository.get(player.getId());
+        boolean isAdmin = false;
+        for (Role role : playerWithRoles.getRoles()) {
+          if ("ADMIN".equals(role.getName())) {
+            isAdmin = true;
+            break;
+          }
+        }
+
+        if (isAdmin && !StringUtils.isBlank(player.getEmail())) {
+          System.out.println("!!! sending summary to " + player.getEmail());
+          emailConnector.send(player.getEmail(), subject, body);
+        }
+      }
     }
   }
 }

@@ -5,6 +5,7 @@ import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
+import com.texastoc.model.season.SeasonPlayer;
 import com.texastoc.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -113,7 +115,9 @@ public class SeasonService {
 //        }
 
     Season season = seasonRepository.get(id);
-    season.setPlayers(seasonPlayerRepository.getBySeasonId(id));
+    List<SeasonPlayer> seasonPlayers = seasonPlayerRepository.getBySeasonId(id);
+    Collections.sort(seasonPlayers);
+    season.setPlayers(seasonPlayers);
     season.setPayouts(seasonPayoutRepository.getBySeasonId(id));
 
     season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(id));

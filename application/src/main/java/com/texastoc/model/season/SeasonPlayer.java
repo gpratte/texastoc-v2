@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SeasonPlayer {
+public class SeasonPlayer implements Comparable<SeasonPlayer> {
 
   private int id;
   private int playerId;
@@ -20,4 +20,14 @@ public class SeasonPlayer {
   private Integer place;
   private boolean forfeit;
 
+  @Override
+  public int compareTo(SeasonPlayer o) {
+    if (this.points < o.points) {
+      return 1;
+    } else if (this.points > o.points) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
 }
