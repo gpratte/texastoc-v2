@@ -77,7 +77,7 @@ public class GameRepository {
 
   private static final String UPDATE_SQL = "UPDATE game set " +
     "seasonId=:seasonId, qSeasonId=:qSeasonId, hostId=:hostId, " +
-    "hostName=:hostName, gameDate=:gameDate, quarter=:quarter, " +
+    "hostName=:hostName, quarter=:quarter, " +
     "doubleBuyIn=:doubleBuyIn, transportRequired=:transportRequired, " +
     "kittyCost=:kittyCost, buyInCost=:buyInCost, rebuyAddOnCost=:rebuyAddOnCost, " +
     "rebuyAddOnTocDebit=:rebuyAddOnTocDebit, annualTocCost=:annualTocCost, " +
@@ -100,7 +100,6 @@ public class GameRepository {
     params.addValue("qSeasonId", game.getQSeasonId());
     params.addValue("hostId", game.getHostId());
     params.addValue("hostName", game.getHostName());
-    params.addValue("gameDate", game.getDate());
     params.addValue("quarter", game.getQuarter().getValue());
     params.addValue("doubleBuyIn", game.isDoubleBuyIn());
     params.addValue("transportRequired", game.isTransportRequired());

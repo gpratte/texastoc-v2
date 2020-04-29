@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -108,6 +109,18 @@ public class QuarterlySeasonRepository {
     // This is a bit of a hack. Ideally there would only be one current season. But the tests create multiple quarterly seasons in the same date range. Hence get all the quarterly seasons that encompass the date and take the lastest one (the one with the highest id).
 
     List<QuarterlySeason> qSeasons = jdbcTemplate.query("select * from quarterlyseason where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate order by id desc", params, new QuarterlySeasonMapper());
+
+    if (qSeasons.size() > 0) {
+      return qSeasons.get(0);
+    }
+
+    throw new IncorrectResultSizeDataAccessException(0);
+  }
+
+  public QuarterlySeason getByDate(LocalDate date) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("date", date);
+    List<QuarterlySeason> qSeasons = jdbcTemplate.query("select * from quarterlyseason where :date >= startDate and :date <= endDate order by id desc", params, new QuarterlySeasonMapper());
 
     if (qSeasons.size() > 0) {
       return qSeasons.get(0);

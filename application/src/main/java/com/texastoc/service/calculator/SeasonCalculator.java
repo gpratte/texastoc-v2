@@ -109,14 +109,14 @@ public class SeasonCalculator {
 
     List<GamePlayer> gamePlayers = gamePlayerRepository.selectAnnualTocPlayersBySeasonId(id);
     for (GamePlayer gamePlayer : gamePlayers) {
-      SeasonPlayer seasonPlayer = seasonPlayerMap.get(gamePlayer.getId());
+      SeasonPlayer seasonPlayer = seasonPlayerMap.get(gamePlayer.getPlayerId());
       if (seasonPlayer == null) {
         seasonPlayer = SeasonPlayer.builder()
           .playerId(gamePlayer.getPlayerId())
           .seasonId(id)
           .name(gamePlayer.getName())
           .build();
-        seasonPlayerMap.put(gamePlayer.getId(), seasonPlayer);
+        seasonPlayerMap.put(gamePlayer.getPlayerId(), seasonPlayer);
       }
 
       if (gamePlayer.getPoints() != null && gamePlayer.getPoints() > 0) {

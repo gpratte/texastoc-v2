@@ -86,8 +86,7 @@ public class GameService {
     // TODO check that date is allowed - not before an existing game and not beyond the season.
     gameToCreate.setDate(game.getDate());
 
-    // TODO exception if null
-    QuarterlySeason currentQSeason = qSeasonRepository.getCurrent();
+    QuarterlySeason currentQSeason = qSeasonRepository.getByDate(game.getDate());
     gameToCreate.setSeasonId(currentQSeason.getSeasonId());
     gameToCreate.setQSeasonId(currentQSeason.getId());
     gameToCreate.setQuarter(currentQSeason.getQuarter());

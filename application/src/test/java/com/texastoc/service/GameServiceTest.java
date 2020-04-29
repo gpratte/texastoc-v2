@@ -84,6 +84,7 @@ public class GameServiceTest implements TestConstants {
     gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, seasonService, gameCalculator, payoutCalculator, pointsCalculator, configRepository, seasonCalculator, qSeasonCalculator, seatingRepository, roleRepository, smsConnector, emailConnector);
   }
 
+  @Ignore
   @Test
   public void testCreateGame() {
 
