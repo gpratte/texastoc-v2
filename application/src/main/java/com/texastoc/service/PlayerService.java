@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,9 +68,7 @@ public class PlayerService {
 
   @Transactional(readOnly = true)
   public List<Player> get() {
-    List<Player> players = playerRepository.get();
-    Collections.sort(players);
-    return players;
+    return playerRepository.get();
   }
 
   @Transactional(readOnly = true)

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("Duplicates")
@@ -28,33 +29,39 @@ public class GamePlayerRepository {
   public List<GamePlayer> selectByGameId(int gameId) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("gameId", gameId);
-    return jdbcTemplate
+    List<GamePlayer> gamePlayers = jdbcTemplate
       .query("select * from gameplayer"
           + " where gameId = :gameId ",
         params,
         new GamePlayerMapper());
+    Collections.sort(gamePlayers);
+    return gamePlayers;
   }
 
   public List<GamePlayer> selectAnnualTocPlayersBySeasonId(int seasonId) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("seasonId", seasonId);
-    return jdbcTemplate
+    List<GamePlayer> gamePlayers = jdbcTemplate
       .query("select * from gameplayer "
           + " where seasonId = :seasonId "
           + " and annualTocCollected IS NOT NULL ",
         params,
         new GamePlayerMapper());
+    Collections.sort(gamePlayers);
+    return gamePlayers;
   }
 
   public List<GamePlayer> selectQuarterlyTocPlayersByQuarterlySeasonId(int qSeasonId) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("qSeasonId", qSeasonId);
-    return jdbcTemplate
+    List<GamePlayer> gamePlayers = jdbcTemplate
       .query("select * from gameplayer "
           + " where qSeasonId = :qSeasonId "
           + " and quarterlyTocCollected IS NOT NULL ",
         params,
         new GamePlayerMapper());
+    Collections.sort(gamePlayers);
+    return gamePlayers;
   }
 
   public GamePlayer selectById(int id) {

@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -169,7 +168,6 @@ public class GameService {
 
   private Game populateGame(Game game) {
     List<GamePlayer> players = gamePlayerRepository.selectByGameId(game.getId());
-    Collections.sort(players);
     game.setPlayers(players);
     int numPaidPlayers = 0;
     int numPaidPlayersRemaining = 0;
@@ -747,7 +745,6 @@ public class GameService {
         }
 
         if (isAdmin && !StringUtils.isBlank(player.getEmail())) {
-          System.out.println("!!! sending summary to " + player.getEmail());
           emailConnector.send(player.getEmail(), subject, body);
         }
       }

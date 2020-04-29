@@ -22,20 +22,29 @@ public class SeasonPlayer implements Comparable<SeasonPlayer> {
 
   @Override
   public int compareTo(SeasonPlayer other) {
-    // If I do not have a place and the other does
-    if (place == null) {
-      if (other.place != null) {
+    // If I do not have a points and the other does then I come after
+    if (points == 0) {
+      if (other.points > 0) {
         return 1;
       }
     }
 
-    // If I have a place and the other either does not or is higher than mine then I come before other
-    if (place != null) {
-      if (other.place == null) {
+    // If I have points
+    if (points > 0) {
+      // the other does not then I come before other
+      if (other.points == 0) {
         return -1;
       }
-      if (place.intValue() < other.place.intValue()) {
+      // the other points are smaller than mine then I come before other
+      if (points > other.points) {
         return -1;
+      }
+      // If the points are equal then we are the same
+      if (points == other.points) {
+        // This only matters if our points are not zero
+        if (points > 0) {
+          return 0;
+        }
       }
     }
 

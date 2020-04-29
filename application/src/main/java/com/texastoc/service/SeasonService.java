@@ -2,8 +2,11 @@ package com.texastoc.service;
 
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.Game;
-import com.texastoc.model.season.*;
+import com.texastoc.model.season.Quarter;
+import com.texastoc.model.season.QuarterlySeason;
+import com.texastoc.model.season.Season;
 import com.texastoc.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +16,9 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 public class SeasonService {
 
@@ -115,18 +118,14 @@ public class SeasonService {
 //        }
 
     Season season = seasonRepository.get(id);
-    List<SeasonPlayer> seasonPlayers = seasonPlayerRepository.getBySeasonId(id);
-    Collections.sort(seasonPlayers);
-    season.setPlayers(seasonPlayers);
+    season.setPlayers(seasonPlayerRepository.getBySeasonId(id));
     season.setPayouts(seasonPayoutRepository.getBySeasonId(id));
 
     season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(id));
     season.setGames(gameRepository.getBySeasonId(id));
 
     for (QuarterlySeason qSeason : season.getQuarterlySeasons()) {
-      List<QuarterlySeasonPlayer> qSeasonPlayers = qSeasonPlayerRepository.getByQSeasonId(qSeason.getId());
-      Collections.sort(qSeasonPlayers);
-      qSeason.setPlayers(qSeasonPlayers);
+      qSeason.setPlayers(qSeasonPlayerRepository.getByQSeasonId(qSeason.getId()));
       qSeason.setPayouts(qSeasonPayoutRepository.getByQSeasonId(qSeason.getId()));
     }
 

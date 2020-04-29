@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -28,12 +29,14 @@ public class QuarterlySeasonPlayerRepository {
   public List<QuarterlySeasonPlayer> getByQSeasonId(int qSeasonId) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("qSeasonId", qSeasonId);
-    return jdbcTemplate
+    List<QuarterlySeasonPlayer> qSeasonPlayers = jdbcTemplate
       .query("select * from quarterlyseasonplayer"
           + " where qSeasonId = :qSeasonId"
           + " order by name",
         params,
         new QuarterlySeasonPlayerMapper());
+    Collections.sort(qSeasonPlayers);
+    return qSeasonPlayers;
   }
 
   public void deleteByQSeasonId(int qSeasonId) {
