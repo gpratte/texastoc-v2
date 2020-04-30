@@ -465,13 +465,6 @@ public class GameService {
     sb.append("    <td>" + game.getDate() + "</td>");
     sb.append("   </tr>");
     sb.append("   <tr>");
-    sb.append("    <td>Double buy in:</td>");
-    if (game.isDoubleBuyIn())
-      sb.append("<td>Yes</td>");
-    else
-      sb.append("<td>No</td>");
-    sb.append("   </tr>");
-    sb.append("   <tr>");
     sb.append("    <td>Number of Players:</td>");
     sb.append("    <td>" + game.getNumPlayers() + "</td>");
     sb.append("   </tr>");
