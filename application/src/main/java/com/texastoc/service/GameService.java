@@ -541,10 +541,10 @@ public class GameService {
     sb.append("     <th>Name</th>");
     sb.append("     <th>Pts</th>");
     sb.append("     <th>Chp</th>");
-    sb.append("     <th>TOC</th>");
-    sb.append("     <th>QTOC</th>");
     sb.append("     <th>Buy<br/>In</th>");
     sb.append("     <th>Re<br/>Buy</th>");
+    sb.append("     <th>TOC</th>");
+    sb.append("     <th>QTOC</th>");
     sb.append("    </tr>");
 
     for (GamePlayer gamePlayer : game.getPlayers()) {
@@ -563,22 +563,33 @@ public class GameService {
         sb.append("     <td>" + gamePlayer.getChop() + "</td>");
       else
         sb.append("     <td></td>");
-      if (gamePlayer.getAnnualTocCollected() != null)
-        sb.append("     <td align=\"center\">Yes</td>");
-      else
-        sb.append("     <td></td>");
-      if (gamePlayer.getQuarterlyTocCollected() != null)
-        sb.append("     <td align=\"center\">Yes</td>");
-      else
-        sb.append("     <td></td>");
+
       if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0)
         sb.append("     <td align=\"center\">" + gamePlayer.getBuyInCollected()
           + "</td>");
       else
         sb.append("     <td></td>");
-      if (gamePlayer.getRebuyAddOnCollected() != null && gamePlayer.getRebuyAddOnCollected() > 0)
-        sb.append("     <td align=\"center\">"
-          + gamePlayer.getRebuyAddOnCollected() + "</td>");
+      if (gamePlayer.getRebuyAddOnCollected() != null && gamePlayer.getRebuyAddOnCollected() > 0) {
+        if (gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0) {
+          sb.append("     <td align=\"center\">"
+            + gamePlayer.getRebuyAddOnCollected());
+          sb.append("("
+            + (gamePlayer.getRebuyAddOnCollected() - game.getRebuyAddOnTocDebit())
+            + ")");
+        } else {
+          sb.append("     <td align=\"center\">"
+            + gamePlayer.getRebuyAddOnCollected());
+        }
+        sb.append("</td>");
+      } else
+        sb.append("     <td></td>");
+
+      if (gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0)
+        sb.append("     <td align=\"center\">" + gamePlayer.getAnnualTocCollected() + "</td>");
+      else
+        sb.append("     <td></td>");
+      if (gamePlayer.getQuarterlyTocCollected() != null && gamePlayer.getQuarterlyTocCollected() > 0)
+        sb.append("     <td align=\"center\">" + gamePlayer.getQuarterlyTocCollected() + "</td>");
       else
         sb.append("     <td></td>");
       sb.append("    </tr>");
