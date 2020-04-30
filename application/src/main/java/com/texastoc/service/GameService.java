@@ -261,6 +261,27 @@ public class GameService {
   }
 
   @Transactional
+  public GamePlayer toogleGamePlayerKnockedOut(int gameId, int gamePlayerId) {
+    Game game = gameRepository.getById(gameId);
+    checkFinalized(game);
+
+    GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
+    Boolean knockedOut = gamePlayer.getKnockedOut();
+    if (knockedOut == null) {
+      knockedOut = true;
+    } else {
+      knockedOut = !knockedOut;
+    }
+    gamePlayer.setKnockedOut(knockedOut);
+
+    gamePlayerRepository.update(gamePlayer);
+
+    recalculate(game);
+
+    return gamePlayer;
+  }
+
+  @Transactional
   public void deleteGamePlayer(int gamePlayerId) {
     GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
     checkFinalized(gamePlayer.getGameId());
