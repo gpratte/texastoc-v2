@@ -5,6 +5,7 @@ import com.texastoc.exception.NotFoundException;
 import com.texastoc.model.user.Player;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.RoleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class PlayerService {
 
@@ -88,6 +90,7 @@ public class PlayerService {
   public void sendCode(String email) {
     String generatedString = RandomStringUtils.random(5, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
     forgotPasswordCodes.put(email, generatedString);
+    log.info("reset code: {}", generatedString);
     emailConnector.send(email, "Reset Code", generatedString);
   }
 

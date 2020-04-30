@@ -12,9 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.Month;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +33,6 @@ public class SeasonService {
   private final QuarterlySeasonPayoutRepository qSeasonPayoutRepository;
 
   private Season cachedSeason = null;
-  private ZoneId zoneId = ZoneId.of("US/Central");
-
 
   @Autowired
   public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonPlayerRepository seasonPlayerRepository, SeasonPayoutRepository seasonPayoutRepository, QuarterlySeasonPlayerRepository qSeasonPlayerRepository, QuarterlySeasonPayoutRepository qSeasonPayoutRepository) {
@@ -54,17 +51,17 @@ public class SeasonService {
   @Transactional
   public Season createSeason(int startYear) {
 
-    ZonedDateTime start = ZonedDateTime.of(startYear, Month.MAY.getValue(), 1, 1, 1, 1, 1, zoneId);
+    LocalDate start = LocalDate.of(startYear, Month.MAY.getValue(), 1);
 
     // TODO make sure not overlapping with another season
     // The end will be the day before the start date next year
-    ZonedDateTime end = start.plusYears(1).minusDays(1);
+    LocalDate end = start.plusYears(1).minusDays(1);
 
     TocConfig tocConfig = configRepository.get();
 
     // Count the number of Thursdays between the start and end inclusive
     int numThursdays = 0;
-    ZonedDateTime thursday = findNextThursday(start);
+    LocalDate thursday = findNextThursday(start);
     while (thursday.isBefore(end) || thursday.isEqual(end)) {
       ++numThursdays;
       thursday = thursday.plusWeeks(1);
@@ -73,8 +70,8 @@ public class SeasonService {
     List<QuarterlySeason> qSeasons = createQuarterlySeasons(start, end, tocConfig);
 
     Season newSeason = Season.builder()
-      .start(start.toLocalDate())
-      .end(end.toLocalDate())
+      .start(start)
+      .end(end)
       .kittyPerGame(tocConfig.getKittyDebit())
       .tocPerGame(tocConfig.getAnnualTocCost())
       .quarterlyTocPerGame(tocConfig.getQuarterlyTocCost())
@@ -151,36 +148,36 @@ public class SeasonService {
     return seasonRepository.getCurrent().getId();
   }
 
-  private List<QuarterlySeason> createQuarterlySeasons(ZonedDateTime seasonStart, ZonedDateTime seasonEnd, TocConfig tocConfig) {
+  private List<QuarterlySeason> createQuarterlySeasons(LocalDate seasonStart, LocalDate seasonEnd, TocConfig tocConfig) {
     List<QuarterlySeason> qSeasons = new ArrayList<>(4);
     for (int i = 1; i <= 4; ++i) {
-      ZonedDateTime qStart = null;
-      ZonedDateTime qEnd = null;
+      LocalDate qStart = null;
+      LocalDate qEnd = null;
       switch (i) {
         case 1:
           // Season start
           qStart = seasonStart;
           // Last day in July
-          qEnd = ZonedDateTime.of(seasonStart.getYear(), Month.AUGUST.getValue(), 1, 1, 1, 1, 1, zoneId);
+          qEnd = LocalDate.of(seasonStart.getYear(), Month.AUGUST.getValue(), 1);
           qEnd = qEnd.minusDays(1);
           break;
         case 2:
           // First day in August
-          qStart = ZonedDateTime.of(seasonStart.getYear(), Month.AUGUST.getValue(), 1, 1, 1, 1, 1, zoneId);
+          qStart = LocalDate.of(seasonStart.getYear(), Month.AUGUST.getValue(), 1);
           // Last day in October
-          qEnd = ZonedDateTime.of(seasonStart.getYear(), Month.NOVEMBER.getValue(), 1, 1, 1, 1, 1, zoneId);
+          qEnd = LocalDate.of(seasonStart.getYear(), Month.NOVEMBER.getValue(), 1);
           qEnd = qEnd.minusDays(1);
           break;
         case 3:
           // First day in November
-          qStart = ZonedDateTime.of(seasonStart.getYear(), Month.NOVEMBER.getValue(), 1, 1, 1, 1, 1, zoneId);
+          qStart = LocalDate.of(seasonStart.getYear(), Month.NOVEMBER.getValue(), 1);
           // Last day in January
-          qEnd = ZonedDateTime.of(seasonStart.getYear() + 1, Month.FEBRUARY.getValue(), 1, 1, 1, 1, 1, zoneId);
+          qEnd = LocalDate.of(seasonStart.getYear() + 1, Month.FEBRUARY.getValue(), 1);
           qEnd = qEnd.minusDays(1);
           break;
         case 4:
           // First day in February
-          qStart = ZonedDateTime.of(seasonStart.getYear() + 1, Month.FEBRUARY.getValue(), 1, 1, 1, 1, 1, zoneId);
+          qStart = LocalDate.of(seasonStart.getYear() + 1, Month.FEBRUARY.getValue(), 1);
           // End of season
           qEnd = seasonEnd;
           break;
@@ -188,7 +185,7 @@ public class SeasonService {
 
       // Count the number of Thursdays between the start and end inclusive
       int qNumThursdays = 0;
-      ZonedDateTime thursday = findNextThursday(qStart);
+      LocalDate thursday = findNextThursday(qStart);
       while (thursday.isBefore(qEnd) || thursday.isEqual(qEnd)) {
         ++qNumThursdays;
         thursday = thursday.plusWeeks(1);
@@ -196,8 +193,8 @@ public class SeasonService {
 
       QuarterlySeason qSeason = QuarterlySeason.builder()
         .quarter(Quarter.fromInt(i))
-        .start(qStart.toLocalDate())
-        .end(qEnd.toLocalDate())
+        .start(qStart)
+        .end(qEnd)
         .finalized(false)
         .numGames(qNumThursdays)
         .numGamesPlayed(0)
@@ -210,7 +207,7 @@ public class SeasonService {
     return qSeasons;
   }
 
-  private ZonedDateTime findNextThursday(ZonedDateTime day) {
+  private LocalDate findNextThursday(LocalDate day) {
     while (true) {
       if (day.getDayOfWeek() == DayOfWeek.THURSDAY) {
         return day;
