@@ -6,14 +6,13 @@ import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.QuarterlySeasonPayout;
 import com.texastoc.model.season.QuarterlySeasonPlayer;
 import com.texastoc.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+@Slf4j
 @Component
 public class QuarterlySeasonCalculator {
 
@@ -81,17 +80,15 @@ public class QuarterlySeasonCalculator {
     List<GamePlayer> gamePlayers = gamePlayerRepository.selectQuarterlyTocPlayersByQuarterlySeasonId(qSeasonId);
 
     for (GamePlayer gamePlayer : gamePlayers) {
-      QuarterlySeasonPlayer player = seasonPlayerMap.get(gamePlayer.getId());
+      QuarterlySeasonPlayer player = seasonPlayerMap.get(gamePlayer.getPlayerId());
       if (player == null) {
-
         player = QuarterlySeasonPlayer.builder()
           .playerId(gamePlayer.getPlayerId())
           .seasonId(seasonId)
           .qSeasonId(qSeasonId)
           .name(gamePlayer.getName())
           .build();
-
-        seasonPlayerMap.put(gamePlayer.getId(), player);
+        seasonPlayerMap.put(gamePlayer.getPlayerId(), player);
       }
 
       if (gamePlayer.getPoints() != null && gamePlayer.getPoints() > 0) {
@@ -102,14 +99,12 @@ public class QuarterlySeasonCalculator {
     }
 
     List<QuarterlySeasonPlayer> players = new ArrayList<>(seasonPlayerMap.values());
+    Collections.sort(players);
 
-    // Sort and set the place
-    players.sort((p1, p2) -> p2.getPoints() - p1.getPoints());
     int place = 1;
     for (QuarterlySeasonPlayer player : players) {
       if (player.getPoints() > 0) {
-        player.setPlace(place);
-        ++place;
+        player.setPlace(place++);
       }
     }
 

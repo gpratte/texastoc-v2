@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 @Configuration
 public class MysqlDatabaseConfig {
 
-  @Value("${mysql.url:jdbc:mysql://localhost/toc?useTimezone=true&serverTimezone=UTC}")
+  @Value("${mysql.url:jdbc:mysql://localhost/toc?useTimezone=true&serverTimezone=CST}")
   private String url;
   @Value("${mysql.username:tocuser}")
   private String username;

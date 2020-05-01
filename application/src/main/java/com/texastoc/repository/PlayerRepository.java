@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,9 @@ public class PlayerRepository {
 
   // Does not include the players' roles or password
   public List<Player> get() {
-    return jdbcTemplate.query("select id, firstName, lastName, phone, email from player order by firstName, lastName", new PlayerMapper());
+    List<Player> players = jdbcTemplate.query("select id, firstName, lastName, phone, email from player order by firstName, lastName", new PlayerMapper());
+    Collections.sort(players);
+    return players;
   }
 
   private static final String GET_SQL = "select pl.*, " +

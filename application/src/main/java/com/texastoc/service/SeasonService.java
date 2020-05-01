@@ -6,6 +6,7 @@ import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
 import com.texastoc.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class SeasonService {
 
@@ -47,9 +49,9 @@ public class SeasonService {
   }
 
   @Transactional
-  public Season createSeason(LocalDate start) {
+  public Season createSeason(int startYear) {
 
-    // TODO make sure this season starts after the last game of the previous season
+    LocalDate start = LocalDate.of(startYear, Month.MAY.getValue(), 1);
 
     // TODO make sure not overlapping with another season
     // The end will be the day before the start date next year
@@ -156,26 +158,26 @@ public class SeasonService {
           // Season start
           qStart = seasonStart;
           // Last day in July
-          qEnd = LocalDate.of(seasonStart.getYear(), Month.AUGUST, 1);
+          qEnd = LocalDate.of(seasonStart.getYear(), Month.AUGUST.getValue(), 1);
           qEnd = qEnd.minusDays(1);
           break;
         case 2:
           // First day in August
-          qStart = LocalDate.of(seasonStart.getYear(), Month.AUGUST, 1);
+          qStart = LocalDate.of(seasonStart.getYear(), Month.AUGUST.getValue(), 1);
           // Last day in October
-          qEnd = LocalDate.of(seasonStart.getYear(), Month.NOVEMBER, 1);
+          qEnd = LocalDate.of(seasonStart.getYear(), Month.NOVEMBER.getValue(), 1);
           qEnd = qEnd.minusDays(1);
           break;
         case 3:
           // First day in November
-          qStart = LocalDate.of(seasonStart.getYear(), Month.NOVEMBER, 1);
+          qStart = LocalDate.of(seasonStart.getYear(), Month.NOVEMBER.getValue(), 1);
           // Last day in January
-          qEnd = LocalDate.of(seasonStart.getYear() + 1, Month.FEBRUARY, 1);
+          qEnd = LocalDate.of(seasonStart.getYear() + 1, Month.FEBRUARY.getValue(), 1);
           qEnd = qEnd.minusDays(1);
           break;
         case 4:
           // First day in February
-          qStart = LocalDate.of(seasonStart.getYear() + 1, Month.FEBRUARY, 1);
+          qStart = LocalDate.of(seasonStart.getYear() + 1, Month.FEBRUARY.getValue(), 1);
           // End of season
           qEnd = seasonEnd;
           break;

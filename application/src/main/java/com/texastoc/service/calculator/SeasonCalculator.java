@@ -9,10 +9,7 @@ import com.texastoc.repository.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class SeasonCalculator {
@@ -112,16 +109,14 @@ public class SeasonCalculator {
 
     List<GamePlayer> gamePlayers = gamePlayerRepository.selectAnnualTocPlayersBySeasonId(id);
     for (GamePlayer gamePlayer : gamePlayers) {
-      SeasonPlayer seasonPlayer = seasonPlayerMap.get(gamePlayer.getId());
+      SeasonPlayer seasonPlayer = seasonPlayerMap.get(gamePlayer.getPlayerId());
       if (seasonPlayer == null) {
-
         seasonPlayer = SeasonPlayer.builder()
           .playerId(gamePlayer.getPlayerId())
           .seasonId(id)
           .name(gamePlayer.getName())
           .build();
-
-        seasonPlayerMap.put(gamePlayer.getId(), seasonPlayer);
+        seasonPlayerMap.put(gamePlayer.getPlayerId(), seasonPlayer);
       }
 
       if (gamePlayer.getPoints() != null && gamePlayer.getPoints() > 0) {
@@ -131,7 +126,17 @@ public class SeasonCalculator {
       seasonPlayer.setEntries(seasonPlayer.getEntries() + 1);
     }
 
-    return new ArrayList<>(seasonPlayerMap.values());
+    List<SeasonPlayer> seasonPlayers = new ArrayList<>(seasonPlayerMap.values());
+    Collections.sort(seasonPlayers);
+
+    int count = 1;
+    for (SeasonPlayer player : seasonPlayers) {
+      if (player.getPoints() > 0) {
+        player.setPlace(count++);
+      }
+    }
+
+    return seasonPlayers;
   }
 
 }

@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-
 @SuppressWarnings("unused")
 @RestController
 public class SeasonRestController {
@@ -21,8 +19,8 @@ public class SeasonRestController {
 
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/api/v2/seasons")
-  public Season createSeason(@RequestBody LocalDate start) {
-    return seasonService.createSeason(start);
+  public Season createSeason(@RequestBody SeasonStart seasonStart) {
+    return seasonService.createSeason(seasonStart.getStartYear());
   }
 
   @GetMapping("/api/v2/seasons/{id}")
@@ -36,4 +34,15 @@ public class SeasonRestController {
     return getSeason(seasonId);
   }
 
+  private static class SeasonStart {
+    private int startYear;
+
+    public int getStartYear() {
+      return startYear;
+    }
+
+    public void setStartYear(int startYear) {
+      this.startYear = startYear;
+    }
+  }
 }

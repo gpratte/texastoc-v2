@@ -55,8 +55,6 @@ public class EmailConnector {
 
     @Override
     public Void call() throws Exception {
-      log.info("Attemping to send email " + emailPayload);
-
       try {
         CloseableHttpClient client = HttpClientBuilder
           .create()

@@ -29,6 +29,31 @@ public class GamePlayer implements Comparable<GamePlayer> {
 
   @Override
   public int compareTo(GamePlayer other) {
+    // If I do not have a points and the other does then I come after
+    if (points == null) {
+      if (other.points != null) {
+        return 1;
+      }
+    }
+
+    // If I have points
+    if (points != null) {
+      // the other does not then I come before other
+      if (other.points == null) {
+        return -1;
+      }
+      // the other points are smaller than mine then I come before other
+      if (points.intValue() > other.points.intValue()) {
+        return -1;
+      }
+      // If the points are equal then we are the same
+      if (points.intValue() == other.points.intValue()) {
+        // This only matters if our points are not zero
+        if (points.intValue() > 0) {
+          return 0;
+        }
+      }
+    }
 
     // If I don't have a name
     if (name == null) {

@@ -69,7 +69,7 @@ public class SeasonServiceTest implements TestConstants {
     Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
 
     // Act
-    Season actual = service.createSeason(start);
+    Season actual = service.createSeason(start.getYear());
 
     // Assert
     TestUtils.assertCreatedSeason(start, actual);

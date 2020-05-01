@@ -98,6 +98,11 @@ public class GameRestController {
     return gameService.updateGamePlayer(ugpr);
   }
 
+  @PutMapping(value = "/api/v2/games/{id}/players/{playerId}", consumes = "application/vnd.texastoc.knockout+json")
+  public GamePlayer toggleKnockedOut(@PathVariable("id") int id, @PathVariable("playerId") int playerId) {
+    return gameService.toogleGamePlayerKnockedOut(id, playerId);
+  }
+
   @DeleteMapping("/api/v2/games/{id}/players/{playerId}")
   public void deleteGamePlayer(@PathVariable("id") int id, @PathVariable("playerId") int playerId) {
     // TODO use the game id when deleting
