@@ -52,15 +52,7 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 58-production-build
-Made the changes to be able to run this server as a war in tomcat
-* changed the pom.xml packaging from jar to war
-* change the jjwt dependency because running in tomcat was not happy
-* removed the H2 embedded database dependency to use mysql instead
-* to get the spring boot application to run as a war had to change the main application to _extends SpringBootServletInitializer_
-* moved the configuration for H2 and mysql into an @Configuration that are conditionally included using the _@Profile_ annotation
-* setting configuration values using the _@Value_ annotation with a default that works for testing. These values get picked up in production from the environment.
-* increase the JWT signing key because running in production complained the key was too short
-* had to change the name from logback-spring.xml to logback.xml for it to be found when running as a war
-* created a web.xml which is needed for running in a war
-* created seed sql files for initiating the database tables.
+## Current Branch: 59-final-shake-down
+This is the last branch that made up version 2.0 Minimal Viable Product (MVP)!
+
+A bunch of little changes while testing it in a production environment. For example had to flesh out sending the game summary email and sorting players.
