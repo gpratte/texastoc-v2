@@ -176,9 +176,11 @@ public class GameRepository {
     return games;
   }
 
-  public List<Game> getUnfinalized() {
+  public List<Game> getUnfinalized(int seasonId) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("seasonId", seasonId);
     return jdbcTemplate
-      .query("select * from game where finalized IS NULL OR finalized = false", new GameMapper());
+      .query("select * from game where seasonId = :seasonId and finalized = false", params, new GameMapper());
   }
 
   public List<Game> getMostRecent(int seasonId) {

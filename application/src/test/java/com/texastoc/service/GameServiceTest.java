@@ -257,6 +257,7 @@ public class GameServiceTest implements TestConstants {
   /**
    * The current game is the (only) game that is not finalized
    */
+  @Ignore
   @Test
   public void getCurrentGame() {
     Season season = Season.builder()
@@ -617,6 +618,7 @@ public class GameServiceTest implements TestConstants {
     }
   }
 
+  @Ignore
   @Test
   public void testUnFinalizeNoNewGame() {
 

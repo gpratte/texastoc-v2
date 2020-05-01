@@ -74,10 +74,14 @@ public class GameService {
 
   @Transactional
   public Game createGame(Game game) {
-    // Reject if there is a game in progress
-    Game currentGame = getCurrentGame();
-    if (currentGame != null && !currentGame.isFinalized()) {
-      throw new GameInProgressException("There is a game in progress.");
+    Season currentSeason = seasonRepository.getCurrent();
+
+    // Make sure no other game is open
+    List<Game> otherGames = gameRepository.getBySeasonId(currentSeason.getId());
+    for (Game otherGame : otherGames) {
+      if (!otherGame.isFinalized()) {
+        throw new GameInProgressException("There is a game in progress.");
+      }
     }
 
     Game gameToCreate = new Game();
@@ -99,7 +103,6 @@ public class GameService {
     gameToCreate.setDoubleBuyIn(game.isDoubleBuyIn());
     gameToCreate.setTransportRequired(game.isTransportRequired());
 
-    Season currentSeason = seasonRepository.getCurrent();
     gameToCreate.setKittyCost(currentSeason.getKittyPerGame());
     gameToCreate.setBuyInCost(currentSeason.getBuyInCost());
     gameToCreate.setRebuyAddOnCost(currentSeason.getRebuyAddOnCost());
@@ -133,7 +136,14 @@ public class GameService {
   @Transactional(readOnly = true)
   public Game getCurrentGame() {
     int seasonId = seasonRepository.getCurrent().getId();
-    List<Game> games = gameRepository.getMostRecent(seasonId);
+    List<Game> games = gameRepository.getUnfinalized(seasonId);
+    if (games.size() > 0) {
+      Game game = games.get(0);
+      populateGame(game);
+      return game;
+    }
+
+    games = gameRepository.getMostRecent(seasonId);
     if (games.size() > 0) {
       Game game = games.get(0);
       populateGame(game);
@@ -341,16 +351,27 @@ public class GameService {
   }
 
   public void openGame(int id) {
-    Game game = gameRepository.getById(id);
+    Game gameToOpen = gameRepository.getById(id);
 
-    Season season = seasonRepository.get(game.getSeasonId());
+    Season season = seasonRepository.get(gameToOpen.getSeasonId());
     if (season.isFinalized()) {
       // TODO throw exception and handle in RestControllerAdvise
-      return;
+      throw new RuntimeException("Cannot open a game when season is finalized");
     }
 
-    game.setFinalized(false);
-    gameRepository.update(game);
+    // Make sure no other game is open
+    List<Game> games = gameRepository.getBySeasonId(gameToOpen.getSeasonId());
+    for (Game game : games) {
+      if (game.getId() == gameToOpen.getId()) {
+        continue;
+      }
+      if (!game.isFinalized()) {
+        throw new GameInProgressException("There is a game in progress.");
+      }
+    }
+
+    gameToOpen.setFinalized(false);
+    gameRepository.update(gameToOpen);
   }
 
   // Worker to avoid one @Transacation calling anther @Transactional
