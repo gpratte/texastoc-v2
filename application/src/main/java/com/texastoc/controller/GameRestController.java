@@ -66,6 +66,12 @@ public class GameRestController {
     throw new NotFoundException("Current game not found");
   }
 
+  @GetMapping(value = "/api/v2/games", consumes = "application/vnd.texastoc.clear-cache+json")
+  public String getCurrentNoCacheGame() {
+    gameService.geClearCacheGame();
+    return "done";
+  }
+
   @PutMapping(value = "/api/v2/games/{id}", consumes = "application/vnd.texastoc.finalize+json")
   public void finalizeGame(@PathVariable("id") int id) {
     clockService.endClock(id);

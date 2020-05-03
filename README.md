@@ -52,7 +52,6 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 59-final-shake-down
-This is the last branch that made up version 2.0 Minimal Viable Product (MVP)!
-
-A bunch of little changes while testing it in a production environment. For example had to flesh out sending the game summary email and sorting players.
+## Current Branch: 60-cache-current-game
+Cache the current game. Force the cache to clean via the
+get game with context type application/vnd.texastoc.clear-cache+json

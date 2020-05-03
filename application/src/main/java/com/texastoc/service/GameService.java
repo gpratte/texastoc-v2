@@ -19,6 +19,8 @@ import com.texastoc.repository.*;
 import com.texastoc.service.calculator.*;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +74,7 @@ public class GameService {
     this.emailConnector = emailConnector;
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
   public Game createGame(Game game) {
     Season currentSeason = seasonRepository.getCurrent();
@@ -133,7 +136,12 @@ public class GameService {
     return populateGame(game);
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
+  public void geClearCacheGame() {
+  }
+
   @Transactional(readOnly = true)
+  @Cacheable("currentGame")
   public Game getCurrentGame() {
     int seasonId = seasonRepository.getCurrent().getId();
     List<Game> games = gameRepository.getUnfinalized(seasonId);
@@ -204,6 +212,7 @@ public class GameService {
     return game;
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
   public void updateGame(Game game) {
     Game currentGame = gameRepository.getById(game.getId());
@@ -222,6 +231,7 @@ public class GameService {
     gameRepository.update(game);
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
   public GamePlayer createGamePlayer(CreateGamePlayerRequest cgpr) {
     Game game = gameRepository.getById(cgpr.getGameId());
@@ -238,6 +248,7 @@ public class GameService {
     return createGamePlayerWorker(gamePlayer, game);
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
   public GamePlayer updateGamePlayer(UpdateGamePlayerRequest ugpr) {
     Game game = gameRepository.getById(ugpr.getGameId());
@@ -270,6 +281,7 @@ public class GameService {
     return gamePlayer;
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
   public GamePlayer toogleGamePlayerKnockedOut(int gameId, int gamePlayerId) {
     Game game = gameRepository.getById(gameId);
@@ -291,6 +303,7 @@ public class GameService {
     return gamePlayer;
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
   public void deleteGamePlayer(int gamePlayerId) {
     GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
@@ -307,6 +320,7 @@ public class GameService {
     return gamePlayerRepository.selectById(gamePlayerId);
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
   public GamePlayer createFirstTimeGamePlayer(FirstTimeGamePlayer firstTimeGamePlayer) {
     Game game = gameRepository.getById(firstTimeGamePlayer.getGameId());
@@ -339,6 +353,8 @@ public class GameService {
     return createGamePlayerWorker(gamePlayer, game);
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
+  @Transactional
   public void endGame(int id) {
     Game game = gameRepository.getById(id);
     game.setFinalized(true);
@@ -350,6 +366,7 @@ public class GameService {
     sendGameSummary(id);
   }
 
+  @CacheEvict(value = "currentGame", allEntries = true)
   public void openGame(int id) {
     Game gameToOpen = gameRepository.getById(id);
 
