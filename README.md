@@ -18,18 +18,13 @@ To run in IntelliJ right click on the java folder and choose _Run 'All Tests'_
 To run all the tests from the command line type
 * mvn test
 
-The cucumber tests in the integration module run with
-* @ActiveProfiles("test")
+To run the server from the command line (note the maven "dev" profile that will set the spring
+profile also to "dev")
+* mvn -pl application spring-boot:run
 
-
-Setting **spring.profiles.active=true** results in creating an H2 database and runs the statements in the *create_toc_schema.sql* file for the tests are run.
-
-
-# Run Server with H2 database
-Set the following to run the server with an H2 database with all tables created:
-* spring.profiles.active=test
-
-Setting the **spring.profiles.active=true** results in creating an H2 database and runs the statements in the *create_toc_schema.sql* file.
+# spring.profiles.active=dev
+Setting the spring profile to "dev" will run the server an H2 database with all tables created
+and seeded with some users that are defined in the *create_toc_schema.sql* file.
 
 To connect to the H2 server
 * open `http://localhost:8080/h2-console` url.
