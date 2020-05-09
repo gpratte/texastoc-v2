@@ -20,10 +20,8 @@
     <dependencies>
         <dependency>
             <groupId>com.texastoc</groupId>
-            <artifactId>texastoc-application</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
-            <scope>provided</scope>
+            <artifactId>texastoc-v2-application</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -41,16 +39,6 @@
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-spring</artifactId>
             <version>2.3.1</version>
-            <scope>test</scope>
-        </dependency>
-        <!--Consume the test classes-->
-        <!--http://maven.apache.org/guides/mini/guide-attached-tests.html-->
-        <dependency>
-            <groupId>com.texastoc</groupId>
-            <artifactId>texastoc-application</artifactId>
-            <version>1.0</version>
-            <classifier>tests</classifier>
-            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>

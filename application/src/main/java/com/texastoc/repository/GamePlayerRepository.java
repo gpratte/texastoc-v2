@@ -132,6 +132,12 @@ public class GamePlayerRepository {
 
   public void update(final GamePlayer player) {
 
+    // Places are 1 through 10
+    Integer place = player.getPlace();
+    if (place != null && place > 10) {
+      place = null;
+    }
+
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("playerId", player.getPlayerId());
     params.addValue("gameId", player.getGameId());
@@ -139,7 +145,7 @@ public class GamePlayerRepository {
     params.addValue("seasonId", player.getSeasonId());
     params.addValue("name", player.getName());
     params.addValue("points", player.getPoints());
-    params.addValue("place", player.getPlace());
+    params.addValue("place", place);
     params.addValue("knockedOut", player.getKnockedOut());
     params.addValue("roundUpdates", player.getRoundUpdates());
     params.addValue("buyInCollected", player.getBuyInCollected());

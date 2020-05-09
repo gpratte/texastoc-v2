@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Profile;
 import javax.sql.DataSource;
 
 /**
- * Only run if the spring profile is "test"
+ * Only run if the spring profile is not "dev"
  */
-@Profile("!test")
+@Profile("!dev")
 @Configuration
 public class MysqlDatabaseConfig {
 

@@ -1,6 +1,5 @@
 package com.texastoc.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +14,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Only run if the spring profile is "test"
+ * Only run if the spring profile is "dev"
  */
-@Profile("test")
+@Profile("dev")
 @Configuration
 public class H2DatabaseConfig {
 

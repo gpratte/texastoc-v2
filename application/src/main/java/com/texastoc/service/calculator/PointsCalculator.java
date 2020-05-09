@@ -46,11 +46,15 @@ public class PointsCalculator {
 
     boolean pointsChanged = false;
     for (GamePlayer gamePlayer : gamePlayers) {
+      // Check if game player is in top 10
       if (gamePlayer.getPlace() != null && gamePlayer.getPlace() < 11) {
         if (gamePlayer.getPoints() == null || gamePlayer.getPoints().intValue() != placePoints.get(gamePlayer.getPlace())) {
           pointsChanged = true;
           gamePlayer.setPoints(placePoints.get(gamePlayer.getPlace()));
         }
+      } else if (gamePlayer.getPoints() != null) {
+        pointsChanged = true;
+        gamePlayer.setPoints(null);
       }
     }
 
@@ -165,7 +169,15 @@ public class PointsCalculator {
   private void persistPoints(List<GamePlayer> gamePlayers) {
     for (GamePlayer gamePlayer : gamePlayers) {
       GamePlayer currentGamePlayer = gamePlayerRepository.selectById(gamePlayer.getId());
-      currentGamePlayer.setPoints(gamePlayer.getPoints());
+
+      boolean isToc = currentGamePlayer.getAnnualTocCollected() != null && currentGamePlayer.getAnnualTocCollected() > 0;
+      boolean isQToc = currentGamePlayer.getQuarterlyTocCollected() != null && currentGamePlayer.getQuarterlyTocCollected() > 0;
+
+      if (isToc || isQToc) {
+        currentGamePlayer.setPoints(gamePlayer.getPoints());
+      } else {
+        currentGamePlayer.setPoints(null);
+      }
       gamePlayerRepository.update(currentGamePlayer);
     }
   }
