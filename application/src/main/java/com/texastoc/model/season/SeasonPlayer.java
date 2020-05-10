@@ -35,16 +35,17 @@ public class SeasonPlayer implements Comparable<SeasonPlayer> {
       if (other.points == 0) {
         return -1;
       }
-      // the other points are smaller than mine then I come before other
+      // if I have more points I come before
       if (points > other.points) {
         return -1;
       }
       // If the points are equal then we are the same
       if (points == other.points) {
-        // This only matters if our points are not zero
-        if (points > 0) {
-          return 0;
-        }
+        return 0;
+      }
+      // if I have less points I come after
+      if (points < other.points) {
+        return 1;
       }
     }
 
