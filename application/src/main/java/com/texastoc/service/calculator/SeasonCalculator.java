@@ -57,7 +57,7 @@ public class SeasonCalculator {
 
       annualTocFromRebuyAddOnCalculated += game.getAnnualTocFromRebuyAddOnCalculated();
       rebuyAddOnLessAnnualTocCalculated += game.getRebuyAddOnLessAnnualTocCalculated();
-      totalCombinedAnnualTocCalculated += game.getTotalCombinedTocCalculated();
+      totalCombinedAnnualTocCalculated += game.getAnnualTocCollected() + game.getAnnualTocFromRebuyAddOnCalculated();
       kittyCalculated += game.getKittyCalculated();
       prizePotCalculated += game.getPrizePotCalculated();
     }
