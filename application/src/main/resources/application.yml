@@ -3,6 +3,9 @@ spring:
     console:
       enabled: true
 
+version:
+  ui: 2.0
+
 points:
   numPlayers: 2
   tenthPlaceIncr: 0.5

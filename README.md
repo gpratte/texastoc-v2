@@ -53,13 +53,7 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 61-build-run-profiles
-Did a lot of work to get the project to run locally (with embedded H2
-or MySQL) in either IntelliJ or from the _mvn_ command.
+## Current Branch: 62-get-versions-api
+Rest API endpoint to get the software versions.
 
-Can also debug in IntelliJ or start the server with debug flags using
-_mvn_ and connect with IntelliJ.
-
-Also clean up some minor bugs from the first use. Mostly sorting
-game players and only giving points of the game player is in the
-TOC or Quarterly TOC groups.
+Current only returns version of the UI.
