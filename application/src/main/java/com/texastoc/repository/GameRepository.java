@@ -153,7 +153,7 @@ public class GameRepository {
     List<Game> games = Collections.emptyList();
     try {
       games = jdbcTemplate
-        .query("select * from game where seasonId = :seasonId", params, new GameMapper());
+        .query("select * from game where seasonId = :seasonId order by gameDate desc", params, new GameMapper());
     } catch (Exception e) {
       e.printStackTrace();
     }
