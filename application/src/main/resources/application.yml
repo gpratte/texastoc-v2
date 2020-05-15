@@ -4,7 +4,7 @@ spring:
       enabled: true
 
 version:
-  ui: 2.0
+  ui: 2.1
 
 points:
   numPlayers: 2
