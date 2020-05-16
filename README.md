@@ -45,8 +45,26 @@ will be used to communicate a running clock to the client.
 
 The client is going to first use polling so the websocket requirement has be put on hold.
 
-# Branches
+# SSL certificate
+Using LetsEncrypt for the SSL certificate.
 
+To generate/renew
+
+```
+certbot certonly \
+  --manual \
+  --preferred-challenges=dns \
+  --email <my email> \
+  --agree-tos \
+  --config-dir ./config \
+  --logs-dir ./logs \
+  --work-dir ./work \
+  --cert-name texastoc.com \
+  -d texastoc.com \
+  -d www.texastoc.com
+```
+
+# Branches
 The branch labels are prefixed in the order they were developer (e.g. 01-, 02, ...).
 
 Choose the branch from the github list of branches to see the readme for that branch.
