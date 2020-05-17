@@ -109,6 +109,11 @@ public class GameRestController {
     return gameService.toogleGamePlayerKnockedOut(id, playerId);
   }
 
+  @PutMapping(value = "/api/v2/games/{id}/players/{playerId}", consumes = "application/vnd.texastoc.rebuy+json")
+  public GamePlayer toggleRebuy(@PathVariable("id") int id, @PathVariable("playerId") int playerId) {
+    return gameService.toogleGamePlayerRebuy(id, playerId);
+  }
+
   @DeleteMapping("/api/v2/games/{id}/players/{playerId}")
   public void deleteGamePlayer(@PathVariable("id") int id, @PathVariable("playerId") int playerId) {
     // TODO use the game id when deleting

@@ -305,6 +305,28 @@ public class GameService {
 
   @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
+  public GamePlayer toogleGamePlayerRebuy(int gameId, int gamePlayerId) {
+    Game game = gameRepository.getById(gameId);
+    checkFinalized(game);
+
+    GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
+    Integer rebuy = gamePlayer.getRebuyAddOnCollected();
+    if (rebuy == null || rebuy != game.getRebuyAddOnCost()) {
+      rebuy = game.getRebuyAddOnCost();
+    } else {
+      rebuy = null;
+    }
+    gamePlayer.setRebuyAddOnCollected(rebuy);
+
+    gamePlayerRepository.update(gamePlayer);
+
+    recalculate(game);
+
+    return gamePlayer;
+  }
+
+  @CacheEvict(value = "currentGame", allEntries = true)
+  @Transactional
   public void deleteGamePlayer(int gamePlayerId) {
     GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
     checkFinalized(gamePlayer.getGameId());
