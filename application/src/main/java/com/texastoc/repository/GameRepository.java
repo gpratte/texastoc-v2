@@ -3,12 +3,14 @@ package com.texastoc.repository;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.season.Quarter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -94,7 +96,6 @@ public class GameRepository {
     " where id=:id";
 
   public void update(final Game game) {
-
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("seasonId", game.getSeasonId());
     params.addValue("qSeasonId", game.getQSeasonId());
@@ -127,6 +128,19 @@ public class GameRepository {
     params.addValue("id", game.getId());
 
     jdbcTemplate.update(UPDATE_SQL, params);
+  }
+
+  private static final String UPDATE_CAN_REBUY_SQL = "UPDATE game set " +
+    "canRebuy=:canRebuy where id=:id";
+
+
+  @CacheEvict(value = "currentGame", allEntries = true)
+  @Transactional
+  public void updateCanRebuy(final boolean canRebuy, int gameId) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("canRebuy", canRebuy);
+    params.addValue("id", gameId);
+    jdbcTemplate.update(UPDATE_CAN_REBUY_SQL, params);
   }
 
 
@@ -223,6 +237,7 @@ public class GameRepository {
         game.setPayoutDelta(rs.getInt("payoutDelta"));
         game.setSeasonGameNum(rs.getInt("seasonGameNum"));
         game.setQuarterlyGameNum(rs.getInt("quarterlyGameNum"));
+        game.setCanRebuy(rs.getBoolean("canRebuy"));
 
         String value = rs.getString("hostName");
         if (value != null) {

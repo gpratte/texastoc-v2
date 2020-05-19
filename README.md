@@ -71,7 +71,8 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 62-get-versions-api
-Rest API endpoint to get the software versions.
+## Current Branch: 63-can-rebuy
+Game variable signifying if rebuys are still allowed.
 
-Current only returns version of the UI.
+The clock will change this to false when the round higher
+than seven and/or the break is higher than one.

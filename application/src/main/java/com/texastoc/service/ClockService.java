@@ -7,6 +7,7 @@ import com.texastoc.model.game.clock.Clock;
 import com.texastoc.model.game.clock.Round;
 import com.texastoc.model.user.Player;
 import com.texastoc.repository.GamePlayerRepository;
+import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,15 @@ public class ClockService {
   private final Map<Integer, Clock> clocks = new HashMap<>();
   private final Map<Integer, RunClock> threads = new HashMap<>();
   private final RoundsConfig roundsConfig;
+  private final GameRepository gameRepository;
 
-  public ClockService(GamePlayerRepository gamePlayerRepository, PlayerRepository playerRepository, SMSConnector smsConnector, SimpMessagingTemplate template, RoundsConfig roundsConfig) {
+  public ClockService(GamePlayerRepository gamePlayerRepository, PlayerRepository playerRepository, SMSConnector smsConnector, SimpMessagingTemplate template, RoundsConfig roundsConfig, GameRepository gameRepository) {
     this.gamePlayerRepository = gamePlayerRepository;
     this.playerRepository = playerRepository;
     this.smsConnector = smsConnector;
     this.template = template;
     this.roundsConfig = roundsConfig;
+    this.gameRepository = gameRepository;
   }
 
   public Clock get(int gameId) {
@@ -170,6 +173,23 @@ public class ClockService {
           smsConnector.text(player.getPhone(), clock.getThisRound().getName());
       }
     });
+    Boolean canRebuy = null;
+    switch (clock.getThisRound().getName()) {
+      case "Round 1":
+      case "Round 2":
+      case "Round 3":
+      case "Round 4":
+      case "Round 5":
+      case "Round 6":
+      case "Round 7":
+      case "Break 1":
+        canRebuy = true;
+        break;
+      default:
+        canRebuy = false;
+    }
+    // TODO need to message this instead
+    gameRepository.updateCanRebuy(canRebuy, gameId);
   }
 
   /**

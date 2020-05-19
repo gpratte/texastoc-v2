@@ -76,6 +76,7 @@ public class Game {
   private LocalDateTime started;
   private int numPlayers;
   private LocalDateTime lastCalculated;
+  private boolean canRebuy = true;
 
   private List<GamePlayer> players;
   private List<GamePayout> payouts;
