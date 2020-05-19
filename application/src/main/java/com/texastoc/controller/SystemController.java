@@ -1,23 +1,24 @@
 package com.texastoc.controller;
 
+import com.texastoc.repository.SystemRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SystemController {
 
-  private final Versions versions;
+  private final SystemRepository systemRepository;
 
-  public SystemController(@Value("${version.ui:#{null}}") String uiVersion) {
-    versions = new Versions();
-    versions.setUi(uiVersion);
+  public SystemController(SystemRepository systemRepository) {
+    this.systemRepository = systemRepository;
   }
 
   @GetMapping("/api/v2/versions")
   public Versions getVersions() {
+    Versions versions = new Versions();
+    versions.setUi(systemRepository.get().getUiVersion());
     return versions;
   }
 

@@ -71,8 +71,6 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 63-can-rebuy
-Game variable signifying if rebuys are still allowed.
-
-The clock will change this to false when the round higher
-than seven and/or the break is higher than one.
+## Current Branch: 64-system-settings
+Get the version of the UI from the database. Will only have to update
+the database to change the version instead of deploying the server war file.
