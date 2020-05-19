@@ -46,6 +46,9 @@ ALTER TABLE quarterlyseasonpayout ADD CONSTRAINT QSPayout_Unique UNIQUE (seasonI
 
 create table if not exists seating (gameId INT NOT NULL, settings varchar(8192) NOT NULL, PRIMARY KEY (gameId));
 
+create table if not exists settings (id INT auto_increment, settings varchar(1024), PRIMARY KEY (id))
+INSERT INTO settings (id, settings) VALUES (1, '{"uiVersion": "2.3"}');
+
 create table if not exists role (id int auto_increment, description varchar(255), name varchar(255), primary key (id));
 
 INSERT INTO role (id, description, name) VALUES (1, 'Admin role', 'ADMIN');
