@@ -502,6 +502,13 @@ public class GameService {
   private String getGameSummary(Game game) {
     Season season = seasonService.getSeason(game.getSeasonId());
     QuarterlySeason qSeason = null;
+    boolean chopped = false;
+    for (GamePlayer gamePlayer : game.getPlayers()) {
+      if (gamePlayer.getChop() != null && gamePlayer.getChop() > 0) {
+        chopped = true;
+        break;
+      }
+    }
 
     LocalDate today = LocalDate.now();
     for (QuarterlySeason qs : season.getQuarterlySeasons()) {
@@ -566,11 +573,20 @@ public class GameService {
     sb.append("    <td>Total Quarterly TOC:</td>");
     sb.append("    <td>$" + game.getQuarterlyTocCollected() + "</td>");
     sb.append("   </tr>");
+
+    sb.append("   <tr>");
+    sb.append("    <td>Prize Pot:</td>");
+    sb.append("    <td>$");
+    sb.append(game.getPrizePotCalculated());
+    sb.append("    </td>");
+    sb.append("   </tr>");
+
     sb.append("   <tr>");
     sb.append("    <td>Kitty:</td>");
     sb.append("    <td>$");
     sb.append(game.getKittyCalculated());
-    sb.append("</td>");
+    sb.append("    </td>");
+    sb.append("   </tr>");
     sb.append("  </table>");
     sb.append(" </tr>");
 
@@ -601,7 +617,9 @@ public class GameService {
     sb.append("     <th>Fin</th>");
     sb.append("     <th>Name</th>");
     sb.append("     <th>Pts</th>");
-    sb.append("     <th>Chp</th>");
+    if (chopped) {
+      sb.append("     <th>Chp</th>");
+    }
     sb.append("     <th>Buy<br/>In</th>");
     sb.append("     <th>Re<br/>Buy</th>");
     sb.append("     <th>TOC</th>");
@@ -620,10 +638,12 @@ public class GameService {
         + (gamePlayer.getPoints() == null ? "" : gamePlayer
         .getPoints()) + "</td>");
 
-      if (gamePlayer.getChop() != null && gamePlayer.getChop() > 0)
-        sb.append("     <td>" + gamePlayer.getChop() + "</td>");
-      else
-        sb.append("     <td></td>");
+      if (chopped) {
+        if (gamePlayer.getChop() != null && gamePlayer.getChop() > 0)
+          sb.append("     <td>" + gamePlayer.getChop() + "</td>");
+        else
+          sb.append("     <td></td>");
+      }
 
       if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0)
         sb.append("     <td align=\"center\">" + gamePlayer.getBuyInCollected()
