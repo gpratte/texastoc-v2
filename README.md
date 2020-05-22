@@ -71,6 +71,7 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 64-system-settings
-Get the version of the UI from the database. Will only have to update
-the database to change the version instead of deploying the server war file.
+## Current Branch: 65-token-expiration
+Default the token expiration to 24 hours.
+
+Return a 401 when attempting to login with invalid username or password.

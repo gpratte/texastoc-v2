@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.texastoc.security.SecurityConstants.ACCESS_TOKEN_VALIDITY_SECONDS;
 import static com.texastoc.security.SecurityConstants.AUTHORITIES_KEY;
 
 @Slf4j
@@ -25,6 +24,10 @@ public class JwtTokenProvider {
 
   @Value("${jwt.signingkey:5Lmr5JwJP4CSU5Lmr5JwJP4CSU5Lmr5JwJP4CSU5Lmr5JwJP4CSU}")
   private String signingKey;
+
+  // default 24 hours (in minutes)
+  @Value("${token.expireMinutes:1440}")
+  private long expireMinutes;
 
   public String getUsernameFromToken(String token) {
     return getClaimFromToken(token, Claims::getSubject);
@@ -60,7 +63,7 @@ public class JwtTokenProvider {
       .claim(AUTHORITIES_KEY, authorities)
       .signWith(SignatureAlgorithm.HS256, signingKey)
       .setIssuedAt(new Date(System.currentTimeMillis()))
-      .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
+      .setExpiration(new Date(System.currentTimeMillis() + expireMinutes * 60 * 1000))
       .compact();
   }
 
