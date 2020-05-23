@@ -1,11 +1,9 @@
 package com.texastoc.connector;
 
-import lombok.extern.slf4j.Slf4j;
+import com.texastoc.model.game.clock.Clock;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 public class WebSocketConnector {
 
@@ -16,12 +14,9 @@ public class WebSocketConnector {
   }
 
   /**
-   * Send a message on the websocket
+   * Send the clock on the websocket
    */
-  @Scheduled(fixedDelay = 3000)
-  public void sendClock() {
-    template.convertAndSend("/topic/greetings", "" + System.currentTimeMillis());
+  public void sendClock(Clock clock) {
+    template.convertAndSend("/topic/clock", clock);
   }
-
-
 }

@@ -19,7 +19,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @PostConstruct
   public void init() {
-    webSocketMessageBrokerStats.setLoggingPeriod(10 * 1000); // desired time in millis
+    // Every 30 minutes in millis
+    webSocketMessageBrokerStats.setLoggingPeriod(30 * 60 * 1000);
   }
 
   @Override
