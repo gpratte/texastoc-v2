@@ -9,7 +9,6 @@ import com.texastoc.model.user.Player;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,17 +21,15 @@ public class ClockService {
   private final GamePlayerRepository gamePlayerRepository;
   private final PlayerRepository playerRepository;
   private final SMSConnector smsConnector;
-  private final SimpMessagingTemplate template;
   private final Map<Integer, Clock> clocks = new HashMap<>();
   private final Map<Integer, RunClock> threads = new HashMap<>();
   private final RoundsConfig roundsConfig;
   private final GameRepository gameRepository;
 
-  public ClockService(GamePlayerRepository gamePlayerRepository, PlayerRepository playerRepository, SMSConnector smsConnector, SimpMessagingTemplate template, RoundsConfig roundsConfig, GameRepository gameRepository) {
+  public ClockService(GamePlayerRepository gamePlayerRepository, PlayerRepository playerRepository, SMSConnector smsConnector, RoundsConfig roundsConfig, GameRepository gameRepository) {
     this.gamePlayerRepository = gamePlayerRepository;
     this.playerRepository = playerRepository;
     this.smsConnector = smsConnector;
-    this.template = template;
     this.roundsConfig = roundsConfig;
     this.gameRepository = gameRepository;
   }
@@ -190,14 +187,6 @@ public class ClockService {
     }
     // TODO need to message this instead
     gameRepository.updateCanRebuy(canRebuy, gameId);
-  }
-
-  /**
-   * Send a message on the websocket
-   */
-  //@Scheduled(fixedDelay = 3000)
-  public void sendClock() {
-    template.convertAndSend("/topic/greetings", "" + System.currentTimeMillis());
   }
 
   class RunClock implements Runnable {
