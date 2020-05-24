@@ -2,6 +2,7 @@ package com.texastoc.service;
 
 import com.texastoc.connector.EmailConnector;
 import com.texastoc.connector.SMSConnector;
+import com.texastoc.connector.WebSocketConnector;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
 import com.texastoc.exception.DoubleBuyInChangeDisallowedException;
@@ -27,6 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
@@ -51,10 +55,12 @@ public class GameService {
 
   private final SMSConnector smsConnector;
   private final EmailConnector emailConnector;
+  private final WebSocketConnector webSocketConnector;
 
   private TocConfig tocConfig;
+  private ExecutorService executorService;
 
-  public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, SeasonService seasonService, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository, RoleRepository roleRepository, SMSConnector smsConnector, EmailConnector emailConnector) {
+  public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, SeasonService seasonService, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository, RoleRepository roleRepository, SMSConnector smsConnector, EmailConnector emailConnector, WebSocketConnector webSocketConnector) {
     this.gameRepository = gameRepository;
     this.playerRepository = playerRepository;
     this.gamePlayerRepository = gamePlayerRepository;
@@ -72,6 +78,9 @@ public class GameService {
     this.roleRepository = roleRepository;
     this.smsConnector = smsConnector;
     this.emailConnector = emailConnector;
+    this.webSocketConnector = webSocketConnector;
+
+    executorService = Executors.newCachedThreadPool();
   }
 
   @CacheEvict(value = "currentGame", allEntries = true)
@@ -127,7 +136,9 @@ public class GameService {
     int id = gameRepository.save(gameToCreate);
     gameToCreate.setId(id);
 
-    return populateGame(gameToCreate);
+    Game gameCreated = populateGame(gameToCreate);
+    sendUpdatedGame();
+    return gameCreated;
   }
 
   @Transactional(readOnly = true)
@@ -229,6 +240,7 @@ public class GameService {
     }
 
     gameRepository.update(game);
+    sendUpdatedGame();
   }
 
   @CacheEvict(value = "currentGame", allEntries = true)
@@ -245,7 +257,9 @@ public class GameService {
       .quarterlyTocCollected(cgpr.isQuarterlyTocCollected() ? game.getQuarterlyTocCost() : null)
       .build();
 
-    return createGamePlayerWorker(gamePlayer, game);
+    GamePlayer gamePlayerCreated = createGamePlayerWorker(gamePlayer, game);
+    sendUpdatedGame();
+    return gamePlayerCreated;
   }
 
   @CacheEvict(value = "currentGame", allEntries = true)
@@ -277,7 +291,7 @@ public class GameService {
     gamePlayerRepository.update(gamePlayer);
 
     recalculate(game);
-
+    sendUpdatedGame();
     return gamePlayer;
   }
 
@@ -299,7 +313,7 @@ public class GameService {
     gamePlayerRepository.update(gamePlayer);
 
     recalculate(game);
-
+    sendUpdatedGame();
     return gamePlayer;
   }
 
@@ -321,7 +335,7 @@ public class GameService {
     gamePlayerRepository.update(gamePlayer);
 
     recalculate(game);
-
+    sendUpdatedGame();
     return gamePlayer;
   }
 
@@ -335,6 +349,7 @@ public class GameService {
 
     Game currentGame = gameRepository.getById(gamePlayer.getGameId());
     recalculate(currentGame);
+    sendUpdatedGame();
   }
 
   @Transactional(readOnly = true)
@@ -372,7 +387,9 @@ public class GameService {
       .quarterlyTocCollected(firstTimeGamePlayer.isQuarterlyTocCollected() ? game.getQuarterlyTocCost() : null)
       .build();
 
-    return createGamePlayerWorker(gamePlayer, game);
+    GamePlayer gamePlayerCreated = createGamePlayerWorker(gamePlayer, game);
+    sendUpdatedGame();
+    return gamePlayerCreated;
   }
 
   @CacheEvict(value = "currentGame", allEntries = true)
@@ -386,6 +403,7 @@ public class GameService {
     qSeasonCalculator.calculate(game.getQSeasonId());
     seasonCalculator.calculate(game.getSeasonId());
     seatingRepository.deleteByGameId(id);
+    sendUpdatedGame();
     sendGameSummary(id);
   }
 
@@ -412,6 +430,7 @@ public class GameService {
 
     gameToOpen.setFinalized(false);
     gameRepository.update(gameToOpen);
+    sendUpdatedGame();
   }
 
   // Worker to avoid one @Transacation calling anther @Transactional
@@ -854,6 +873,18 @@ public class GameService {
           emailConnector.send(player.getEmail(), subject, body);
         }
       }
+    }
+  }
+
+  private void sendUpdatedGame() {
+    executorService.submit(new GameSender());
+  }
+
+  private class GameSender implements Callable<Void> {
+    @Override
+    public Void call() throws Exception {
+      webSocketConnector.sendGame(getCurrentGame());
+      return null;
     }
   }
 }

@@ -71,7 +71,7 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 65-token-expiration
-Default the token expiration to 24 hours.
+## Current Branch: 66-web-sockets-for-real
+Send the clock updates on a web socket *clock* topic.
 
-Return a 401 when attempting to login with invalid username or password.
+Send the game updates on a web socket *game* topic.

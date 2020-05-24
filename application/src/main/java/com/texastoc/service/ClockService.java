@@ -2,6 +2,7 @@ package com.texastoc.service;
 
 import com.texastoc.config.RoundsConfig;
 import com.texastoc.connector.SMSConnector;
+import com.texastoc.connector.WebSocketConnector;
 import com.texastoc.model.game.GamePlayer;
 import com.texastoc.model.game.clock.Clock;
 import com.texastoc.model.game.clock.Round;
@@ -9,7 +10,6 @@ import com.texastoc.model.user.Player;
 import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.GameRepository;
 import com.texastoc.repository.PlayerRepository;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,17 +22,17 @@ public class ClockService {
   private final GamePlayerRepository gamePlayerRepository;
   private final PlayerRepository playerRepository;
   private final SMSConnector smsConnector;
-  private final SimpMessagingTemplate template;
+  private final WebSocketConnector webSocketConnector;
   private final Map<Integer, Clock> clocks = new HashMap<>();
   private final Map<Integer, RunClock> threads = new HashMap<>();
   private final RoundsConfig roundsConfig;
   private final GameRepository gameRepository;
 
-  public ClockService(GamePlayerRepository gamePlayerRepository, PlayerRepository playerRepository, SMSConnector smsConnector, SimpMessagingTemplate template, RoundsConfig roundsConfig, GameRepository gameRepository) {
+  public ClockService(GamePlayerRepository gamePlayerRepository, PlayerRepository playerRepository, SMSConnector smsConnector, WebSocketConnector webSocketConnector, RoundsConfig roundsConfig, GameRepository gameRepository) {
     this.gamePlayerRepository = gamePlayerRepository;
     this.playerRepository = playerRepository;
     this.smsConnector = smsConnector;
-    this.template = template;
+    this.webSocketConnector = webSocketConnector;
     this.roundsConfig = roundsConfig;
     this.gameRepository = gameRepository;
   }
@@ -61,6 +61,7 @@ public class ClockService {
   public void pause(int gameId) {
     Clock clock = getClock(gameId);
     clock.setPlaying(false);
+    updateListeners(gameId);
   }
 
   public void back(int gameId) {
@@ -72,6 +73,7 @@ public class ClockService {
       clock.setNextRound(findNextRound(thisRound));
       clock.setMillisRemaining(thisRound.getDuration() * 60 * 1000);
       notifyRoundChange(gameId);
+      updateListeners(gameId);
       return;
     }
 
@@ -80,6 +82,7 @@ public class ClockService {
       millisRemaining = 0;
     }
     clock.setMillisRemaining(millisRemaining);
+    updateListeners(gameId);
   }
 
   public void forward(int gameId) {
@@ -92,6 +95,7 @@ public class ClockService {
       clock.setNextRound(findNextRound(clock.getThisRound()));
       clock.setMillisRemaining(thisRound.getDuration() * 60 * 1000);
       notifyRoundChange(gameId);
+      updateListeners(gameId);
       return;
     }
 
@@ -103,6 +107,7 @@ public class ClockService {
       millisRemaining = clock.getThisRound().getDuration() * 60 * 1000;
     }
     clock.setMillisRemaining(millisRemaining);
+    updateListeners(gameId);
   }
 
   public void endClock(int gameId) {
@@ -192,12 +197,8 @@ public class ClockService {
     gameRepository.updateCanRebuy(canRebuy, gameId);
   }
 
-  /**
-   * Send a message on the websocket
-   */
-  //@Scheduled(fixedDelay = 3000)
-  public void sendClock() {
-    template.convertAndSend("/topic/greetings", "" + System.currentTimeMillis());
+  private void updateListeners(int gameId) {
+    webSocketConnector.sendClock(get(gameId));
   }
 
   class RunClock implements Runnable {
@@ -223,7 +224,7 @@ public class ClockService {
             // current round is running
             long start = System.currentTimeMillis();
             try {
-              Thread.sleep(500l);
+              Thread.sleep(900l);
             } catch (InterruptedException e) {
               // Do nothing
             }
@@ -245,6 +246,7 @@ public class ClockService {
               }
             }
           }
+          updateListeners(gameId);
         } else {
           // Sleep while not playing
           // TODO use thread notify instead
