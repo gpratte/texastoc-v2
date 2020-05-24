@@ -71,7 +71,5 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 66-web-sockets-for-real
-Send the clock updates on a web socket *clock* topic.
-
-Send the game updates on a web socket *game* topic.
+## Current Branch: 67-cache-season
+Cache the current season.
