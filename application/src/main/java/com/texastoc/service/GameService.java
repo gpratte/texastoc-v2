@@ -392,7 +392,7 @@ public class GameService {
     return gamePlayerCreated;
   }
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = {"currentGame", "currentSeason"}, allEntries = true)
   @Transactional
   public void endGame(int id) {
     Game game = gameRepository.getById(id);
