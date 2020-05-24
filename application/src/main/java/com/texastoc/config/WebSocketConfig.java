@@ -14,13 +14,14 @@ import javax.annotation.PostConstruct;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+  private static long THIRTY_MINUTES_MILLISECONDS = 30 * 60 * 1000;
+
   @Autowired
   private WebSocketMessageBrokerStats webSocketMessageBrokerStats;
 
   @PostConstruct
   public void init() {
-    // Every 30 minutes in millis
-    webSocketMessageBrokerStats.setLoggingPeriod(30 * 60 * 1000);
+    webSocketMessageBrokerStats.setLoggingPeriod(THIRTY_MINUTES_MILLISECONDS);
   }
 
   @Override
