@@ -8,6 +8,7 @@ import com.texastoc.model.season.Season;
 import com.texastoc.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -135,6 +136,7 @@ public class SeasonService {
     return season;
   }
 
+  @Cacheable("currentSeason")
   @Transactional(readOnly = true)
   public Season getCurrentSeason() {
     Season season = seasonRepository.getCurrent();
