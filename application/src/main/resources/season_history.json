@@ -1,0 +1,326 @@
+[
+  {
+    "startYear": 2010,
+    "endYear": 2011,
+    "players": [
+      {
+        "firstName": "Aaron",
+        "lastName": "Pullman",
+        "points": 1704,
+        "entries": 47
+      },
+      {
+        "firstName": "Tim",
+        "lastName": "Smith",
+        "points": 1428,
+        "entries": 49
+      },
+      {
+        "firstName": "Beau",
+        "lastName": "Edge",
+        "points": 1206,
+        "entries": 33
+      },
+      {
+        "firstName": "Ray",
+        "lastName": "Avery",
+        "points": 1091,
+        "entries": 30
+      },
+      {
+        "firstName": "Robert",
+        "lastName": "Garinger",
+        "points": 1055,
+        "entries": 42
+      },
+      {
+        "firstName": "Herby",
+        "lastName": "Romero",
+        "points": 974,
+        "entries": 36
+      },
+      {
+        "firstName": "Brian",
+        "lastName": "Lendecky",
+        "points": 954,
+        "entries": 32
+      },
+      {
+        "firstName": "Freddy",
+        "lastName": "Murphy",
+        "points": 945,
+        "entries": 25
+      },
+      {
+        "firstName": "Brad",
+        "lastName": "Bresnehen",
+        "points": 908,
+        "entries": 33
+      },
+      {
+        "firstName": "Chad",
+        "lastName": "Shields",
+        "points": 779,
+        "entries": 33
+      },
+      {
+        "firstName": "Roy",
+        "lastName": "Feigel",
+        "points": 756,
+        "entries": 42
+      },
+      {
+        "firstName": "Curtis",
+        "lastName": "Stahler",
+        "points": 729,
+        "entries": 19
+      },
+      {
+        "firstName": "Andy",
+        "lastName": "Thomas",
+        "points": 666,
+        "entries": 29
+      },
+      {
+        "firstName": "Justin",
+        "lastName": "Parker",
+        "points": 613,
+        "entries": 35
+      },
+      {
+        "firstName": "Don",
+        "lastName": "Harris",
+        "points": 590,
+        "entries": 27
+      },
+      {
+        "firstName": "David",
+        "lastName": "Styles",
+        "points": 572,
+        "entries": 35
+      },
+      {
+        "firstName": "Nirnay",
+        "lastName": "Sinha",
+        "points": 517,
+        "entries": 28
+      },
+      {
+        "firstName": "Gil",
+        "lastName": "Pratte",
+        "points": 512,
+        "entries": 25
+      },
+      {
+        "firstName": "Dave",
+        "lastName": "Benavidez",
+        "points": 500,
+        "entries": 23
+      },
+      {
+        "firstName": "Kelly",
+        "lastName": "Grooms",
+        "points": 497,
+        "entries": 24
+      }
+    ]
+  },
+  {
+    "startYear": 2009,
+    "endYear": 2010,
+    "players": [
+      {
+        "firstName": "Freddy",
+        "lastName": "Murphy",
+        "points": 1715,
+        "entries": 45
+      },
+      {
+        "firstName": "Ray",
+        "lastName": "Avery",
+        "points": 1569,
+        "entries": 47
+      },
+      {
+        "firstName": "Don",
+        "lastName": "Harris",
+        "points": 1468,
+        "entries": 45
+      },
+      {
+        "firstName": "Brian",
+        "lastName": "Lendecky",
+        "points": 1291,
+        "entries": 35
+      },
+      {
+        "firstName": "Gil",
+        "lastName": "Pratte",
+        "points": 1173,
+        "entries": 44
+      },
+      {
+        "firstName": "Nirnay",
+        "lastName": "Sinha",
+        "points": 1029,
+        "entries": 42
+      },
+      {
+        "firstName": "Robert",
+        "lastName": "Garinger",
+        "points": 971,
+        "entries": 38
+      },
+      {
+        "firstName": "Rob",
+        "lastName": "Lesieur",
+        "points": 966,
+        "entries": 40
+      },
+      {
+        "firstName": "Roy",
+        "lastName": "Feigel",
+        "points": 951,
+        "entries": 46
+      },
+      {
+        "firstName": "Aaron",
+        "lastName": "Pullman",
+        "points": 943,
+        "entries": 41
+      }
+    ]
+  },
+  {
+    "startYear": 2008,
+    "endYear": 2009,
+    "players": [
+      {
+        "firstName": "Brian",
+        "lastName": "Lendecky",
+        "points": 1643,
+        "entries": 42
+      },
+      {
+        "firstName": "Curtis",
+        "lastName": "Stahler",
+        "points": 1385,
+        "entries": 43
+      },
+      {
+        "firstName": "Nirnay",
+        "lastName": "Sinha",
+        "points": 1370,
+        "entries": 47
+      },
+      {
+        "firstName": "Rob",
+        "lastName": "Lesieur",
+        "points": 1323,
+        "entries": 43
+      },
+      {
+        "firstName": "Rich",
+        "lastName": "Chen",
+        "points": 1273,
+        "entries": 26
+      },
+      {
+        "firstName": "Matt",
+        "lastName": "Buchanan",
+        "points": 1180,
+        "entries": 36
+      },
+      {
+        "firstName": "Chris",
+        "lastName": "Leschber",
+        "points": 1075,
+        "entries": 27
+      },
+      {
+        "firstName": "Jeremy",
+        "lastName": "Cobb",
+        "points": 1068,
+        "entries": 38
+      },
+      {
+        "firstName": "Freddy",
+        "lastName": "Murphy",
+        "points": 1038,
+        "entries": 34
+      },
+      {
+        "firstName": "John",
+        "lastName": "Shaffer",
+        "points": 1019,
+        "entries": 40
+      }
+    ]
+  },
+  {
+    "startYear": 2007,
+    "endYear": 2008,
+    "players": [
+      {
+        "firstName": "Nirnay",
+        "lastName": "Sinha",
+        "points": 1673,
+        "entries": 43
+      },
+      {
+        "firstName": "Jeremy",
+        "lastName": "Cobb",
+        "points": 1579,
+        "entries": 45
+      },
+      {
+        "firstName": "Terry",
+        "lastName": "Lyons",
+        "points": 1449,
+        "entries": 41
+      },
+      {
+        "firstName": "Ray",
+        "lastName": "Avery",
+        "points": 1371,
+        "entries": 43
+      },
+      {
+        "firstName": "Dave",
+        "lastName": "Benavidez",
+        "points": 1210,
+        "entries": 38
+      },
+      {
+        "firstName": "John",
+        "lastName": "Orbison",
+        "points": 1156,
+        "entries": 46
+      },
+      {
+        "firstName": "Chris",
+        "lastName": "Leschber",
+        "points": 980,
+        "entries": 40
+      },
+      {
+        "firstName": "Albert",
+        "lastName": "Rappelet",
+        "points": 970,
+        "entries": 33
+      },
+      {
+        "firstName": "Justin",
+        "lastName": "Parker",
+        "points": 964,
+        "entries": 37
+      },
+      {
+        "firstName": "Brian",
+        "lastName": "Lendecky",
+        "points": 938,
+        "entries": 36
+      }
+    ]
+  }
+]
