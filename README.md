@@ -71,5 +71,5 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 67-cache-season
-Cache the current season.
+## Current Branch: 68-past-seasons
+Store the past seasons in a json file and serve up via endpoint.
