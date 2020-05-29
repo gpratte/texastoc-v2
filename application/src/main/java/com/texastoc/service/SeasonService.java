@@ -1,7 +1,11 @@
 package com.texastoc.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.Game;
+import com.texastoc.model.season.HistoricalSeason;
 import com.texastoc.model.season.Quarter;
 import com.texastoc.model.season.QuarterlySeason;
 import com.texastoc.model.season.Season;
@@ -9,18 +13,28 @@ import com.texastoc.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class SeasonService {
+
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   private final SeasonRepository seasonRepository;
   private final QuarterlySeasonRepository qSeasonRepository;
@@ -33,7 +47,7 @@ public class SeasonService {
   private final QuarterlySeasonPlayerRepository qSeasonPlayerRepository;
   private final QuarterlySeasonPayoutRepository qSeasonPayoutRepository;
 
-  private Season cachedSeason = null;
+  private String pastSeasonsAsJson = null;
 
   @Autowired
   public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonPlayerRepository seasonPlayerRepository, SeasonPayoutRepository seasonPayoutRepository, QuarterlySeasonPlayerRepository qSeasonPlayerRepository, QuarterlySeasonPayoutRepository qSeasonPayoutRepository) {
@@ -102,19 +116,6 @@ public class SeasonService {
   @Transactional(readOnly = true)
   public Season getSeason(int id) {
 
-    // TODO move to a real in memory cache
-//        if (cachedSeason != null) {
-//            LocalDateTime lastCalculated = seasonRepository.getLastCalculated(id);
-//
-//            if (cachedSeason.getLastCalculated() == null) {
-//                if (lastCalculated == null) {
-//                    return cachedSeason;
-//                }
-//            } else if (cachedSeason.getLastCalculated().isEqual(lastCalculated)) {
-//                return cachedSeason;
-//            }
-//        }
-
     Season season = seasonRepository.get(id);
     season.setPlayers(seasonPlayerRepository.getBySeasonId(id));
     season.setPayouts(seasonPayoutRepository.getBySeasonId(id));
@@ -132,7 +133,6 @@ public class SeasonService {
       game.setPayouts(gamePayoutRepository.getByGameId(game.getId()));
     }
 
-    cachedSeason = season;
     return season;
   }
 
@@ -149,6 +149,21 @@ public class SeasonService {
   public int getCurrentSeasonId() {
     return seasonRepository.getCurrent().getId();
   }
+
+  public List<HistoricalSeason> getPastSeasons() {
+    String json = getPastSeasonsAsJson();
+    if (json == null) {
+      return Collections.emptyList();
+    }
+
+    try {
+      return OBJECT_MAPPER.readValue(json, new TypeReference<List<HistoricalSeason>>() {
+      });
+    } catch (JsonProcessingException e) {
+      return Collections.emptyList();
+    }
+  }
+
 
   private List<QuarterlySeason> createQuarterlySeasons(LocalDate seasonStart, LocalDate seasonEnd, TocConfig tocConfig) {
     List<QuarterlySeason> qSeasons = new ArrayList<>(4);
@@ -215,6 +230,24 @@ public class SeasonService {
         return day;
       }
       day = day.plusDays(1);
+    }
+  }
+
+  private String getPastSeasonsAsJson() {
+    if (pastSeasonsAsJson != null) {
+      return pastSeasonsAsJson;
+    }
+    InputStream inputStream = null;
+    try {
+      inputStream = new ClassPathResource("season_history.json").getInputStream();
+    } catch (IOException e) {
+      return null;
+    }
+    try (BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+      pastSeasonsAsJson = bf.lines().collect(Collectors.joining());
+      return pastSeasonsAsJson;
+    } catch (IOException e) {
+      return null;
     }
   }
 }
