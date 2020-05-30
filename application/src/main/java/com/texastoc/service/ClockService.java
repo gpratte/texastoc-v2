@@ -37,6 +37,10 @@ public class ClockService {
     this.gameRepository = gameRepository;
   }
 
+  public List<Round> getRounds() {
+    return roundsConfig.getRounds();
+  }
+
   public Clock get(int gameId) {
     Clock clock = getClock(gameId);
     int secondsRemaining = (int) (clock.getMillisRemaining() / 1000);
