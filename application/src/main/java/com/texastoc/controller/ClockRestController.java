@@ -1,11 +1,14 @@
 package com.texastoc.controller;
 
 import com.texastoc.model.game.clock.Clock;
+import com.texastoc.model.game.clock.Round;
 import com.texastoc.service.ClockService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class ClockRestController {
@@ -40,4 +43,10 @@ public class ClockRestController {
   public void forward(@PathVariable("id") int id) {
     clockService.forward(id);
   }
+
+  @GetMapping("/api/v2/clock/rounds")
+  public List<Round> getRounds() {
+    return clockService.getRounds();
+  }
+
 }
