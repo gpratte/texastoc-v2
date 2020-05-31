@@ -131,7 +131,7 @@ public class PointsCalculator {
    * <p>
    * Otherwise calculate the Set of place/points for the number of players, add it to the cache and return it.
    */
-  private Map<Integer, Integer> calculatePlacePoints(int numPlayers) {
+  public Map<Integer, Integer> calculatePlacePoints(int numPlayers) {
     if (POINT_SYSTEM.get(numPlayers) != null) {
       return POINT_SYSTEM.get(numPlayers);
     }
