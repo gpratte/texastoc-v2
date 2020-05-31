@@ -3,6 +3,7 @@ package com.texastoc.service;
 import com.texastoc.TestConstants;
 import com.texastoc.connector.EmailConnector;
 import com.texastoc.model.user.Player;
+import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.RoleRepository;
 import org.junit.Assert;
@@ -29,6 +30,9 @@ public class PlayerServiceTest implements TestConstants {
   private PlayerRepository playerRepository;
 
   @MockBean
+  private GamePlayerRepository gamePlayerRepository;
+
+  @MockBean
   private RoleRepository roleRepository;
 
   @MockBean
@@ -39,7 +43,7 @@ public class PlayerServiceTest implements TestConstants {
 
   @Before
   public void before() {
-    playerService = new PlayerService(playerRepository, roleRepository, bCryptPasswordEncoder, emailConnector);
+    playerService = new PlayerService(playerRepository, roleRepository, gamePlayerRepository, bCryptPasswordEncoder, emailConnector);
   }
 
   @Test

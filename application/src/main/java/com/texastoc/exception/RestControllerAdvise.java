@@ -61,6 +61,11 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
     response.sendError(HttpStatus.CONFLICT.value(), ex.getMessage());
   }
 
+  @ExceptionHandler(value = {CannotDeletePlayerException.class})
+  protected void handleCannotDeletePlayerException(CannotDeletePlayerException ex, HttpServletResponse response) throws IOException {
+    response.sendError(HttpStatus.CONFLICT.value(), ex.getMessage());
+  }
+
   @ExceptionHandler(value = {JsonProcessingException.class})
   protected void handleJsonProcessingException(JsonProcessingException ex, HttpServletResponse response) throws IOException {
     response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());

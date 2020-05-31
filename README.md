@@ -71,5 +71,7 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 70-points-endpoint
-Endpoint to get the a table of the points allocated for 1st through 10th for the number of players in a game.
+## Current Branch: 71-delete-league-player
+Only allow admins to delete a league player.
+
+Only delete the league player if the player has never been in a game.

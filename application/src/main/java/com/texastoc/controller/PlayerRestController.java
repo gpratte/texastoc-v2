@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +51,12 @@ public class PlayerRestController {
   @GetMapping("/api/v2/players/{id}")
   public Player getPlayer(@PathVariable("id") int id) {
     return playerService.get(id);
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @DeleteMapping("/api/v2/players/{id}")
+  public void deletePlayer(@PathVariable("id") int id) {
+    playerService.delete(id);
   }
 
   @PostMapping(value = "/password/reset", consumes = "application/vnd.texastoc.password-forgot+json")
