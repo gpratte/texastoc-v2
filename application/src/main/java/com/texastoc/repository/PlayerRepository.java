@@ -102,6 +102,21 @@ public class PlayerRepository {
     return keyHolder.getKey().intValue();
   }
 
+  public void deleteRoleById(int id) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("playerId", id);
+    jdbcTemplate
+      .update("delete from player_roles where playerId = :playerId", params);
+  }
+
+  public void deleteById(int id) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("id", id);
+
+    jdbcTemplate
+      .update("delete from player where id = :id", params);
+  }
+
   private static final class PlayerMapper implements RowMapper<Player> {
     public Player mapRow(ResultSet rs, int rowNum) {
       Player player = new Player();

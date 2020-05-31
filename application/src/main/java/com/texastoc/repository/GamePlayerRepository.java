@@ -159,6 +159,13 @@ public class GamePlayerRepository {
     jdbcTemplate.update(UPDATE_SQL, params);
   }
 
+  public Integer getNumGamesByPlayerId(int playerId) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("playerId", playerId);
+    return jdbcTemplate
+      .queryForObject("select count(*) from gameplayer where playerId = :playerId", params, Integer.class);
+  }
+
 
   private static final class GamePlayerMapper implements RowMapper<GamePlayer> {
     public GamePlayer mapRow(ResultSet rs, int rowNum) {

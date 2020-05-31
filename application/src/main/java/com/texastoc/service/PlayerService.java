@@ -1,8 +1,10 @@
 package com.texastoc.service;
 
 import com.texastoc.connector.EmailConnector;
+import com.texastoc.exception.CannotDeletePlayerException;
 import com.texastoc.exception.NotFoundException;
 import com.texastoc.model.user.Player;
+import com.texastoc.repository.GamePlayerRepository;
 import com.texastoc.repository.PlayerRepository;
 import com.texastoc.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -21,15 +23,17 @@ public class PlayerService {
 
   private final PlayerRepository playerRepository;
   private final RoleRepository roleRepository;
+  private final GamePlayerRepository gamePlayerRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final EmailConnector emailConnector;
 
   // Only one server so cache the forgot password codes here
   private Map<String, String> forgotPasswordCodes = new HashMap<>();
 
-  public PlayerService(PlayerRepository playerRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EmailConnector emailConnector) {
+  public PlayerService(PlayerRepository playerRepository, RoleRepository roleRepository, GamePlayerRepository gamePlayerRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EmailConnector emailConnector) {
     this.playerRepository = playerRepository;
     this.roleRepository = roleRepository;
+    this.gamePlayerRepository = gamePlayerRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     this.emailConnector = emailConnector;
   }
@@ -85,6 +89,16 @@ public class PlayerService {
     Player player = playerRepository.getByEmail(email);
     player.setPassword(null);
     return player;
+  }
+
+  @Transactional(readOnly = true)
+  public void delete(int id) {
+    int numGames = gamePlayerRepository.getNumGamesByPlayerId(id);
+    if (numGames > 0) {
+      throw new CannotDeletePlayerException("Player with ID " + id + " cannot be deleted");
+    }
+    playerRepository.deleteRoleById(id);
+    playerRepository.deleteById(id);
   }
 
   public void sendCode(String email) {
