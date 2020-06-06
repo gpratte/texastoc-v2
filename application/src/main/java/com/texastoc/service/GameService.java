@@ -404,8 +404,14 @@ public class GameService {
     seasonCalculator.calculate(game.getSeasonId());
     seatingRepository.deleteByGameId(id);
     sendUpdatedGame();
-    sendGameSummary(id);
   }
+
+  // TODO pulled this out of the endGame method because there seems to be
+  // a transactional problem
+  public void sendSummary(int gameId) {
+    sendGameSummary(gameId);
+  }
+
 
   @CacheEvict(value = "currentGame", allEntries = true)
   public void openGame(int id) {
@@ -672,10 +678,9 @@ public class GameService {
       if (gamePlayer.getRebuyAddOnCollected() != null && gamePlayer.getRebuyAddOnCollected() > 0) {
         if (gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0) {
           sb.append("     <td align=\"center\">"
-            + gamePlayer.getRebuyAddOnCollected());
-          sb.append("("
-            + (gamePlayer.getRebuyAddOnCollected() - game.getRebuyAddOnTocDebit())
-            + ")");
+            + (gamePlayer.getRebuyAddOnCollected() - game.getRebuyAddOnTocDebit()));
+          sb.append("/"
+            + game.getRebuyAddOnTocDebit());
         } else {
           sb.append("     <td align=\"center\">"
             + gamePlayer.getRebuyAddOnCollected());
@@ -745,7 +750,6 @@ public class GameService {
     sb.append("  <th>Entries</th>");
     sb.append(" </tr>");
     for (SeasonPlayer seasonPlayer : season.getPlayers()) {
-      log.info(seasonPlayer.toString());
       sb.append(" <tr>");
       if (seasonPlayer.getPlace() > 0)
         sb.append("  <td align=\"center\">" + seasonPlayer.getPlace()

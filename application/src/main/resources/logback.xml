@@ -16,14 +16,12 @@
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>texastoc.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
-            <maxHistory>10</maxHistory>
+            <!-- daily rollover -->
+            <fileNamePattern>texastoc.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history capped at 1GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
-
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>10MB</maxFileSize>
-        </triggeringPolicy>
     </appender>
 
     <!-- LOG everything at INFO level -->

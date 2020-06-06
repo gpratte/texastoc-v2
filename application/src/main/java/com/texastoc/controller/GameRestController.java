@@ -76,6 +76,7 @@ public class GameRestController {
   public void finalizeGame(@PathVariable("id") int id) {
     clockService.endClock(id);
     gameService.endGame(id);
+    gameService.sendSummary(id);
   }
 
   @PreAuthorize("hasRole('ADMIN')")
