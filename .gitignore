@@ -5,6 +5,9 @@ target/
 # Log files
 **/*.log
 
+# Test results
+test.results
+
 # IntelliJ IDEA
 .idea
 *.iws
