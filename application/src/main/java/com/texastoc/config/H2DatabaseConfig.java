@@ -14,9 +14,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Only run if the spring profile is "dev"
+ * Only run when the mysql spring profile is not present
  */
-@Profile("dev")
+@Profile("!mysql")
 @Configuration
 public class H2DatabaseConfig {
 
@@ -38,8 +38,18 @@ public class H2DatabaseConfig {
       try (BufferedReader reader = new BufferedReader(
         new InputStreamReader(resource))) {
         String line;
+        StringBuilder sb = new StringBuilder();
         while ((line = reader.readLine()) != null) {
-          jdbcTemplate.execute(line);
+          if (line.startsWith("--")) {
+            continue;
+          }
+
+          sb.append(" " + line);
+
+          if (line.endsWith(";")) {
+            jdbcTemplate.execute(sb.toString());
+            sb = new StringBuilder();
+          }
         }
       }
     };
