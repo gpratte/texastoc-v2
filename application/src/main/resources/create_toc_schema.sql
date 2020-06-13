@@ -122,7 +122,7 @@ insert into player (id, firstName, lastName, phone, email, password)
 values (1, 'Gil', 'Pratte', '5121231235', 'gilpratte@texastoc.com',
         '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK');
 insert into player (id, firstName, lastName, phone, email, password)
-values (2, 'Guest', 'Guest', '5121231235', 'guest@texastoc.com',
+values (2, 'Guest', 'User', '5121231235', 'guestuser@texastoc.com',
         '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK');
 insert into player (id, firstName, lastName)
 values (3, 'Casey', 'Greig');
@@ -164,6 +164,9 @@ insert into player (id, firstName, lastName)
 values (21, 'Seb', 'Marin');
 insert into player (id, firstName, lastName)
 values (22, 'Chloe-Ann', 'Redmond');
+insert into player (id, firstName, lastName, phone, email, password)
+values (23, 'Guest', 'Admin', '5121231236', 'guestadmin@texastoc.com',
+        '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK');
 
 create table game
 (
@@ -351,6 +354,11 @@ INSERT INTO player_roles (playerId, roleId)
 VALUES (21, 2);
 INSERT INTO player_roles (playerId, roleId)
 VALUES (22, 2);
+INSERT INTO player_roles (playerId, roleId)
+VALUES (23, 2);
+// Guest Admin is admin
+INSERT INTO player_roles (playerId, roleId)
+VALUES (23, 1);
 
 
 create table if not exists payout
