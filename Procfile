@@ -1,1 +1,1 @@
-web: java -jar application/target/texastoc-application-1.0.jar --server.port=$PORT --spring.profiles.active=test com.texastoc.Application
+web: java $JAVA_OPTS -jar application/target/dependency/webapp-runner.jar --port $PORT application/target/texastoc-v2-application-1.0.war

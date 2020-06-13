@@ -276,7 +276,7 @@ create table if not exists settings
     PRIMARY KEY (id)
 );
 INSERT INTO settings (id, settings)
-VALUES (1, '{"uiVersion": "2.3"}');
+VALUES (1, '{"uiVersion": "2.14"}');
 
 create table if not exists role
 (
