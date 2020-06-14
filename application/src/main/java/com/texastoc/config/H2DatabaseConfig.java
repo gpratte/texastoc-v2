@@ -40,7 +40,7 @@ public class H2DatabaseConfig {
         String line;
         StringBuilder sb = new StringBuilder();
         while ((line = reader.readLine()) != null) {
-          if (line.startsWith("--")) {
+          if (line.startsWith("#")) {
             continue;
           }
 

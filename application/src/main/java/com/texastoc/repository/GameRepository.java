@@ -147,17 +147,8 @@ public class GameRepository {
   public Game getById(int id) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("id", id);
-
-    Game game;
-    try {
-      game = jdbcTemplate
-        .queryForObject("select * from game where id = :id", params, new GameMapper());
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
-
-    return game;
+    return jdbcTemplate
+      .queryForObject("select * from game where id = :id", params, new GameMapper());
   }
 
   public List<Game> getBySeasonId(int seasonId) {

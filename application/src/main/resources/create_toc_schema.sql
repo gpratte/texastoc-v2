@@ -117,7 +117,7 @@ create table if not exists player
     primary key (id)
 );
 
--- password is password
+# password is password
 insert into player (id, firstName, lastName, phone, email, password)
 values (1, 'Gil', 'Pratte', '5121231235', 'gilpratte@texastoc.com',
         '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK');
@@ -307,9 +307,12 @@ alter table player_roles
 alter table player_roles
     add constraint fk_player_id foreign key (playerId) references player (id);
 
-// Gil is admin
+# Admins
 INSERT INTO player_roles (playerId, roleId)
 VALUES (1, 1);
+INSERT INTO player_roles (playerId, roleId)
+VALUES (23, 1);
+
 INSERT INTO player_roles (playerId, roleId)
 VALUES (1, 2);
 INSERT INTO player_roles (playerId, roleId)
@@ -356,9 +359,6 @@ INSERT INTO player_roles (playerId, roleId)
 VALUES (22, 2);
 INSERT INTO player_roles (playerId, roleId)
 VALUES (23, 2);
-// Guest Admin is admin
-INSERT INTO player_roles (playerId, roleId)
-VALUES (23, 1);
 
 
 create table if not exists payout
