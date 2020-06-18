@@ -32,12 +32,11 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(value = {EmptyResultDataAccessException.class})
   protected void handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, HttpServletResponse response) throws IOException {
-    response.sendError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    response.sendError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
   }
 
   @ExceptionHandler(value = {AccessDeniedException.class})
   protected void handleAccessDenied(IncorrectResultSizeDataAccessException ex, HttpServletResponse response) throws IOException {
-    log.info(ex.getMessage(), ex);
     response.sendError(HttpStatus.UNAUTHORIZED.value());
   }
 
