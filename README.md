@@ -54,7 +54,7 @@ To run with `mvn` all you have to do is type `mvn -pl application spring-boot:ru
 
 The `-pl application` part of the command instructs maven to run the application module which is where the server code is. There is another module called integration which, when run, runs the integration tests.
 
-The war can be run in webapp-runner. This is how the server is deployed to Heroku. 
+The war can be run in webapp-runner. This is how the server is deployed to Heroku.
 * Build a dev war file by typing `mvn -pl application clean package`
 * Run the server by typing `java -jar application/target/dependency/webapp-runner.jar application/target/texastoc-v2-application-1.0.war`
 
@@ -155,7 +155,7 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 71-delete-league-player
-Only allow admins to delete a league player.
+## Current Branch: 72-CICD-deploy
+Reworked the pom.xml for the maven build to be able to build and deploy the war to Heroku.
 
-Only delete the league player if the player has never been in a game.
+Updated the readme a bunch on how to build, run and deploy.

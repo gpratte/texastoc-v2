@@ -143,7 +143,7 @@ values (10, 'Chelsea', 'Mcknight');
 insert into player (id, firstName, lastName)
 values (11, 'Lexie', null);
 insert into player (id, firstName, lastName)
-values (12, 'Aamina', 'Mcmanus');
+values (12, 'Amina', 'Mcmanus');
 insert into player (id, firstName, lastName)
 values (13, 'Elodie', 'Morrison');
 insert into player (id, firstName, lastName)
