@@ -1,9 +1,10 @@
 package com.texastoc.controller;
 
+import com.texastoc.exception.NotFoundException;
+import com.texastoc.model.system.Settings;
 import com.texastoc.repository.SystemRepository;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,15 +17,14 @@ public class SystemController {
   }
 
   @GetMapping("/api/v2/versions")
-  public Versions getVersions() {
-    Versions versions = new Versions();
-    versions.setUi(systemRepository.get().getUiVersion());
-    return versions;
+  public String getVersion(@RequestParam(required = true) String env) {
+    Settings settings = systemRepository.get();
+    for (Settings.Version version : settings.getUiVersions()) {
+      if (env.equals(version.getEnv())) {
+        return version.getVersion();
+      }
+    }
+    throw new NotFoundException("environment " + env + " not found");
   }
 
-  @Data
-  @NoArgsConstructor
-  static class Versions {
-    private String ui;
-  }
 }
