@@ -155,7 +155,5 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 72-CICD-deploy
-Reworked the pom.xml for the maven build to be able to build and deploy the war to Heroku.
-
-Updated the readme a bunch on how to build, run and deploy.
+## Current Branch: 73-ui-versions
+The versions endpoint now supports querying by environment (e.g. local, heroku, prod).
