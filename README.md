@@ -155,5 +155,5 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 73-ui-versions
-The versions endpoint now supports querying by environment (e.g. local, heroku, prod).
+## Current Branch: 74-more-seed-data
+Added games to the seed data (will be nice to have data when looking at the app in Heroku).
