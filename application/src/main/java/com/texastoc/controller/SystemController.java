@@ -17,7 +17,10 @@ public class SystemController {
   }
 
   @GetMapping("/api/v2/versions")
-  public String getVersion(@RequestParam(required = true) String env) {
+  public String getVersion(@RequestParam(required = false) String env) {
+    if (env == null) {
+      return "2.15";
+    }
     Settings settings = systemRepository.get();
     for (Settings.Version version : settings.getUiVersions()) {
       if (env.equals(version.getEnv())) {

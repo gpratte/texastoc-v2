@@ -279,7 +279,7 @@ create table if not exists settings
     PRIMARY KEY (id)
 );
 INSERT INTO settings (id, settings)
-VALUES (1, '{"uiVersions": [{"env": "local", "version": "2.15"}]}');
+VALUES (1, '{"uiVersions": [{"env": "local", "version": "2.15"}, {"env": "heroku", "version": "2.15"}]}');
 
 create table if not exists role
 (
