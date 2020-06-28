@@ -1,5 +1,6 @@
 package com.texastoc.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,9 @@ public class H2DatabaseConfig {
         String line;
         StringBuilder sb = new StringBuilder();
         while ((line = reader.readLine()) != null) {
+          if (StringUtils.isBlank(line)) {
+            continue;
+          }
           if (line.startsWith("#")) {
             continue;
           }
