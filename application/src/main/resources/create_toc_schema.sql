@@ -219,29 +219,29 @@ CREATE TABLE gameplayer
 INSERT INTO gameplayer
 VALUES (1, 12, 1, 1, 1, 'Amina Mcmanus', 5, 29, 1, 0, 40, NULL, 20, 20, NULL),
        (2, 9, 1, 1, 1, 'Anniyah Conroy', 7, 17, 1, 0, 40, NULL, 20, NULL, NULL),
-       (3, 3, 1, 1, 1, 'Casey Greig', 9, NULL, 1, 0, 40, NULL, NULL, NULL, NULL),
-       (4, 10, 1, 1, 1, 'Chelsea Mcknight', 10, 8, 1, 0, 40, NULL, 20, 20, NULL),
-       (5, 22, 1, 1, 1, 'Chloe-Ann Redmond', 8, 13, 1, 0, 40, NULL, 20, NULL, NULL),
+       (3, 3, 1, 1, 1, 'Casey Greig', 9, NULL, 1, 0, 40, 40, NULL, NULL, NULL),
+       (4, 10, 1, 1, 1, 'Chelsea Mcknight', 10, 8, 1, 0, 40, 40, 20, 20, NULL),
+       (5, 22, 1, 1, 1, 'Chloe-Ann Redmond', 8, 13, 1, 0, 40, 40, 20, NULL, NULL),
        (6, 5, 1, 1, 1, 'Dolly Chamberlain', NULL, NULL, NULL, NULL, 40, NULL, NULL, NULL, NULL),
        (7, 15, 1, 1, 1, 'Edge', 6, 22, 1, 0, 40, NULL, 20, 20, NULL),
-       (8, 20, 1, 1, 1, 'Elara Andrews', 4, 37, 1, 0, 40, NULL, 20, NULL, NULL),
-       (9, 13, 1, 1, 1, 'Elodie Morrison', NULL, NULL, NULL, NULL, 40, NULL, 20, NULL, NULL),
-       (10, 18, 1, 1, 1, 'Farzana Vu', 3, NULL, 1, 0, 40, NULL, NULL, NULL, NULL),
+       (8, 20, 1, 1, 1, 'Elara Andrews', 4, 37, 1, 0, 40, 40, 20, NULL, NULL),
+       (9, 13, 1, 1, 1, 'Elodie Morrison', NULL, NULL, 0, 0, 40, 40, 20, NULL, NULL),
+       (10, 18, 1, 1, 1, 'Farzana Vu', 3, NULL, 1, 0, 40, 40, NULL, NULL, NULL),
        (11, 1, 1, 1, 1, 'Gil Pratte', 2, 62, 1, 0, 40, NULL, 20, NULL, NULL),
-       (12, 7, 1, 1, 1, 'Herbert Cameron', 1, NULL, 1, 0, 40, NULL, NULL, NULL, NULL),
+       (12, 7, 1, 1, 1, 'Herbert Cameron', 1, NULL, 1, 0, 40, 40, NULL, NULL, NULL),
        (13, 12, 2, 1, 1, 'Amina Mcmanus', 4, 35, 1, 0, 40, NULL, 20, 20, NULL),
        (14, 9, 2, 1, 1, 'Anniyah Conroy', 6, 21, 1, 0, 40, NULL, 20, NULL, NULL),
        (15, 10, 2, 1, 1, 'Chelsea Mcknight', 8, NULL, 1, 0, 40, NULL, NULL, NULL, NULL),
        (16, 22, 2, 1, 1, 'Chloe-Ann Redmond', 9, 10, 1, 0, 40, NULL, 20, 20, NULL),
-       (17, 15, 2, 1, 1, 'Edge', 5, 27, 1, 0, 40, NULL, 20, NULL, NULL),
+       (17, 15, 2, 1, 1, 'Edge', 5, 27, 1, 0, 40, 40, 20, NULL, NULL),
        (18, 20, 2, 1, 1, 'Elara Andrews', 3, NULL, 1, 0, 40, NULL, NULL, NULL, NULL),
-       (19, 13, 2, 1, 1, 'Elodie Morrison', 1, NULL, 1, 0, 40, NULL, NULL, NULL, 90000),
-       (20, 1, 2, 1, 1, 'Gil Pratte', 2, 64, 1, 0, 40, NULL, 20, NULL, 50000),
-       (21, 3, 2, 1, 1, 'Casey Greig', 7, 16, 1, 0, 40, NULL, 20, NULL, NULL),
-       (22, 5, 2, 1, 1, 'Dolly Chamberlain', 10, 8, 1, 0, 40, NULL, 20, NULL, NULL),
-       (23, 18, 2, 1, 1, 'Farzana Vu', NULL, NULL, NULL, NULL, 40, NULL, NULL, NULL, NULL),
-       (24, 9, 3, 1, 1, 'Anniyah Conroy', NULL, NULL, NULL, NULL, 40, NULL, 20, NULL, NULL),
-       (25, 5, 3, 1, 1, 'Dolly Chamberlain', NULL, NULL, NULL, NULL, 40, NULL, 20, 20, NULL);
+       (19, 13, 2, 1, 1, 'Elodie Morrison', 1, NULL, 1, 0, 40, 40, NULL, NULL, 90000),
+       (20, 1, 2, 1, 1, 'Gil Pratte', 2, 64, 1, 0, 40, 40, 20, NULL, 50000),
+       (21, 3, 2, 1, 1, 'Casey Greig', 7, 16, 1, 0, 40, 40, 20, NULL, NULL),
+       (22, 5, 2, 1, 1, 'Dolly Chamberlain', 10, 8, 1, 0, 40, 40, 20, NULL, NULL),
+       (23, 18, 2, 1, 1, 'Farzana Vu', NULL, NULL, 0, 0, 40, 40, NULL, NULL, NULL),
+       (24, 9, 3, 1, 1, 'Anniyah Conroy', NULL, NULL, 0, 0, 40, NULL, 20, NULL, NULL),
+       (25, 5, 3, 1, 1, 'Dolly Chamberlain', NULL, 23, 0, 0, 40, NULL, 20, 20, NULL);
 
 CREATE TABLE gamepayout
 (
@@ -255,11 +255,11 @@ CREATE TABLE gamepayout
     UNIQUE KEY GPayout_Unique (gameId, place)
 );
 INSERT INTO gamepayout
-VALUES (16, 1, 1, 306, NULL, NULL),
-       (17, 1, 2, 164, NULL, NULL),
-       (33, 2, 1, 280, 234, 0.6428571428571429),
-       (34, 2, 2, 150, 196, 0.35714285714285715),
-       (36, 3, 1, 70, NULL, NULL);
+VALUES (52, 1, 1, 436, NULL, NULL),
+       (53, 1, 2, 234, NULL, NULL),
+       (64, 2, 1, 384, 321, 0.6428571428571429),
+       (65, 2, 2, 206, 269, 0.35714285714285715),
+       (69, 3, 1, 70, NULL, NULL);
 
 CREATE TABLE quarterlyseasonpayout
 (

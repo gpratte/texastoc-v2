@@ -129,7 +129,6 @@ public class GameRestController {
 
   @PostMapping(value = "/api/v2/games/{id}/seats", consumes = "application/vnd.texastoc.notify-seats+json")
   public void notifySeating(@PathVariable("id") int id) throws JsonProcessingException {
-    System.out.println("hi");
     gameService.notifySeating(id);
   }
 
