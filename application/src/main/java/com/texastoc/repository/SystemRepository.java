@@ -36,7 +36,7 @@ public class SystemRepository {
         String settingsAsJson = rs.getString("settings");
         settings = OBJECT_MAPPER.readValue(settingsAsJson, Settings.class);
       } catch (SQLException | JsonProcessingException e) {
-        log.error("Problem mapping Supply", e);
+        log.error("Problem mapping Settings", e);
       }
 
       return settings;

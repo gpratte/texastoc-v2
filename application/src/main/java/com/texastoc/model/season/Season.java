@@ -62,6 +62,7 @@ public class Season {
 
   private List<SeasonPlayer> players;
   private List<SeasonPayout> payouts;
+  private List<SeasonPayout> estimatedPayouts;
   private List<QuarterlySeason> quarterlySeasons;
   private List<Game> games;
 

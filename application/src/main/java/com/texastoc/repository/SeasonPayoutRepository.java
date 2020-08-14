@@ -29,16 +29,26 @@ public class SeasonPayoutRepository {
     params.addValue("id", id);
 
     return jdbcTemplate
-      .query("select * from seasonpayout where seasonId = :id order by amount desc",
+      .query("select * from seasonpayout where seasonId = :id and estimated = false order by amount desc",
+        params,
+        new SeasonPayoutMapper());
+  }
+
+  public List<SeasonPayout> getEstimatedBySeasonId(int id) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("id", id);
+
+    return jdbcTemplate
+      .query("select * from seasonpayout where seasonId = :id and estimated = true order by amount desc",
         params,
         new SeasonPayoutMapper());
   }
 
   private static final String INSERT_SQL =
     "INSERT INTO seasonpayout "
-      + "(seasonId, place, amount) "
+      + "(seasonId, place, amount, guarenteed, estimated) "
       + " VALUES "
-      + " (:seasonId, :place, :amount)";
+      + " (:seasonId, :place, :amount, :guarenteed, :estimated)";
 
   @SuppressWarnings("Duplicates")
   public int save(final SeasonPayout payout) {
@@ -48,6 +58,8 @@ public class SeasonPayoutRepository {
     params.addValue("seasonId", payout.getSeasonId());
     params.addValue("place", payout.getPlace());
     params.addValue("amount", payout.getAmount());
+    params.addValue("guarenteed", payout.isGuarenteed());
+    params.addValue("estimated", payout.isEstimated());
 
     String[] keys = {"id"};
     jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
@@ -69,8 +81,10 @@ public class SeasonPayoutRepository {
         seasonPayout.setSeasonId(rs.getInt("seasonId"));
         seasonPayout.setPlace(rs.getInt("place"));
         seasonPayout.setAmount(rs.getInt("amount"));
+        seasonPayout.setGuarenteed(rs.getBoolean("guarenteed"));
+        seasonPayout.setEstimated(rs.getBoolean("estimated"));
       } catch (SQLException e) {
-        log.error("Problem mapping GamePayout", e);
+        log.error("Problem mapping SeasonPayout", e);
       }
 
       return seasonPayout;

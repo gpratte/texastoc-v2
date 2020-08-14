@@ -119,6 +119,7 @@ public class SeasonService {
     Season season = seasonRepository.get(id);
     season.setPlayers(seasonPlayerRepository.getBySeasonId(id));
     season.setPayouts(seasonPayoutRepository.getBySeasonId(id));
+    season.setEstimatedPayouts(seasonPayoutRepository.getEstimatedBySeasonId(id));
 
     season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(id));
     season.setGames(gameRepository.getBySeasonId(id));

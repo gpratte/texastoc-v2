@@ -2,9 +2,8 @@ package com.texastoc.service.calculator;
 
 import com.texastoc.model.game.Game;
 import com.texastoc.model.game.GamePlayer;
-import com.texastoc.model.season.Season;
-import com.texastoc.model.season.SeasonPayout;
-import com.texastoc.model.season.SeasonPlayer;
+import com.texastoc.model.season.*;
+import com.texastoc.model.season.SeasonPayoutRange.SeasonPayoutPlace;
 import com.texastoc.repository.*;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +18,15 @@ public class SeasonCalculator {
   private final GamePlayerRepository gamePlayerRepository;
   private final SeasonPlayerRepository seasonPlayerRepository;
   private final SeasonPayoutRepository seasonPayoutRepository;
+  private final SeasonPayoutSettingsRepository seasonPayoutSettingsRepository;
 
-  public SeasonCalculator(GameRepository gameRepository, SeasonRepository seasonRepository, SeasonPlayerRepository seasonPlayerRepository, GamePlayerRepository gamePlayerRepository, SeasonPayoutRepository seasonPayoutRepository) {
+  public SeasonCalculator(GameRepository gameRepository, SeasonRepository seasonRepository, SeasonPlayerRepository seasonPlayerRepository, GamePlayerRepository gamePlayerRepository, SeasonPayoutRepository seasonPayoutRepository, SeasonPayoutSettingsRepository seasonPayoutSettingsRepository) {
     this.gameRepository = gameRepository;
     this.seasonRepository = seasonRepository;
     this.seasonPlayerRepository = seasonPlayerRepository;
     this.gamePlayerRepository = gamePlayerRepository;
     this.seasonPayoutRepository = seasonPayoutRepository;
+    this.seasonPayoutSettingsRepository = seasonPayoutSettingsRepository;
   }
 
   @SuppressWarnings("Duplicates")
@@ -88,14 +89,15 @@ public class SeasonCalculator {
       seasonPlayerRepository.save(player);
     }
 
-    // Calculate season payouts
-    // TODO need to test once I know what the season payouts are
-    List<SeasonPayout> payouts = new ArrayList<>(10);
-    season.setPayouts(payouts);
+    // Calculate season current and estimated payouts
+    calculatSeasonPayouts(season);
 
     // Persist season payouts
     seasonPayoutRepository.deleteBySeasonId(id);
-    for (SeasonPayout payout : payouts) {
+    for (SeasonPayout payout : season.getPayouts()) {
+      seasonPayoutRepository.save(payout);
+    }
+    for (SeasonPayout payout : season.getEstimatedPayouts()) {
       seasonPayoutRepository.save(payout);
     }
 
@@ -137,6 +139,78 @@ public class SeasonCalculator {
     }
 
     return seasonPlayers;
+  }
+
+  private void calculatSeasonPayouts(Season season) {
+    SeasonPayoutSettings seasonPayoutSettings = seasonPayoutSettingsRepository.getBySeasonId(season.getId());
+
+    List<SeasonPayout> payouts = calculatePayouts(season.getTotalCombinedAnnualTocCalculated(), season.getId(), false, seasonPayoutSettings);
+    season.setPayouts(payouts);
+
+    // Estimate the season TOC amount
+    double seasonTocAmountPerGame = (double) season.getTotalCombinedAnnualTocCalculated() / (double) season.getNumGamesPlayed();
+    int estimatedSeasonTocAmount = (int) (seasonTocAmountPerGame * season.getNumGames());
+    payouts = calculatePayouts(estimatedSeasonTocAmount, season.getId(), true, seasonPayoutSettings);
+    season.setEstimatedPayouts(payouts);
+  }
+
+  private List<SeasonPayout> calculatePayouts(int seasonTocAmount, int seasonId, boolean estimated, SeasonPayoutSettings seasonPayoutSettings) {
+    List<SeasonPayout> seasonPayouts = new LinkedList<>();
+
+    List<SeasonPayoutRange> ranges = seasonPayoutSettings.getRanges();
+    if (ranges == null || ranges.size() < 1) {
+      return seasonPayouts;
+    }
+
+    for (SeasonPayoutRange range : ranges) {
+      if (seasonTocAmount >= range.getLowRange() && seasonTocAmount <= range.getHighRange()) {
+        int amountToDivy = seasonTocAmount - range.getLowRange();
+        for (SeasonPayoutPlace place : range.getGuaranteed()) {
+          SeasonPayout seasonPayout = calculatePayout(place, amountToDivy);
+          seasonPayout.setSeasonId(seasonId);
+          seasonPayout.setGuarenteed(true);
+          seasonPayout.setEstimated(estimated);
+          seasonPayouts.add(seasonPayout);
+        }
+        for (SeasonPayoutPlace place : range.getFinalTable()) {
+          SeasonPayout seasonPayout = calculatePayout(place, amountToDivy);
+          seasonPayout.setSeasonId(seasonId);
+          seasonPayout.setGuarenteed(false);
+          seasonPayout.setEstimated(estimated);
+          seasonPayouts.add(seasonPayout);
+        }
+
+        int amountOfPayouts = 0;
+        for (SeasonPayout seasonPayout : seasonPayouts) {
+          amountOfPayouts += seasonPayout.getAmount();
+        }
+
+        int amountYetToDivy = seasonTocAmount - amountOfPayouts;
+        while (amountYetToDivy > 0) {
+          for (SeasonPayout seasonPayout : seasonPayouts) {
+            seasonPayout.setAmount(seasonPayout.getAmount() + 1);
+            if (--amountYetToDivy == 0) {
+              break;
+            }
+          }
+        }
+        break;
+      }
+    }
+
+    return seasonPayouts;
+  }
+
+  private SeasonPayout calculatePayout(SeasonPayoutPlace place, int amountToDivy) {
+    SeasonPayout seasonPayout = new SeasonPayout();
+    seasonPayout.setPlace(place.getPlace());
+    seasonPayout.setAmount(place.getAmount());
+    if (amountToDivy > 0) {
+      double payoutExtra = amountToDivy * (place.getPercent() / 100.0d);
+      payoutExtra = Math.floor(payoutExtra);
+      seasonPayout.setAmount(seasonPayout.getAmount() + (int) (payoutExtra));
+    }
+    return seasonPayout;
   }
 
 }

@@ -320,16 +320,33 @@ VALUES (1, 1),
        (22, 2);
 
 
-
 CREATE TABLE seasonpayout
 (
-    id       int NOT NULL AUTO_INCREMENT,
-    seasonId int NOT NULL,
-    place    int NOT NULL,
-    amount   int DEFAULT NULL,
+    id         int NOT NULL AUTO_INCREMENT,
+    seasonId   int NOT NULL,
+    place      int NOT NULL,
+    amount     int     DEFAULT NULL,
+    guarenteed boolean DEFAULT false,
+    estimated  boolean DEFAULT false,
     PRIMARY KEY (id),
-    UNIQUE KEY SPayout_Unique (seasonId, place)
+    UNIQUE KEY SPayout_Unique (seasonId, place, estimated)
 );
+
+CREATE TABLE seasonpayoutsettings
+(
+    id       int           NOT NULL AUTO_INCREMENT,
+    seasonId int           NOT NULL,
+    settings varchar(8192) NOT NULL,
+    PRIMARY KEY (id)
+);
+INSERT INTO seasonpayoutsettings
+VALUES (1, 1,
+        '[{"lowRange" : 5000,"highRange" : 7000,
+           "guaranteed": [{"place" : 1,"amount" : 1400,"percent" : 20}],
+           "finalTable": [{"place" : 2,"amount" : 1350,"percent" : 20},
+                          {"place" : 3,"amount" : 1150,"percent" : 16},
+                          {"place" : 4,"amount" : 1100,"percent" : 14},
+                          {"place" : 5,"amount" : 0,"percent" : 30}]}]');
 
 
 DROP TABLE IF EXISTS seating;
@@ -349,7 +366,7 @@ CREATE TABLE settings
 );
 INSERT INTO settings
 VALUES (1,
-        '{\"uiVersions\": [{\"env\": \"local\", \"version\": \"2.15\"}, {\"env\": \"heroku\", \"version\": \"2.15\"}]}');
+        '{"uiVersions": [{"env": "local", "version": "2.15"}, {"env": "heroku", "version": "2.15"}]}');
 
 DROP TABLE IF EXISTS supply;
 CREATE TABLE supply
