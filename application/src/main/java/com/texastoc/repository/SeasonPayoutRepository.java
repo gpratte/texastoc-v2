@@ -46,9 +46,9 @@ public class SeasonPayoutRepository {
 
   private static final String INSERT_SQL =
     "INSERT INTO seasonpayout "
-      + "(seasonId, place, amount, guarenteed, estimated) "
+      + "(seasonId, place, amount, guarenteed, estimated, cash) "
       + " VALUES "
-      + " (:seasonId, :place, :amount, :guarenteed, :estimated)";
+      + " (:seasonId, :place, :amount, :guarenteed, :estimated, :cash)";
 
   @SuppressWarnings("Duplicates")
   public int save(final SeasonPayout payout) {
@@ -60,6 +60,7 @@ public class SeasonPayoutRepository {
     params.addValue("amount", payout.getAmount());
     params.addValue("guarenteed", payout.isGuarenteed());
     params.addValue("estimated", payout.isEstimated());
+    params.addValue("cash", payout.isCash());
 
     String[] keys = {"id"};
     jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
@@ -83,6 +84,7 @@ public class SeasonPayoutRepository {
         seasonPayout.setAmount(rs.getInt("amount"));
         seasonPayout.setGuarenteed(rs.getBoolean("guarenteed"));
         seasonPayout.setEstimated(rs.getBoolean("estimated"));
+        seasonPayout.setCash(rs.getBoolean("cash"));
       } catch (SQLException e) {
         log.error("Problem mapping SeasonPayout", e);
       }

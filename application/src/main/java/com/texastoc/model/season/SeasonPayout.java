@@ -11,4 +11,5 @@ public class SeasonPayout {
   private int amount;
   private boolean guarenteed;
   private boolean estimated;
+  private boolean cash;
 }

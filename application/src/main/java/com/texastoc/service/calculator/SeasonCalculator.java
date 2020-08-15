@@ -209,6 +209,9 @@ public class SeasonCalculator {
     SeasonPayout seasonPayout = new SeasonPayout();
     seasonPayout.setPlace(place.getPlace());
     seasonPayout.setAmount(place.getAmount());
+    if (place.getAmount() == 0) {
+      seasonPayout.setCash(true);
+    }
     if (amountToDivy > 0) {
       double payoutExtra = amountToDivy * (place.getPercent() / 100.0d);
       payoutExtra = Math.floor(payoutExtra);

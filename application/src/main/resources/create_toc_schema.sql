@@ -328,6 +328,7 @@ CREATE TABLE seasonpayout
     amount     int     DEFAULT NULL,
     guarenteed boolean DEFAULT false,
     estimated  boolean DEFAULT false,
+    cash       boolean DEFAULT false,
     PRIMARY KEY (id),
     UNIQUE KEY SPayout_Unique (seasonId, place, estimated)
 );
