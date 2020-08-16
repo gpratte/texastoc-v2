@@ -367,7 +367,7 @@ CREATE TABLE settings
 );
 INSERT INTO settings
 VALUES (1,
-        '{"uiVersions": [{"env": "local", "version": "2.15"}, {"env": "heroku", "version": "2.15"}]}');
+        '{"uiVersions": [{"env": "local", "version": "2.16"}, {"env": "heroku", "version": "2.16"}]}');
 
 DROP TABLE IF EXISTS supply;
 CREATE TABLE supply
