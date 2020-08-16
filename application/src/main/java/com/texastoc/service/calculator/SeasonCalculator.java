@@ -167,7 +167,7 @@ public class SeasonCalculator {
     }
 
     for (SeasonPayoutRange range : ranges) {
-      if (seasonTocAmount >= range.getLowRange() && seasonTocAmount <= range.getHighRange()) {
+      if (seasonTocAmount >= range.getLowRange() && seasonTocAmount < range.getHighRange()) {
         int amountToDivy = seasonTocAmount - range.getLowRange();
         for (SeasonPayoutPlace place : range.getGuaranteed()) {
           SeasonPayout seasonPayout = calculatePayout(place, amountToDivy);
