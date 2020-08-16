@@ -155,5 +155,8 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 74-more-seed-data
-Added games to the seed data (will be nice to have data when looking at the app in Heroku).
+## Current Branch: 75-season-payouts
+Calculate the season payouts as per the payout settings. Estimate the season
+payouts if the season there are more games to play.
+
+The payout settings are persisted as json which will allow the structure to easily change.
