@@ -62,7 +62,7 @@ The dev server is just that - it is meant for development. There is really not r
 
 
 ### Running the dev-mysql server
-Running the maven dev-mysql profile which uses a MySQL database and an embedded tomcat server. For this to work the maven profile must be 'dev-mysql' and the spring profile must be 'mysql'.
+Running the maven dev-mysql profile which uses a MySQL database as an embedded tomcat server. For this to work the maven profile must be 'dev-mysql' and the spring profile must be 'mysql'.
 
 Remember to have a running MySQL database for the server to use.
 
