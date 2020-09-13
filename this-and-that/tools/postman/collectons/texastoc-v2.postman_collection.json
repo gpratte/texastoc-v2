@@ -6,6 +6,134 @@
 	},
 	"item": [
 		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ede3ec72-6e71-43fb-931b-5f000b3c047b",
+								"exec": [
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"token\", jsonData.token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"gilpratte@texastoc.com\", \n  \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "password forgot",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ede3ec72-6e71-43fb-931b-5f000b3c047b",
+								"exec": [
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"token\", jsonData.token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.texastoc.password-forgot+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"gilpratte@texastoc.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/password/reset",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"password",
+								"reset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "password reset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ede3ec72-6e71-43fb-931b-5f000b3c047b",
+								"exec": [
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"token\", jsonData.token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.texastoc.password-reset+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"RPIOJ\", \n  \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/password/reset",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"password",
+								"reset"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Seasons",
 			"item": [
 				{
@@ -21,15 +149,70 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "[2018,12,24]"
+							"raw": "{\n    \"startYear\": 2021\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v2/seasons",
-							"protocol": "http",
+							"raw": "{{url}}/api/v2/seasons",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "8080",
+							"path": [
+								"api",
+								"v2",
+								"seasons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get seasons",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e1cd9cfa-84c0-431f-be8d-49c0e51f6714",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"console.log(jsonData[0].id)",
+									"pm.environment.set(\"seasonId\", jsonData[0].id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/v2/seasons",
+							"host": [
+								"{{url}}"
+							],
 							"path": [
 								"api",
 								"v2",
@@ -45,6 +228,16 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -58,17 +251,15 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v2/seasons/1",
-							"protocol": "http",
+							"raw": "{{url}}/api/v2/seasons/{{seasonId}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v2",
 								"seasons",
-								"1"
+								"{{seasonId}}"
 							]
 						}
 					},
@@ -103,17 +294,58 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v2/seasons/current",
-							"protocol": "http",
+							"raw": "{{url}}/api/v2/seasons/current",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v2",
 								"seasons",
 								"current"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get historical seasons",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/v2/seasons/history",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"seasons",
+								"history"
 							]
 						}
 					},
@@ -125,6 +357,99 @@
 		{
 			"name": "Games",
 			"item": [
+				{
+					"name": "Game Players",
+					"item": [
+						{
+							"name": "add existing game player",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"gamePlayerId\": 1,\n    \"gameId\": 1,\n    \"buyInCollected\": true,\n    \"rebuyAddOnCollected\": true,\n    \"annualTocCollected\": true\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v2/games/players/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v2",
+										"games",
+										"players",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update game player",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"gamePlayerId\": 1,\n    \"gameId\": 1,\n    \"buyInCollected\": true,\n    \"rebuyAddOnCollected\": true,\n    \"annualTocCollected\": true\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v2/games/players/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v2",
+										"games",
+										"players",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
 				{
 					"name": "create game",
 					"request": {
@@ -267,20 +592,256 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "finalize game",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hostId\": 1,\n    \"date\": \"2018-12-28\",\n    \"doubleBuyIn\": true,\n    \"transportRequired\": true\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v2/games/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v2",
+								"games",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unfinalize game",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hostId\": 1,\n    \"date\": \"2018-12-28\",\n    \"doubleBuyIn\": true,\n    \"transportRequired\": true\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v2/games/1/unfinalize",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v2",
+								"games",
+								"1",
+								"unfinalize"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Login",
+			"name": "Players",
 			"item": [
 				{
-					"name": "login",
+					"name": "get players",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
 							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v2/seasons/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v2",
+								"seasons",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete player",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v2/seasons/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v2",
+								"seasons",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c176e88c-5921-4269-b8df-694348f38d41",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d199fcb-cf97-408b-ad5a-4d628577e941",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "get versions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/v2/versions?env={{env}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"versions"
+							],
+							"query": [
+								{
+									"key": "env",
+									"value": "{{env}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get points",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v2/seasons/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v2",
+								"seasons",
+								"1"
+							]
 						}
 					},
 					"response": []
