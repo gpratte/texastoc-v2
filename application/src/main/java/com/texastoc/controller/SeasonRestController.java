@@ -30,6 +30,11 @@ public class SeasonRestController {
     return seasonService.getSeason(id);
   }
 
+  @GetMapping("/api/v2/seasons")
+  public List<Season> getSeasons() {
+    return seasonService.getSeasons();
+  }
+
   @GetMapping("/api/v2/seasons/current")
   public Season getCurrentSeason() {
     int seasonId = seasonService.getCurrentSeasonId();
