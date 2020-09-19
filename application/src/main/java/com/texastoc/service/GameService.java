@@ -172,6 +172,15 @@ public class GameService {
     return null;
   }
 
+  @Transactional(readOnly = true)
+  public List<Game> getGames(Integer seasonId) {
+    if (seasonId == null) {
+      seasonId = seasonRepository.getCurrent().getId();
+    }
+
+    return gameRepository.getBySeasonId(seasonId);
+  }
+
   public void notifySeating(int gameId) {
     Seating seating = seatingRepository.get(gameId);
     if (seating == null || seating.getTables() == null || seating.getTables().size() == 0) {

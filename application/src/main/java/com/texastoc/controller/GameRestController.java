@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @RestController
@@ -70,6 +71,11 @@ public class GameRestController {
   public String getCurrentNoCacheGame() {
     gameService.geClearCacheGame();
     return "done";
+  }
+
+  @GetMapping("/api/v2/games")
+  public List<Game> getGames(@RequestParam(required = false) Integer seasonId) {
+    return gameService.getGames(seasonId);
   }
 
   @PutMapping(value = "/api/v2/games/{id}", consumes = "application/vnd.texastoc.finalize+json")
