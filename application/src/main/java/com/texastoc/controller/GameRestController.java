@@ -48,7 +48,7 @@ public class GameRestController {
     game.setDate(updateGameRequest.getDate());
     game.setDoubleBuyIn(updateGameRequest.getDoubleBuyIn());
     game.setTransportRequired(updateGameRequest.getTransportRequired());
-    game.setPayoutDelta(updateGameRequest.getPayoutDelta());
+    game.setPayoutDelta(updateGameRequest.getPayoutDelta() == null ? 0 : updateGameRequest.getPayoutDelta());
 
     gameService.updateGame(game);
   }
@@ -67,6 +67,7 @@ public class GameRestController {
     throw new NotFoundException("Current game not found");
   }
 
+  // TODO PUT not GET
   @GetMapping(value = "/api/v2/games", consumes = "application/vnd.texastoc.clear-cache+json")
   public String getCurrentNoCacheGame() {
     gameService.geClearCacheGame();

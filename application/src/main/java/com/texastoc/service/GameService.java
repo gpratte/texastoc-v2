@@ -673,17 +673,19 @@ public class GameService {
         .getPoints()) + "</td>");
 
       if (chopped) {
-        if (gamePlayer.getChop() != null && gamePlayer.getChop() > 0)
+        if (gamePlayer.getChop() != null && gamePlayer.getChop() > 0) {
           sb.append("     <td>" + gamePlayer.getChop() + "</td>");
-        else
+        } else {
           sb.append("     <td></td>");
+        }
       }
 
-      if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0)
+      if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0) {
         sb.append("     <td align=\"center\">" + gamePlayer.getBuyInCollected()
           + "</td>");
-      else
+      } else {
         sb.append("     <td></td>");
+      }
       if (gamePlayer.getRebuyAddOnCollected() != null && gamePlayer.getRebuyAddOnCollected() > 0) {
         if (gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0) {
           sb.append("     <td align=\"center\">"
@@ -695,17 +697,20 @@ public class GameService {
             + gamePlayer.getRebuyAddOnCollected());
         }
         sb.append("</td>");
-      } else
+      } else {
         sb.append("     <td></td>");
+      }
 
-      if (gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0)
+      if (gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0) {
         sb.append("     <td align=\"center\">" + gamePlayer.getAnnualTocCollected() + "</td>");
-      else
+      } else {
         sb.append("     <td></td>");
-      if (gamePlayer.getQuarterlyTocCollected() != null && gamePlayer.getQuarterlyTocCollected() > 0)
+      }
+      if (gamePlayer.getQuarterlyTocCollected() != null && gamePlayer.getQuarterlyTocCollected() > 0) {
         sb.append("     <td align=\"center\">" + gamePlayer.getQuarterlyTocCollected() + "</td>");
-      else
+      } else {
         sb.append("     <td></td>");
+      }
       sb.append("    </tr>");
     }
 
@@ -760,20 +765,22 @@ public class GameService {
     sb.append(" </tr>");
     for (SeasonPlayer seasonPlayer : season.getPlayers()) {
       sb.append(" <tr>");
-      if (seasonPlayer.getPlace() > 0)
+      if (seasonPlayer.getPlace() > 0) {
         sb.append("  <td align=\"center\">" + seasonPlayer.getPlace()
           + "</td>");
-      else
+      } else {
         sb.append("  <td align=\"center\"></td>");
+      }
 
       sb.append("  <td align=\"right\">"
         + seasonPlayer.getName() + "</td>");
 
-      if (seasonPlayer.getPoints() > 0)
+      if (seasonPlayer.getPoints() > 0) {
         sb.append("  <td align=\"center\">" + seasonPlayer.getPoints()
           + "</td>");
-      else
+      } else {
         sb.append("  <td align=\"center\"></td>");
+      }
 
       sb.append("  <td align=\"center\">" + seasonPlayer.getEntries()
         + "</td>");
@@ -832,19 +839,21 @@ public class GameService {
       for (QuarterlySeasonPlayer qsPlayer : qSeason
         .getPlayers()) {
         sb.append("    <tr>");
-        if (qsPlayer.getPlace() > 0)
+        if (qsPlayer.getPlace() > 0) {
           sb.append("     <td align=\"center\">" + qsPlayer.getPlace()
             + "</td>");
-        else
+        } else {
           sb.append("     <td align=\"center\"></td>");
+        }
 
         sb.append("     <td align=\"right\">"
           + qsPlayer.getName() + "</td>");
-        if (qsPlayer.getPoints() > 0)
+        if (qsPlayer.getPoints() > 0) {
           sb.append("     <td align=\"center\">" + qsPlayer.getPoints()
             + "</td>");
-        else
+        } else {
           sb.append("     <td align=\"center\"></td>");
+        }
 
         sb.append("     <td align=\"center\">" + qsPlayer.getEntries()
           + "</td>");
