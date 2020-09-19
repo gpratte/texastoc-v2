@@ -210,7 +210,8 @@
 							{
 								"key": "Content-Type",
 								"type": "text",
-								"value": "application/json"
+								"value": "application/json",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -493,74 +494,21 @@
 					"response": []
 				},
 				{
-					"name": "update game",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
+					"name": "get games",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e86a4b9d-67cd-4339-80ee-df302afd8cac",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"gameId\", jsonData[0].id);",
+									"console.log('gameId set to ' + jsonData[0].id)"
+								],
+								"type": "text/javascript"
 							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"hostId\": 1,\n    \"date\": \"2018-12-28\",\n    \"doubleBuyIn\": true,\n    \"transportRequired\": true\n}"
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/v2/games/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v2",
-								"games",
-								"1"
-							]
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "get game",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/v2/games/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v2",
-								"games",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get current game",
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -580,7 +528,8 @@
 							{
 								"key": "Content-Type",
 								"type": "text",
-								"value": "application/json"
+								"value": "application/json",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -588,17 +537,160 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v2/games/current",
-							"protocol": "http",
+							"raw": "{{url}}/api/v2/games?seasonId={{seasonId}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "8080",
+							"path": [
+								"api",
+								"v2",
+								"games"
+							],
+							"query": [
+								{
+									"key": "seasonId",
+									"value": "{{seasonId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get game",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/v2/games/{{gameId}}",
+							"host": [
+								"{{url}}"
+							],
 							"path": [
 								"api",
 								"v2",
 								"games",
-								"current"
+								"{{gameId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get current game",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "80d5690a-3e81-4dc7-b6ae-2ee46f988ffa",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"gameId\", jsonData.id);",
+									"console.log('gameId set to ' + jsonData.id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/vnd.texastoc.current+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/v2/games",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"games"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update game",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hostId\": 1,\n    \"date\": \"2020-10-01\",\n    \"doubleBuyIn\": false,\n    \"transportRequired\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v2/games/{{gameId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"games",
+								"{{gameId}}"
 							]
 						}
 					},
