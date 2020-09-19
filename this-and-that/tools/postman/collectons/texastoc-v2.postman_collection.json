@@ -679,7 +679,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"hostId\": 1,\n    \"date\": \"2020-10-01\",\n    \"doubleBuyIn\": false,\n    \"transportRequired\": true\n}"
+							"raw": "{\n    \"hostId\": 2,\n    \"date\": \"2020-10-01\",\n    \"doubleBuyIn\": false,\n    \"transportRequired\": true\n}"
 						},
 						"url": {
 							"raw": "{{url}}/api/v2/games/{{gameId}}",
@@ -699,30 +699,38 @@
 				{
 					"name": "finalize game",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
 								"key": "Content-Type",
 								"type": "text",
-								"value": "application/json"
+								"value": "application/vnd.texastoc.finalize+json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"hostId\": 1,\n    \"date\": \"2018-12-28\",\n    \"doubleBuyIn\": true,\n    \"transportRequired\": true\n}"
+							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v2/games/1",
-							"protocol": "http",
+							"raw": "{{url}}/api/v2/games/{{gameId}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v2",
 								"games",
-								"1"
+								"{{gameId}}"
 							]
 						}
 					},
@@ -746,26 +754,23 @@
 							{
 								"key": "Content-Type",
 								"type": "text",
-								"value": "application/json"
+								"value": "application/vnd.texastoc.unfinalize+json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"hostId\": 1,\n    \"date\": \"2018-12-28\",\n    \"doubleBuyIn\": true,\n    \"transportRequired\": true\n}"
+							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v2/games/1/unfinalize",
-							"protocol": "http",
+							"raw": "{{url}}/api/v2/games/{{gameId}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v2",
 								"games",
-								"1",
-								"unfinalize"
+								"{{gameId}}"
 							]
 						}
 					},
