@@ -137,6 +137,11 @@ public class SeasonService {
     return season;
   }
 
+  @Transactional(readOnly = true)
+  public List<Season> getSeasons() {
+    return seasonRepository.getAll();
+  }
+
   @Cacheable("currentSeason")
   @Transactional(readOnly = true)
   public Season getCurrentSeason() {

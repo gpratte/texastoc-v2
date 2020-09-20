@@ -15,7 +15,6 @@ public class FirstTimeGamePlayer {
   private String firstName;
   private String lastName;
   private String email;
-  private int gameId;
   private boolean buyInCollected;
   private boolean annualTocCollected;
   private boolean quarterlyTocCollected;

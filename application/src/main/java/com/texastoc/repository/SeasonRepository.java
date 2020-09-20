@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Repository
@@ -100,6 +101,15 @@ public class SeasonRepository {
     try {
       return jdbcTemplate
         .queryForObject("select * from season where id = :id", params, new SeasonMapper());
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public List<Season> getAll() {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    try {
+      return jdbcTemplate.query("select * from season", params, new SeasonMapper());
     } catch (Exception e) {
       return null;
     }

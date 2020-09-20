@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 @Builder
 public class SeatingRequest {
-  private int gameId;
   private List<Integer> numSeatsPerTable;
   private List<TableRequest> tableRequests;
 }

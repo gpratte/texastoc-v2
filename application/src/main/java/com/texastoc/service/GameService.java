@@ -172,6 +172,15 @@ public class GameService {
     return null;
   }
 
+  @Transactional(readOnly = true)
+  public List<Game> getGames(Integer seasonId) {
+    if (seasonId == null) {
+      seasonId = seasonRepository.getCurrent().getId();
+    }
+
+    return gameRepository.getBySeasonId(seasonId);
+  }
+
   public void notifySeating(int gameId) {
     Seating seating = seatingRepository.get(gameId);
     if (seating == null || seating.getTables() == null || seating.getTables().size() == 0) {
@@ -245,13 +254,13 @@ public class GameService {
 
   @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
-  public GamePlayer createGamePlayer(CreateGamePlayerRequest cgpr) {
-    Game game = gameRepository.getById(cgpr.getGameId());
+  public GamePlayer createGamePlayer(int gameId, CreateGamePlayerRequest cgpr) {
+    Game game = gameRepository.getById(gameId);
     checkFinalized(game);
 
     GamePlayer gamePlayer = GamePlayer.builder()
       .playerId(cgpr.getPlayerId())
-      .gameId(cgpr.getGameId())
+      .gameId(gameId)
       .buyInCollected(cgpr.isBuyInCollected() ? game.getBuyInCost() : null)
       .annualTocCollected(cgpr.isAnnualTocCollected() ? game.getAnnualTocCost() : null)
       .quarterlyTocCollected(cgpr.isQuarterlyTocCollected() ? game.getQuarterlyTocCost() : null)
@@ -264,12 +273,17 @@ public class GameService {
 
   @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
-  public GamePlayer updateGamePlayer(UpdateGamePlayerRequest ugpr) {
-    Game game = gameRepository.getById(ugpr.getGameId());
+  public GamePlayer updateGamePlayer(int gameId, int gamePlayerId, UpdateGamePlayerRequest ugpr) {
+    Game game = gameRepository.getById(gameId);
     checkFinalized(game);
 
+    GamePlayer gamePlayer = getGamePlayer(gamePlayerId);
+    if (gameId != gamePlayer.getGameId()) {
+      log.error("Cannot update game player, game id does not match");
+      throw new RuntimeException("Cannot update game player, game id does not match");
+    }
+
     Integer place = ugpr.getPlace();
-    GamePlayer gamePlayer = getGamePlayer(ugpr.getGamePlayerId());
     gamePlayer.setPlace(place);
     gamePlayer.setRoundUpdates(ugpr.isRoundUpdates());
     gamePlayer.setBuyInCollected(ugpr.isBuyInCollected() ? game.getBuyInCost() : null);
@@ -341,11 +355,11 @@ public class GameService {
 
   @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
-  public void deleteGamePlayer(int gamePlayerId) {
+  public void deleteGamePlayer(int gameId, int gamePlayerId) {
     GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
     checkFinalized(gamePlayer.getGameId());
 
-    gamePlayerRepository.deleteById(gamePlayer.getId());
+    gamePlayerRepository.deleteById(gameId, gamePlayerId);
 
     Game currentGame = gameRepository.getById(gamePlayer.getGameId());
     recalculate(currentGame);
@@ -359,8 +373,8 @@ public class GameService {
 
   @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
-  public GamePlayer createFirstTimeGamePlayer(FirstTimeGamePlayer firstTimeGamePlayer) {
-    Game game = gameRepository.getById(firstTimeGamePlayer.getGameId());
+  public GamePlayer createFirstTimeGamePlayer(int gameId, FirstTimeGamePlayer firstTimeGamePlayer) {
+    Game game = gameRepository.getById(gameId);
     checkFinalized(game);
 
     String firstName = firstTimeGamePlayer.getFirstName();
@@ -379,7 +393,7 @@ public class GameService {
     name.append(!Objects.isNull(lastName) ? lastName : "");
 
     GamePlayer gamePlayer = GamePlayer.builder()
-      .gameId(firstTimeGamePlayer.getGameId())
+      .gameId(gameId)
       .playerId(playerId)
       .name(name.toString())
       .buyInCollected(firstTimeGamePlayer.isBuyInCollected() ? game.getBuyInCost() : null)
@@ -664,17 +678,19 @@ public class GameService {
         .getPoints()) + "</td>");
 
       if (chopped) {
-        if (gamePlayer.getChop() != null && gamePlayer.getChop() > 0)
+        if (gamePlayer.getChop() != null && gamePlayer.getChop() > 0) {
           sb.append("     <td>" + gamePlayer.getChop() + "</td>");
-        else
+        } else {
           sb.append("     <td></td>");
+        }
       }
 
-      if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0)
+      if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0) {
         sb.append("     <td align=\"center\">" + gamePlayer.getBuyInCollected()
           + "</td>");
-      else
+      } else {
         sb.append("     <td></td>");
+      }
       if (gamePlayer.getRebuyAddOnCollected() != null && gamePlayer.getRebuyAddOnCollected() > 0) {
         if (gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0) {
           sb.append("     <td align=\"center\">"
@@ -686,17 +702,20 @@ public class GameService {
             + gamePlayer.getRebuyAddOnCollected());
         }
         sb.append("</td>");
-      } else
+      } else {
         sb.append("     <td></td>");
+      }
 
-      if (gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0)
+      if (gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0) {
         sb.append("     <td align=\"center\">" + gamePlayer.getAnnualTocCollected() + "</td>");
-      else
+      } else {
         sb.append("     <td></td>");
-      if (gamePlayer.getQuarterlyTocCollected() != null && gamePlayer.getQuarterlyTocCollected() > 0)
+      }
+      if (gamePlayer.getQuarterlyTocCollected() != null && gamePlayer.getQuarterlyTocCollected() > 0) {
         sb.append("     <td align=\"center\">" + gamePlayer.getQuarterlyTocCollected() + "</td>");
-      else
+      } else {
         sb.append("     <td></td>");
+      }
       sb.append("    </tr>");
     }
 
@@ -751,20 +770,22 @@ public class GameService {
     sb.append(" </tr>");
     for (SeasonPlayer seasonPlayer : season.getPlayers()) {
       sb.append(" <tr>");
-      if (seasonPlayer.getPlace() > 0)
+      if (seasonPlayer.getPlace() > 0) {
         sb.append("  <td align=\"center\">" + seasonPlayer.getPlace()
           + "</td>");
-      else
+      } else {
         sb.append("  <td align=\"center\"></td>");
+      }
 
       sb.append("  <td align=\"right\">"
         + seasonPlayer.getName() + "</td>");
 
-      if (seasonPlayer.getPoints() > 0)
+      if (seasonPlayer.getPoints() > 0) {
         sb.append("  <td align=\"center\">" + seasonPlayer.getPoints()
           + "</td>");
-      else
+      } else {
         sb.append("  <td align=\"center\"></td>");
+      }
 
       sb.append("  <td align=\"center\">" + seasonPlayer.getEntries()
         + "</td>");
@@ -823,19 +844,21 @@ public class GameService {
       for (QuarterlySeasonPlayer qsPlayer : qSeason
         .getPlayers()) {
         sb.append("    <tr>");
-        if (qsPlayer.getPlace() > 0)
+        if (qsPlayer.getPlace() > 0) {
           sb.append("     <td align=\"center\">" + qsPlayer.getPlace()
             + "</td>");
-        else
+        } else {
           sb.append("     <td align=\"center\"></td>");
+        }
 
         sb.append("     <td align=\"right\">"
           + qsPlayer.getName() + "</td>");
-        if (qsPlayer.getPoints() > 0)
+        if (qsPlayer.getPoints() > 0) {
           sb.append("     <td align=\"center\">" + qsPlayer.getPoints()
             + "</td>");
-        else
+        } else {
           sb.append("     <td align=\"center\"></td>");
+        }
 
         sb.append("     <td align=\"center\">" + qsPlayer.getEntries()
           + "</td>");

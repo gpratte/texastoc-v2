@@ -380,9 +380,8 @@ public class GameServiceTest implements TestConstants {
 
     CreateGamePlayerRequest cgpr = CreateGamePlayerRequest.builder()
       .playerId(1)
-      .gameId(1)
       .build();
-    GamePlayer gamePlayerCreated = gameService.createGamePlayer(cgpr);
+    GamePlayer gamePlayerCreated = gameService.createGamePlayer(1, cgpr);
 
     Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
     Mockito.verify(playerRepository, Mockito.times(1)).get(1);
@@ -441,8 +440,6 @@ public class GameServiceTest implements TestConstants {
 
     // Same as game player
     UpdateGamePlayerRequest ugpr = UpdateGamePlayerRequest.builder()
-      .gamePlayerId(1)
-      .gameId(1)
       .buyInCollected(true)
       .rebuyAddOnCollected(true)
       .annualTocCollected(true)
@@ -453,7 +450,7 @@ public class GameServiceTest implements TestConstants {
       .chop(500)
       .build();
 
-    GamePlayer gamePlayerUpdated = gameService.updateGamePlayer(ugpr);
+    GamePlayer gamePlayerUpdated = gameService.updateGamePlayer(1, 1, ugpr);
 
     Mockito.verify(gameRepository, Mockito.times(1)).getById(1);
     Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectById(1);
@@ -484,7 +481,7 @@ public class GameServiceTest implements TestConstants {
       .build();
     Mockito.when(gamePlayerRepository.selectById(1)).thenReturn(gamePlayer);
 
-    Mockito.doNothing().when(gamePlayerRepository).deleteById(1);
+    Mockito.doNothing().when(gamePlayerRepository).deleteById(1, 1);
 
     Game currentGame = Game.builder()
       .id(1)
@@ -493,10 +490,10 @@ public class GameServiceTest implements TestConstants {
       .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
-    gameService.deleteGamePlayer(1);
+    gameService.deleteGamePlayer(1, 1);
 
     Mockito.verify(gamePlayerRepository, Mockito.times(1)).selectById(1);
-    Mockito.verify(gamePlayerRepository, Mockito.times(1)).deleteById(1);
+    Mockito.verify(gamePlayerRepository, Mockito.times(1)).deleteById(1, 1);
     Mockito.verify(gameRepository, Mockito.times(2)).getById(1);
   }
 
@@ -534,9 +531,8 @@ public class GameServiceTest implements TestConstants {
       .firstName("John")
       .lastName("Doe")
       .email("johndoe@texastoc.com")
-      .gameId(1)
       .build();
-    GamePlayer actualGamePlayer = gameService.createFirstTimeGamePlayer(firstTimeGamePlayer);
+    GamePlayer actualGamePlayer = gameService.createFirstTimeGamePlayer(1, firstTimeGamePlayer);
 
     assertNotNull(actualGamePlayer);
     Mockito.verify(playerRepository, Mockito.times(1)).save(any(Player.class));
@@ -584,8 +580,7 @@ public class GameServiceTest implements TestConstants {
     }
 
     try {
-      gameService.createGamePlayer(CreateGamePlayerRequest.builder()
-        .gameId(1)
+      gameService.createGamePlayer(1, CreateGamePlayerRequest.builder()
         .build());
       Assert.fail("should not be able to update a finalized game");
     } catch (GameIsFinalizedException e) {
@@ -593,7 +588,7 @@ public class GameServiceTest implements TestConstants {
     }
 
     try {
-      gameService.updateGamePlayer(UpdateGamePlayerRequest.builder().gameId(1).build());
+      gameService.updateGamePlayer(1, 1, UpdateGamePlayerRequest.builder().build());
       Assert.fail("should not be able to update a finalized game");
     } catch (GameIsFinalizedException e) {
       // all good
@@ -605,15 +600,14 @@ public class GameServiceTest implements TestConstants {
       .build());
 
     try {
-      gameService.deleteGamePlayer(1);
+      gameService.deleteGamePlayer(1, 1);
       Assert.fail("should not be able to update a finalized game");
     } catch (GameIsFinalizedException e) {
       // all good
     }
 
     try {
-      gameService.createFirstTimeGamePlayer(FirstTimeGamePlayer.builder()
-        .gameId(1)
+      gameService.createFirstTimeGamePlayer(1, FirstTimeGamePlayer.builder()
         .build());
       Assert.fail("should not be able to update a finalized game");
     } catch (GameIsFinalizedException e) {
