@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateGamePlayerRequest {
-  private int gamePlayerId;
-  // TODO game id should move to the url in the controller
-  private int gameId;
   private Integer place;
   private boolean knockedOut;
   private boolean roundUpdates;

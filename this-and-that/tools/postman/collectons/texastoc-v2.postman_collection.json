@@ -365,7 +365,7 @@
 					"name": "Game Players",
 					"item": [
 						{
-							"name": "add existing game player",
+							"name": "create game player",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -377,7 +377,7 @@
 										}
 									]
 								},
-								"method": "PUT",
+								"method": "POST",
 								"header": [
 									{
 										"key": "Content-Type",
@@ -387,21 +387,60 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"gamePlayerId\": 1,\n    \"gameId\": 1,\n    \"buyInCollected\": true,\n    \"rebuyAddOnCollected\": true,\n    \"annualTocCollected\": true\n}"
+									"raw": "{\n    \"playerId\": 1,\n    \"buyInCollected\": true,\n    \"annualTocCollected\": true,\n    \"quarterlyTocCollected\": true\n}"
 								},
 								"url": {
-									"raw": "http://localhost:8080/api/v2/games/players/1",
-									"protocol": "http",
+									"raw": "{{url}}/api/v2/games/{{gameId}}/players",
 									"host": [
-										"localhost"
+										"{{url}}"
 									],
-									"port": "8080",
 									"path": [
 										"api",
 										"v2",
 										"games",
-										"players",
-										"1"
+										"{{gameId}}",
+										"players"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create first time game player",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/vnd.texastoc.new-player+json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\": \"first-{{$timestamp}}\",\n    \"lastName\": \"last-{{$timestamp}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"buyInCollected\": true,\n    \"annualTocCollected\": true,\n    \"quarterlyTocCollected\": true\n}"
+								},
+								"url": {
+									"raw": "{{url}}/api/v2/games/{{gameId}}/players",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"games",
+										"{{gameId}}",
+										"players"
 									]
 								}
 							},
@@ -430,21 +469,147 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"gamePlayerId\": 1,\n    \"gameId\": 1,\n    \"buyInCollected\": true,\n    \"rebuyAddOnCollected\": true,\n    \"annualTocCollected\": true\n}"
+									"raw": "{\n    \"#place\": 1,\n    \"knockedOut\": true,\n    \"roundUpdates\": true,\n    \"buyInCollected\": true,\n    \"rebuyAddOnCollected\": true,\n    \"annualTocCollected\": true,\n    \"quarterlyTocCollected\": true,\n    \"#chop\": 11000\n}"
 								},
 								"url": {
-									"raw": "http://localhost:8080/api/v2/games/players/1",
-									"protocol": "http",
+									"raw": "{{url}}/api/v2/games/{{gameId}}/players/{{gamePlayerId}}",
 									"host": [
-										"localhost"
+										"{{url}}"
 									],
-									"port": "8080",
 									"path": [
 										"api",
 										"v2",
 										"games",
+										"{{gameId}}",
 										"players",
-										"1"
+										"{{gamePlayerId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "toggle knocked out game player",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/vnd.texastoc.knockout+json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/api/v2/games/{{gameId}}/players/{{gamePlayerId}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"games",
+										"{{gameId}}",
+										"players",
+										"{{gamePlayerId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "toggle rebuy game player",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/vnd.texastoc.rebuy+json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/api/v2/games/{{gameId}}/players/{{gamePlayerId}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"games",
+										"{{gameId}}",
+										"players",
+										"{{gamePlayerId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete game player",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/api/v2/games/{{gameId}}/players/{{gamePlayerId}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"games",
+										"{{gameId}}",
+										"players",
+										"{{gamePlayerId}}"
 									]
 								}
 							},
@@ -610,7 +775,11 @@
 								"exec": [
 									"var jsonData = pm.response.json();",
 									"pm.environment.set(\"gameId\", jsonData.id);",
-									"console.log('gameId set to ' + jsonData.id)"
+									"console.log('gameId set to ' + jsonData.id)",
+									"if (jsonData.players && jsonData.players.length > 0) {",
+									"    pm.environment.set(\"gamePlayerId\", jsonData.players[0].id);",
+									"console.log('gamePlayerId set to ' + jsonData.players[0].id)",
+									"}"
 								],
 								"type": "text/javascript"
 							}

@@ -254,13 +254,13 @@ public class GameService {
 
   @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
-  public GamePlayer createGamePlayer(CreateGamePlayerRequest cgpr) {
-    Game game = gameRepository.getById(cgpr.getGameId());
+  public GamePlayer createGamePlayer(int gameId, CreateGamePlayerRequest cgpr) {
+    Game game = gameRepository.getById(gameId);
     checkFinalized(game);
 
     GamePlayer gamePlayer = GamePlayer.builder()
       .playerId(cgpr.getPlayerId())
-      .gameId(cgpr.getGameId())
+      .gameId(gameId)
       .buyInCollected(cgpr.isBuyInCollected() ? game.getBuyInCost() : null)
       .annualTocCollected(cgpr.isAnnualTocCollected() ? game.getAnnualTocCost() : null)
       .quarterlyTocCollected(cgpr.isQuarterlyTocCollected() ? game.getQuarterlyTocCost() : null)
@@ -273,12 +273,17 @@ public class GameService {
 
   @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
-  public GamePlayer updateGamePlayer(UpdateGamePlayerRequest ugpr) {
-    Game game = gameRepository.getById(ugpr.getGameId());
+  public GamePlayer updateGamePlayer(int gameId, int gamePlayerId, UpdateGamePlayerRequest ugpr) {
+    Game game = gameRepository.getById(gameId);
     checkFinalized(game);
 
+    GamePlayer gamePlayer = getGamePlayer(gamePlayerId);
+    if (gameId != gamePlayer.getGameId()) {
+      log.error("Cannot update game player, game id does not match");
+      throw new RuntimeException("Cannot update game player, game id does not match");
+    }
+
     Integer place = ugpr.getPlace();
-    GamePlayer gamePlayer = getGamePlayer(ugpr.getGamePlayerId());
     gamePlayer.setPlace(place);
     gamePlayer.setRoundUpdates(ugpr.isRoundUpdates());
     gamePlayer.setBuyInCollected(ugpr.isBuyInCollected() ? game.getBuyInCost() : null);
@@ -350,11 +355,11 @@ public class GameService {
 
   @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
-  public void deleteGamePlayer(int gamePlayerId) {
+  public void deleteGamePlayer(int gameId, int gamePlayerId) {
     GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
     checkFinalized(gamePlayer.getGameId());
 
-    gamePlayerRepository.deleteById(gamePlayer.getId());
+    gamePlayerRepository.deleteById(gameId, gamePlayerId);
 
     Game currentGame = gameRepository.getById(gamePlayer.getGameId());
     recalculate(currentGame);
@@ -368,8 +373,8 @@ public class GameService {
 
   @CacheEvict(value = "currentGame", allEntries = true)
   @Transactional
-  public GamePlayer createFirstTimeGamePlayer(FirstTimeGamePlayer firstTimeGamePlayer) {
-    Game game = gameRepository.getById(firstTimeGamePlayer.getGameId());
+  public GamePlayer createFirstTimeGamePlayer(int gameId, FirstTimeGamePlayer firstTimeGamePlayer) {
+    Game game = gameRepository.getById(gameId);
     checkFinalized(game);
 
     String firstName = firstTimeGamePlayer.getFirstName();
@@ -388,7 +393,7 @@ public class GameService {
     name.append(!Objects.isNull(lastName) ? lastName : "");
 
     GamePlayer gamePlayer = GamePlayer.builder()
-      .gameId(firstTimeGamePlayer.getGameId())
+      .gameId(gameId)
       .playerId(playerId)
       .name(name.toString())
       .buyInCollected(firstTimeGamePlayer.isBuyInCollected() ? game.getBuyInCost() : null)

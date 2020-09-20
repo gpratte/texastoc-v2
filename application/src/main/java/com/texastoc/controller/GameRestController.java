@@ -95,41 +95,36 @@ public class GameRestController {
 
   @PostMapping(value = "/api/v2/games/{id}/players", consumes = MediaType.APPLICATION_JSON_VALUE)
   public GamePlayer createGamePlayer(@PathVariable("id") int id, @RequestBody @Valid CreateGamePlayerRequest cgpr) {
-    cgpr.setGameId(id);
-    return gameService.createGamePlayer(cgpr);
+    return gameService.createGamePlayer(id, cgpr);
   }
 
   @PostMapping(value = "/api/v2/games/{id}/players", consumes = "application/vnd.texastoc.new-player+json")
   public GamePlayer createGamePlayer(@PathVariable("id") int id, @RequestBody @Valid FirstTimeGamePlayer firstTimeGamePlayer) {
-    firstTimeGamePlayer.setGameId(id);
-    return gameService.createFirstTimeGamePlayer(firstTimeGamePlayer);
+    return gameService.createFirstTimeGamePlayer(id, firstTimeGamePlayer);
   }
 
-  @PutMapping(value = "/api/v2/games/{id}/players/{playerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public GamePlayer updateGamePlayer(@PathVariable("id") int id, @PathVariable("playerId") int playerId, @RequestBody @Valid UpdateGamePlayerRequest ugpr) {
-    ugpr.setGameId(id);
-    ugpr.setGamePlayerId(playerId);
-    return gameService.updateGamePlayer(ugpr);
+  @PutMapping(value = "/api/v2/games/{gameId}/players/{gamePlayerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public GamePlayer updateGamePlayer(@PathVariable("gameId") int gameId, @PathVariable("gamePlayerId") int gamePlayerId, @RequestBody @Valid UpdateGamePlayerRequest ugpr) {
+    return gameService.updateGamePlayer(gameId, gamePlayerId, ugpr);
   }
 
-  @PutMapping(value = "/api/v2/games/{id}/players/{playerId}", consumes = "application/vnd.texastoc.knockout+json")
-  public GamePlayer toggleKnockedOut(@PathVariable("id") int id, @PathVariable("playerId") int playerId) {
-    return gameService.toogleGamePlayerKnockedOut(id, playerId);
+  @PutMapping(value = "/api/v2/games/{gameId}/players/{gamePlayerId}", consumes = "application/vnd.texastoc.knockout+json")
+  public GamePlayer toggleKnockedOut(@PathVariable("gameId") int gameId, @PathVariable("gamePlayerId") int gamePlayerId) {
+    return gameService.toogleGamePlayerKnockedOut(gameId, gamePlayerId);
   }
 
-  @PutMapping(value = "/api/v2/games/{id}/players/{playerId}", consumes = "application/vnd.texastoc.rebuy+json")
-  public GamePlayer toggleRebuy(@PathVariable("id") int id, @PathVariable("playerId") int playerId) {
-    return gameService.toogleGamePlayerRebuy(id, playerId);
+  @PutMapping(value = "/api/v2/games/{gameId}/players/{gamePlayerId}", consumes = "application/vnd.texastoc.rebuy+json")
+  public GamePlayer toggleRebuy(@PathVariable("gameId") int gameId, @PathVariable("gamePlayerId") int gamePlayerId) {
+    return gameService.toogleGamePlayerRebuy(gameId, gamePlayerId);
   }
 
-  @DeleteMapping("/api/v2/games/{id}/players/{playerId}")
-  public void deleteGamePlayer(@PathVariable("id") int id, @PathVariable("playerId") int playerId) {
-    // TODO use the game id when deleting
-    gameService.deleteGamePlayer(playerId);
+  @DeleteMapping("/api/v2/games/{gameId}/players/{gamePlayerId}")
+  public void deleteGamePlayer(@PathVariable("gameId") int gameId, @PathVariable("gamePlayerId") int gamePlayerId) {
+    gameService.deleteGamePlayer(gameId, gamePlayerId);
   }
 
   @PostMapping(value = "/api/v2/games/{id}/seats", consumes = "application/vnd.texastoc.assign-seats+json")
-  public Seating seats(@PathVariable("id") int id, @RequestBody SeatingRequest seatingRequest) throws JsonProcessingException {
+  public Seating seating(@PathVariable("id") int id, @RequestBody SeatingRequest seatingRequest) throws JsonProcessingException {
     seatingRequest.setGameId(id);
     return seatingService.seat(seatingRequest.getGameId(), seatingRequest.getNumSeatsPerTable(), seatingRequest.getTableRequests());
   }

@@ -80,12 +80,13 @@ public class GamePlayerRepository {
     return gamePlayer;
   }
 
-  public void deleteById(int id) {
+  public void deleteById(int gameId, int id) {
     MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("gameId", gameId);
     params.addValue("id", id);
 
     jdbcTemplate
-      .update("delete from gameplayer where id = :id", params);
+      .update("delete from gameplayer where gameId = :gameId and id = :id", params);
   }
 
   private static final String INSERT_SQL =
@@ -168,6 +169,7 @@ public class GamePlayerRepository {
 
 
   private static final class GamePlayerMapper implements RowMapper<GamePlayer> {
+    @Override
     public GamePlayer mapRow(ResultSet rs, int rowNum) {
       GamePlayer gamePlayer = new GamePlayer();
       try {

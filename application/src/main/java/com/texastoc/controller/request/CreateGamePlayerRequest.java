@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateGamePlayerRequest {
   private int playerId;
-  private int gameId;
   private boolean buyInCollected;
   private boolean annualTocCollected;
   private boolean quarterlyTocCollected;
