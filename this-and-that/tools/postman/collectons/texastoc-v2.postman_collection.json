@@ -620,6 +620,95 @@
 					"_postman_isSubFolder": true
 				},
 				{
+					"name": "Seats",
+					"item": [
+						{
+							"name": "create seating",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/vnd.texastoc.assign-seats+json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"numSeatsPerTable\": [3],\n    \"tableRequests\": [{\n        \"gamePlayerId\": {{gamePlayerId}},\n        \"playerName\": \"John Doe\",\n        \"tableNum\": 1\n    }]\n}"
+								},
+								"url": {
+									"raw": "{{url}}/api/v2/games/{{gameId}}/seats",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"games",
+										"{{gameId}}",
+										"seats"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "notify seating",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/vnd.texastoc.notify-seats+json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/api/v2/games/{{gameId}}/seats",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"games",
+										"{{gameId}}",
+										"seats"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
 					"name": "create game",
 					"request": {
 						"auth": {
@@ -1561,12 +1650,23 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
 								"type": "text",
-								"value": "application/json"
+								"value": "application/json",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -1574,17 +1674,15 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v2/seasons/1",
-							"protocol": "http",
+							"raw": "{{url}}/api/v2/league/points",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v2",
-								"seasons",
-								"1"
+								"league",
+								"points"
 							]
 						}
 					},

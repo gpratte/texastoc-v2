@@ -123,15 +123,14 @@ public class GameRestController {
     gameService.deleteGamePlayer(gameId, gamePlayerId);
   }
 
-  @PostMapping(value = "/api/v2/games/{id}/seats", consumes = "application/vnd.texastoc.assign-seats+json")
-  public Seating seating(@PathVariable("id") int id, @RequestBody SeatingRequest seatingRequest) throws JsonProcessingException {
-    seatingRequest.setGameId(id);
-    return seatingService.seat(seatingRequest.getGameId(), seatingRequest.getNumSeatsPerTable(), seatingRequest.getTableRequests());
+  @PostMapping(value = "/api/v2/games/{gameId}/seats", consumes = "application/vnd.texastoc.assign-seats+json")
+  public Seating seating(@PathVariable("gameId") int gameId, @RequestBody SeatingRequest seatingRequest) throws JsonProcessingException {
+    return seatingService.seat(gameId, seatingRequest.getNumSeatsPerTable(), seatingRequest.getTableRequests());
   }
 
-  @PostMapping(value = "/api/v2/games/{id}/seats", consumes = "application/vnd.texastoc.notify-seats+json")
-  public void notifySeating(@PathVariable("id") int id) throws JsonProcessingException {
-    gameService.notifySeating(id);
+  @PostMapping(value = "/api/v2/games/{gameId}/seats", consumes = "application/vnd.texastoc.notify-seats+json")
+  public void notifySeating(@PathVariable("gameId") int gameId) throws JsonProcessingException {
+    gameService.notifySeating(gameId);
   }
 
 }
