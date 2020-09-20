@@ -155,8 +155,7 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 75-season-payouts
-Calculate the season payouts as per the payout settings. Estimate the season
-payouts if the season there are more games to play.
-
-The payout settings are persisted as json which will allow the structure to easily change.
+## Current Branch: 76-flesh-out-apis-and-postman
+Update postman collection for call all the APIs. In doing so tweaked some of the
+controllers and services to standardize using the id (e.g. game id, season id) path
+variable.
