@@ -3,6 +3,7 @@ package com.texastoc.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.texastoc.exception.GameInProgressException;
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.season.HistoricalSeason;
@@ -12,6 +13,7 @@ import com.texastoc.model.season.Season;
 import com.texastoc.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -154,6 +156,39 @@ public class SeasonService {
   @Transactional(readOnly = true)
   public int getCurrentSeasonId() {
     return seasonRepository.getCurrent().getId();
+  }
+
+  @CacheEvict(value = {"currentSeason"}, allEntries = true)
+  @Transactional
+  public void endSeason(int seasonId) {
+    Season season = seasonRepository.get(seasonId);
+    if (season.isFinalized()) {
+      return;
+    }
+
+    // Make sure no games are open
+    List<Game> games = gameRepository.getBySeasonId(seasonId);
+    for (Game game : games) {
+      if (!game.isFinalized()) {
+        throw new GameInProgressException("There is a game in progress.");
+      }
+    }
+
+    season.setFinalized(true);
+    seasonRepository.update(season);
+    // TODO create seasonHistory
+  }
+
+  @CacheEvict(value = {"currentSeason"}, allEntries = true)
+  @Transactional
+  public void openSeason(int seasonId) {
+    Season season = seasonRepository.get(seasonId);
+    if (!season.isFinalized()) {
+      return;
+    }
+    // TODO remove seasonHistory
+    season.setFinalized(false);
+    seasonRepository.save(season);
   }
 
   public List<HistoricalSeason> getPastSeasons() {
