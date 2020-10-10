@@ -48,13 +48,15 @@ public class SeasonServiceTest implements TestConstants {
   @MockBean
   private SeasonPayoutRepository seasonPayoutRepository;
   @MockBean
+  private SeasonHistoryRepository seasonHistoryRepository;
+  @MockBean
   private QuarterlySeasonPlayerRepository qSeasonPlayerRepository;
   @MockBean
   private QuarterlySeasonPayoutRepository qSeasonPayoutRepository;
 
   @Before
   public void before() {
-    service = new SeasonService(seasonRepository, qSeasonRepository, gameRepository, configRepository, gamePlayerRepository, gamePayoutRepository, seasonPlayerRepository, seasonPayoutRepository, qSeasonPlayerRepository, qSeasonPayoutRepository);
+    service = new SeasonService(seasonRepository, qSeasonRepository, gameRepository, configRepository, gamePlayerRepository, gamePayoutRepository, seasonPlayerRepository, seasonPayoutRepository, seasonHistoryRepository, qSeasonPlayerRepository, qSeasonPayoutRepository);
   }
 
   @Test

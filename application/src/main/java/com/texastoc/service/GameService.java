@@ -83,7 +83,7 @@ public class GameService {
     executorService = Executors.newCachedThreadPool();
   }
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   @Transactional
   public Game createGame(Game game) {
     Season currentSeason = seasonRepository.getCurrent();
@@ -232,7 +232,7 @@ public class GameService {
     return game;
   }
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   @Transactional
   public void updateGame(Game game) {
     Game currentGame = gameRepository.getById(game.getId());
@@ -252,7 +252,7 @@ public class GameService {
     sendUpdatedGame();
   }
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   @Transactional
   public GamePlayer createGamePlayer(int gameId, CreateGamePlayerRequest cgpr) {
     Game game = gameRepository.getById(gameId);
@@ -271,7 +271,7 @@ public class GameService {
     return gamePlayerCreated;
   }
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   @Transactional
   public GamePlayer updateGamePlayer(int gameId, int gamePlayerId, UpdateGamePlayerRequest ugpr) {
     Game game = gameRepository.getById(gameId);
@@ -309,7 +309,7 @@ public class GameService {
     return gamePlayer;
   }
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   @Transactional
   public GamePlayer toogleGamePlayerKnockedOut(int gameId, int gamePlayerId) {
     Game game = gameRepository.getById(gameId);
@@ -331,7 +331,7 @@ public class GameService {
     return gamePlayer;
   }
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   @Transactional
   public GamePlayer toogleGamePlayerRebuy(int gameId, int gamePlayerId) {
     Game game = gameRepository.getById(gameId);
@@ -353,7 +353,7 @@ public class GameService {
     return gamePlayer;
   }
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   @Transactional
   public void deleteGamePlayer(int gameId, int gamePlayerId) {
     GamePlayer gamePlayer = gamePlayerRepository.selectById(gamePlayerId);
@@ -371,7 +371,7 @@ public class GameService {
     return gamePlayerRepository.selectById(gamePlayerId);
   }
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   @Transactional
   public GamePlayer createFirstTimeGamePlayer(int gameId, FirstTimeGamePlayer firstTimeGamePlayer) {
     Game game = gameRepository.getById(gameId);
@@ -406,7 +406,7 @@ public class GameService {
     return gamePlayerCreated;
   }
 
-  @CacheEvict(value = {"currentGame", "currentSeason"}, allEntries = true)
+  @CacheEvict(value = {"currentGame", "currentSeason"}, allEntries = true, beforeInvocation = false)
   @Transactional
   public void endGame(int id) {
     Game game = gameRepository.getById(id);
@@ -427,7 +427,7 @@ public class GameService {
   }
 
 
-  @CacheEvict(value = "currentGame", allEntries = true)
+  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   public void openGame(int id) {
     Game gameToOpen = gameRepository.getById(id);
 

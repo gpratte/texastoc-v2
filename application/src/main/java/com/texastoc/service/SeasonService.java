@@ -28,7 +28,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,13 +46,14 @@ public class SeasonService {
   private final SeasonPlayerRepository seasonPlayerRepository;
   private final ConfigRepository configRepository;
   private final SeasonPayoutRepository seasonPayoutRepository;
+  private final SeasonHistoryRepository seasonHistoryRepository;
   private final QuarterlySeasonPlayerRepository qSeasonPlayerRepository;
   private final QuarterlySeasonPayoutRepository qSeasonPayoutRepository;
 
   private String pastSeasonsAsJson = null;
 
   @Autowired
-  public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonPlayerRepository seasonPlayerRepository, SeasonPayoutRepository seasonPayoutRepository, QuarterlySeasonPlayerRepository qSeasonPlayerRepository, QuarterlySeasonPayoutRepository qSeasonPayoutRepository) {
+  public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonPlayerRepository seasonPlayerRepository, SeasonPayoutRepository seasonPayoutRepository, SeasonHistoryRepository seasonHistoryRepository, QuarterlySeasonPlayerRepository qSeasonPlayerRepository, QuarterlySeasonPayoutRepository qSeasonPayoutRepository) {
     this.seasonRepository = seasonRepository;
     this.qSeasonRepository = qSeasonRepository;
     this.gameRepository = gameRepository;
@@ -61,6 +62,7 @@ public class SeasonService {
     this.gamePayoutRepository = gamePayoutRepository;
     this.seasonPlayerRepository = seasonPlayerRepository;
     this.seasonPayoutRepository = seasonPayoutRepository;
+    this.seasonHistoryRepository = seasonHistoryRepository;
     this.qSeasonPlayerRepository = qSeasonPlayerRepository;
     this.qSeasonPayoutRepository = qSeasonPayoutRepository;
   }
@@ -158,7 +160,7 @@ public class SeasonService {
     return seasonRepository.getCurrent().getId();
   }
 
-  @CacheEvict(value = {"currentSeason"}, allEntries = true)
+  @CacheEvict(value = {"currentSeason"}, allEntries = true, beforeInvocation = false)
   @Transactional
   public void endSeason(int seasonId) {
     Season season = seasonRepository.get(seasonId);
@@ -176,33 +178,42 @@ public class SeasonService {
 
     season.setFinalized(true);
     seasonRepository.update(season);
-    // TODO create seasonHistory
+
+    // Set the historical season
+    seasonHistoryRepository.save(season.getStart(), season.getEnd(), seasonId);
+    seasonPlayerRepository.getBySeasonId(seasonId)
+      .forEach(seasonPlayer -> seasonHistoryRepository.savePlayer(seasonId, seasonPlayer.getName(), seasonPlayer.getPoints(), seasonPlayer.getEntries()));
   }
 
-  @CacheEvict(value = {"currentSeason"}, allEntries = true)
   @Transactional
   public void openSeason(int seasonId) {
     Season season = seasonRepository.get(seasonId);
     if (!season.isFinalized()) {
       return;
     }
-    // TODO remove seasonHistory
     season.setFinalized(false);
     seasonRepository.save(season);
+
+    // Clear out the historical season
+    seasonHistoryRepository.deleteById(seasonId);
   }
 
   public List<HistoricalSeason> getPastSeasons() {
+    List<HistoricalSeason> historicalSeasonsFromJson = null;
     String json = getPastSeasonsAsJson();
-    if (json == null) {
-      return Collections.emptyList();
-    }
-
     try {
-      return OBJECT_MAPPER.readValue(json, new TypeReference<List<HistoricalSeason>>() {
+      historicalSeasonsFromJson = OBJECT_MAPPER.readValue(json, new TypeReference<List<HistoricalSeason>>() {
       });
     } catch (JsonProcessingException e) {
-      return Collections.emptyList();
+      log.warn("Could not deserialize historical seasons json");
+      historicalSeasonsFromJson = new LinkedList<>();
     }
+
+    List<HistoricalSeason> historicalSeasons = seasonHistoryRepository.getAll();
+    historicalSeasons.forEach(historicalSeason -> historicalSeason.setPlayers(seasonHistoryRepository.getAllPlayers(historicalSeason.getSeasonId())));
+
+    historicalSeasons.addAll(historicalSeasonsFromJson);
+    return historicalSeasons;
   }
 
 

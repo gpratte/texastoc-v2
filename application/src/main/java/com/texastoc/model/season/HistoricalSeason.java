@@ -10,6 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoricalSeason {
+  private int id;
+  private int seasonId;
   private String startYear;
   private String endYear;
   private List<HistoricalSeasonPlayer> players;
@@ -17,9 +19,10 @@ public class HistoricalSeason {
   @Data
   @NoArgsConstructor
   @AllArgsConstructor
-  static class HistoricalSeasonPlayer {
+  public static class HistoricalSeasonPlayer {
     private String firstName;
     private String lastName;
+    private String name;
     private int points;
     private int entries;
   }
