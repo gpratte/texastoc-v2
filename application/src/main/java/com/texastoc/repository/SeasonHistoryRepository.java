@@ -30,15 +30,15 @@ public class SeasonHistoryRepository {
   private static final String INSERT_SQL = "INSERT INTO historicalseason "
     + " (seasonId, startYear, endYear) "
     + " VALUES "
-    + " (:startYear, :endYear, :seasonId)";
+    + " (:seasonId, :startYear, :endYear)";
 
-  public int save(LocalDate start, LocalDate end, int seasonId) {
+  public int save(int seasonId, LocalDate start, LocalDate end) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
     MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("seasonId", seasonId);
     params.addValue("startYear", Integer.toString(start.getYear()));
     params.addValue("endYear", Integer.toString(end.getYear()));
-    params.addValue("seasonId", seasonId);
 
     String[] keys = {"id"};
     jdbcTemplate.update(INSERT_SQL, params, keyHolder, keys);
@@ -93,13 +93,16 @@ public class SeasonHistoryRepository {
   public void deleteById(int seasonId) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("seasonId", seasonId);
-
-    jdbcTemplate
-      .update("delete from historicalseasonplayer where seasonId = :seasonId", params);
     jdbcTemplate
       .update("delete from historicalseason where seasonId = :seasonId", params);
   }
 
+  public void deletePlayersById(int seasonId) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("seasonId", seasonId);
+    jdbcTemplate
+      .update("delete from historicalseasonplayer where seasonId = :seasonId", params);
+  }
 
   private static final class HistoricalSeasonMapper implements RowMapper<HistoricalSeason> {
     @Override

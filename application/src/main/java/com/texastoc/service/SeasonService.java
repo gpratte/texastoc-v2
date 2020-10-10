@@ -164,10 +164,6 @@ public class SeasonService {
   @Transactional
   public void endSeason(int seasonId) {
     Season season = seasonRepository.get(seasonId);
-    if (season.isFinalized()) {
-      return;
-    }
-
     // Make sure no games are open
     List<Game> games = gameRepository.getBySeasonId(seasonId);
     for (Game game : games) {
@@ -179,8 +175,12 @@ public class SeasonService {
     season.setFinalized(true);
     seasonRepository.update(season);
 
+    // Clear out the historical season
+    seasonHistoryRepository.deletePlayersById(seasonId);
+    seasonHistoryRepository.deleteById(seasonId);
+
     // Set the historical season
-    seasonHistoryRepository.save(season.getStart(), season.getEnd(), seasonId);
+    seasonHistoryRepository.save(seasonId, season.getStart(), season.getEnd());
     seasonPlayerRepository.getBySeasonId(seasonId)
       .forEach(seasonPlayer -> seasonHistoryRepository.savePlayer(seasonId, seasonPlayer.getName(), seasonPlayer.getPoints(), seasonPlayer.getEntries()));
   }
@@ -188,13 +188,11 @@ public class SeasonService {
   @Transactional
   public void openSeason(int seasonId) {
     Season season = seasonRepository.get(seasonId);
-    if (!season.isFinalized()) {
-      return;
-    }
     season.setFinalized(false);
     seasonRepository.save(season);
 
     // Clear out the historical season
+    seasonHistoryRepository.deletePlayersById(seasonId);
     seasonHistoryRepository.deleteById(seasonId);
   }
 
