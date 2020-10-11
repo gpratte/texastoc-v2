@@ -155,7 +155,7 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 76-flesh-out-apis-and-postman
-Update postman collection for call all the APIs. In doing so tweaked some of the
-controllers and services to standardize using the id (e.g. game id, season id) path
-variable.
+## Current Branch: 77-finalize-season
+Expose a season finalize endpoint that ends the season and adds the season to the list of historical seasons.
+
+Expose a season unfinalize endpoint reopens the season and removes it from the list of historical seasons.

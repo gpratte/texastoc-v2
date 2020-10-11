@@ -3,6 +3,7 @@ package com.texastoc.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.texastoc.exception.GameInProgressException;
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.season.HistoricalSeason;
@@ -12,6 +13,7 @@ import com.texastoc.model.season.Season;
 import com.texastoc.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,13 +46,14 @@ public class SeasonService {
   private final SeasonPlayerRepository seasonPlayerRepository;
   private final ConfigRepository configRepository;
   private final SeasonPayoutRepository seasonPayoutRepository;
+  private final SeasonHistoryRepository seasonHistoryRepository;
   private final QuarterlySeasonPlayerRepository qSeasonPlayerRepository;
   private final QuarterlySeasonPayoutRepository qSeasonPayoutRepository;
 
   private String pastSeasonsAsJson = null;
 
   @Autowired
-  public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonPlayerRepository seasonPlayerRepository, SeasonPayoutRepository seasonPayoutRepository, QuarterlySeasonPlayerRepository qSeasonPlayerRepository, QuarterlySeasonPayoutRepository qSeasonPayoutRepository) {
+  public SeasonService(SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, GameRepository gameRepository, ConfigRepository configRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonPlayerRepository seasonPlayerRepository, SeasonPayoutRepository seasonPayoutRepository, SeasonHistoryRepository seasonHistoryRepository, QuarterlySeasonPlayerRepository qSeasonPlayerRepository, QuarterlySeasonPayoutRepository qSeasonPayoutRepository) {
     this.seasonRepository = seasonRepository;
     this.qSeasonRepository = qSeasonRepository;
     this.gameRepository = gameRepository;
@@ -59,6 +62,7 @@ public class SeasonService {
     this.gamePayoutRepository = gamePayoutRepository;
     this.seasonPlayerRepository = seasonPlayerRepository;
     this.seasonPayoutRepository = seasonPayoutRepository;
+    this.seasonHistoryRepository = seasonHistoryRepository;
     this.qSeasonPlayerRepository = qSeasonPlayerRepository;
     this.qSeasonPayoutRepository = qSeasonPayoutRepository;
   }
@@ -156,18 +160,58 @@ public class SeasonService {
     return seasonRepository.getCurrent().getId();
   }
 
-  public List<HistoricalSeason> getPastSeasons() {
-    String json = getPastSeasonsAsJson();
-    if (json == null) {
-      return Collections.emptyList();
+  @CacheEvict(value = {"currentSeason"}, allEntries = true, beforeInvocation = false)
+  @Transactional
+  public void endSeason(int seasonId) {
+    Season season = seasonRepository.get(seasonId);
+    // Make sure no games are open
+    List<Game> games = gameRepository.getBySeasonId(seasonId);
+    for (Game game : games) {
+      if (!game.isFinalized()) {
+        throw new GameInProgressException("There is a game in progress.");
+      }
     }
 
+    season.setFinalized(true);
+    seasonRepository.update(season);
+
+    // Clear out the historical season
+    seasonHistoryRepository.deletePlayersById(seasonId);
+    seasonHistoryRepository.deleteById(seasonId);
+
+    // Set the historical season
+    seasonHistoryRepository.save(seasonId, season.getStart(), season.getEnd());
+    seasonPlayerRepository.getBySeasonId(seasonId)
+      .forEach(seasonPlayer -> seasonHistoryRepository.savePlayer(seasonId, seasonPlayer.getName(), seasonPlayer.getPoints(), seasonPlayer.getEntries()));
+  }
+
+  @Transactional
+  public void openSeason(int seasonId) {
+    Season season = seasonRepository.get(seasonId);
+    season.setFinalized(false);
+    seasonRepository.save(season);
+
+    // Clear out the historical season
+    seasonHistoryRepository.deletePlayersById(seasonId);
+    seasonHistoryRepository.deleteById(seasonId);
+  }
+
+  public List<HistoricalSeason> getPastSeasons() {
+    List<HistoricalSeason> historicalSeasonsFromJson = null;
+    String json = getPastSeasonsAsJson();
     try {
-      return OBJECT_MAPPER.readValue(json, new TypeReference<List<HistoricalSeason>>() {
+      historicalSeasonsFromJson = OBJECT_MAPPER.readValue(json, new TypeReference<List<HistoricalSeason>>() {
       });
     } catch (JsonProcessingException e) {
-      return Collections.emptyList();
+      log.warn("Could not deserialize historical seasons json");
+      historicalSeasonsFromJson = new LinkedList<>();
     }
+
+    List<HistoricalSeason> historicalSeasons = seasonHistoryRepository.getAll();
+    historicalSeasons.forEach(historicalSeason -> historicalSeason.setPlayers(seasonHistoryRepository.getAllPlayers(historicalSeason.getSeasonId())));
+
+    historicalSeasons.addAll(historicalSeasonsFromJson);
+    return historicalSeasons;
   }
 
 
