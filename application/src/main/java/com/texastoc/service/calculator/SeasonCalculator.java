@@ -29,7 +29,6 @@ public class SeasonCalculator {
     this.seasonPayoutSettingsRepository = seasonPayoutSettingsRepository;
   }
 
-  @SuppressWarnings("Duplicates")
   public Season calculate(int id) {
 
     Season season = seasonRepository.get(id);

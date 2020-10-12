@@ -348,6 +348,14 @@ VALUES (1, 1,
                           {"place" : 3,"amount" : 1150,"percent" : 16},
                           {"place" : 4,"amount" : 1100,"percent" : 14},
                           {"place" : 5,"amount" : 0,"percent" : 30}]}]');
+INSERT INTO seasonpayoutsettings
+VALUES (2, 2,
+        '[{"lowRange" : 5000,"highRange" : 7000,
+           "guaranteed": [{"place" : 1,"amount" : 1400,"percent" : 20}],
+           "finalTable": [{"place" : 2,"amount" : 1350,"percent" : 20},
+                          {"place" : 3,"amount" : 1150,"percent" : 16},
+                          {"place" : 4,"amount" : 1100,"percent" : 14},
+                          {"place" : 5,"amount" : 0,"percent" : 30}]}]');
 
 
 DROP TABLE IF EXISTS seating;
@@ -367,7 +375,7 @@ CREATE TABLE settings
 );
 INSERT INTO settings
 VALUES (1,
-        '{"uiVersions": [{"env": "local", "version": "2.20"}, {"env": "heroku", "version": "2.20"}]}');
+        '{"uiVersions": [{"env": "local", "version": "2.21"}, {"env": "heroku", "version": "2.21"}]}');
 
 DROP TABLE IF EXISTS supply;
 CREATE TABLE supply
