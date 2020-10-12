@@ -3,7 +3,10 @@ package com.texastoc.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.texastoc.exception.DuplicateSeasonException;
 import com.texastoc.exception.GameInProgressException;
+import com.texastoc.exception.NotFoundException;
+import com.texastoc.exception.SeasonInProgressException;
 import com.texastoc.model.config.TocConfig;
 import com.texastoc.model.game.Game;
 import com.texastoc.model.season.HistoricalSeason;
@@ -67,12 +70,24 @@ public class SeasonService {
     this.qSeasonPayoutRepository = qSeasonPayoutRepository;
   }
 
+  @CacheEvict(value = {"currentSeason", "currentSeasonById"}, allEntries = true, beforeInvocation = false)
   @Transactional
   public Season createSeason(int startYear) {
 
     LocalDate start = LocalDate.of(startYear, Month.MAY.getValue(), 1);
 
-    // TODO make sure not overlapping with another season
+    if (!getCurrentSeason().isFinalized()) {
+      throw new SeasonInProgressException();
+    }
+
+    // Make sure not overlapping with another season
+    List<Season> seasons = getSeasons();
+    seasons.forEach(season -> {
+      if (season.getStart().getYear() == startYear) {
+        throw new DuplicateSeasonException(startYear);
+      }
+    });
+
     // The end will be the day before the start date next year
     LocalDate end = start.plusYears(1).minusDays(1);
 
@@ -117,9 +132,9 @@ public class SeasonService {
     return newSeason;
   }
 
+  @Cacheable("currentSeasonById")
   @Transactional(readOnly = true)
   public Season getSeason(int id) {
-
     Season season = seasonRepository.get(id);
     season.setPlayers(seasonPlayerRepository.getBySeasonId(id));
     season.setPayouts(seasonPayoutRepository.getBySeasonId(id));
@@ -149,18 +164,30 @@ public class SeasonService {
   @Cacheable("currentSeason")
   @Transactional(readOnly = true)
   public Season getCurrentSeason() {
-    Season season = seasonRepository.getCurrent();
-    season.setQuarterlySeasons(qSeasonRepository.getBySeasonId(season.getId()));
-    season.setGames(gameRepository.getBySeasonId(season.getId()));
+    Season season = null;
+    List<Season> seasons = seasonRepository.getUnfinalized();
+    if (seasons.size() > 0) {
+      season = seasons.get(0);
+    } else {
+      seasons = seasonRepository.getMostRecent();
+      if (seasons.size() > 0) {
+        season = seasons.get(0);
+      }
+    }
+
+    if (season == null) {
+      throw new NotFoundException("Could not find current season");
+    }
+
     return season;
   }
 
-  @Transactional(readOnly = true)
-  public int getCurrentSeasonId() {
-    return seasonRepository.getCurrent().getId();
-  }
+//  @Transactional(readOnly = true)
+//  public int getCurrentSeasonId() {
+//    return seasonRepository.getCurrent().getId();
+//  }
 
-  @CacheEvict(value = {"currentSeason"}, allEntries = true, beforeInvocation = false)
+  @CacheEvict(value = {"currentSeason", "currentSeasonById"}, allEntries = true, beforeInvocation = false)
   @Transactional
   public void endSeason(int seasonId) {
     Season season = seasonRepository.get(seasonId);
@@ -185,11 +212,12 @@ public class SeasonService {
       .forEach(seasonPlayer -> seasonHistoryRepository.savePlayer(seasonId, seasonPlayer.getName(), seasonPlayer.getPoints(), seasonPlayer.getEntries()));
   }
 
+  @CacheEvict(value = {"currentSeason", "currentSeasonById"}, allEntries = true, beforeInvocation = false)
   @Transactional
   public void openSeason(int seasonId) {
     Season season = seasonRepository.get(seasonId);
     season.setFinalized(false);
-    seasonRepository.save(season);
+    seasonRepository.update(season);
 
     // Clear out the historical season
     seasonHistoryRepository.deletePlayersById(seasonId);

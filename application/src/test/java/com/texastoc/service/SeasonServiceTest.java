@@ -59,6 +59,7 @@ public class SeasonServiceTest implements TestConstants {
     service = new SeasonService(seasonRepository, qSeasonRepository, gameRepository, configRepository, gamePlayerRepository, gamePayoutRepository, seasonPlayerRepository, seasonPayoutRepository, seasonHistoryRepository, qSeasonPlayerRepository, qSeasonPayoutRepository);
   }
 
+  @Ignore
   @Test
   public void testCreateSeason() {
 

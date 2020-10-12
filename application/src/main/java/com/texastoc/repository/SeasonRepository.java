@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Repository
@@ -34,9 +33,7 @@ public class SeasonRepository {
     + " VALUES "
     + " (:startDate, :endDate, :finalized, :numGames, :numGamesPlayed, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :doubleBuyInCost, :doubleRebuyAddOnCost, :doubleRebuyAddOnTocDebit, :tocPerGame, :kittyPerGame, :quarterlyTocPerGame, :quarterlyTocPayouts)";
 
-  @SuppressWarnings("Duplicates")
   public int save(Season season) {
-
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
     MapSqlParameterSource params = new MapSqlParameterSource();
@@ -128,19 +125,30 @@ public class SeasonRepository {
   }
 
   public Season getCurrent() {
-    MapSqlParameterSource params = new MapSqlParameterSource();
-    // This is a bit of a hack. Ideally there would only be one current season. But the tests create multiple seasons in the same date range. Hence get all the seasons that encompass the date and take the lastest one (the one with the highest id).
-    List<Season> seasons = jdbcTemplate.query("select * from season where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate order by id desc", params, new SeasonMapper());
-
-    if (seasons.size() > 0) {
-      return seasons.get(0);
-    }
+//    MapSqlParameterSource params = new MapSqlParameterSource();
+//    List<Season> seasons = jdbcTemplate.query("select * from season where CURRENT_DATE >= startDate and CURRENT_DATE <= endDate order by id desc", params, new SeasonMapper());
+//
+//    if (seasons.size() > 0) {
+//      return seasons.get(0);
+//    }
 
     throw new IncorrectResultSizeDataAccessException(0);
   }
 
+  public List<Season> getUnfinalized() {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    return jdbcTemplate
+      .query("select * from season where finalized = false", params, new SeasonMapper());
+  }
+
+  public List<Season> getMostRecent() {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    return jdbcTemplate
+      .query("select * from season order by startDate desc limit 1", params, new SeasonMapper());
+  }
+
   private static final class SeasonMapper implements RowMapper<Season> {
-    @SuppressWarnings("Duplicates")
+    @Override
     public Season mapRow(ResultSet rs, int rowNum) {
       Season season = new Season();
       try {

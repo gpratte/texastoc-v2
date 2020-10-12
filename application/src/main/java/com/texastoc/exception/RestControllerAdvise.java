@@ -60,6 +60,11 @@ public class RestControllerAdvise extends ResponseEntityExceptionHandler {
     response.sendError(HttpStatus.CONFLICT.value(), ex.getMessage());
   }
 
+  @ExceptionHandler(value = {SeasonInProgressException.class})
+  protected void handleSeasonInProgressException(SeasonInProgressException ex, HttpServletResponse response) throws IOException {
+    response.sendError(HttpStatus.CONFLICT.value(), ex.getMessage());
+  }
+
   @ExceptionHandler(value = {CannotDeletePlayerException.class})
   protected void handleCannotDeletePlayerException(CannotDeletePlayerException ex, HttpServletResponse response) throws IOException {
     response.sendError(HttpStatus.CONFLICT.value(), ex.getMessage());

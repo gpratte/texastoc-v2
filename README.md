@@ -155,7 +155,6 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 77-finalize-season
-Expose a season finalize endpoint that ends the season and adds the season to the list of historical seasons.
-
-Expose a season unfinalize endpoint reopens the season and removes it from the list of historical seasons.
+## Current Branch: 79-new-next-season
+Tweak the business logic for finding the current season just
+like finding the current game.
