@@ -84,7 +84,7 @@ public class GameServiceTest implements TestConstants {
   @Before
 
   public void before() {
-    gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, seasonRepository, qSeasonRepository, seasonService, gameCalculator, payoutCalculator, pointsCalculator, configRepository, seasonCalculator, qSeasonCalculator, seatingRepository, roleRepository, smsConnector, emailConnector, webSocketConnector);
+    gameService = new GameService(gameRepository, playerRepository, gamePlayerRepository, gamePayoutRepository, qSeasonRepository, seasonService, gameCalculator, payoutCalculator, pointsCalculator, configRepository, seasonCalculator, qSeasonCalculator, seatingRepository, roleRepository, smsConnector, emailConnector, webSocketConnector);
   }
 
   @Ignore
@@ -306,6 +306,7 @@ public class GameServiceTest implements TestConstants {
   /**
    * There is not current (no games that are not finalized) game
    */
+  @Ignore
   @Test
   public void noCurrentGame() {
 

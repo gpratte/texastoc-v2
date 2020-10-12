@@ -38,7 +38,6 @@ public class GameService {
 
   private final RoleRepository roleRepository;
   private final GameRepository gameRepository;
-  private final SeasonRepository seasonRepository;
   private final SeatingRepository seatingRepository;
   private final PlayerRepository playerRepository;
   private final GamePlayerRepository gamePlayerRepository;
@@ -60,12 +59,11 @@ public class GameService {
   private TocConfig tocConfig;
   private ExecutorService executorService;
 
-  public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, SeasonRepository seasonRepository, QuarterlySeasonRepository qSeasonRepository, SeasonService seasonService, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository, RoleRepository roleRepository, SMSConnector smsConnector, EmailConnector emailConnector, WebSocketConnector webSocketConnector) {
+  public GameService(GameRepository gameRepository, PlayerRepository playerRepository, GamePlayerRepository gamePlayerRepository, GamePayoutRepository gamePayoutRepository, QuarterlySeasonRepository qSeasonRepository, SeasonService seasonService, GameCalculator gameCalculator, PayoutCalculator payoutCalculator, PointsCalculator pointsCalculator, ConfigRepository configRepository, SeasonCalculator seasonCalculator, QuarterlySeasonCalculator qSeasonCalculator, SeatingRepository seatingRepository, RoleRepository roleRepository, SMSConnector smsConnector, EmailConnector emailConnector, WebSocketConnector webSocketConnector) {
     this.gameRepository = gameRepository;
     this.playerRepository = playerRepository;
     this.gamePlayerRepository = gamePlayerRepository;
     this.gamePayoutRepository = gamePayoutRepository;
-    this.seasonRepository = seasonRepository;
     this.qSeasonRepository = qSeasonRepository;
     this.seasonService = seasonService;
     this.gameCalculator = gameCalculator;
@@ -86,7 +84,7 @@ public class GameService {
   @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
   @Transactional
   public Game createGame(Game game) {
-    Season currentSeason = seasonRepository.getCurrent();
+    Season currentSeason = seasonService.getCurrentSeason();
 
     // Make sure no other game is open
     List<Game> otherGames = gameRepository.getBySeasonId(currentSeason.getId());
@@ -154,7 +152,7 @@ public class GameService {
   @Transactional(readOnly = true)
   @Cacheable("currentGame")
   public Game getCurrentGame() {
-    int seasonId = seasonRepository.getCurrent().getId();
+    int seasonId = seasonService.getCurrentSeason().getId();
     List<Game> games = gameRepository.getUnfinalized(seasonId);
     if (games.size() > 0) {
       Game game = games.get(0);
@@ -175,7 +173,7 @@ public class GameService {
   @Transactional(readOnly = true)
   public List<Game> getGames(Integer seasonId) {
     if (seasonId == null) {
-      seasonId = seasonRepository.getCurrent().getId();
+      seasonId = seasonService.getCurrentSeason().getId();
     }
 
     return gameRepository.getBySeasonId(seasonId);
@@ -406,7 +404,7 @@ public class GameService {
     return gamePlayerCreated;
   }
 
-  @CacheEvict(value = {"currentGame", "currentSeason"}, allEntries = true, beforeInvocation = false)
+  @CacheEvict(value = {"currentGame", "currentSeason", "currentSeasonById"}, allEntries = true, beforeInvocation = false)
   @Transactional
   public void endGame(int id) {
     Game game = gameRepository.getById(id);
@@ -431,7 +429,7 @@ public class GameService {
   public void openGame(int id) {
     Game gameToOpen = gameRepository.getById(id);
 
-    Season season = seasonRepository.get(gameToOpen.getSeasonId());
+    Season season = seasonService.getSeason(gameToOpen.getSeasonId());
     if (season.isFinalized()) {
       // TODO throw exception and handle in RestControllerAdvise
       throw new RuntimeException("Cannot open a game when season is finalized");

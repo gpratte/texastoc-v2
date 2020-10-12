@@ -37,10 +37,11 @@ public class SeasonRestController {
 
   @GetMapping("/api/v2/seasons/current")
   public Season getCurrentSeason() {
-    int seasonId = seasonService.getCurrentSeasonId();
-    return getSeason(seasonId);
+    int id = seasonService.getCurrentSeason().getId();
+    return seasonService.getSeason(id);
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @PutMapping(value = "/api/v2/seasons/{id}", consumes = "application/vnd.texastoc.finalize+json")
   public void finalizeSeason(@PathVariable("id") int id) {
     seasonService.endSeason(id);

@@ -1,8 +1,7 @@
 package com.texastoc.exception;
 
 public class SeasonInProgressException extends RuntimeException {
-
-  public SeasonInProgressException(String message) {
-    super(message);
+  public SeasonInProgressException() {
+    super("Current season is in progress");
   }
 }
