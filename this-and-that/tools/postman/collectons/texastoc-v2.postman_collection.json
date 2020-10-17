@@ -271,6 +271,20 @@
 				},
 				{
 					"name": "get season current",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "862e4955-3d09-404a-95ca-78dffd280da4",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"seasonId\", jsonData.id);",
+									"console.log('seasonId set to ' + jsonData.id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -350,6 +364,86 @@
 								"v2",
 								"seasons",
 								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "finalize season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/vnd.texastoc.finalize+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/v2/seasons/{{seasonId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"seasons",
+								"{{seasonId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unfinalize season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/vnd.texastoc.unfinalize+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/v2/seasons/{{seasonId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"seasons",
+								"{{seasonId}}"
 							]
 						}
 					},
