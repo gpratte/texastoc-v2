@@ -20,11 +20,21 @@ import com.texastoc.repository.*;
 import com.texastoc.service.calculator.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -870,7 +880,16 @@ public class GameService {
     return sb.toString();
   }
 
+  private static final VelocityEngine VELOCITY_ENGINE = new VelocityEngine();
+
+  static {
+    VELOCITY_ENGINE.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+    VELOCITY_ENGINE.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+    VELOCITY_ENGINE.init();
+  }
+
   private class SendGameSummary implements Runnable {
+
     private int gameId;
 
     public SendGameSummary(int gameId) {
@@ -880,6 +899,21 @@ public class GameService {
     @Override
     public void run() {
       Game game = getGame(gameId);
+
+      Template t = VELOCITY_ENGINE.getTemplate("game-summary.vm");
+      VelocityContext context = new VelocityContext();
+      context.put("name", "World");
+      StringWriter writer = new StringWriter();
+      t.merge(context, writer);
+      String results = writer.toString();
+      System.out.println(results);
+      Path path = Paths.get("game-summary.html");
+      try {
+        Files.write(path, results.getBytes());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
       String body = getGameSummary(game);
       String subject = "Summary " + game.getDate();
 

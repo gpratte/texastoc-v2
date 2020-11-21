@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Title</title>
+</head>
+<body>
+<table>
+  <tr>
+    <td colspan="2" align="center">
+      <h2 align="center">Game</h2>
+    </td>
+  </tr>
+  <tr>
+    <td>Season game</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>Quarterly game</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>Host:</td>
+    <td>host.getName</td>
+  </tr>
+  <tr>
+    <td>Date:</td>
+    <td>game.getDate</td>
+  </tr>
+  <tr>
+    <td>Number of Players:</td>
+    <td>game.getNumPlayers</td>
+  </tr>
+  <tr>
+    <td>Total buy in:</td>
+    <td>$game.getBuyInCollected</td>
+  </tr>
+  <tr>
+    <td>Total Re-buy/Add-on:</td>
+    <td>$game.getRebuyAddOnLessAnnualTocCalculated</td>
+  </tr>
+  <tr>
+    <td>Total Annual TOC:</td>
+    <td>$game.getAnnualTocCollected + game.getAnnualTocFromRebuyAddOnCalculated</td>
+  </tr>
+  <tr>
+    <td>Total Quarterly TOC:</td>
+    <td>$game.getQuarterlyTocCollected</td>
+  </tr>
+  <tr>
+    <td>Prize Pot:</td>
+    <td>$game.getPrizePotCalculated</td>
+  </tr>
+  <tr>
+    <td>Kitty:</td>
+    <td>$game.getKittyCalculated</td>
+  </tr>
+  <tr>
+    <td><b>Place</b></td>
+    <th><b>Payout</b></th>
+  </tr>
+  <tr>
+    <td>payout.getPlace</td>
+    <td>$payout.getAmount</td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <th>Fin</th>
+    <th>Name</th>
+    <th>Pts</th>
+    <th>Chp</th>
+    <th>Buy<br/>In</th>
+    <th>Re<br/>Buy</th>
+    <th>TOC</th>
+    <th>QTOC</th>
+  </tr>
+  <tr>
+    <td align="center">gamePlayer.getPlace</td>
+    <td>gamePlayer.getName</td>
+    <td align="center">gamePlayer.getPoints</td>
+    <td>gamePlayer.getChop</td>
+    <td align="center">gamePlayer.getBuyInCollected</td>
+    <td align="center">gamePlayer.getRebuyAddOnCollected</td>
+    <td align="center">gamePlayer.getAnnualTocCollected</td>
+    <td align="center">gamePlayer.getQuarterlyTocCollected</td>
+  </tr>
+</table>
+<hr/>
+<table>
+  <tr>
+    <td colspan="2" align="center">
+      <h2 align="center">Season</h2>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">Games played</td>
+    <td colspan="2">game.getSeasonGameNum</td>
+  </tr>
+  <tr>
+    <td>Start date:</td>
+    <td>season.getStart</td>
+  </tr>
+  <tr>
+    <td>End date:</td>
+    <td>season.getEnd</td>
+  </tr>
+  <tr>
+    <td>Total buy in:</td>
+    <td>$season.getBuyInCollected</td>
+  </tr>
+  <tr>
+    <td>Total rebuy/add on:</td>
+    <td>$season.getRebuyAddOnLessAnnualTocCalculated</td>
+  </tr>
+  <tr>
+    <td>Total Annual TOC:</td>
+    <td>$season.getTotalCombinedAnnualTocCalculated</td>
+  </tr>
+</table>
+<p/>
+<table>
+  <tr>
+    <th>Place</th>
+    <th>Name</th>
+    <th>Points</th>
+    <th>Entries</th>
+  </tr>
+  <tr>
+    <td align="center">seasonPlayer.getPlace</td>
+    <td align="right">seasonPlayer.getName</td>
+    <td align="center">seasonPlayer.getPoints</td>
+    <td align="center">seasonPlayer.getEntries</td>
+  </tr>
+</table>
+
+<hr/>
+<p/>
+
+<table>
+  <tr>
+    <td colspan="2" align="center">
+      <h2 align="center">Quarterly Season</h2>
+    </td>
+  </tr>
+  <tr>
+    <td>Games played</td>
+    <td>game.getQuarterlyGameNum</td>
+  </tr>
+  <tr>
+    <td>Quarter</td>
+    <td>qSeason.getQuarter.getText</td>
+  </tr>
+  <tr>
+    <td>Start date</td>
+    <td>qSeason.getStart</td>
+  </tr>
+  <tr>
+    <td>End date</td>
+    <td>qSeason.getEnd</td>
+  </tr>
+  <tr>
+    <td>Total Quarterly TOC</td>
+    <td>$qSeason.getQTocCollected</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Place</th>
+    <th>Name</th>
+    <th>Points</th>
+    <th>Entries</th>
+  </tr>
+  <tr>
+    <td align="center">qsPlayer.getPlace</td>
+    <td align="right">qsPlayer.getName</td>
+    <td align="center">qsPlayer.getPoints</td>
+    <td align="center">qsPlayer.getEntries</td>
+  </tr>
+</table>
+
+</body>
+</html>
