@@ -902,11 +902,45 @@ public class GameService {
 
       Template t = VELOCITY_ENGINE.getTemplate("game-summary.vm");
       VelocityContext context = new VelocityContext();
-      context.put("name", "World");
+
+      context.put("seasonGameNum", game.getSeasonGameNum());
+      context.put("quarterlyGameNum", game.getQuarterlyGameNum());
+      context.put("hostName", game.getHostName());
+      context.put("date", game.getDate().toString());
+      context.put("numPaidPlayers", game.getNumPaidPlayers());
+      context.put("buyInCollected", game.getBuyInCollected());
+      context.put("rebuyAddOnLessAnnualTocCalculated", game.getRebuyAddOnLessAnnualTocCalculated());
+      context.put("totalAnnualToc", game.getAnnualTocCollected() + game.getAnnualTocFromRebuyAddOnCalculated());
+      context.put("quarterlyTocCollected", game.getQuarterlyTocCollected());
+      context.put("prizePotCalculated", game.getPrizePotCalculated());
+      context.put("kittyCalculated", game.getKittyCalculated());
+      context.put("payouts", game.getPayouts());
+      context.put("players", game.getPlayers());
+
+      Season season = seasonService.getSeason(game.getSeasonId());
+      context.put("seasonStart", season.getStart().toString());
+      context.put("seasonEnd", season.getEnd().toString());
+      context.put("seasonBuyInCollected", season.getBuyInCollected());
+      context.put("seasonRebuyAddOnLessAnnualTocCalculated", season.getRebuyAddOnLessAnnualTocCalculated());
+      context.put("seasonTotalCombinedAnnualTocCalculated", season.getTotalCombinedAnnualTocCalculated());
+      context.put("seasonPlayers", season.getPlayers());
+
+      QuarterlySeason currentQSeason = qSeasonRepository.getByDate(game.getDate());
+      for (QuarterlySeason qs : season.getQuarterlySeasons()) {
+        if (qs.getSeasonId() == currentQSeason.getId()) {
+          currentQSeason = qs;
+        }
+      }
+      context.put("qSeasonNumGames", currentQSeason.getNumGames());
+      context.put("qSeasonQuarter", currentQSeason.getQuarter().getText());
+      context.put("qSeasonStart", currentQSeason.getStart().toString());
+      context.put("qSeasonEnd", currentQSeason.getEnd().toString());
+      context.put("qSeasonTocCollected", currentQSeason.getQTocCollected());
+      context.put("qSeasonPlayers", currentQSeason.getPlayers());
+
       StringWriter writer = new StringWriter();
       t.merge(context, writer);
       String results = writer.toString();
-      System.out.println(results);
       Path path = Paths.get("game-summary.html");
       try {
         Files.write(path, results.getBytes());
