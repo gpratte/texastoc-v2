@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -108,7 +109,7 @@ public class SeasonRepository {
     try {
       return jdbcTemplate.query("select * from season", params, new SeasonMapper());
     } catch (Exception e) {
-      return null;
+      return Collections.emptyList();
     }
   }
 

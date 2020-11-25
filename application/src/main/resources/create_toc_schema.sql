@@ -44,9 +44,6 @@ CREATE TABLE season
     lastCalculated                    date    DEFAULT NULL,
     PRIMARY KEY (id)
 );
-INSERT INTO season
-VALUES (1, '2020-05-01', '2021-04-30', 10, 20, 20, 3, 40, 40, 20, 80, 40, 30, 920, 0, 300, 1320, 0, 0, 300, 20, 900, 52,
-        2, 0, '2020-06-28');
 
 CREATE TABLE quarterlyseason
 (
@@ -64,11 +61,6 @@ CREATE TABLE quarterlyseason
     lastCalculated date    DEFAULT NULL,
     PRIMARY KEY (id)
 );
-INSERT INTO quarterlyseason
-VALUES (1, 1, '2020-05-01', '2020-07-31', 0, 1, 13, 2, 100, 0, 0, '2020-06-28'),
-       (2, 1, '2020-08-01', '2020-10-31', 0, 2, 13, 0, 0, 20, 3, NULL),
-       (3, 1, '2020-11-01', '2021-01-31', 0, 3, 13, 0, 0, 20, 3, NULL),
-       (4, 1, '2021-02-01', '2021-04-30', 0, 4, 13, 0, 0, 20, 3, NULL);
 
 CREATE TABLE seasonplayer
 (
@@ -83,17 +75,6 @@ CREATE TABLE seasonplayer
     PRIMARY KEY (id),
     UNIQUE KEY SPlayer_Unique (playerId, seasonId)
 );
-INSERT INTO seasonplayer
-VALUES (9, 1, 1, 'Gil Pratte', 2, 126, 1, 0),
-       (10, 12, 1, 'Amina Mcmanus', 2, 64, 2, 0),
-       (11, 15, 1, 'Edge', 2, 49, 3, 0),
-       (12, 9, 1, 'Anniyah Conroy', 2, 38, 4, 0),
-       (13, 20, 1, 'Elara Andrews', 1, 37, 5, 0),
-       (14, 22, 1, 'Chloe-Ann Redmond', 2, 23, 6, 0),
-       (15, 3, 1, 'Casey Greig', 1, 16, 7, 0),
-       (16, 5, 1, 'Dolly Chamberlain', 1, 8, 8, 0),
-       (17, 10, 1, 'Chelsea Mcknight', 1, 8, 9, 0),
-       (18, 13, 1, 'Elodie Morrison', 1, 0, NULL, 0);
 
 CREATE TABLE quarterlyseasonplayer
 (
@@ -108,11 +89,6 @@ CREATE TABLE quarterlyseasonplayer
     PRIMARY KEY (id),
     UNIQUE KEY QSPlayer_Unique (playerId, seasonId, qSeasonId)
 );
-INSERT INTO quarterlyseasonplayer
-VALUES (4, 12, 1, 1, 'Amina Mcmanus', 2, 64, 1),
-       (5, 15, 1, 1, 'Edge', 1, 22, 2),
-       (6, 22, 1, 1, 'Chloe-Ann Redmond', 1, 10, 3),
-       (7, 10, 1, 1, 'Chelsea Mcknight', 1, 8, 4);
 
 CREATE TABLE player
 (
@@ -130,26 +106,8 @@ VALUES (1, 'Gil', 'Pratte', '5121231235', 'gilpratte@texastoc.com',
         '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK'),
        (2, 'Guest', 'User', '5121231235', 'guest@texastoc.com',
         '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK'),
-       (3, 'Casey', 'Greig', NULL, NULL, NULL),
-       (4, 'Roscoe', NULL, NULL, NULL, NULL),
-       (5, 'Dolly', 'Chamberlain', NULL, NULL, NULL),
-       (6, 'Mary', 'Leblanc', NULL, NULL, NULL),
-       (7, 'Herbert', 'Cameron', NULL, NULL, NULL),
-       (8, 'Sania', 'Lennon', NULL, NULL, NULL),
-       (9, 'Anniyah', 'Conroy', NULL, NULL, NULL),
-       (10, 'Chelsea', 'Mcknight', NULL, NULL, NULL),
-       (11, 'Lexie', NULL, NULL, NULL, NULL),
-       (12, 'Amina', 'Mcmanus', NULL, NULL, NULL),
-       (13, 'Elodie', 'Morrison', NULL, NULL, NULL),
-       (14, 'Rhonda', 'Bautista', NULL, NULL, NULL),
-       (15, NULL, 'Edge', NULL, NULL, NULL),
-       (16, 'Skyla', 'Gallegos', NULL, NULL, NULL),
-       (17, 'Priscilla', 'Lin', NULL, NULL, NULL),
-       (18, 'Farzana', 'Vu', NULL, NULL, NULL),
-       (19, 'Tamanna', 'Dorsey', NULL, NULL, NULL),
-       (20, 'Elara', 'Andrews', NULL, NULL, NULL),
-       (21, 'Seb', 'Marin', NULL, NULL, NULL),
-       (22, 'Chloe-Ann', 'Redmond', NULL, NULL, NULL);
+       (3, 'Guest', 'Admin', '5121231235', 'guest-admin@texastoc.com',
+        '$2a$10$qXQo4z4oXKPEKyYO7bAQmOQ9PhIcHK4LOo/L1U9j/xkLEmseLWECK');
 
 CREATE TABLE game
 (
@@ -188,13 +146,6 @@ CREATE TABLE game
     canRebuy                          boolean        DEFAULT TRUE,
     PRIMARY KEY (id)
 );
-INSERT INTO game
-VALUES (1, 1, 1, 12, '2020-06-11', 'Amina Mcmanus', 1, 0, 0, 10, 40, 40, 20, 20, 20, NULL, 12, 480, 0, 160, 60, 700, 10,
-        0, 0, 220, 470, 0, 1, 1, 1, '2020-06-28', 1),
-       (2, 1, 1, 4, '2020-06-18', 'Roscoe', 1, 0, 0, 10, 40, 40, 20, 20, 20, NULL, 11, 440, 0, 140, 40, 620, 10, 0, 0,
-        180, 430, 0, 2, 2, 1, '2020-06-28', 1),
-       (3, 1, 1, 4, '2020-06-25', 'Roscoe', 1, 0, 0, 10, 40, 40, 20, 20, 20, NULL, 2, 80, 0, 40, 20, 140, 10, 0, 0, 60,
-        70, 0, 3, 3, 0, '2020-06-28', 1);
 
 CREATE TABLE gameplayer
 (
@@ -216,32 +167,6 @@ CREATE TABLE gameplayer
     PRIMARY KEY (id)
 );
 
-INSERT INTO gameplayer
-VALUES (1, 12, 1, 1, 1, 'Amina Mcmanus', 5, 29, 1, 0, 40, NULL, 20, 20, NULL),
-       (2, 9, 1, 1, 1, 'Anniyah Conroy', 7, 17, 1, 0, 40, NULL, 20, NULL, NULL),
-       (3, 3, 1, 1, 1, 'Casey Greig', 9, NULL, 1, 0, 40, 40, NULL, NULL, NULL),
-       (4, 10, 1, 1, 1, 'Chelsea Mcknight', 10, 8, 1, 0, 40, 40, 20, 20, NULL),
-       (5, 22, 1, 1, 1, 'Chloe-Ann Redmond', 8, 13, 1, 0, 40, 40, 20, NULL, NULL),
-       (6, 5, 1, 1, 1, 'Dolly Chamberlain', NULL, NULL, NULL, NULL, 40, NULL, NULL, NULL, NULL),
-       (7, 15, 1, 1, 1, 'Edge', 6, 22, 1, 0, 40, NULL, 20, 20, NULL),
-       (8, 20, 1, 1, 1, 'Elara Andrews', 4, 37, 1, 0, 40, 40, 20, NULL, NULL),
-       (9, 13, 1, 1, 1, 'Elodie Morrison', NULL, NULL, 0, 0, 40, 40, 20, NULL, NULL),
-       (10, 18, 1, 1, 1, 'Farzana Vu', 3, NULL, 1, 0, 40, 40, NULL, NULL, NULL),
-       (11, 1, 1, 1, 1, 'Gil Pratte', 2, 62, 1, 0, 40, NULL, 20, NULL, NULL),
-       (12, 7, 1, 1, 1, 'Herbert Cameron', 1, NULL, 1, 0, 40, 40, NULL, NULL, NULL),
-       (13, 12, 2, 1, 1, 'Amina Mcmanus', 4, 35, 1, 0, 40, NULL, 20, 20, NULL),
-       (14, 9, 2, 1, 1, 'Anniyah Conroy', 6, 21, 1, 0, 40, NULL, 20, NULL, NULL),
-       (15, 10, 2, 1, 1, 'Chelsea Mcknight', 8, NULL, 1, 0, 40, NULL, NULL, NULL, NULL),
-       (16, 22, 2, 1, 1, 'Chloe-Ann Redmond', 9, 10, 1, 0, 40, NULL, 20, 20, NULL),
-       (17, 15, 2, 1, 1, 'Edge', 5, 27, 1, 0, 40, 40, 20, NULL, NULL),
-       (18, 20, 2, 1, 1, 'Elara Andrews', 3, NULL, 1, 0, 40, NULL, NULL, NULL, NULL),
-       (19, 13, 2, 1, 1, 'Elodie Morrison', 1, NULL, 1, 0, 40, 40, NULL, NULL, 90000),
-       (20, 1, 2, 1, 1, 'Gil Pratte', 2, 64, 1, 0, 40, 40, 20, NULL, 50000),
-       (21, 3, 2, 1, 1, 'Casey Greig', 7, 16, 1, 0, 40, 40, 20, NULL, NULL),
-       (22, 5, 2, 1, 1, 'Dolly Chamberlain', 10, 8, 1, 0, 40, 40, 20, NULL, NULL),
-       (23, 18, 2, 1, 1, 'Farzana Vu', NULL, NULL, 0, 0, 40, 40, NULL, NULL, NULL),
-       (24, 9, 3, 1, 1, 'Anniyah Conroy', NULL, NULL, 0, 0, 40, NULL, 20, NULL, NULL),
-       (25, 5, 3, 1, 1, 'Dolly Chamberlain', NULL, 23, 0, 0, 40, NULL, 20, 20, NULL);
 
 CREATE TABLE gamepayout
 (
@@ -254,12 +179,6 @@ CREATE TABLE gamepayout
     PRIMARY KEY (id),
     UNIQUE KEY GPayout_Unique (gameId, place)
 );
-INSERT INTO gamepayout
-VALUES (52, 1, 1, 436, NULL, NULL),
-       (53, 1, 2, 234, NULL, NULL),
-       (64, 2, 1, 384, 321, 0.6428571428571429),
-       (65, 2, 2, 206, 269, 0.35714285714285715),
-       (69, 3, 1, 70, NULL, NULL);
 
 CREATE TABLE quarterlyseasonpayout
 (
@@ -271,10 +190,6 @@ CREATE TABLE quarterlyseasonpayout
     PRIMARY KEY (id),
     UNIQUE KEY QSPayout_Unique (seasonId, qSeasonId, place)
 );
-INSERT INTO quarterlyseasonpayout
-VALUES (4, 1, 1, 1, 50),
-       (5, 1, 1, 2, 30),
-       (6, 1, 1, 3, 20);
 
 CREATE TABLE role
 (
@@ -295,29 +210,10 @@ CREATE TABLE player_roles
 );
 INSERT INTO player_roles
 VALUES (1, 1),
-       (2, 1),
        (1, 2),
-       (2, 2),
-       (3, 2),
-       (4, 2),
-       (5, 2),
-       (6, 2),
-       (7, 2),
-       (8, 2),
-       (9, 2),
-       (10, 2),
-       (11, 2),
-       (12, 2),
-       (13, 2),
-       (14, 2),
-       (15, 2),
-       (16, 2),
-       (17, 2),
-       (18, 2),
-       (19, 2),
-       (20, 2),
-       (21, 2),
-       (22, 2);
+       (2, 1),
+       (3, 1),
+       (3, 2);
 
 
 CREATE TABLE seasonpayout
