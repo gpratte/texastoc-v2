@@ -76,8 +76,13 @@ public class SeasonService {
 
     LocalDate start = LocalDate.of(startYear, Month.MAY.getValue(), 1);
 
-    if (!getCurrentSeason().isFinalized()) {
-      throw new SeasonInProgressException();
+    try {
+      Season currentSeason = getCurrentSeason();
+      if (currentSeason.isFinalized()) {
+        throw new SeasonInProgressException();
+      }
+    } catch (NotFoundException e) {
+      // do nothing
     }
 
     // Make sure not overlapping with another season

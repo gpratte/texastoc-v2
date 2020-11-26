@@ -5,6 +5,9 @@ target/
 # Log files
 **/*.log
 
+# game summary files
+game-summary.html
+
 # Test results
 test.results
 

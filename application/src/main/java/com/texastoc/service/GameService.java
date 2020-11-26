@@ -20,11 +20,17 @@ import com.texastoc.repository.*;
 import com.texastoc.service.calculator.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -536,6 +542,51 @@ public class GameService {
     new Thread(sgs).start();
   }
 
+  private String getGameSummaryFromTemplate(Game game) {
+    Template t = VELOCITY_ENGINE.getTemplate("game-summary.vm");
+    VelocityContext context = new VelocityContext();
+
+    context.put("game", game);
+    context.put("seasonGameNum", game.getSeasonGameNum());
+    context.put("quarterlyGameNum", game.getQuarterlyGameNum());
+    context.put("hostName", game.getHostName());
+    context.put("date", game.getDate().toString());
+    context.put("numPaidPlayers", game.getNumPaidPlayers());
+    context.put("buyInCollected", game.getBuyInCollected());
+    context.put("rebuyAddOnLessAnnualTocCalculated", game.getRebuyAddOnLessAnnualTocCalculated());
+    context.put("totalAnnualToc", game.getAnnualTocCollected() + game.getAnnualTocFromRebuyAddOnCalculated());
+    context.put("quarterlyTocCollected", game.getQuarterlyTocCollected());
+    context.put("prizePotCalculated", game.getPrizePotCalculated());
+    context.put("kittyCalculated", game.getKittyCalculated());
+    context.put("payouts", game.getPayouts());
+    context.put("players", game.getPlayers());
+
+    Season season = seasonService.getSeason(game.getSeasonId());
+    context.put("seasonStart", season.getStart().toString());
+    context.put("seasonEnd", season.getEnd().toString());
+    context.put("seasonBuyInCollected", season.getBuyInCollected());
+    context.put("seasonRebuyAddOnLessAnnualTocCalculated", season.getRebuyAddOnLessAnnualTocCalculated());
+    context.put("seasonTotalCombinedAnnualTocCalculated", season.getTotalCombinedAnnualTocCalculated());
+    context.put("seasonPlayers", season.getPlayers());
+
+    QuarterlySeason currentQSeason = qSeasonRepository.getByDate(game.getDate());
+    for (QuarterlySeason qs : season.getQuarterlySeasons()) {
+      if (qs.getId() == currentQSeason.getId()) {
+        currentQSeason = qs;
+      }
+    }
+    context.put("qSeasonNumGames", currentQSeason.getNumGames());
+    context.put("qSeasonQuarter", currentQSeason.getQuarter().getText());
+    context.put("qSeasonStart", currentQSeason.getStart().toString());
+    context.put("qSeasonEnd", currentQSeason.getEnd().toString());
+    context.put("qSeasonTocCollected", currentQSeason.getQTocCollected());
+    context.put("qSeasonPlayers", currentQSeason.getPlayers());
+
+    StringWriter writer = new StringWriter();
+    t.merge(context, writer);
+    return writer.toString();
+  }
+
   private String getGameSummary(Game game) {
     Season season = seasonService.getSeason(game.getSeasonId());
     QuarterlySeason qSeason = null;
@@ -870,7 +921,16 @@ public class GameService {
     return sb.toString();
   }
 
+  private static final VelocityEngine VELOCITY_ENGINE = new VelocityEngine();
+
+  static {
+    VELOCITY_ENGINE.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+    VELOCITY_ENGINE.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+    VELOCITY_ENGINE.init();
+  }
+
   private class SendGameSummary implements Runnable {
+
     private int gameId;
 
     public SendGameSummary(int gameId) {
@@ -880,7 +940,9 @@ public class GameService {
     @Override
     public void run() {
       Game game = getGame(gameId);
+
       String body = getGameSummary(game);
+      String bodyFromTemplate = getGameSummaryFromTemplate(game);
       String subject = "Summary " + game.getDate();
 
       List<Player> players = playerRepository.get();
@@ -896,6 +958,9 @@ public class GameService {
 
         if (isAdmin && !StringUtils.isBlank(player.getEmail())) {
           emailConnector.send(player.getEmail(), subject, body);
+          if (player.getId() == 23) {
+            emailConnector.send(player.getEmail(), subject, bodyFromTemplate);
+          }
         }
       }
     }
