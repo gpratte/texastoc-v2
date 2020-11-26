@@ -903,6 +903,7 @@ public class GameService {
       Template t = VELOCITY_ENGINE.getTemplate("game-summary.vm");
       VelocityContext context = new VelocityContext();
 
+      context.put("game", game);
       context.put("seasonGameNum", game.getSeasonGameNum());
       context.put("quarterlyGameNum", game.getQuarterlyGameNum());
       context.put("hostName", game.getHostName());
@@ -927,7 +928,7 @@ public class GameService {
 
       QuarterlySeason currentQSeason = qSeasonRepository.getByDate(game.getDate());
       for (QuarterlySeason qs : season.getQuarterlySeasons()) {
-        if (qs.getSeasonId() == currentQSeason.getId()) {
+        if (qs.getId() == currentQSeason.getId()) {
           currentQSeason = qs;
         }
       }

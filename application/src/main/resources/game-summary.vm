@@ -57,8 +57,8 @@
     <td>${d}$kittyCalculated</td>
   </tr>
   <tr>
-    <td><b>Place</b></td>
-    <th><b>Payout</b></th>
+    <td align="center"><b>Place</b></td>
+    <th align="center"><b>Payout</b></th>
   </tr>
   #foreach($payout in $payouts)
   <tr>
@@ -88,7 +88,12 @@
     <td align="center">${d}$!player.buyInCollected</td>
     <td align="center">
       #if($player.rebuyAddOnCollected)
-        ${d}$player.rebuyAddOnCollected
+        #set($rebuyMinusDebt = $player.rebuyAddOnCollected - $game.rebuyAddOnTocDebit)
+        #if($player.annualTocCollected)
+          ${d}$rebuyMinusDebt/$game.rebuyAddOnTocDebit
+        #else
+          ${d}$player.rebuyAddOnCollected
+        #end
       #end
     </td>
     <td align="center">
@@ -148,9 +153,17 @@
   </tr>
   #foreach($seasonPlayer in $seasonPlayers)
   <tr>
-    <td align="center">$!seasonPlayer.place</td>
+    <td align="center">
+      #if(seasonPlayer.place && seasonPlayer.place > 0)
+        $!seasonPlayer.place
+      #end
+    </td>
     <td align="center">$seasonPlayer.name</td>
-    <td align="center">$!seasonPlayer.points</td>
+    <td align="center">
+      #if(seasonPlayer.points && seasonPlayer.points > 0)
+        $!seasonPlayer.points
+      #end
+    </td>
     <td align="center">$!seasonPlayer.entries</td>
   </tr>
   #end
@@ -196,9 +209,17 @@
   </tr>
   #foreach($qSeasonPlayer in $qSeasonPlayers)
   <tr>
-    <td align="center">$!qSeasonPlayer.place</td>
+    <td align="center">
+      #if($qSeasonPlayer.place && $qSeasonPlayer.place > 0)
+        $!qSeasonPlayer.place
+      #end
+    </td>
     <td align="center">$qSeasonPlayer.name</td>
-    <td align="center">$!qSeasonPlayer.points</td>
+    <td align="center">
+      #if($qSeasonPlayer.points && $qSeasonPlayer.points > 0)
+        $!qSeasonPlayer.points
+      #end
+    </td>
     <td align="center">$!qSeasonPlayer.entries</td>
   </tr>
   #end
