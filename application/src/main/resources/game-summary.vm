@@ -86,9 +86,21 @@
     <td align="center">$!player.points</td>
     <td align="center">$!player.chop</td>
     <td align="center">${d}$!player.buyInCollected</td>
-    <td align="center">${d}$!player.rebuyAddOnCollected</td>
-    <td align="center">${d}$!player.annualTocCollected</td>
-    <td align="center">${d}$!player.quarterlyTocCollected</td>
+    <td align="center">
+      #if($player.rebuyAddOnCollected)
+        ${d}$player.rebuyAddOnCollected
+      #end
+    </td>
+    <td align="center">
+      #if($player.annualTocCollected)
+        ${d}$player.annualTocCollected
+      #end
+    </td>
+    <td align="center">
+      #if($player.quarterlyTocCollected)
+        ${d}$player.quarterlyTocCollected
+      #end
+    </td>
   </tr>
   #end
 </table>
