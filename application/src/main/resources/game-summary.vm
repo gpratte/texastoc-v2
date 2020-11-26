@@ -61,8 +61,10 @@
     <th><b>Payout</b></th>
   </tr>
   #foreach($payout in $payouts)
-      <td>$payout.place</td>
-      <td>${d}$payout.amount</td>
+  <tr>
+    <td align="center">$payout.place</td>
+    <td align="center">${d}$payout.amount</td>
+  </tr>
   #end
 </table>
 
@@ -79,7 +81,7 @@
   </tr>
   #foreach($player in $players)
   <tr>
-    <td align="center">$player.place</td>
+    <td align="center">$!player.place</td>
     <td align="center">$player.name</td>
     <td align="center">$!player.points</td>
     <td align="center">$!player.chop</td>
