@@ -28,9 +28,6 @@ public class Season {
   private int buyInCost;
   private int rebuyAddOnCost;
   private int rebuyAddOnTocDebit;
-  private int doubleBuyInCost;
-  private int doubleRebuyAddOnCost;
-  private int doubleRebuyAddOnTocDebit;
 
   // Runtime variables. End with "Collected" for physical money in
   // money in for game buy-in

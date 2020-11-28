@@ -91,15 +91,12 @@ public class GameServiceTest implements TestConstants {
   @Test
   public void testCreateGame() {
 
-    boolean doubleBuyIn = random.nextBoolean();
-
     // Arrange
     LocalDate start = LocalDate.now();
     Game expected = Game.builder()
       .date(start)
       .hostId(1)
       .transportRequired(true)
-      .doubleBuyIn(doubleBuyIn)
       .build();
 
     Mockito.when(gameRepository.getById((1))).thenReturn(Game.builder()
@@ -107,7 +104,6 @@ public class GameServiceTest implements TestConstants {
       .date(start)
       .hostId(1)
       .transportRequired(true)
-      .doubleBuyIn(doubleBuyIn)
       .seasonId(1)
       .qSeasonId(1)
       .hostName("Brian Baker")
@@ -146,9 +142,6 @@ public class GameServiceTest implements TestConstants {
         .buyInCost(GAME_BUY_IN)
         .rebuyAddOnCost(GAME_REBUY)
         .rebuyAddOnTocDebit(GAME_REBUY_TOC_DEBIT)
-        .doubleBuyInCost(GAME_DOUBLE_BUY_IN)
-        .doubleRebuyAddOnCost(GAME_DOUBLE_REBUY)
-        .doubleRebuyAddOnTocDebit(GAME_DOUBLE_REBUY_TOC_DEBIT)
         .numGamesPlayed(20)
         .build());
 
@@ -164,7 +157,6 @@ public class GameServiceTest implements TestConstants {
     assertEquals(start, gameArg.getValue().getDate());
     assertEquals(1, (int) gameArg.getValue().getHostId());
     Assert.assertTrue(gameArg.getValue().isTransportRequired());
-    assertEquals(doubleBuyIn, gameArg.getValue().isDoubleBuyIn());
 
 
     // Assert
@@ -183,7 +175,6 @@ public class GameServiceTest implements TestConstants {
 
 
     // Game setup variables
-    assertEquals("Double buy in", expected.isDoubleBuyIn(), actual.isDoubleBuyIn());
     assertEquals("transport required", expected.isTransportRequired(), actual.isTransportRequired());
     assertEquals("Kitty cost should be amount set for season", KITTY_PER_GAME, (int) actual.getKittyCost());
     assertEquals("Annual TOC be amount set for season", TOC_PER_GAME, (int) actual.getAnnualTocCost());
@@ -210,15 +201,9 @@ public class GameServiceTest implements TestConstants {
 
     Assert.assertFalse("not finalized", actual.isFinalized());
 
-    if (expected.isDoubleBuyIn()) {
-      assertEquals("Buy in cost should be double the amount set for season", GAME_DOUBLE_BUY_IN, (int) actual.getBuyInCost());
-      assertEquals("Rebuy cost should be double the amount set for season", GAME_DOUBLE_REBUY, (int) actual.getRebuyAddOnCost());
-      assertEquals("Rebuy Toc debit cost should be double the amount set for season", GAME_DOUBLE_REBUY_TOC_DEBIT, (int) actual.getRebuyAddOnTocDebit());
-    } else {
-      assertEquals("Buy in cost should be amount set for season", GAME_BUY_IN, (int) actual.getBuyInCost());
-      assertEquals("Rebuy cost should be amount set for season", GAME_REBUY, (int) actual.getRebuyAddOnCost());
-      assertEquals("Rebuy Toc debit cost should be amount set for season", GAME_REBUY_TOC_DEBIT, (int) actual.getRebuyAddOnTocDebit());
-    }
+    assertEquals("Buy in cost should be amount set for season", GAME_BUY_IN, (int) actual.getBuyInCost());
+    assertEquals("Rebuy cost should be amount set for season", GAME_REBUY, (int) actual.getRebuyAddOnCost());
+    assertEquals("Rebuy Toc debit cost should be amount set for season", GAME_REBUY_TOC_DEBIT, (int) actual.getRebuyAddOnTocDebit());
   }
 
   /**
@@ -356,7 +341,6 @@ public class GameServiceTest implements TestConstants {
     Game currentGame = Game.builder()
       .id(1)
       .numPlayers(0)
-      .doubleBuyIn(false)
       .finalized(false)
       .build();
     // 1. gameRepository.getById
@@ -427,7 +411,6 @@ public class GameServiceTest implements TestConstants {
       .quarterlyTocCost(QUARTERLY_TOC_PER_GAME)
       .rebuyAddOnCost(GAME_REBUY)
       .finalized(false)
-      .doubleBuyIn(false)
       .build();
     // 1. gameRepository.getById
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
@@ -487,7 +470,6 @@ public class GameServiceTest implements TestConstants {
     Game currentGame = Game.builder()
       .id(1)
       .numPlayers(0)
-      .doubleBuyIn(false)
       .build();
     Mockito.when(gameRepository.getById(1)).thenReturn(currentGame);
 
@@ -514,7 +496,6 @@ public class GameServiceTest implements TestConstants {
     Game currentGame = Game.builder()
       .id(1)
       .numPlayers(0)
-      .doubleBuyIn(false)
       .finalized(false)
       .build();
     // 1. gameRepository.getById

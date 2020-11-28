@@ -36,7 +36,6 @@ public class GameRestController {
     return gameService.createGame(Game.builder()
       .hostId(createGameRequest.getHostId())
       .date(createGameRequest.getDate())
-      .doubleBuyIn(createGameRequest.getDoubleBuyIn())
       .transportRequired(createGameRequest.getTransportRequired())
       .build());
   }
@@ -46,7 +45,6 @@ public class GameRestController {
     Game game = gameService.getGame(id);
     game.setHostId(updateGameRequest.getHostId());
     game.setDate(updateGameRequest.getDate());
-    game.setDoubleBuyIn(updateGameRequest.getDoubleBuyIn());
     game.setTransportRequired(updateGameRequest.getTransportRequired());
     game.setPayoutDelta(updateGameRequest.getPayoutDelta() == null ? 0 : updateGameRequest.getPayoutDelta());
 

@@ -37,7 +37,6 @@ public class SeatingStepdefs extends SpringBootBaseIntegrationTest {
     Game game = createGame(CreateGameRequest.builder()
       .date(LocalDate.now())
       .hostId(1)
-      .doubleBuyIn(false)
       .transportRequired(false)
       .build(), token);
 

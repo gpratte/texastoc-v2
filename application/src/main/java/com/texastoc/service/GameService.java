@@ -5,7 +5,6 @@ import com.texastoc.connector.SMSConnector;
 import com.texastoc.connector.WebSocketConnector;
 import com.texastoc.controller.request.CreateGamePlayerRequest;
 import com.texastoc.controller.request.UpdateGamePlayerRequest;
-import com.texastoc.exception.DoubleBuyInChangeDisallowedException;
 import com.texastoc.exception.GameInProgressException;
 import com.texastoc.exception.GameIsFinalizedException;
 import com.texastoc.model.config.TocConfig;
@@ -116,7 +115,6 @@ public class GameService {
     gameToCreate.setHostName(player.getName());
 
     // Game setup variables
-    gameToCreate.setDoubleBuyIn(game.isDoubleBuyIn());
     gameToCreate.setTransportRequired(game.isTransportRequired());
 
     gameToCreate.setKittyCost(currentSeason.getKittyPerGame());
@@ -127,15 +125,9 @@ public class GameService {
     gameToCreate.setQuarterlyTocCost(currentSeason.getQuarterlyTocPerGame());
     gameToCreate.setSeasonGameNum(currentSeason.getNumGamesPlayed() + 1);
 
-    if (game.isDoubleBuyIn()) {
-      gameToCreate.setBuyInCost(currentSeason.getDoubleBuyInCost());
-      gameToCreate.setRebuyAddOnCost(currentSeason.getDoubleRebuyAddOnCost());
-      gameToCreate.setRebuyAddOnTocDebit(currentSeason.getDoubleRebuyAddOnTocDebit());
-    } else {
-      gameToCreate.setBuyInCost(currentSeason.getBuyInCost());
-      gameToCreate.setRebuyAddOnCost(currentSeason.getRebuyAddOnCost());
-      gameToCreate.setRebuyAddOnTocDebit(currentSeason.getRebuyAddOnTocDebit());
-    }
+    gameToCreate.setBuyInCost(currentSeason.getBuyInCost());
+    gameToCreate.setRebuyAddOnCost(currentSeason.getRebuyAddOnCost());
+    gameToCreate.setRebuyAddOnTocDebit(currentSeason.getRebuyAddOnTocDebit());
 
     int id = gameRepository.save(gameToCreate);
     gameToCreate.setId(id);
@@ -241,17 +233,6 @@ public class GameService {
   public void updateGame(Game game) {
     Game currentGame = gameRepository.getById(game.getId());
     checkFinalized(currentGame);
-
-    // Do not allow the game double buy-in to change if any players have bought in
-    if (currentGame.isDoubleBuyIn() != game.isDoubleBuyIn()) {
-      List<GamePlayer> gamePlayers = gamePlayerRepository.selectByGameId(game.getId());
-      for (GamePlayer gamePlayer : gamePlayers) {
-        if (gamePlayer.getBuyInCollected() != null && gamePlayer.getBuyInCollected() > 0) {
-          throw new DoubleBuyInChangeDisallowedException();
-        }
-      }
-    }
-
     gameRepository.update(game);
     sendUpdatedGame();
   }
@@ -301,10 +282,6 @@ public class GameService {
     } else {
       gamePlayer.setKnockedOut(ugpr.isKnockedOut());
     }
-
-    // TODO no more double buy in
-    // Make sure money is right
-    verifyGamePlayerMoney(game.isDoubleBuyIn(), gamePlayer);
 
     gamePlayerRepository.update(gamePlayer);
 
@@ -459,9 +436,6 @@ public class GameService {
 
   // Worker to avoid one @Transacation calling anther @Transactional
   private GamePlayer createGamePlayerWorker(GamePlayer gamePlayer, Game game) {
-
-    // Make sure money is right
-    verifyGamePlayerMoney(game.isDoubleBuyIn(), gamePlayer);
 
     if (gamePlayer.getName() == null) {
       Player player = playerRepository.get(gamePlayer.getPlayerId());

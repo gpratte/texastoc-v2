@@ -31,9 +31,9 @@ public class GameRepository {
 
   private static final String INSERT_SQL =
     "INSERT INTO game "
-      + "(seasonId, qSeasonId, gameDate, hostId, hostName, quarter, doubleBuyIn, transportRequired, kittyCost, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, annualTocCost, quarterlyTocCost, numPlayers, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, totalCollected, kittyCalculated, annualTocFromRebuyAddOnCalculated, rebuyAddOnLessAnnualTocCalculated, totalCombinedTocCalculated, prizePotCalculated, seasonGameNum, quarterlyGameNum, finalized, lastCalculated, started) "
+      + "(seasonId, qSeasonId, gameDate, hostId, hostName, quarter, transportRequired, kittyCost, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, annualTocCost, quarterlyTocCost, numPlayers, buyInCollected, rebuyAddOnCollected, annualTocCollected, quarterlyTocCollected, totalCollected, kittyCalculated, annualTocFromRebuyAddOnCalculated, rebuyAddOnLessAnnualTocCalculated, totalCombinedTocCalculated, prizePotCalculated, seasonGameNum, quarterlyGameNum, finalized, lastCalculated, started) "
       + " VALUES "
-      + " (:seasonId, :qSeasonId, :gameDate, :hostId, :hostName, :quarter, :doubleBuyIn, :transportRequired, :kittyCost, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :annualTocCost, :quarterlyTocCost, :numPlayers, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :totalCollected, :kittyCalculated, :annualTocFromRebuyAddOnCalculated, :rebuyAddOnLessAnnualTocCalculated, :totalCombinedTocCalculated, :prizePotCalculated, :seasonGameNum, :quarterlyGameNum, :finalized, :lastCalculated, :started)";
+      + " (:seasonId, :qSeasonId, :gameDate, :hostId, :hostName, :quarter, :transportRequired, :kittyCost, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :annualTocCost, :quarterlyTocCost, :numPlayers, :buyInCollected, :rebuyAddOnCollected, :annualTocCollected, :quarterlyTocCollected, :totalCollected, :kittyCalculated, :annualTocFromRebuyAddOnCalculated, :rebuyAddOnLessAnnualTocCalculated, :totalCombinedTocCalculated, :prizePotCalculated, :seasonGameNum, :quarterlyGameNum, :finalized, :lastCalculated, :started)";
 
   public int save(final Game game) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -45,7 +45,6 @@ public class GameRepository {
     params.addValue("hostId", game.getHostId());
     params.addValue("hostName", game.getHostName());
     params.addValue("quarter", game.getQuarter().getValue());
-    params.addValue("doubleBuyIn", game.isDoubleBuyIn());
     params.addValue("transportRequired", game.isTransportRequired());
     params.addValue("kittyCost", game.getKittyCost());
     params.addValue("buyInCost", game.getBuyInCost());
@@ -80,7 +79,7 @@ public class GameRepository {
   private static final String UPDATE_SQL = "UPDATE game set " +
     "seasonId=:seasonId, qSeasonId=:qSeasonId, hostId=:hostId, " +
     "hostName=:hostName, quarter=:quarter, " +
-    "doubleBuyIn=:doubleBuyIn, transportRequired=:transportRequired, " +
+    "transportRequired=:transportRequired, " +
     "kittyCost=:kittyCost, buyInCost=:buyInCost, rebuyAddOnCost=:rebuyAddOnCost, " +
     "rebuyAddOnTocDebit=:rebuyAddOnTocDebit, annualTocCost=:annualTocCost, " +
     "quarterlyTocCost=:quarterlyTocCost, started=:started, numPlayers=:numPlayers, " +
@@ -102,7 +101,6 @@ public class GameRepository {
     params.addValue("hostId", game.getHostId());
     params.addValue("hostName", game.getHostName());
     params.addValue("quarter", game.getQuarter().getValue());
-    params.addValue("doubleBuyIn", game.isDoubleBuyIn());
     params.addValue("transportRequired", game.isTransportRequired());
     params.addValue("kittyCost", game.getKittyCost());
     params.addValue("buyInCost", game.getBuyInCost());
@@ -196,6 +194,7 @@ public class GameRepository {
   }
 
   private static final class GameMapper implements RowMapper<Game> {
+    @Override
     public Game mapRow(ResultSet rs, int rowNum) {
       Game game = new Game();
       try {
@@ -204,7 +203,6 @@ public class GameRepository {
         game.setQSeasonId(rs.getInt("qSeasonId"));
         game.setDate(rs.getDate("gameDate").toLocalDate());
         game.setQuarter(Quarter.fromInt(rs.getInt("quarter")));
-        game.setDoubleBuyIn(rs.getBoolean("doubleBuyIn"));
         game.setTransportRequired(rs.getBoolean("transportRequired"));
         game.setKittyCost(rs.getInt("kittyCost"));
         game.setBuyInCost(rs.getInt("buyInCost"));

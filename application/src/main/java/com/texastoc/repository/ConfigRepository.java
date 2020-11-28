@@ -27,6 +27,7 @@ public class ConfigRepository {
   }
 
   private static final class TocConfigMapper implements RowMapper<TocConfig> {
+    @Override
     public TocConfig mapRow(ResultSet rs, int rowNum) {
       TocConfig tocConfig = null;
       try {
@@ -38,9 +39,6 @@ public class ConfigRepository {
           .regularBuyInCost(rs.getInt("regularBuyInCost"))
           .regularRebuyCost(rs.getInt("regularRebuyCost"))
           .regularRebuyTocDebit(rs.getInt("regularRebuyTocDebit"))
-          .doubleBuyInCost(rs.getInt("doubleBuyInCost"))
-          .doubleRebuyCost(rs.getInt("doubleRebuyCost"))
-          .doubleRebuyTocDebit(rs.getInt("doubleRebuyTocDebit"))
           .build();
       } catch (SQLException e) {
         log.error("Problem mapping TocConfig", e);

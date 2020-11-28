@@ -17,9 +17,6 @@ public class UpdateGameRequest {
   @JsonFormat(pattern = "yyyy-MM-dd")
   private LocalDate date;
 
-  @NotNull(message = "doubleBuyIn is required")
-  private Boolean doubleBuyIn;
-
   @NotNull(message = "transportRequired is required")
   private Boolean transportRequired;
 

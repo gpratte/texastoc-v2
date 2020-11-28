@@ -90,8 +90,8 @@ public class QuarterlyCalculatorTest implements TestConstants {
         .id(i)
         .playerId(i)
         .gameId(1)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .rebuyAddOnCollected(GAME_DOUBLE_REBUY)
+        .buyInCollected(GAME_BUY_IN)
+        .rebuyAddOnCollected(GAME_REBUY)
         .annualTocCollected(TOC_PER_GAME)
         .quarterlyTocCollected(QUARTERLY_TOC_PER_GAME)
         .points(points)
@@ -104,8 +104,8 @@ public class QuarterlyCalculatorTest implements TestConstants {
       GamePlayer gamePlayer = GamePlayer.builder()
         .id(i)
         .playerId(i)
-        .buyInCollected(GAME_DOUBLE_BUY_IN)
-        .rebuyAddOnCollected(GAME_DOUBLE_REBUY)
+        .buyInCollected(GAME_BUY_IN)
+        .rebuyAddOnCollected(GAME_REBUY)
         .gameId(1)
         .build();
       gameNonSeasonPlayers.add(gamePlayer);
@@ -119,7 +119,6 @@ public class QuarterlyCalculatorTest implements TestConstants {
 
     Mockito.when(configRepository.get()).thenReturn(TestConstants.getTocConfig());
     Game currentGame = Game.builder()
-      .doubleBuyIn(true)
       .build();
     Game calculatedGame = gameCalculator.calculate(currentGame, gameCombinedPlayers);
     List<Game> calculatedGames = new LinkedList<>();
