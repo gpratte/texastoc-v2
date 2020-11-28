@@ -101,10 +101,22 @@ public class QuarterlySeasonCalculator {
     List<QuarterlySeasonPlayer> players = new ArrayList<>(seasonPlayerMap.values());
     Collections.sort(players);
 
-    int place = 1;
+    int place = 0;
+    int lastPoints = -1;
+    int numTied = 0;
     for (QuarterlySeasonPlayer player : players) {
       if (player.getPoints() > 0) {
-        player.setPlace(place++);
+        // check for a tie
+        if (player.getPoints() == lastPoints) {
+          // tie for points so same player
+          player.setPlace(place);
+          ++numTied;
+        } else {
+          place = ++place + numTied;
+          player.setPlace(place);
+          lastPoints = player.getPoints();
+          numTied = 0;
+        }
       }
     }
 

@@ -542,6 +542,14 @@ public class GameService {
     new Thread(sgs).start();
   }
 
+  private static final VelocityEngine VELOCITY_ENGINE = new VelocityEngine();
+
+  static {
+    VELOCITY_ENGINE.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+    VELOCITY_ENGINE.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+    VELOCITY_ENGINE.init();
+  }
+
   private String getGameSummaryFromTemplate(Game game) {
     Template t = VELOCITY_ENGINE.getTemplate("game-summary.vm");
     VelocityContext context = new VelocityContext();
@@ -896,14 +904,6 @@ public class GameService {
     }
     sb.append("</table>");
     return sb.toString();
-  }
-
-  private static final VelocityEngine VELOCITY_ENGINE = new VelocityEngine();
-
-  static {
-    VELOCITY_ENGINE.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-    VELOCITY_ENGINE.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-    VELOCITY_ENGINE.init();
   }
 
   private class SendGameSummary implements Runnable {

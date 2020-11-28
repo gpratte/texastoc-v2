@@ -134,10 +134,22 @@ public class SeasonCalculator {
     List<SeasonPlayer> seasonPlayers = new ArrayList<>(seasonPlayerMap.values());
     Collections.sort(seasonPlayers);
 
-    int count = 1;
+    int place = 0;
+    int lastPoints = -1;
+    int numTied = 0;
     for (SeasonPlayer player : seasonPlayers) {
       if (player.getPoints() > 0) {
-        player.setPlace(count++);
+        // check for a tie
+        if (player.getPoints() == lastPoints) {
+          // tie for points so same player
+          player.setPlace(place);
+          ++numTied;
+        } else {
+          place = ++place + numTied;
+          player.setPlace(place);
+          lastPoints = player.getPoints();
+          numTied = 0;
+        }
       }
     }
 
