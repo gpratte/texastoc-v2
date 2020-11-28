@@ -31,7 +31,6 @@ public class Game {
   private Quarter quarter;
 
   // Game setup variables. End with "Cost" or "Debit"
-  private boolean doubleBuyIn;
   private boolean transportRequired;
   private int kittyCost;
   private int buyInCost;

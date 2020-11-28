@@ -51,7 +51,6 @@ public class GamePlayersStepdefs extends SpringBootBaseIntegrationTest {
     CreateGameRequest createGameRequest = CreateGameRequest.builder()
       .date(LocalDate.now())
       .hostId(1)
-      .doubleBuyIn(false)
       .transportRequired(false)
       .build();
 

@@ -21,9 +21,6 @@ public class TestUtils implements TestConstants {
     Assert.assertEquals(GAME_BUY_IN, (int) actual.getBuyInCost());
     Assert.assertEquals(GAME_REBUY, (int) actual.getRebuyAddOnCost());
     Assert.assertEquals(GAME_REBUY_TOC_DEBIT, (int) actual.getRebuyAddOnTocDebit());
-    Assert.assertEquals(GAME_DOUBLE_BUY_IN, (int) actual.getDoubleBuyInCost());
-    Assert.assertEquals(GAME_DOUBLE_REBUY, (int) actual.getDoubleRebuyAddOnCost());
-    Assert.assertEquals(GAME_DOUBLE_REBUY_TOC_DEBIT, (int) actual.getDoubleRebuyAddOnTocDebit());
 
     Assert.assertTrue(actual.getNumGames() == 52 || actual.getNumGames() == 53);
     Assert.assertTrue(actual.getNumGamesPlayed() == 0);

@@ -50,11 +50,7 @@ public class GameCalculator {
       boolean isAnnualToc = gamePlayer.getAnnualTocCollected() != null && gamePlayer.getAnnualTocCollected() > 0;
       boolean isRebuyAddOn = gamePlayer.getRebuyAddOnCollected() != null && gamePlayer.getRebuyAddOnCollected() > 0;
       if (isAnnualToc && isRebuyAddOn) {
-        if (game.isDoubleBuyIn()) {
-          annualTocFromRebuyAddOnCalculated += getTocConfig().getDoubleRebuyTocDebit();
-        } else {
-          annualTocFromRebuyAddOnCalculated += getTocConfig().getRegularRebuyTocDebit();
-        }
+        annualTocFromRebuyAddOnCalculated += getTocConfig().getRegularRebuyTocDebit();
       }
     }
 

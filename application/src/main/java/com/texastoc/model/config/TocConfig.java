@@ -14,8 +14,4 @@ public class TocConfig {
   private int regularBuyInCost;
   private int regularRebuyCost;
   private int regularRebuyTocDebit;
-  private int doubleBuyInCost;
-  private int doubleRebuyCost;
-  private int doubleRebuyTocDebit;
-
 }

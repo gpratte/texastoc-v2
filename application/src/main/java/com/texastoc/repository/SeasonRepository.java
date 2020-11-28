@@ -30,9 +30,9 @@ public class SeasonRepository {
   }
 
   private static final String INSERT_SQL = "INSERT INTO season "
-    + " (startDate, endDate, finalized, numGames, numGamesPlayed, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, doubleBuyInCost, doubleRebuyAddOnCost, doubleRebuyAddOnTocDebit, tocPerGame, kittyPerGame, quarterlyTocPerGame, quarterlyTocPayouts) "
+    + " (startDate, endDate, finalized, numGames, numGamesPlayed, buyInCost, rebuyAddOnCost, rebuyAddOnTocDebit, tocPerGame, kittyPerGame, quarterlyTocPerGame, quarterlyTocPayouts) "
     + " VALUES "
-    + " (:startDate, :endDate, :finalized, :numGames, :numGamesPlayed, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :doubleBuyInCost, :doubleRebuyAddOnCost, :doubleRebuyAddOnTocDebit, :tocPerGame, :kittyPerGame, :quarterlyTocPerGame, :quarterlyTocPayouts)";
+    + " (:startDate, :endDate, :finalized, :numGames, :numGamesPlayed, :buyInCost, :rebuyAddOnCost, :rebuyAddOnTocDebit, :tocPerGame, :kittyPerGame, :quarterlyTocPerGame, :quarterlyTocPayouts)";
 
   public int save(Season season) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -46,9 +46,6 @@ public class SeasonRepository {
     params.addValue("buyInCost", season.getBuyInCost());
     params.addValue("rebuyAddOnCost", season.getRebuyAddOnCost());
     params.addValue("rebuyAddOnTocDebit", season.getRebuyAddOnTocDebit());
-    params.addValue("doubleBuyInCost", season.getDoubleBuyInCost());
-    params.addValue("doubleRebuyAddOnCost", season.getDoubleRebuyAddOnCost());
-    params.addValue("doubleRebuyAddOnTocDebit", season.getDoubleRebuyAddOnTocDebit());
     params.addValue("tocPerGame", season.getTocPerGame());
     params.addValue("kittyPerGame", season.getKittyPerGame());
     params.addValue("quarterlyTocPerGame", season.getQuarterlyTocPerGame());
@@ -162,9 +159,6 @@ public class SeasonRepository {
         season.setBuyInCost(rs.getInt("buyInCost"));
         season.setRebuyAddOnCost(rs.getInt("rebuyAddOnCost"));
         season.setRebuyAddOnTocDebit(rs.getInt("rebuyAddOnTocDebit"));
-        season.setDoubleBuyInCost(rs.getInt("doubleBuyInCost"));
-        season.setDoubleRebuyAddOnCost(rs.getInt("doubleRebuyAddOnCost"));
-        season.setDoubleRebuyAddOnTocDebit(rs.getInt("doubleRebuyAddOnTocDebit"));
         season.setTocPerGame(rs.getInt("tocPerGame"));
         season.setKittyPerGame(rs.getInt("kittyPerGame"));
         season.setQuarterlyTocPerGame(rs.getInt("quarterlyTocPerGame"));

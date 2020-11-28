@@ -78,7 +78,7 @@ public class SeasonService {
 
     try {
       Season currentSeason = getCurrentSeason();
-      if (currentSeason.isFinalized()) {
+      if (!currentSeason.isFinalized()) {
         throw new SeasonInProgressException();
       }
     } catch (NotFoundException e) {
@@ -118,9 +118,6 @@ public class SeasonService {
       .buyInCost(tocConfig.getRegularBuyInCost())
       .rebuyAddOnCost(tocConfig.getRegularRebuyCost())
       .rebuyAddOnTocDebit(tocConfig.getRegularRebuyTocDebit())
-      .doubleBuyInCost(tocConfig.getDoubleBuyInCost())
-      .doubleRebuyAddOnCost(tocConfig.getDoubleRebuyCost())
-      .doubleRebuyAddOnTocDebit(tocConfig.getDoubleRebuyTocDebit())
       .numGames(numThursdays)
       .quarterlySeasons(qSeasons)
       .build();

@@ -96,7 +96,6 @@ public class PopulationScheduler {
       Game game = gameService.createGame(Game.builder()
         .hostId(player.getId())
         .date(gameDate)
-        .doubleBuyIn(false)
         .transportRequired(false)
         .build());
 

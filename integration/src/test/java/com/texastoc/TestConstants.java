@@ -17,10 +17,6 @@ public interface TestConstants {
   int GAME_REBUY = 5;
   int GAME_REBUY_TOC_DEBIT = 4;
 
-  int GAME_DOUBLE_BUY_IN = 12;
-  int GAME_DOUBLE_REBUY = 10;
-  int GAME_DOUBLE_REBUY_TOC_DEBIT = 8;
-
   int BRIAN_BAKER_PLAYER_ID = 1;
   String BRIAN_BAKER_NAME = "Brian Baker";
   int ANDY_THOMAS_PLAYER_ID = 2;
@@ -46,9 +42,6 @@ public interface TestConstants {
       .regularBuyInCost(GAME_BUY_IN)
       .regularRebuyCost(GAME_REBUY)
       .regularRebuyTocDebit(GAME_REBUY_TOC_DEBIT)
-      .doubleBuyInCost(GAME_DOUBLE_BUY_IN)
-      .doubleRebuyCost(GAME_DOUBLE_REBUY)
-      .doubleRebuyTocDebit(GAME_DOUBLE_REBUY_TOC_DEBIT)
       .build();
   }
 
