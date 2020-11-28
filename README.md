@@ -155,7 +155,5 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 80-game-summary-template
-Use the velocity tempate engine (https://velocity.apache.org/) to generate the end of game email.
-
-Also move creating the canned data for the season/game/players/... into code.
+## Current Branch: 82-no-double-buyin
+Remove all references to double buy-in.
