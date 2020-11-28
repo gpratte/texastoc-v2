@@ -6,13 +6,10 @@ CREATE TABLE tocconfig
     quarterlyNumPayouts  int NOT NULL,
     regularBuyInCost     int NOT NULL,
     regularRebuyCost     int NOT NULL,
-    regularRebuyTocDebit int NOT NULL,
-    doubleBuyInCost      int NOT NULL,
-    doubleRebuyCost      int NOT NULL,
-    doubleRebuyTocDebit  int NOT NULL
+    regularRebuyTocDebit int NOT NULL
 );
 INSERT INTO tocconfig
-VALUES (10, 20, 20, 3, 40, 40, 20, 80, 40, 30);
+VALUES (10, 20, 20, 3, 40, 40, 20);
 
 CREATE TABLE season
 (
@@ -26,9 +23,6 @@ CREATE TABLE season
     buyInCost                         int     DEFAULT NULL,
     rebuyAddOnCost                    int     DEFAULT NULL,
     rebuyAddOnTocDebit                int     DEFAULT NULL,
-    doubleBuyInCost                   int     DEFAULT NULL,
-    doubleRebuyAddOnCost              int     DEFAULT NULL,
-    doubleRebuyAddOnTocDebit          int     DEFAULT NULL,
     buyInCollected                    int     DEFAULT NULL,
     rebuyAddOnCollected               int     DEFAULT NULL,
     annualTocCollected                int     DEFAULT NULL,
@@ -118,7 +112,6 @@ CREATE TABLE game
     gameDate                          date      NOT NULL,
     hostName                          varchar(64)    DEFAULT NULL,
     quarter                           int            DEFAULT NULL,
-    doubleBuyIn                       boolean        DEFAULT FALSE,
     transportRequired                 boolean        DEFAULT FALSE,
     kittyCost                         int            DEFAULT 0,
     buyInCost                         int            DEFAULT 0,
