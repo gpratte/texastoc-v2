@@ -74,7 +74,6 @@
     <th>Fin</th>
     <th>Name</th>
     <th>Pts</th>
-    <th>Chp</th>
     <th>Buy<br/>In</th>
     <th>Re<br/>Buy</th>
     <th>TOC</th>
@@ -121,7 +120,7 @@
   </tr>
   <tr>
     <td>Games played</td>
-    <td>$season.numGames</td>
+    <td>$season.numGamesPlayed</td>
   </tr>
   <tr>
     <td>Start date:</td>
@@ -181,7 +180,7 @@
   </tr>
   <tr>
     <td>Games played</td>
-    <td>$qSeason.numGames</td>
+    <td>$qSeason.numGamesPlayed</td>
   </tr>
   <tr>
     <td>Quarter</td>
