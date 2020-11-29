@@ -408,7 +408,7 @@ public class GameService {
   }
 
 
-  @CacheEvict(value = "currentGame", allEntries = true, beforeInvocation = false)
+  @CacheEvict(value = {"currentGame", "currentSeason", "currentSeasonById"}, allEntries = true, beforeInvocation = false)
   public void openGame(int id) {
     Game gameToOpen = gameRepository.getById(id);
 
