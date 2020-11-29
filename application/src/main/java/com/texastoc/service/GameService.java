@@ -530,6 +530,15 @@ public class GameService {
 
     context.put("game", game);
 
+    boolean chopped = false;
+    for (GamePlayer gamePlayer : game.getPlayers()) {
+      if (gamePlayer.getChop() != null && gamePlayer.getChop() > 0) {
+        chopped = true;
+        break;
+      }
+    }
+    context.put("gameChopped", chopped);
+
     Season season = seasonService.getSeason(game.getSeasonId());
     context.put("season", season);
 

@@ -74,6 +74,9 @@
     <th>Fin</th>
     <th>Name</th>
     <th>Pts</th>
+    #if($gameChopped)
+    <th>Chp</th>
+    #end
     <th>Buy<br/>In</th>
     <th>Re<br/>Buy</th>
     <th>TOC</th>
@@ -84,7 +87,9 @@
     <td align="center">$!player.place</td>
     <td>$player.name</td>
     <td align="center">$!player.points</td>
+    #if($gameChopped)
     <td align="center">$!player.chop</td>
+    #end
     <td align="center">${d}$!player.buyInCollected</td>
     <td align="center">
       #if($player.rebuyAddOnCollected)
