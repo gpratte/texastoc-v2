@@ -155,5 +155,5 @@ Choose the branch from the github list of branches to see the readme for that br
 
 To see the code for branch compare the branch to the previous branch.
 
-## Current Branch: 82-no-double-buyin
-Remove all references to double buy-in.
+## Current Branch: 83-clean-up-summary-email
+Removed the metods that built up the game summary email by hand and now only using the velocity template for building the html.
